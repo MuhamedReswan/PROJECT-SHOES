@@ -1,0 +1,81 @@
+const express = require('express');
+const user_route = express();
+const path = require('path');
+const session = require('express-session');
+// const nocache =require('nocache');
+
+
+const userController = require('../controller/userController');
+const config = require('../config/config');
+const userAuth = require('../middlewares/userAuth');
+
+
+
+user_route.use('/user',express.static(path.join(__dirname,'public/user')));
+// user_route.use(express.static(path.join(__dirname,'public/user/images')));
+
+user_route.use(session({secret:config.sessionSecret,resave:false,saveUninitialized:false}));
+// user_route.use(nocache());
+
+
+
+user_route.use(express.json());
+user_route.use(express.urlencoded({extended:true}));
+
+
+// set view engine
+user_route.set('view engine', 'ejs');
+user_route.set('views', './views/user');
+
+user_route.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    res.locals.logedIn = req.session.user ? true : false;
+    next();
+
+})
+
+
+
+// load home
+user_route.get('/',userController.loadHome );
+// user_route.get('/home',userController.loadHome );
+
+// load sign up
+user_route.get('/signup',userController.loadRegister);
+
+// insert user
+user_route.post('/signup',userController.insertUser);
+
+// logout
+user_route.get('/logout',userController.userLogout);
+
+// user_route.get('/checkout',userController.checkout)
+
+// user_route.get('/singleproduct',userController.singleProduct);
+
+// user_route.get('/cart',userController.loadCart);
+
+
+// load login
+user_route.get('/login',userAuth.isLogout,userController.loadLogin);
+
+// verify login 
+user_route.post('/login',userController.verifyLogin);
+
+// load otp
+user_route.get('/otp',userController.loadOtp);
+
+// verify otp
+user_route.post('/otp',userController.verifyOtp);
+
+// resend otp
+user_route.get('/resend/:email',userController.resendOtp);
+
+
+
+
+
+
+
+
+module.exports=user_route;
