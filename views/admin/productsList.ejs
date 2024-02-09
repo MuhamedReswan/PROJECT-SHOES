@@ -1,74 +1,6 @@
 <%- include('../layout/adminHeader.ejs') -%>
-
-        <div class="screen-overlay"></div>
-        <aside class="navbar-aside" id="offcanvas_aside">
-            <div class="aside-top">
-                <a href="index.html" class="brand-wrap">
-                    <img src="assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
-                </a>
-                <div>
-                    <button class="btn btn-icon btn-aside-minimize"><i class="text-muted material-icons md-menu_open"></i></button>
-                </div>
-            </div>
-            <nav>
-                <ul class="menu-aside">
-                    <li class="menu-item">
-                        <a class="menu-link" href="/admin/dashboard">
-                            <i class="icon material-icons md-home"></i>
-                            <span class="text">Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="/admin/customers">
-                            <i class="icon material-icons md-group"></i>
-                            
-                            <span class="text">Customers</span>
-                        </a>
-                      
-                    <li class="menu-item ">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-shopping_cart"></i>
-                            <span class="text">Orders</span>
-                        </a>
-                        
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-store"></i>
-                            <span class="text">Catogory</span>
-                        </a>
-                       
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-star"></i>
-                            <span class="text">Return Request</span>
-                        </a>
-                        
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-monetization_on"></i>
-                            <span class="text">Banners</span>
-                        </a>
-                   
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-person"></i>
-                            <span class="text">Coupons</span>
-                        </a>
-                    </li>
-
-                    <li class="menu-item">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-comment"></i>
-                            <span class="text">Reviews</span>
-                        </a>
-                    </li>
-            </nav>
-        </aside>
-        <main class="main-wrap">
+<%- include('../layout/adminSideNav.ejs') -%>
+        <main class="main-wrap">         
             <header class="main-header navbar">
                 <div class="col-search">
                     <form class="searchform">
@@ -117,7 +49,7 @@
                                 <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
                                 <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                                <a class="dropdown-item text-danger" href="/admin/Logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
                             </div>
                         </li>
                     </ul>
@@ -132,7 +64,7 @@
                     <div>
                         <!-- <a href="#" class="btn btn-light rounded font-md">Export</a>
                         <a href="#" class="btn btn-light rounded font-md">Import</a> -->
-                        <a href="/admin/add-product" class="btn btn-primary btn-sm rounded">Create new</a>
+                        <a href="/admin/add-products" class="btn btn-primary btn-sm rounded">Create new</a>
                     </div>
                 </div>
                 <div class="card mb-4">
@@ -164,332 +96,97 @@
                             </div>
                         </div>
                     </header>
-                    <!-- card-header end// -->
-                    <div class="card-body">
-                        <article class="itemlist">
-                            <div class="row align-items-center">
-                                <div class="col col-check flex-grow-0">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" />
-                                    </div>
+
+                    <div class="card mb-4">
+                        <header class="card-header">
+                            <div class="row gx-3">
+                                <div class="col-lg-4 col-md-6 me-auto">
+                                    <input type="text" placeholder="Search..." class="form-control" />
                                 </div>
-                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                    <a class="itemside" href="#">
-                                        <div class="left">
-                                            <img src="assets/imgs/items/1.jpg" class="img-sm img-thumbnail" alt="Item" />
-                                        </div>
-                                        <div class="info">
-                                            <h6 class="mb-0">Seeds of Change Organic Quinoa</h6>
-                                        </div>
-                                    </a>
+                                <div class="col-lg-2 col-6 col-md-3">
+                                    <select class="form-select">
+                                        <option>Status</option>
+                                        <option>Active</option>
+                                        <option>Disabled</option>
+                                        <option>Show all</option>
+                                    </select>
                                 </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-price"><span>$34.50</span></div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <span class="badge rounded-pill alert-success">Active</span>
-                                </div>
-                                <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                    <span>02.11.2021</span>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="#" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
-                                    <a href="#" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </a>
-                                </div>
+                              
                             </div>
-                            <!-- row .// -->
-                        </article>
-                        <!-- itemlist  .// -->
-                        <article class="itemlist">
-                            <div class="row align-items-center">
-                                <div class="col col-check flex-grow-0">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" />
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                    <a class="itemside" href="#">
-                                        <div class="left">
-                                            <img src="assets/imgs/items/2.jpg" class="img-sm img-thumbnail" alt="Item" />
-                                        </div>
-                                        <div class="info">
-                                            <h6 class="mb-0">All Natural Italian-Style Chicken</h6>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-price"><span>$990.99</span></div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <span class="badge rounded-pill alert-success">Active</span>
-                                </div>
-                                <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                    <span>02.11.2021</span>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="#" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
-                                    <a href="#" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </a>
-                                </div>
-                            </div>
-                            <!-- row .// -->
-                        </article>
-                        <!-- itemlist  .// -->
-                        <article class="itemlist">
-                            <div class="row align-items-center">
-                                <div class="col col-check flex-grow-0">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" />
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                    <a class="itemside" href="#">
-                                        <div class="left">
-                                            <img src="assets/imgs/items/3.jpg" class="img-sm img-thumbnail" alt="Item" />
-                                        </div>
-                                        <div class="info">
-                                            <h6 class="mb-0">Gortons Beer Battered Fish Fillets</h6>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-price"><span>$76.99</span></div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <span class="badge rounded-pill alert-warning">Archived</span>
-                                </div>
-                                <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                    <span>02.11.2021</span>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="#" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
-                                    <a href="#" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </a>
-                                </div>
-                            </div>
-                            <!-- row .// -->
-                        </article>
-                        <!-- itemlist  .// -->
-                        <article class="itemlist">
-                            <div class="row align-items-center">
-                                <div class="col col-check flex-grow-0">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" />
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                    <a class="itemside" href="#">
-                                        <div class="left">
-                                            <img src="assets/imgs/items/4.jpg" class="img-sm img-thumbnail" alt="Item" />
-                                        </div>
-                                        <div class="info">
-                                            <h6 class="mb-0">Foster Farms Takeout Crispy Classic Buffalo</h6>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-price"><span>$18.00</span></div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <span class="badge rounded-pill alert-success">Active</span>
-                                </div>
-                                <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                    <span>02.11.2021</span>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="#" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
-                                    <a href="#" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </a>
-                                </div>
-                            </div>
-                            <!-- row .// -->
-                        </article>
-                        <!-- itemlist  .// -->
-                        <article class="itemlist">
-                            <div class="row align-items-center">
-                                <div class="col col-check flex-grow-0">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" />
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                    <a class="itemside" href="#">
-                                        <div class="left">
-                                            <img src="assets/imgs/items/3.jpg" class="img-sm img-thumbnail" alt="Item" />
-                                        </div>
-                                        <div class="info">
-                                            <h6 class="mb-0">Blue Diamond Almonds Lightly Salted</h6>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-price"><span>$76.99</span></div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <span class="badge rounded-pill alert-danger">Disabled</span>
-                                </div>
-                                <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                    <span>02.11.2021</span>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="#" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
-                                    <a href="#" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </a>
-                                </div>
-                            </div>
-                            <!-- row .// -->
-                        </article>
-                        <!-- itemlist  .// -->
-                        <article class="itemlist">
-                            <div class="row align-items-center">
-                                <div class="col col-check flex-grow-0">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" />
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                    <a class="itemside" href="#">
-                                        <div class="left">
-                                            <img src="assets/imgs/items/5.jpg" class="img-sm img-thumbnail" alt="Item" />
-                                        </div>
-                                        <div class="info">
-                                            <h6 class="mb-0">Chobani Complete Vanilla Greek Yogurt</h6>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-price"><span>$18.00</span></div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <span class="badge rounded-pill alert-warning">Archived</span>
-                                </div>
-                                <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                    <span>02.11.2021</span>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="#" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
-                                    <a href="#" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </a>
-                                </div>
-                            </div>
-                            <!-- row .// -->
-                        </article>
-                        <!-- itemlist  .// -->
-                        <article class="itemlist">
-                            <div class="row align-items-center">
-                                <div class="col col-check flex-grow-0">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" />
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                    <a class="itemside" href="#">
-                                        <div class="left">
-                                            <img src="assets/imgs/items/6.jpg" class="img-sm img-thumbnail" alt="Item" />
-                                        </div>
-                                        <div class="info">
-                                            <h6 class="mb-0">Canada Dry Ginger Ale 2 L Bottle</h6>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-price"><span>$76.99</span></div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <span class="badge rounded-pill alert-success">Active</span>
-                                </div>
-                                <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                    <span>02.11.2021</span>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="#" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
-                                    <a href="#" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </a>
-                                </div>
-                            </div>
-                            <!-- row .// -->
-                        </article>
-                        <!-- itemlist  .// -->
-                        <article class="itemlist">
-                            <div class="row align-items-center">
-                                <div class="col col-check flex-grow-0">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" />
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                    <a class="itemside" href="#">
-                                        <div class="left">
-                                            <img src="assets/imgs/items/4.jpg" class="img-sm img-thumbnail" alt="Item" />
-                                        </div>
-                                        <div class="info">
-                                            <h6 class="mb-0">Gortons Beer Battered Fish Fillets</h6>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-price"><span>$18.00</span></div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <span class="badge rounded-pill alert-success">Active</span>
-                                </div>
-                                <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                    <span>02.11.2021</span>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="#" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
-                                    <a href="#" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </a>
-                                </div>
-                            </div>
-                            <!-- row .// -->
-                        </article>
-                        <!-- itemlist  .// -->
-                        <article class="itemlist">
-                            <div class="row align-items-center">
-                                <div class="col col-check flex-grow-0">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" />
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
-                                    <a class="itemside" href="#">
-                                        <div class="left">
-                                            <img src="assets/imgs/items/3.jpg" class="img-sm img-thumbnail" alt="Item" />
-                                        </div>
-                                        <div class="info">
-                                            <h6 class="mb-0">Gortons Beer Battered Fish Fillets</h6>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-price"><span>$76.99</span></div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <span class="badge rounded-pill alert-success">Active</span>
-                                </div>
-                                <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                    <span>02.11.2021</span>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="#" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
-                                    <a href="#" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </a>
-                                </div>
-                            </div>
-                            <!-- row .// -->
-                        </article>
-                        <!-- itemlist  .// -->
-                        <article class="itemlist">
-                            <div class="row align-items-center">
-                                <div class="col col-check flex-grow-0">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" />
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-sm-4 col-8 flex-grow-1 col-name">
-                                    <a class="itemside" href="#">
-                                        <div class="left">
-                                            <img src="assets/imgs/items/4.jpg" class="img-sm img-thumbnail" alt="Item" />
-                                        </div>
-                                        <div class="info">
-                                            <h6 class="mb-0">Haagen-Dazs Caramel Cone Ice</h6>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-price"><span>$180.99</span></div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <span class="badge rounded-pill alert-success">Active</span>
-                                </div>
-                                <div class="col-lg-1 col-sm-2 col-4 col-date">
-                                    <span>02.11.2021</span>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                    <a href="#" class="btn btn-sm font-sm rounded btn-brand"> <i class="material-icons md-edit"></i> Edit </a>
-                                    <a href="#" class="btn btn-sm font-sm btn-light rounded"> <i class="material-icons md-delete_forever"></i> Delete </a>
-                                </div>
-                            </div>
-                            <!-- row .// -->
-                        </article>
-                        <!-- itemlist  .// -->
+                        </header>
+                        <!-- card-header end// -->
+                        <div class=" conatiner card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="bg-secondary text-white bg-opacity-50">
+                                        <tr class="text-center">
+                                            <th>SI NO</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">image</th>
+                                            <th scope="col">Brand</th>
+                                            <th scope="col">Category</th>
+                                            <th scope="col">Quantity</th>
+                                    
+                                           
+                                            <th scope="col">Status</th>
+                                            <th scope="col" >Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody  >
+                                        
+                                        <%if (productsData.length !=0){%>
+                                            
+                                    <% productsData.forEach((product,i,array)=>{%>
+                                        <tr class="text-center" >
+                                            <td><%=i+1%></td>
+                                            <td><b><%=product.name%></b></td>
+                                            <td><img  style="width: 100px; height: 100px;" src="/user/assets/images/product-images/sharpedImages/<%=product.images[0]%>" alt="product image"></td>
+                                            <td><%=product.brand%></td>
+                                            <td><%=product.category.name%></td>
+                                            <td><%=product.stock%></td>
+                                            <% if (product.isListed){%>
+                                                <td>
+                                                    <div class="btn btn-danger text-white">Un list</div>
+                                                </td>
+                                                <%}else{%>
+                                                    <td>
+                                                        <div class="btn btn-danger text-white">list</div>
+                                                    </td>
+                                                    <%}%>
+                                               <td>
+                                                
+                    <div class="col-lg-2 col-sm-2 col-4 col-action text-end d-flex ">
+                         <a href="/admin/edit-product" class="mr-5"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="blue" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                          </svg></a>
+                      <a href="/admin/delete-product" class="ml-5" ><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" class="bi bi-trash" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                      </svg></a>
                     </div>
-                    <!-- card-body end// -->
-                </div>
-                <!-- card end// -->
+
+                                               </td>
+                                    
+                                        </tr>
+                                 <% })%>
+                                 <%}else{%>
+                                    <tr>
+                                        <td colspan="8" class="text-center fs-4 text-danger">No products were found !</td>
+                                    </tr>
+                                    <%}%>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- table-responsive //end -->
+                        </div>
+                        <!-- card-body end// -->
+                    </div>
+
+
+
+
+                   
                 <div class="pagination-area mt-30 mb-50">
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-start">

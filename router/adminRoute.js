@@ -7,9 +7,10 @@ const multerUpload = require('../middlewares/multer');
 
 
 const config = require('../config/config');
-const adminController = require('../controller/adminController');
 
+const adminController = require('../controller/adminController');
 const productController =require('../controller/productController');
+const categoryController =require('../controller/categoryController');
 
 
 // admin_route.use(express.static(path.join(__dirname,'public')));
@@ -25,11 +26,11 @@ admin_route.set('views', './views/admin');
 
 
 
-//admin login
+// admin home
 admin_route.get('/admin', adminController.loadDashboard);
 admin_route.get('/dashboard', adminController.loadDashboard);
 
-// 
+// admin login
 admin_route.get('/login', adminController.adminLoginLoad);
 admin_route.post('/login', adminController.verifyAdminLogin);
 
@@ -44,11 +45,29 @@ admin_route.get('/block-user', adminController.blockUser);
 
 
 // list product  
-admin_route.get('/products-list', adminController.PorductsList);
+admin_route.get('/products-list', productController.ProductsList);
 
 //add product 
-admin_route.get('/add-product', productController.addProducts);
-admin_route.post('/add-product', multerUpload.array('images'), productController.insertProduct);
+admin_route.get('/add-products', productController.addProducts);
+admin_route.post('/add-products', multerUpload.array('images'), productController.insertProduct);
+
+// edit products
+// admin_route.post('/edit-products', multerUpload.array('images'), productController.updateProduct);
+
+
+
+
+
+// load catagory
+admin_route.get('/category', categoryController.loadCategory);
+
+//add category 
+admin_route.get('/add-category', categoryController.addCategory);
+admin_route.post('/add-category', categoryController.insertCategory);
+
+// edit category
+admin_route.get('/edit-category', categoryController.loadEditCategory);
+admin_route.post('/edit-category', categoryController.updateCategory);
 
 
 
@@ -57,3 +76,5 @@ admin_route.post('/add-product', multerUpload.array('images'), productController
 // admin_route.post('admin/login', adminController.LoginVerify);
 
 module.exports=admin_route;
+
+// on userlist delete

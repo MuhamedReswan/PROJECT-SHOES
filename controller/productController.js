@@ -4,9 +4,11 @@ const sharp = require('sharp');
 const path = require('path');
 
 // add product 
-const addProducts =  (req, res) => {
+const addProducts = async (req, res) => {
     try {
-        res.render('addProducts');
+        const categories = await category.find({});
+        
+        res.render('addProducts',{categories});
     } catch (error) {
         console.log(error);
     }
@@ -20,9 +22,6 @@ const addProducts =  (req, res) => {
 const insertProduct = async (req, res) => {
     try {       
 console.log(req.body,'body');//-----------------------------------------
-// console.log(req.body.isListed,'islidted');//-----------------------------------------
-// console.log(req.body.catagory,"category");//-----------------------------------------
-
 const details = req.body;
 // console.log(req.files);//-----------------------
 const arrImages = [];
@@ -34,13 +33,6 @@ if (Array.isArray(req.files)){
 }
 console.log('arrimages',arrImages);//------------------
 
-
-// for (i=0; i<arrImages.length; i++){
-//     console.log('arrimages',arrImages[i]);//-----------------------
-//     await sharp('/public/user/assets/images/product-images/products/'+arrImages[i])
-//     .resize(500,500)
-//     .toFile('/public/user/assets/images/product-images/sharpedImages/'+arrImages[i])
-// }
 
 for (let i = 0; i <req.files.length; i++) {
     const inputPath = req.files[i].path;
@@ -73,7 +65,7 @@ const product = await new products({
 });
 
 await product.save();
-res.redirect('/add-product');
+res.redirect('/admin/add-products');
 console.log('product saved');
 
 } catch (error) {
@@ -81,11 +73,32 @@ console.log('product saved');
     }
 }
 
+// list product
+const ProductsList = async (req, res) => {
+    try {
+        console.log('im in product list');//---------------------------
+    const  productsData = await products.find({}).populate('category');
+    console.log('products data',productsData)//---------------------------
+        res.render('productsList',{productsData});
+    } catch (error) {
+        console.log(error);
+    }
+    
+    }
 
-
+// edit product
+const updateProduct =async (req, res) => {
+    try {
+        
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 module.exports = {
     insertProduct,
-    addProducts
+    addProducts,
+    ProductsList,
+
 
 }

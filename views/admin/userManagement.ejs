@@ -1,76 +1,10 @@
 <%- include('../layout/adminHeader.ejs') -%>
-        <div class="screen-overlay"></div>
-        <aside class="navbar-aside" id="offcanvas_aside">
-            <div class="aside-top">
-                <a href="index.html" class="brand-wrap">
-                    <img src="assets/imgs/theme/logo.svg" class="logo" alt="Nest Dashboard" />
-                </a>
-                <div>
-                    <button class="btn btn-icon btn-aside-minimize"><i class="text-muted material-icons md-menu_open"></i></button>
-                </div>
-            </div>
-            <nav>
-                <ul class="menu-aside">
-                    <li class="menu-item">
-                        <a class="menu-link" href="/admin/Dashboard">
-                            <i class="icon material-icons md-home"></i>
-                            <span class="text">Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="page-products-list.html">
-                            <i class="icon material-icons md-shopping_bag"></i>
-                            <span class="text">Products</span>
-                        </a>
-                       
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="page-orders-1.html">
-                            <i class="icon material-icons md-shopping_cart"></i>
-                            <span class="text">Orders</span>
-                        </a>
-                        
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="page-sellers-cards.html">
-                            <i class="icon material-icons md-store"></i>
-                            <span class="text">Catogory</span>
-                        </a>
-                       
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="page-form-product-1.html">
-                            <i class="icon material-icons md-star"></i>
-                            <span class="text">Return Request</span>
-                        </a>
-                        
-                    </li>
-                    <li class="menu-item">
-                        <a class="menu-link" href="page-transactions-1.html">
-                            <i class="icon material-icons md-monetization_on"></i>
-                            <span class="text">Banners</span>
-                        </a>
-                   
-                    </li>
-                    <li class="menu-item ">
-                        <a class="menu-link" href="#">
-                            <i class="icon material-icons md-person"></i>
-                            <span class="text">Coupons</span>
-                        </a>
-                    </li>
+<%- include('../layout/adminSideNav.ejs') -%>
 
-                    <li class="menu-item">
-                        <a class="menu-link" href="page-reviews.html">
-                            <i class="icon material-icons md-comment"></i>
-                            <span class="text">Reviews</span>
-                        </a>
-                    </li>
-            </nav>
-        </aside>
         <main class="main-wrap">
             <header class="main-header navbar">
-                <div class="col-search">
-                    <!-- <form class="searchform">
+                <!-- <div class="col-search">
+                    <form class="searchform">
                         <div class="input-group">
                             <input list="search_terms" type="text" class="form-control" placeholder="Search term" />
                             <button class="btn btn-light bg" type="button"><i class="material-icons md-search"></i></button>
@@ -81,8 +15,8 @@
                             <option value="Apple iphone"></option>
                             <option value="Ahmed Hassan"></option>
                         </datalist>
-                    </form> -->
-                </div>
+                    </form>
+                </div> -->
                 <div class="col-nav">
                     <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i class="material-icons md-apps"></i></button>
                     <ul class="nav">
@@ -98,7 +32,7 @@
                         <li class="nav-item">
                             <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
                         </li>
-                        <!-- <li class="dropdown nav-item">
+                        <li class="dropdown nav-item">
                             <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
                                 <a class="dropdown-item text-brand" href="#"><img src="assets/imgs/theme/flag-us.png" alt="English" />English</a>
@@ -106,7 +40,7 @@
                                 <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-jp.png" alt="Français" />日本語</a>
                                 <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-cn.png" alt="Français" />中国人</a>
                             </div>
-                        </li> -->
+                        </li>
                         <li class="dropdown nav-item">
                             <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="assets/imgs/people/avatar-2.png" alt="User" /></a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
@@ -171,21 +105,22 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-hover">
-                                <thead>
-                                    <tr>
+                                <thead class="bg-secondary text-white bg-opacity-50" >
+                                    <tr class="text-center">
                                         <th>SI NO</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Mobile</th>
                                         <th scope="col">Verification</th>
                                         <th scope="col">Date</th>
-                                        <!-- <th scope="col">Status</th> -->
+                                        <th scope="col">Status</th>
                                         <th scope="col" class="text-end">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody >
+                                    <% if(userData){%>
                                 <% userData.forEach((user,i)=>{%>
-                                    <tr>
+                                    <tr class="text-center">
                                         <td><%=i+1%></td>
                                         <td><b><%=user.name%></b></td>
                                         <td><%=user.email%></td>
@@ -200,7 +135,7 @@
                                         <td><%=formatedDate%></td>
                                         <td><%=user.isBlocked%></td>
                                         <td class="text-end" id="reload">
-                                            <button id="button" class="btn btn-danger btn-sm mt-15" data-user-id="<%=user._id%>" data-status="<%=user.isBlocked%>" click="block('<%=user._id%>')" >
+                                            <button type="button" id="button" class="btn btn-danger btn-sm mt-15" data-user-id="<%=user._id%>" data-status="<%=user.isBlocked%>" onclick="block('<%=user._id%>')" >
                                                 <%=user.isBlocked ? "Unblock" : "Block" %>
                                             </button>
                                             <!-- <div class="dropdown">
@@ -216,6 +151,11 @@
                                         </td>
                                     </tr>
                              <% })%>
+                             <%}else{%>
+                                <tr>
+                                    <td colspan="8" class="text-center">No User Found in Database !</td>
+                                </tr>
+                                <%}%>
                                 </tbody>
                             </table>
                         </div>
@@ -253,11 +193,11 @@
 
         <script>
             function block(id){
-
+console.log('button')//------------------------
                 const data ={id:id}
                 console.log(`data from ajax ${data}`)//---------------------------------------------------
 const btn = document.getElementById('button');
-btn.addEventListener('click',()=>{
+// btn.addEventListener('onclick',()=>{
     var stat;
     const status = btn.getAttribute('data-status');
 
@@ -273,7 +213,7 @@ btn.addEventListener('click',()=>{
         console.log('stat ='+stat)//------------------------------------------------------------------
     }
 
-})
+// })
 
 
 Swal.fire({

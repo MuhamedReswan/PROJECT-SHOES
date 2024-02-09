@@ -27,7 +27,7 @@ const productsSchema = mongoose.Schema({
     },
     category: {
         type: ObjectId,
-        required: false,
+        required: true,
         ref: 'category'
     },
     brand: {
@@ -37,7 +37,7 @@ const productsSchema = mongoose.Schema({
     isListed: {
         type: Boolean,
         dafault: true,
-        // required:true
+        required:true
     },
     stock: {
         type: Number,
@@ -46,7 +46,7 @@ const productsSchema = mongoose.Schema({
     },
     images: {
         type: Array,
-        // required: true,
+        required: true,
         validate: [arrayLimit, 'you can upload only 4 images']
     },
     size: {

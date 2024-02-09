@@ -57,7 +57,7 @@ user_route.get('/logout',userController.userLogout);
 
 
 // load login
-user_route.get('/login',userAuth.isLogout,userController.loadLogin);
+user_route.get('/login',userController.loadLogin);
 
 // verify login 
 user_route.post('/login',userController.verifyLogin);
