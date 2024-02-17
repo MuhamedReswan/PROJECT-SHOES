@@ -38,7 +38,7 @@ admin_route.post('/login', adminController.verifyAdminLogin);
 admin_route.get('/customers', adminController.customersLoad);
 
 // block user
-admin_route.get('/block-user', adminController.blockUser);
+admin_route.post('/block-user', adminController.blockUser);
 
 
 
@@ -68,6 +68,9 @@ admin_route.post('/add-category', categoryController.insertCategory);
 // edit category
 admin_route.get('/edit-category', categoryController.loadEditCategory);
 admin_route.post('/edit-category', categoryController.updateCategory);
+
+// list and unlist category
+admin_route.post('/list-category', categoryController.categoryListAndUnlist);
 
 
 

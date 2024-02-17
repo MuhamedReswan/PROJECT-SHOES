@@ -82,13 +82,33 @@ const updateCategory = async (req, res) => {
     }
 }
 
-
+// list and unlist category
+const categoryListAndUnlist = async (req,res) =>{
+    try {
+        const catagoryId =req.body.id;
+        console.log("id",catagoryId);//------------------------------------
+    const catagoryData = await category.findOne({_id:catagoryId});
+    console.log("catagoryData",catagoryData);//------------------------------------
+    if (catagoryData.isListed===true){
+        var result;
+       result = await category.updateOne({_id:catagoryId},{$set:{isListed:false}})      
+    }else{
+        result = await category.updateOne({_id:catagoryId},{$set:{isListed:true}})  
+    }
+    console.log('result',JSON.stringify(result))
+    res.json({list:true})
+    } catch (error) {
+        console.log(error)
+    }
+ 
+}
 
 module.exports = {
     addCategory,
     loadCategory,
     insertCategory,
     loadEditCategory,
-    updateCategory 
+    updateCategory,
+    categoryListAndUnlist 
 
 }
