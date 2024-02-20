@@ -38,8 +38,6 @@ for (let i = 0; i <req.files.length; i++) {
     const inputPath = req.files[i].path;
     const outputPath = path.join(__dirname,'..', 'public', 'user', 'assets', 'images', 'product-images', 'sharpedImages', req.files[i].filename);
 
-
-    
     try {
         await sharp(inputPath)
             .resize(500, 500)
@@ -50,6 +48,20 @@ for (let i = 0; i <req.files.length; i++) {
     }
 }
 
+   const obj = {}
+   const size = req.body.size;
+   let totalStock=0;
+for(let i = 0; i < size.length; i++) {
+     if(size[i]){
+         obj[size[i]] = req.body.quantity[i]; 
+
+         totalStock += parseInt(req.body.quantity[i])    
+     }   
+
+    
+}
+console.log('total stock=', totalStock)//-------------------------------
+console.log('obj=', obj)//-----------------------------
 
 const product = await new products({
     name:details.name,
@@ -59,9 +71,11 @@ const product = await new products({
     category:details.category,
     brand:details.brand,
     isListed:details.isListed,
-    stock:details.stock,
+    stock: obj,
     size:details.size,
-    images:arrImages
+    images:arrImages,
+    totalStock:totalStock
+
 });
 
 await product.save();
@@ -82,11 +96,27 @@ const ProductsList = async (req, res) => {
         res.render('productsList',{productsData});
     } catch (error) {
         console.log(error);
-    }
-    
+    } 
     }
 
-// edit product
+// load edit product
+const loadEditProduct = async (req,res)=>{
+    try {
+      const id = req.params.id;
+      console.log('id',id);//----------------------------------
+      const productData = await products.findOne({_id:id}).populate('category');
+      const categories = await category.find({});
+      
+      console.log('categories',categories);//----------------------------------
+      console.log('productData',productData);//----------------------------------
+
+      res.render('editProducts',{productData,categories});
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// update edit product
 const updateProduct =async (req, res) => {
     try {
         
@@ -95,10 +125,15 @@ const updateProduct =async (req, res) => {
     }
 }
 
+
+
 module.exports = {
     insertProduct,
     addProducts,
     ProductsList,
+    loadEditProduct,
+    updateProduct
+    
 
 
 }

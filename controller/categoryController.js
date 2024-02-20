@@ -50,8 +50,10 @@ res.redirect('/admin/category');
 // edit category
 const loadEditCategory = async (req, res) => {
     try {
-        const id = await req.query.id;
+        const id = req.query.id;
+        console.log('editCategory id',id)//---------------------------------
         const editCategory = await category.findOne({_id:id});
+        console.log('editCategory',editCategory)//---------------------------------
         
         res.render('editCategory',{editCategory});       
     } catch (error) {
@@ -64,14 +66,15 @@ const updateCategory = async (req, res) => {
     try {
         console.log('im update')//-----------------
         const id = req.body.id
+        console.log('id upadte category',id)//------------------
         const editName = req.body.ename;
         const editDescription= req.body.edescription;
 
         const nameAlready = await category.findOne({_id:{$ne:id},name:editName});
        console.log(nameAlready,'name already');
         if (nameAlready){
-            req.flash({'nameExist':'Category name already exist.'});
-            res.redirect('/admin/edit-category');
+            req.flash('nameExist','Category name already exist.');
+            res.redirect(`/admin/edit-category?id=${id}`);
         }else{
 
             await category.findByIdAndUpdate({_id:id},{$set:{name:editName,description:editDescription}});
@@ -91,12 +94,14 @@ const categoryListAndUnlist = async (req,res) =>{
     console.log("catagoryData",catagoryData);//------------------------------------
     if (catagoryData.isListed===true){
         var result;
-       result = await category.updateOne({_id:catagoryId},{$set:{isListed:false}})      
+       result = await category.updateOne({_id:catagoryId},{$set:{isListed:false}})   
+
     }else{
-        result = await category.updateOne({_id:catagoryId},{$set:{isListed:true}})  
-    }
+        result = await category.updateOne({_id:catagoryId},{$set:{isListed:true}}) 
     console.log('result',JSON.stringify(result))
-    res.json({list:true})
+   
+}
+res.json({list:true})
     } catch (error) {
         console.log(error)
     }

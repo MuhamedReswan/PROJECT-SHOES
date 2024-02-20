@@ -117,11 +117,11 @@
                                     </div>
                                     <div class="row gx-3">
 
-                                        <div class="col-md-4 mb-3">
+                                        <!-- <div class="col-md-4 mb-3">
                                             <label class="form-label">Quantity</label>
                                             <input type="number" placeholder="Type here" class="form-control"
                                                 id="quantity" name="stock" />
-                                        </div>
+                                        </div> -->
 
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Categories</label>
@@ -143,72 +143,78 @@
                                         </div>
 
                                     </div>
-                                    <div class="row gx-3">
+                
+                <div class="container">
+                    <div class="row gx-3 mb-3">
+                        <div >
+                            <label class="form-label">Size</label>
+                            <div class="d-flex flex-column">
 
-                                        <div class="col-md-4 mb-3">
-                                            <label class="form-label">Size</label>
-                                            <div class="d-flex">
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" value="6"
-                                                        id="size-1" name="size" />
-                                                    <label class="form-check-label" for="product-cat-1"> 6 </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" value="7"
-                                                        id="size-2" name="size" />
-                                                    <label class="form-check-label" for="product-cat-2"> 7 </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" value="8"
-                                                        id="size-3" name="size" />
-                                                    <label class="form-check-label" for="product-cat-3"> 8 </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" value="9"
-                                                        id="size-4" name="size" />
-                                                    <label class="form-check-label" for="product-cat-4"> 9 </label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" value="10"
-                                                        id="size-5" name="size" />
-                                                    <label class="form-check-label" for="product-cat-5"> 10 </label>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
+                                <div  class="row">
+                                <div class="form-check col-md-4">
+                                    <input class="form-check-input" type="checkbox" value="6" id="size-1" name="size">
+                                    <label class="form-check-label" for="size-1"> 6 </label>
+                                    <input type="number" class="form-control quantity-input" id="quantity-1" name="quantity" placeholder="Quantity">
+                                </div>
+                                <div class="form-check col-md-4">
+                                    <input class="form-check-input" type="checkbox" value="7" id="size-2" name="size">
+                                    <label class="form-check-label" for="size-2"> 7 </label>
+                                    <input type="number" class="form-control quantity-input" id="quantity-2" name="quantity" placeholder="Quantity">
+                                </div>
+                                <div class="form-check col-md-4">
+                                    <input class="form-check-input" type="checkbox" value="8" id="size-3" name="size">
+                                    <label class="form-check-label" for="size-3"> 8 </label>
+                                    <input type="number" class="form-control quantity-input" id="quantity-3" name="quantity" placeholder="Quantity">
+                                </div>
+                            </div>
+                            <div  class="row">
+                                <div class="form-check col-md-4 ">
+                                    <input class="form-check-input" type="checkbox" value="9" id="size-4" name="size">
+                                    <label class="form-check-label" for="size-4"> 9 </label>
+                                    <input type="number" class="form-control quantity-input" id="quantity-4" name="quantity" placeholder="Quantity">
+                                </div>
+                                <div class="form-check col-md-4">
+                                    <input class="form-check-input" type="checkbox" value="10" id="size-5" name="size">
+                                    <label class="form-check-label" for="size-5"> 10 </label>
+                                    <input type="number" class="form-control quantity-input" id="quantity-5" name="quantity" placeholder="Quantity">
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                                    
                                 </div>
                             </div>
                             <!-- card end// -->
+
+                            
                             <div class="card mb-4">
                                 <div class="card-body">
                                     <div>
                                         <label class="form-label">Description</label>
-                                        <textarea placeholder="Type here" class="form-control" id="description" rows="4"
+                                        <textarea placeholder="Type here" style="min-height:100px !important;" class="form-control" id="description" 
                                             name="description"></textarea>
                                     </div>
                                 </div>
                             </div>
-                        
+                            
                             <div class="card mb-4 p-4">
-                                <label for="">Product Images</label>
+                                <!-- <label for="">Product Images</label> -->
                                 <div class="row">
-                                    <% for(let i=1 ; i<=4;i++){ %>
-                                        <div class="col-lg-6 col-md-6 mb-3 rounded-image-preview">
-                                            <label for="imageInput<%= i %>" class="image-label">Image <%= i %>
-                                                    <div class="rounded-image-preview">
-                                                        <img id="imagePreview<%= i %>" alt="Preview"
-                                                            style="height: 150px; width: 150px;">
-                                                    </div>
-                                                    <input name="images" type="file" accept="image/*"
-                                                        id="imageInput<%= i %>" class="imageInput"
-                                                        onchange="previewImage(this, 'imagePreview<%= i %>')">
-                                            </label>
-                                            <!-- Button to invoke the cropper modal -->
-                                        </div>
-                                        <%}%>
+                                    <div class="col-lg-6 col-md-6 mb-3">
+                                        <label for="imageInput" class="image-label">Upload Images</label>
+                                        <input name="images" type="file" accept="image/*" id="imageInput" class="imageInput" accept="image/png, image/gif, image/jpeg"  multiple
+                                               onchange="previewImages(this)">
+                                    </div>
                                 </div>
+                                <div id="previewContainer" class="row"></div>
                             </div>
+                            
+                            
+                            
                             <!-- card end// -->
 
                         </div>
@@ -238,28 +244,40 @@
                 let description = document.getElementById('description').value;
                 let price = document.getElementById('price').value;
                 let offerPrice = document.getElementById('offer_Price').value;
-                let quantity = document.getElementById('quantity').value;
+                // let quantity = document.getElementById('quantity').value;
                 let brand = document.getElementById('product_brand').value;
                 let lettersAndNumbersRegex = /^[A-Za-z0-9 ]+$/;
                 let sizeCheckboxes = document.getElementsByName('size');
+                let imageInput = document.getElementById('imageInput').files.length;
                 let selectedSizes = [];
-                // let imageInput=[];
+            
 
-                // for (i=0; i<4; i++){
-                //      imageInput.push(document.getElementById('imageInput'+i));
-                //      console.log("im in img")
-                // }
-                // console.log(imageInput)
                 for (let i = 0; i < sizeCheckboxes.length; i++) {
                     if (sizeCheckboxes[i].checked) {
                         selectedSizes.push(sizeCheckboxes[i].value);
                     }
                 }
-                if (!name || !description || !price || !brand || !offerPrice || !quantity ) {
+
+    for (let i = 1; i <= 5; i++) { 
+    let sizeCheckbox = document.getElementById(`size-${i}`);
+    let quantityInput = document.getElementById(`quantity-${i}`);
+    
+    if (sizeCheckbox.checked && quantityInput.value.trim() === '') {
+        alert('Quantity must be provided for all selected sizes.');
+        return false;
+    }
+    
+    if (sizeCheckbox.checked && parseInt(quantityInput.value) <= 0) {
+        alert('Quantity must be greater than Zero.');
+        return false;
+    }
+}
+               
+                if (!name || !description || !price || !brand || !offerPrice) {
                     alert('Please fill all fields.');
                     return false;
 
-                } else if (name.trim() === "" || quantity.trim() === "" || description.trim() === "" || price.trim() === "") {
+                } else if (name.trim() === "" || description.trim() === "" || price.trim() === "") {
                     alert('Please fill properly, Remove blank spaces.');
                     return false;
 
@@ -280,17 +298,25 @@
                     alert('Offer Price must be a positive number');
                     return false;
 
-                } else if (Number(quantity ) <= 0) {
-                    alert('Quantity must be a positive number');
-                    return false;
-                
+                } else if (price<offerPrice) {
+                    alert('Offer Price should be lessthan price');
+                    return false;         
+               
                 } else if (selectedSizes.length == 0) {
                         alert('Please select the size of the product');
                         return false;
 
-                    // } else if (imageInput.length == 0) {
-                    //     alert('please choose 4 images');
-                    //     return false;
+                    // } else if (!imageInput.files) {
+                    // alert('Please add images of the product');
+                    // return false;
+
+                } else if (imageInput<4) {
+                    alert('Please add 4 images of the product');
+                    return false;
+
+                } else if (imageInput>4) {
+                    alert('only allowed 4 images');
+                    return false;
 
                     } else {
                         return true;
@@ -299,22 +325,68 @@
 
         </script>
         <script>
-            function previewImage(input, imageId) {
-                const preview = document.getElementById(imageId);
-                const file = input.files[0];
 
-                if (file) {
-                    const reader = new FileReader();
+function previewImages(input) {
+    const previewContainer = document.getElementById('previewContainer');
+    previewContainer.innerHTML = ''; // Clear previous previews
 
-                    reader.onload = function (e) {
-                        preview.src = e.target.result;
+    const files = input.files;
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = 'Preview';
+            img.style.height = '150px';
+            img.style.width = '150px';
+
+            const fileName = document.createElement('p');
+            fileName.textContent = file.name;
+            fileName.style.whiteSpace = 'nowrap'; // Prevent line breaks
+            fileName.style.overflow = 'hidden'; // Hide overflow text
+            fileName.style.textOverflow = 'ellipsis'; // Show ellipsis (...) for overflow text
+            fileName.style.width = '100%'; // Ensure the file name stays within its container
+
+            const changeBtn = document.createElement('button');
+            changeBtn.textContent = 'Change Image';
+            changeBtn.onclick = function() {
+                const newInput = document.createElement('input');
+                newInput.type = 'file';
+                newInput.accept = 'image/*';
+                newInput.onchange = function(event) {
+                    const newFile = event.target.files[0];
+                    const newReader = new FileReader();
+                    newReader.onload = function (evt) {
+                        img.src = evt.target.result;
+                        fileName.textContent = newFile.name; // Update file name
                     };
+                    newReader.readAsDataURL(newFile);
+                };
+                newInput.click();
+            };
 
-                    reader.readAsDataURL(file);
-                } else {
-                    preview.src = "/assets/images/add Image.jpg";
-                }
-            }
+            const previewDiv = document.createElement('div');
+            previewDiv.className = 'col-lg-3 col-md-4 mb-3';
+            previewDiv.appendChild(img);
+            previewDiv.appendChild(fileName);
+            previewDiv.appendChild(changeBtn);
+            previewContainer.appendChild(previewDiv);
+        };
+
+        reader.readAsDataURL(file);
+    }
+}
+
+
+</script>
+
+
+
+
+
+
         </script>
         <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
         <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>

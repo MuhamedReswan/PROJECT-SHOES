@@ -52,7 +52,8 @@ admin_route.get('/add-products', productController.addProducts);
 admin_route.post('/add-products', multerUpload.array('images'), productController.insertProduct);
 
 // edit products
-// admin_route.post('/edit-products', multerUpload.array('images'), productController.updateProduct);
+admin_route.get('/edit-products/:id', productController.loadEditProduct);
+admin_route.post('/edit-products', multerUpload.array('images'), productController.updateProduct);
 
 
 
