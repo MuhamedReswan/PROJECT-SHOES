@@ -23,7 +23,6 @@ const insertProduct = async (req, res) => {
     try {       
 console.log(req.body,'body');//-----------------------------------------
 const details = req.body;
-// console.log(req.files);//-----------------------
 const arrImages = [];
 if (Array.isArray(req.files)){
     for (let i=0; i<req.files.length; i++){
@@ -51,11 +50,13 @@ for (let i = 0; i <req.files.length; i++) {
    const obj = {}
    const size = req.body.size;
    let totalStock=0;
-for(let i = 0; i < size.length; i++) {
-     if(size[i]){
+for(let i = 0; i <5; i++) {
+     if(size[i]==i+6){
+        if(req.body.quantity[i]=='') req.body.quantity[i]='0'; 
          obj[size[i]] = req.body.quantity[i]; 
 
-         totalStock += parseInt(req.body.quantity[i])    
+         totalStock += Number(req.body.quantity[i])  
+         console.log(Number(req.body.quantity[i]) )//----------------------------------------------  
      }   
 
     
@@ -125,6 +126,33 @@ const updateProduct =async (req, res) => {
     }
 }
 
+// product list and unlist
+const productListAndUnlist = async (req, res) => {
+    try {
+        console.log('im in product list unlist');//----------------------
+        const productId = req.body.productId;
+        const productData = await products.findOne({ _id: productId });
+        console.log('productData',productData)//-------------------------------
+        if (productData) {
+            if (productData.isListed == true) {
+                await products.findByIdAndUpdate({ _id: productId }, {
+                    $set: {
+                        isListed: false
+                    }
+                });
+            } else {
+                await products.findByIdAndUpdate({ _id: productId }, {
+                    $set: {
+                        isListed: true
+                    }
+                });
+            }
+            res.json({result:true});
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 
 module.exports = {
@@ -132,7 +160,8 @@ module.exports = {
     addProducts,
     ProductsList,
     loadEditProduct,
-    updateProduct
+    updateProduct,
+    productListAndUnlist
     
 
 

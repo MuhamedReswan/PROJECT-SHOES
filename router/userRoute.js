@@ -4,11 +4,10 @@ const path = require('path');
 const session = require('express-session');
 // const nocache =require('nocache');
 
-
+const shopController = require('../controller/shopController');
 const userController = require('../controller/userController');
 const config = require('../config/config');
 const userAuth = require('../middlewares/userAuth');
-
 
 
 user_route.use('/user',express.static(path.join(__dirname,'public/user')));
@@ -49,13 +48,6 @@ user_route.post('/signup',userController.insertUser);
 // logout
 user_route.get('/logout',userController.userLogout);
 
-// user_route.get('/checkout',userController.checkout)
-
-// user_route.get('/singleproduct',userController.singleProduct);
-
-// user_route.get('/cart',userController.loadCart);
-
-
 // load login
 user_route.get('/login',userController.loadLogin);
 
@@ -70,6 +62,12 @@ user_route.post('/otp',userController.verifyOtp);
 
 // resend otp
 user_route.get('/resend/:email',userController.resendOtp);
+
+
+
+//load shoap
+user_route.get('/shop',shopController.loadShop);
+
 
 
 

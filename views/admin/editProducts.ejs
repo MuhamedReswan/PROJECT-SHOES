@@ -1,5 +1,5 @@
-<%- include('../layout/adminHeader.ejs') -%>
-<%- include('../layout/adminSideNav.ejs') -%>
+<%- include('../layout/admin/adminHeader.ejs') -%>
+<%- include('../partials/adminSideNav.ejs') -%>
 <main class="main-wrap"> 
     
     <section class="content-main">
@@ -74,73 +74,42 @@
 
                             </div>
 
-
                             <div class="container">
                                 <div class="row gx-3 mb-3">
-                                    <div >
+                                    <div>
                                         <label class="form-label">Size</label>
                                         <div class="d-flex flex-column">
-            <% if(productData){%>
-                <%}else{%>
-                    <%}%>
-                                            <div  class="row">
-                                            <div class="form-check col-md-4">
-                                                <input class="form-check-input" type="checkbox" value="6" id="size-1" name="size" >
-                                                <label class="form-check-label" for="size-1"> 6 </label>
-                                                <input type="number" class="form-control quantity-input" id="quantity-1" name="quantity" placeholder="Quantity">
-                                            </div>
-                                            <div class="form-check col-md-4">
-                                                <input class="form-check-input" type="checkbox" value="7" id="size-2" name="size">
-                                                <label class="form-check-label" for="size-2"> 7 </label>
-                                                <input type="number" class="form-control quantity-input" id="quantity-2" name="quantity" placeholder="Quantity">
-                                            </div>
-                                            <div class="form-check col-md-4">
-                                                <input class="form-check-input" type="checkbox" value="8" id="size-3" name="size">
-                                                <label class="form-check-label" for="size-3"> 8 </label>
-                                                <input type="number" class="form-control quantity-input" id="quantity-3" name="quantity" placeholder="Quantity">
-                                            </div>
-                                        </div>
-                                        <div  class="row">
-                                            <div class="form-check col-md-4 ">
-                                                <input class="form-check-input" type="checkbox" value="9" id="size-4" name="size">
-                                                <label class="form-check-label" for="size-4"> 9 </label>
-                                                <input type="number" class="form-control quantity-input" id="quantity-4" name="quantity" placeholder="Quantity">
-                                            </div>
-                                            <div class="form-check col-md-4">
-                                                <input class="form-check-input" type="checkbox" value="10" id="size-5" name="size">
-                                                <label class="form-check-label" for="size-5"> 10 </label>
-                                                <input type="number" class="form-control quantity-input" id="quantity-5" name="quantity" placeholder="Quantity">
-                                            </div>
-                                            </div>
+                                            <% if(productData && productData.size && productData.stock){ %>
+                                                <% for(let i = 6; i <= 10; i++) { %> <!-- Assuming sizes range from 1 to 5 -->
+                                                    <div class="row">
+                                                        <div class="form-check col-md-4">
+                                                            <% let sizeValue = i; %>
+                                                            <input class="form-check-input" type="checkbox" value="<%= sizeValue %>" id="size-<%= i %>" name="size" <% if(productData.size.includes(sizeValue)) { %> checked <% } %>>
+                                                            <label class="form-check-label" for="size-<%= i %>"> <%= sizeValue %> </label>
+                                                            <% let quantityValue = productData.stock[sizeValue] || 0; %> <!-- Default to 0 if size not found -->
+                                                            <input type="number" class="form-control quantity-input" id="quantity-<%= i %>" name="quantity" placeholder="Quantity" <% if (productData.stock[sizeValue]) { %>
+                                                                value = <%= productData.stock[sizeValue] %>;
+                                                             <% } %>
+                                                              >
+                                                        </div>
+                                                    </div>
+                                                <% } %>
+                                            <% } else { %>
+                                                <div class="row">
+                                                    <!-- Your default checkboxes and quantity inputs here --> NO Selected size
+                                                </div>
+                                            <% } %>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            
 
 
 
 
 
-<!-- 
-        <div class="container">
-            <div class="row gx-3 mb-3">
-                <div col-md-3>
-                    <label class="form-label">Size</label>
-                    <div class="d-flex flex-column">
-                        <div class="row">
-                            <% productData.size.forEach(function(size, index) { %>
-                                <div class="form-check col-md-4">
-                                    <input class="form-check-input" type="checkbox" value="<%= size.value %>" id="size-<%= index + 1 %>" name="size" <% if (size.checked) { %> checked <% } %>>
-                                    <label class="form-check-label" for="size-<%= index + 1 %>"> <%= size.size[i] %> </label>
-                                    <input type="number" class="form-control quantity-input" id="quantity-<%= index + 1 %>" name="quantity" placeholder="Quantity">
-                                </div>
-                            <% }); %>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-         -->
+
         
         
                             
@@ -276,4 +245,4 @@ return false;
             integrity="sha384-b3saGYTJ6Aaz75Sm+89YUMtX7P5S9STQCUlQ9v3hICLJo9EmY5+4GvIlb5wfpz0"
             crossorigin="anonymous"></script>
 
- <%- include('../layout/adminFooter.ejs') -%>
+            <%- include('../layout/admin/adminFooter.ejs') -%>

@@ -55,6 +55,8 @@ admin_route.post('/add-products', multerUpload.array('images'), productControlle
 admin_route.get('/edit-products/:id', productController.loadEditProduct);
 admin_route.post('/edit-products', multerUpload.array('images'), productController.updateProduct);
 
+// product list and unlist
+admin_route.post('/products-list',productController.productListAndUnlist);
 
 
 

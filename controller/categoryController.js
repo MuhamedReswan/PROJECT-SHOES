@@ -11,10 +11,11 @@ const loadCategory = async (req, res) =>{
 }
 
 // add category
-const addCategory = (req, res) => {
+const addCategory = async (req, res) => {
     try {
+        const categories = await category.find({});
         console.log('adcategory');//--------------------------     
-        res.render('addCategory');
+        res.render('addCategory',{categories});
     } catch (error) {
         console.log(error); 
     }

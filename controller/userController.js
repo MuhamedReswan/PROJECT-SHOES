@@ -282,52 +282,6 @@ const resendOtp = async (req, res) => {
 
 
 
-
-
-// single product
-const singleProduct = (req, res) => {
-    try {
-        res.render('product-single')
-    } catch (error) {
-        console.log(error);
-    }
-
-}
-
-// load wishlist
-const loadCart = (req, res) => {
-    try {
-        res.render("cart")
-    } catch (error) {
-        console.log(error);
-    }
-
-}
-
-
-// load wishlist
-const loadWishlist = (req, res) => {
-    try {
-        res.render('wishlist')
-    } catch (error) {
-        console.log(error);
-    }
-
-}
-
-// checkout
-const checkout = (req, res) => {
-    try {
-        res.render('checkout')
-    } catch (error) {
-        console.log(error);
-    }
-
-}
-
-
-
-
 module.exports = {
     loadHome,
     loadRegister,
@@ -342,8 +296,5 @@ module.exports = {
 
 
 
-    // loadCart,
-    // singleProduct,
-    // loadWishlist,
-    // checkout,
+
 }

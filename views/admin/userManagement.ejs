@@ -1,5 +1,5 @@
-<%- include('../layout/adminHeader.ejs') -%>
-<%- include('../layout/adminSideNav.ejs') -%>
+<%- include('../layout/admin/adminHeader.ejs') -%>
+<%- include('../partials/adminSideNav.ejs') -%>
 
         <main class="main-wrap">
             <header class="main-header navbar">
@@ -56,16 +56,14 @@
                     </ul>
                 </div>
             </header>
+
             <section class="content-main">
                 <div class="content-header">
                     <div>
-                        <h2 class="content-title card-title">Customers Details</h2>
-                        <p>Lorem ipsum dolor sit amet.</p>
-                    </div>
-                    <div>
-                        <input type="text" placeholder="Search order ID" class="form-control bg-white" />
-                    </div>
+                   <h2 class="content-title card-title">Customers Details</h2>                   
+                    </div>             
                 </div>
+
                 <div class="card mb-4">
                     <header class="card-header">
                         <div class="row gx-3">
@@ -104,7 +102,7 @@
                     <!-- card-header end// -->
                     <div class="card-body">
                         <div class="table-responsive"  id="reload">
-                            <table class="table table-hover">
+                            <table class="table table-hover" id="customerTable">
                                 <thead class="bg-dark text-white bg-opacity-50" >
                                     <tr class="text-center">
                                         <th>ID</th>
@@ -138,14 +136,7 @@
                                             <button type="button" id="block-button" class="btn btn-outline-dark block-button btn-sm" data-user-id="<%=user._id%>" data-status="<%=user.isBlocked%>" onclick="block('<%=user._id%>',event)" >
                                                 <%=user.isBlocked ? "Unblock" : "Block" %>
                                             </button>
-                                            <!-- <div class="dropdown">
-                                                <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="#">Block</a>
-                                                    <a class="dropdown-item" href="#">Un Block</a>
-                                                    <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                </div>
-                                            </div> -->
+
 
                                             <!-- dropdown //end -->
                                         </td>
@@ -194,8 +185,6 @@
         <script>
             function block(id,event){
                 event.preventDefault();
-
-console.log('button')//------------------------
                 const data ={id:id}
                 // console.log(`data from ajax ${data}`)//---------------------------------------------------
 // const btn = document.getElementById('button');
@@ -214,9 +203,6 @@ console.log('button')//------------------------
 //         console.log('false status ='+status)//------------------------------------------------------------------
 //         console.log('stat false='+stat)//------------------------------------------------------------------
 //     }
-
-
-
 
 Swal.fire({
   title: "Are you sure?",
@@ -237,7 +223,6 @@ $.ajax({
     contentType:'application/json',
     success:(Response) => {
         if (Response.block == true){
-
             // button=document.getElementById('block-button');
             // button.innerText="hhh"
 
@@ -245,8 +230,9 @@ $.ajax({
 
             $('#reload').load('/admin/customers #reload',null,()=>{
                 Swal.fire({
-      title: `reeed`,
-      icon: "success"
+      title: `Done`,
+      icon: "success",
+      timer:1000
 
     });
 
@@ -254,7 +240,7 @@ $.ajax({
         }
     }
     
-})
+});
 
    
   }
@@ -262,8 +248,34 @@ $.ajax({
 // })            
           }
         </script>
+        <script>
+document.addEventListener('DOMContentLoaded',()=>{
+    console.log('wrorking')//---------------------
+
+    let searchInput = document.getElementById('customersSearch');
+            searchInput.addEventListener('keyup',()=>{
+
+                let searchTerm = searchInput.value.toLowerCase();
+                let  tableRow = document.querySelectorAll('#customerTable tbody tr');
+
+                tableRow.forEach(function (row){
+                   let nameColoumn= row.querySelector('td:nth-child(2)');
+
+                   if(nameColoumn){
+                    let nameText= nameColoumn.textContent.toLowerCase()
+                    row.style.display = nameText.includes(searchTerm) ? "" : "none";
+                   }
+                })
+
+
+            })
+})
+
+            
+            
+        </script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- </body>
 </html> -->
-<%- include('../layout/adminFooter.ejs') -%>
+<%- include('../layout/admin/adminFooter.ejs') -%>

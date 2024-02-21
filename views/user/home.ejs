@@ -1,4 +1,4 @@
-<%- include('../layout/header.ejs') -%>
+<%- include('../layout/user/header') -%>
 
 
 <div id="pre-loader">
@@ -96,19 +96,31 @@
                     </div>
                 </div>
                 <!--Mobile Logo-->
-                <div class="col-4 col-sm-3 col-md-3 col-lg-2">
-                  
-                	<div class="site-cart">
-                    	<a href="#" class="site-header__cart" title="Cart">
-                        	<i class="icon anm anm-bag-l"></i>
+        
+                <div class="col-4 col-sm-3 col-md-3 col-lg-2 d-flex align-items-center justify-content-end">
+                    <div class="site-cart mr-4">
+                        <a href="#" class="site-header__cart" title="Cart">
+                            <i class="icon anm anm-bag-l"></i>
                             <span id="CartCount" class="site-header__cart-count" data-cart-render="item_count">2</span>
                         </a>
-                       
                     </div>
-                    <div class="site-header__search">
-                    	<button type="button" class="search-trigger"><i class="icon anm anm-search-l"></i></button>
+                    
+                    <!-- End of Profile Logo Icon -->
+                    <div class="site-header__search mr-2">
+                        <button type="button" class="search-trigger"><i class="icon anm anm-search-l"></i></button>
+                    </div>
+                    <!-- Profile Logo Icon -->
+                    <div class="site-header__profile mr-5">
+                        <a href="#" class="site-header__profile-link" title="Profile">
+                            <i class="icon anm anm-user" style="font-size: 20px; color: #000;"></i>
+                        </a>
                     </div>
                 </div>
+                
+                
+                
+                
+                
         	</div>
         </div>
     </div>
@@ -152,7 +164,7 @@
                                     <div class="wrap-caption left">
                                         <h2 class="h1 mega-title slideshow__title">Modern Sophistication</h2>
                                         <span class="mega-subtitle slideshow__subtitle">Ecco Sharp comfort and innovation</span>
-                                        <span class="btn">Shop now</span>
+                                      <a href="/shop"><span class="btn">Shop now</span></a>  
                                     </div>
                                 </div>
                             </div>
@@ -168,7 +180,7 @@
                                     <div class="wrap-caption right">
                                         <h2 class="h1 mega-title slideshow__title">New Season Styles</h2>
                                         <span class="mega-subtitle slideshow__subtitle">Break all boundaries with our new arrival footwears</span>
-                                        <span class="btn">Shop now</span>
+                                       <a href="/shop"><span class="btn">Shop now</span></a> 
                                     </div>
                                 </div>
                             </div>
@@ -198,7 +210,7 @@
                                 <a href="product-layout-2.html" class="grid-view-item__link">
                                     <!-- image -->
                                     <img class="grid-view-item__image primary blur-up lazyload" data-src="user/assets/images/product-images/home7-product1.jpg" src="user/assets/images/product-images/home7-product1.jpg" alt="image" title="product">
-                 +-                   <!-- End image -->
+                                    <!-- End image -->
                                     <!-- Hover image -->
                                     <img class="grid-view-item__image hover blur-up lazyload" data-src="user/assets/images/product-images/home7-product1-1.jpg" src="user/assets/images/product-images/home7-product1-1.jpg" alt="image" title="product">
                                     <!-- End hover image -->
@@ -991,4 +1003,4 @@
 </div>
 
 
-<%- include('../layout/header.ejs') -%>
+<%- include('../layout/user/footer.ejs') -%>

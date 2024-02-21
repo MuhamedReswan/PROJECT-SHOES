@@ -58,7 +58,7 @@ return false;
         console.log("im in password")
 
         password.style.border = 'solid 1px red';
-        passwordError.textContent =  "Password must be atleast 6 charcaters long and contain atleast one uppercase letter one lowercase letter,and one number";       
+        passwordError.textContent =  "Password must be atleast 6 charcaters";       
         setTimeout(()=>{
             password.style.border ="";
             passwordError.textContent ="";
