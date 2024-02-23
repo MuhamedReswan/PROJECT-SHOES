@@ -14,7 +14,7 @@ const categoryController =require('../controller/categoryController');
 
 
 // admin_route.use(express.static(path.join(__dirname,'public')));
-// admin_route.use('/user',express.static(path.join(__dirname,'public/user')));
+admin_route.use('/user',express.static(path.join(__dirname,'public/user')));
 admin_route.use('/admin',express.static(path.join(__dirname,'public/admin')));
 
 admin_route.use(session({secret:config.sessionSecret,resave:false,saveUninitialized:false}));

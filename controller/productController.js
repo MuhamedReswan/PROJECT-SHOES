@@ -57,9 +57,7 @@ for(let i = 0; i <5; i++) {
 
          totalStock += Number(req.body.quantity[i])  
          console.log(Number(req.body.quantity[i]) )//----------------------------------------------  
-     }   
-
-    
+     }      
 }
 console.log('total stock=', totalStock)//-------------------------------
 console.log('obj=', obj)//-----------------------------
@@ -88,12 +86,84 @@ console.log('product saved');
     }
 }
 
+
+// update edit product
+const updateProduct =async (req, res) => {
+    try {
+        console.log(req.body,'body update');//-----------------------------------------
+        const updateData = req.body;
+        const arrImages = [];
+
+        if (Array.isArray(req.files)){
+            for (let i=0; i<req.files.length; i++){
+                arrImages[i]=req.files[i].filename;   
+                console.log('req.file update',req.files[i]);//------------------  
+            }
+        }
+        console.log('arrimages',arrImages);//------------------
+        
+        
+        for (let i = 0; i <req.files.length; i++) {
+            const inputPath = req.files[i].path;
+            const outputPath = path.join(__dirname,'..', 'public', 'user', 'assets', 'images', 'product-images', 'sharpedImages', req.files[i].filename);
+        
+            try {
+                await sharp(inputPath)
+                    .resize(500, 500)
+                    .toFile(outputPath);
+        
+            } catch (error) {
+                console.error('Error processing image:', error);
+            }
+        }
+        
+           const updateObj = {}
+           const size = updateData.size;
+           let totalStock=0;
+        for(let i = 0; i <5; i++) {
+             if(size[i]==i+6){
+                if(updateData.quantity[i]=='') updateData.quantity[i]='0'; 
+                updateObj[size[i]] = updateData.quantity[i]; 
+        
+                 totalStock += Number(updateData.quantity[i])  
+                 console.log(Number(updateData.quantity[i]) )//----------------------------------------------  
+             }      
+        }
+        console.log('update total stock=', totalStock)//-------------------------------
+        console.log('update obj=', updateObj)//-----------------------------
+        
+const productUpdate = await products.updateOne({_id:updateData.id},{
+    $set:{
+        name:updateData.name,
+        description:updateData.description,
+        price:updateData.price,
+        offerPrice:updateData.offerPrice,
+        category:updateData.category,
+        brand:updateData.brand,
+        isListed:updateData.isListed,
+        stock: updateObj,
+        
+        size:updateData.size,
+        // images:arrImages,
+        totalStock:totalStock
+    }
+})
+
+        res.redirect('/admin/products-list');
+        console.log('product updated');//---------------------------
+        
+        } catch (error) {
+                console.log(error);
+            }
+        }
+        
+
+
+
 // list product
 const ProductsList = async (req, res) => {
     try {
-        console.log('im in product list');//---------------------------
     const  productsData = await products.find({}).populate('category');
-    console.log('products data',productsData)//---------------------------
         res.render('productsList',{productsData});
     } catch (error) {
         console.log(error);
@@ -104,12 +174,8 @@ const ProductsList = async (req, res) => {
 const loadEditProduct = async (req,res)=>{
     try {
       const id = req.params.id;
-      console.log('id',id);//----------------------------------
       const productData = await products.findOne({_id:id}).populate('category');
       const categories = await category.find({});
-      
-      console.log('categories',categories);//----------------------------------
-      console.log('productData',productData);//----------------------------------
 
       res.render('editProducts',{productData,categories});
     } catch (error) {
@@ -117,24 +183,16 @@ const loadEditProduct = async (req,res)=>{
     }
 }
 
-// update edit product
-const updateProduct =async (req, res) => {
-    try {
-        
-    } catch (error) {
-        console.log(error);
-    }
-}
 
 // product list and unlist
 const productListAndUnlist = async (req, res) => {
     try {
-        console.log('im in product list unlist');//----------------------
         const productId = req.body.productId;
         const productData = await products.findOne({ _id: productId });
-        console.log('productData',productData)//-------------------------------
+
         if (productData) {
             if (productData.isListed == true) {
+
                 await products.findByIdAndUpdate({ _id: productId }, {
                     $set: {
                         isListed: false

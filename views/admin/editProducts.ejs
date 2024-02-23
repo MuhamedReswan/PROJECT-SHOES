@@ -1,115 +1,118 @@
 <%- include('../layout/admin/adminHeader.ejs') -%>
 <%- include('../partials/adminSideNav.ejs') -%>
-<main class="main-wrap"> 
-    
-    <section class="content-main">
-        <form action="/admin/add-products" onsubmit="return validateEditForm()" enctype="multipart/form-data"
-            method="post">
-            <div class="row">
 
-                <div class="col-9">
-                    <div class="content-header">
-                        <h2 class="content-title">Add New Product</h2>
-                        <div>
-                            
-                            <button class="btn btn-md rounded font-sm hover-up">Upload</button>
-                            <a href="/admin/products-list" class="btn btn-md rounded font-sm hover-up">Back</a>
-                        </div>
+<main class="main-wrap ">
+   
+    <section class="content-main  mx-auto">
+        <form action="/admin/edit-products" onsubmit="return editValidateForm()" enctype="multipart/form-data"
+            method="post">
+            <div class="row my-3">
+
+                <div class="col-9 d-flex justify-content-center">
+                    <div class="content-header ">
+                        <h2 class="content-title text-center">Edit Product</h2>
                     </div>
                 </div>
                 <div class="col-lg-9">
                     <div class="card mb-4">
                         <div class="card-body">
+                            <div id="errorMessages" class="text-center"></div>
 
                             <div class="mb-4">
                                 <label for="product_title" class="form-label">Product title</label>
-                                <input type="text" placeholder="Type here" value="<%= productData.name %>" class="form-control"
-                                    id="product_title" name="name" />
+                                <input type="text" placeholder="Type here" class="form-control"
+                                    id="product_title" name="name" value="<%= productData.name %>" />
                             </div>
                             <div class="row gx-3">
 
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Price</label>
-                                    <input type="number" placeholder="Type here" id="price" value="<%= productData.price %>" class="form-control"
-                                        name="price" />
+                                    <input type="number" placeholder="Type here" id="price" class="form-control"
+                                        name="price"  value="<%= productData.price %>"/>
+                                </div>
+                                <div>
+                                    <input type="hidden"  id="id" class="form-control"
+                                    name="id"  value="<%= productData._id %>"/>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="product_color" class="form-label">Brand</label>
-                                    <input type="text" placeholder="Type here" value="<%= productData.brand %>" class="form-control"
-                                        id="product_brand" name="brand" />
+                                    <input type="text" placeholder="Type here" class="form-control"
+                                        id="product_brand" name="brand" value="<%= productData.brand %>" />
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="offerPrice" class="form-label">Offer Prize</label>
                                     <input type="number" placeholder="Type here" class="form-control"
-                                        id="offer_Price" name="offerPrice" value="<%= productData.offerPrice %>" />
+                                        id="offer_Price" name="offerPrice" value="<%= productData.offerPrice%>"/>
                                 </div>
 
                             </div>
                             <div class="row gx-3">
 
-                                <!-- <div class="col-md-4 mb-3">
-                                    <label class="form-label">Quantity</label>
-                                    <input type="number" placeholder="Type here" class="form-control"
-                                        id="quantity" name="stock" />
-                                </div> -->
-
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Categories</label>
                                     <select class="form-select" name="category">
+
                                         <% for (let i=0; i < categories.length; i++) { %>
-                                            <option value="<%=categories[i]._id %>">
-                                                <%= categories[i].name %>
+                                            <option value="<%=categories[i]._id %>"  <% if(productData.category.name==categories[i].name){%>
+                                                selected
+                                                <%}%>>           
+                                                    <%= categories[i].name %>
                                             </option>
                                             <% } %>
+
                                     </select>
                                 </div>
 
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Is Listed</label>
                                     <select class="form-select" name="isListed">
-                                        <option value="true" <% if (productData.isListed === true) { %>selected<% } %>>Yes</option>
-                                        <option value="false" <% if (productData.isListed === false) { %>selected<% } %>>No</option>
+                                        <option value="true" <% if(productData.isListed==true){ %> selected <%}%>>Yes</option>
+                                        <option value="false" <% if(productData.isListed==false){ %> selected <%}%>>No</option>
                                     </select>
                                 </div>
 
                             </div>
-
-                            <div class="container">
-                                <div class="row gx-3 mb-3">
-                                    <div>
-                                        <label class="form-label">Size</label>
-                                        <div class="d-flex flex-column">
-                                            <% if(productData && productData.size && productData.stock){ %>
-                                                <% for(let i = 6; i <= 10; i++) { %> <!-- Assuming sizes range from 1 to 5 -->
-                                                    <div class="row">
-                                                        <div class="form-check col-md-4">
-                                                            <% let sizeValue = i; %>
-                                                            <input class="form-check-input" type="checkbox" value="<%= sizeValue %>" id="size-<%= i %>" name="size" <% if(productData.size.includes(sizeValue)) { %> checked <% } %>>
-                                                            <label class="form-check-label" for="size-<%= i %>"> <%= sizeValue %> </label>
-                                                            <% let quantityValue = productData.stock[sizeValue] || 0; %> <!-- Default to 0 if size not found -->
-                                                            <input type="number" class="form-control quantity-input" id="quantity-<%= i %>" name="quantity" placeholder="Quantity" <% if (productData.stock[sizeValue]) { %>
-                                                                value = <%= productData.stock[sizeValue] %>;
-                                                             <% } %>
-                                                              >
-                                                        </div>
-                                                    </div>
-                                                <% } %>
-                                            <% } else { %>
-                                                <div class="row">
-                                                    <!-- Your default checkboxes and quantity inputs here --> NO Selected size
-                                                </div>
-                                            <% } %>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+        
                             
+        <div class="container">
+            <div class="row gx-3 mb-3">
+                <div >
+                    <label class="form-label">Enter the quandities of Sizes</label>
+                    <div class="d-flex flex-column">
 
-
-
-
-
-
+                        <div  class="row">
+                        <div class="form-check col-md-4">
+                            <input class="form-check-input" type="hidden" value="6" id="size-1" name="size"
+                                 >
+                            <label class="form-label" for="size-1"> Size:6 </label>
+                            <input type="number" class="form-control quantity-input" id="quantity-1" name="quantity" placeholder="Quantity" value="<%= productData.stock[productData.size[0]] %>">
+                        </div>
+                        <div class="form-check col-md-4">
+                            <input class="form-check-input" type="hidden" value="7" id="size-2" name="size">
+                            <label class="form-label" for="size-2"> Size:7 </label>
+                            <input type="number" class="form-control quantity-input" id="quantity-2" name="quantity" placeholder="Quantity" value="<%= productData.stock[productData.size[1]] %>">
+                        </div>
+                        <div class="form-check col-md-4">
+                            <input class="form-check-input" type="hidden" value="8" id="size-3" name="size" >
+                            <label class="form-label quant-input" for="size-3"> Size:8 </label>
+                            <input type="number" class="form-control quantity-input" id="quantity-3" name="quantity" placeholder="Quantity" value="<%= productData.stock[productData.size[2]] %>">
+                        </div>
+                   
+                        <div class="form-check col-md-4 ">
+                            <input class="form-check-input" type="hidden" value="9" id="size-4" name="size">
+                            <label class="form-label" for="size-4"> Size:9 </label>
+                            <input type="number" class="form-control quantity-input" id="quantity-4" name="quantity" placeholder="Quantity" value="<%= productData.stock[productData.size[3]] %>">
+                        </div>
+                        <div class="form-check col-md-4">
+                            <input class="form-check-input" type="hidden" value="10" id="size-5" name="size">
+                            <label class="form-label" for="size-5"> Size:10 </label>
+                            <input type="number" class="form-control quantity-input" id="quantity-5" name="quantity" placeholder="Quantity" value="<%= productData.stock[productData.size[4]] %>">
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         
                             
@@ -123,21 +126,42 @@
                             <div>
                                 <label class="form-label">Description</label>
                                 <textarea placeholder="Type here" style="min-height:100px !important;" class="form-control" id="description" 
-                                    name="description"></textarea>
+                                    name="description"><%= productData.description %></textarea>
                             </div>
                         </div>
                     </div>
                     
                     <div class="card mb-4 p-4">
                         <!-- <label for="">Product Images</label> -->
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 mb-3">
-                                <label for="imageInput" class="image-label">Upload Images</label>
-                                <input name="images" type="file" accept="image/*" id="imageInput" class="imageInput" accept="image/png, image/gif, image/jpeg"  multiple
+                        <div class="row ">
+                            <div class="col-lg-6 col-md-6 mb-3 ">
+<!-- <div class="col-lg-6 col-md-6 mb-3"> -->
+                                <% for(i=0; i<4; i++){%>
+
+                                    <div class="col-lg-3 col-md-4 mb-3 " >
+                                    <img style="width: 100px; height: 100px;" src="/user/assets/images/product-images/sharpedImages/<%= productData.images[i] %>" alt="productImage <%=i+1%>" id="image
+                                    <%= i+1%>">
+
+                                    
+                                <label for="imageInput" class="image-
+                                label">Update Images</label>
+                        
+                                <input name="images" type="file" accept="image/*" id="imageInput" class="imageInput" accept="image/png, image/gif, image/jpeg"  multiple 
                                        onchange="previewImages(this)">
+                                    </div>
+                             <%}%>       <!-- </div> -->
                             </div>
+                            
                         </div>
                         <div id="previewContainer" class="row"></div>
+                      
+                    </div>
+                    <div class="col-6 mx-auto mb-3" >
+                        <div class="d-flex justify-content-center align-items-center ">
+                        
+                            <button class="btn btn-md rounded font-sm hover-up mr-5 text-left">Upload</button>
+                            <a href="/admin/category" class="btn btn-md rounded font-sm hover-up ml-5">Back</a>
+                        </div>
                     </div>
                     
                     
@@ -149,100 +173,176 @@
 
         </form>
     </section>
-
 </main>
-<script>
-function validateEditForm() {
-    console.log('im in validation');
-    let name = document.getElementById('product_title').value;
-    let description = document.getElementById('description').value;
-    let price = document.getElementById('price').value;
-    let offerPrice = document.getElementById('offer_Price').value;
-    let brand = document.getElementById('product_brand').value;
-    let lettersAndNumbersRegex = /^[A-Za-z0-9 ]+$/;
-    let sizeCheckboxes = document.getElementsByName('size');
-    let imageInput = document.getElementById('imageInput').files.length;
-    let selectedSizes = [];
 
+        <script>
 
-    for (let i = 0; i < sizeCheckboxes.length; i++) {
-        if (sizeCheckboxes[i].checked) {
-            selectedSizes.push(sizeCheckboxes[i].value);
-        }
+function previewImages(input) {
+    const previewContainer = document.getElementById('previewContainer');
+    previewContainer.innerHTML = ''; // Clear previous previews
+
+    const files = input.files;
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = 'Preview';
+            img.style.height = '150px';
+            img.style.width = '150px';
+
+            const fileName = document.createElement('p');
+            fileName.textContent = file.name;
+            fileName.style.whiteSpace = 'nowrap'; // Prevent line breaks
+            fileName.style.overflow = 'hidden'; // Hide overflow text
+            fileName.style.textOverflow = 'ellipsis'; // Show ellipsis (...) for overflow text
+            fileName.style.width = '100%'; // Ensure the file name stays within its container
+
+            const changeBtn = document.createElement('button');
+            changeBtn.textContent = 'Change Image';
+            changeBtn.onclick = function() {
+                const newInput = document.createElement('input');
+                newInput.type = 'file';
+                newInput.accept = 'image/*';
+                newInput.onchange = function(event) {
+                    const newFile = event.target.files[0];
+                    const newReader = new FileReader();
+                    newReader.onload = function (evt) {
+                        img.src = evt.target.result;
+                        fileName.textContent = newFile.name; // Update file name
+                    };
+                    newReader.readAsDataURL(newFile);
+                };
+                newInput.click();
+            };
+
+            const previewDiv = document.createElement('div');
+            previewDiv.className = 'col-lg-3 col-md-4 mb-3';
+            previewDiv.appendChild(img);
+            previewDiv.appendChild(fileName);
+            previewDiv.appendChild(changeBtn);
+            previewContainer.appendChild(previewDiv);
+        };
+
+        reader.readAsDataURL(file);
     }
-
-for (let i = 1; i <= 5; i++) { 
-let sizeCheckbox = document.getElementById(`size-${i}`);
-let quantityInput = document.getElementById(`quantity-${i}`);
-
-if (sizeCheckbox.checked && quantityInput.value.trim() === '') {
-alert('Quantity must be provided for all selected sizes.');
-return false;
 }
 
-if (sizeCheckbox.checked && parseInt(quantityInput.value) <= 0) {
-alert('Quantity must be greater than Zero.');
-return false;
-}
-}
-   
-    if (!name || !description || !price || !brand || !offerPrice) {
-        alert('Please fill all fields.');
-        return false;
-
-    } else if (name.trim() === "" || description.trim() === "" || price.trim() === "") {
-        alert('Please fill properly, Remove blank spaces.');
-        return false;
-
-    } else if (!lettersAndNumbersRegex.test(name)) {
-        alert('Product name only contain letters.');
-        return false;
-
-    } else if (description.length <= 20) {
-        alert('Description should be contain alteast 20 letters');
-        return false;
-
-
-    } else if (Number(price) <= 0) {
-        alert('Price must be a positive number');
-        return false;
-
-    } else if (Number(offerPrice ) <= 0) {
-        alert('Offer Price must be a positive number');
-        return false;
-
-    } else if (price<offerPrice) {
-        alert('Offer Price should be lessthan price');
-        return false;         
-   
-    } else if (selectedSizes.length == 0) {
-            alert('Please select the size of the product');
-            return false;
-
-    } else if (imageInput<4) {
-        alert('Please add 4 images of the product');
-        return false;
-
-    } else if (imageInput>4) {
-        alert('only allowed 4 images');
-        return false;
-
-        } else {
-            return true;
-        }
-}
 
 </script>
-<script src="/admin/assets/js/vendors/jquery-3.6.0.min.js"></script>
-        <script src="/admin/assets/js/vendors/bootstrap.bundle.min.js"></script>
-        <script src="/admin/assets/js/vendors/select2.min.js"></script>
-        <script src="/admin/assets/js/vendors/perfect-scrollbar.js"></script>
-        <script src="/admin/assets/js/vendors/jquery.fullscreen.min.js"></script>
+
+    <script>
+    function editValidateForm() {
+    var name = document.getElementById('product_title').value.trim();
+    var description = document.getElementById('description').value.trim();
+    var price = document.getElementById('price').value.trim();
+    var brand = document.getElementById('product_brand').value.trim();
+    var offerPrice = document.getElementById('offer_Price').value.trim();
+    var imageInput = document.getElementById('imageInput').files.length;
+    
+    var quantityInputs = document.querySelectorAll('.quantity-input');
+    var hasQuantity = false;
+    quantityInputs.forEach(function(input) {
+        if (parseInt(input.value) > 0) {
+            hasQuantity = true;
+        }
+    });
+
+    var lettersAndNumbersRegex = /^[a-zA-Z\s]*$/;
+    var errorMessageContainer = document.getElementById('errorMessages');
+
+    errorMessageContainer.innerHTML = '';
+
+    if (!name || !description || !price || !brand || !offerPrice) {
+        errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center  justify-content-center " role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Please fill all fields.</div></div>';
+        setTimeout(function() {
+                    errorMessageContainer.innerHTML = '';
+                }, 3000);
+                return false;
+    
+    } else if (name.trim() === "" || description.trim() === "" || price.trim() === "") {
+        errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Please fill properly, remove blank spaces.</div></div>';
+        setTimeout(function() {
+                    errorMessageContainer.innerHTML = '';
+                }, 3000);
+                 return false;
+    
+    } else if (!hasQuantity) {
+        errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Please provide at least one quantity.</div></div>';
+        setTimeout(function() {
+                    errorMessageContainer.innerHTML = '';
+                }, 3000);
+                return false;
+    
+    } else if (!lettersAndNumbersRegex.test(name)) {
+        errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Product name should only contain letters.</div></div>';
+        setTimeout(function() {
+                    errorMessageContainer.innerHTML = '';
+                }, 3000);
+                return false;
+    
+    } else if (description.length <= 20) {
+        errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Description should contain at least 20 letters.</div></div>';
+        setTimeout(function() {
+                    errorMessageContainer.innerHTML = '';
+                }, 3000);
+                 return false;
+    
+    } else if (Number(price) <= 0) {
+        errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Price must be a positive number.</div></div>';
+        setTimeout(function() {
+                    errorMessageContainer.innerHTML = '';
+                }, 3000);
+                return false;
+
+    
+    } else if (Number(offerPrice) <= 0) {
+        errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Offer Price must be a positive number.</div></div>';
+        setTimeout(function() {
+                    errorMessageContainer.innerHTML = '';
+                }, 3000);
+                 return false;
+    
+    } else if (Number(offerPrice) > Number(price)) {
+        errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Offer Price should be less than Price.</div></div>';
+        setTimeout(function() {
+                    errorMessageContainer.innerHTML = '';
+                }, 3000);
+                 return false;
+    
+    // } else if (imageInput < 4) {
+    //     errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Please add 4 images of the product.</div></div>';
+    //     setTimeout(function() {
+    //                 errorMessageContainer.innerHTML = '';
+    //             }, 3000);
+    //              return false;
+    
+    // } else if (imageInput > 4) {
+    //     errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Only 4 images are allowed.</div></div>';
+    //     setTimeout(function() {
+    //                 errorMessageContainer.innerHTML = '';
+    //             }, 3000);
+    //             return false;
+    
+    } else {
+        return true;
+    }
+
+   
+}
+
+    </script>
+    <script src="admin/assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="admin/assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="admin/assets/js/vendors/select2.min.js"></script>
+        <script src="admin/assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="admin/assets/js/vendors/jquery.fullscreen.min.js"></script>
         <!-- Main Script -->
-        <script src="/admin/assets/js/main.js?v=1.1" type="text/javascript"></script>
+        <script src="admin/assets/js/main.js?v=1.1" type="text/javascript"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-b3saGYTJ6Aaz75Sm+89YUMtX7P5S9STQCUlQ9v3hICLJo9EmY5+4GvIlb5wfpz0"
             crossorigin="anonymous"></script>
-
             <%- include('../layout/admin/adminFooter.ejs') -%>
