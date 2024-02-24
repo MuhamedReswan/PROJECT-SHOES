@@ -5,7 +5,7 @@ const isLogin = (req, res, next) => {
             next();
         } else {
             console.log('login islogin');
-            res.redirect('/');
+            res.redirect('/admin/');
         }
     } catch (error) {
         console.log(error);
@@ -18,7 +18,7 @@ const isLogout = (req, res, next) => {
     try {
         if (req.session.user) {
             console.log('home logout');
-            res.redirect('/');
+            res.redirect('/admin/');
         } else { 
             console.log('next logout');
             next();

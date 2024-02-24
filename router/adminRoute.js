@@ -11,6 +11,7 @@ const config = require('../config/config');
 const adminController = require('../controller/adminController');
 const productController =require('../controller/productController');
 const categoryController =require('../controller/categoryController');
+const adminAuth = require('../middlewares/adminAuth');
 
 
 // admin_route.use(express.static(path.join(__dirname,'public')));
@@ -24,18 +25,26 @@ admin_route.use(session({secret:config.sessionSecret,resave:false,saveUninitiali
 admin_route.set('view engine', 'ejs');
 admin_route.set('views', './views/admin');
 
+// setting global middleware
+admin_route.use((req,res,next)=>{
+    res.locals.admin =req.session.admin;
+    res.adminLoggedIn = req.session.admin ? true : false; 
+
+})
+
+
 
 
 // admin home
-admin_route.get('/admin', adminController.loadDashboard);
-admin_route.get('/dashboard', adminController.loadDashboard);
+admin_route.get('/', adminController.loadDashboard);
+// admin_route.get('/dashboard', adminController.loadDashboard);
 
 // admin login
-admin_route.get('/login', adminController.adminLoginLoad);
+admin_route.get('/login', adminAuth.isLogin, adminController.adminLoginLoad);
 admin_route.post('/login', adminController.verifyAdminLogin);
 
 // user management
-admin_route.get('/customers', adminController.customersLoad);
+admin_route.get('/customers', adminAuth.isLogin, adminController.customersLoad);
 
 // block user
 admin_route.post('/block-user', adminController.blockUser);
@@ -45,7 +54,7 @@ admin_route.post('/block-user', adminController.blockUser);
 
 
 // list product  
-admin_route.get('/products-list', productController.ProductsList);
+admin_route.get('/products-list', adminAuth.isLogin, productController.ProductsList);
 
 //add product 
 admin_route.get('/add-products', productController.addProducts);
@@ -62,7 +71,7 @@ admin_route.post('/products-list',productController.productListAndUnlist);
 
 
 // load catagory
-admin_route.get('/category', categoryController.loadCategory);
+admin_route.get('/category', adminAuth.isLogin, categoryController.loadCategory);
 
 //add category 
 admin_route.get('/add-category', categoryController.addCategory);

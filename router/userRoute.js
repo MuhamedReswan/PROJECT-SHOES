@@ -2,7 +2,7 @@ const express = require('express');
 const user_route = express();
 const path = require('path');
 const session = require('express-session');
-// const nocache =require('nocache');
+const nocache =require('nocache');
 
 const shopController = require('../controller/shopController');
 const userController = require('../controller/userController');
@@ -14,7 +14,7 @@ user_route.use('/user',express.static(path.join(__dirname,'public/user')));
 // user_route.use(express.static(path.join(__dirname,'public/user/images')));
 
 user_route.use(session({secret:config.sessionSecret,resave:false,saveUninitialized:false}));
-// user_route.use(nocache());
+user_route.use(nocache());
 
 
 
@@ -30,7 +30,6 @@ user_route.use((req, res, next) => {
     res.locals.user = req.session.user || null;
     res.locals.logedIn = req.session.user ? true : false;
     next();
-
 })
 
 
@@ -40,7 +39,7 @@ user_route.get('/',userController.loadHome );
 // user_route.get('/home',userController.loadHome );
 
 // load sign up
-user_route.get('/signup',userController.loadRegister);
+user_route.get('/signup',userAuth.isLogout,userController.loadRegister);
 
 // insert user
 user_route.post('/signup',userController.insertUser);
@@ -49,13 +48,13 @@ user_route.post('/signup',userController.insertUser);
 user_route.get('/logout',userController.userLogout);
 
 // load login
-user_route.get('/login',userController.loadLogin);
+user_route.get('/login',userAuth.isLogout,userController.loadLogin);
 
 // verify login 
 user_route.post('/login',userController.verifyLogin);
 
 // load otp
-user_route.get('/otp',userController.loadOtp);
+user_route.get('/otp',userAuth.isLogout,userController.loadOtp);
 
 // verify otp
 user_route.post('/otp',userController.verifyOtp);
@@ -65,8 +64,12 @@ user_route.get('/resend/:email',userController.resendOtp);
 
 
 
+
 //load shoap
 user_route.get('/shop',shopController.loadShop);
+
+// load single Product
+user_route.get('/single-product',shopController.loadSingleProduct);
 
 
 

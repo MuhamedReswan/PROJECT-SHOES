@@ -6,24 +6,24 @@ function validate(){
     const email = document.getElementById('email');
     const phone = document.getElementById('phone');
     const password = document.getElementById('password');
-    const conform = document.getElementById('conform');
+    const conform = document.getElementById('conform');    
 
-    // const lname = document.getElementById('lname');
-    // const namevalue = lname.value;
-    // console.log('js file here');
-    
+    // const lname = document.getElementById('name');
+    // const lemail = document.getElementById('email');
+    // const lmobile = document.getElementById('mobile');
+    // const lpassword = document.getElementById('password');
+    // const lrpassword = document.getElementById('rpassword');    
 
     if (!/^\w+$/.test(username.value)){
         console.log("im in function")
-
+// lname.style.display=''
         username.style.border = 'solid 1px red';
             userError.textContent ="Please Enter Valid User Name"
         setTimeout(()=>{
 
             username.style.border ="";
             userError.textContent ="";
-            // lname.value=namevalue;
-
+           
         },3000);
         return false;
 
@@ -45,7 +45,7 @@ function validate(){
         console.log("im in mobile")
 
         phone.style.border ='solid 1px red';
-        phoneError.textContent = 'Mobile number should be an Number with  10 digits';
+        phoneError.textContent = 'Mobile should be an Number with  10 digits';
         setTimeout(()=>{
 
             phone.style.border ="";

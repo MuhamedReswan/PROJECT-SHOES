@@ -148,34 +148,27 @@
                 	<div class="closeFilter d-block d-md-none d-lg-none"><i class="icon icon anm anm-times-l"></i></div>
                 	<div class="sidebar_tags">
                     	<!--Categories-->
-                    	<div class="sidebar_widget categories filter-widget">
+                    
+                
+                       
+                        <div class="sidebar_widget categories filter-widget">
                             <div class="widget-title"><h2>Categories</h2></div>
                             <div class="widget-content">
+                                <% if(categoryData){ %>
+                                    <% categoryData.forEach((category,index) =>{ %>
                                 <ul class="sidebar_categories">
-                                    <li class="level1 sub-level"><a href="#;" class="site-nav">Clothing</a>
+                                    <!-- <li class="level1 sub-level"><a href="#;" class="site-nav">Clothing</a> -->
                                     	<ul class="sublinks">
-                                        	<li class="level2"><a href="#;" class="site-nav">Men</a></li>
-                                            <li class="level2"><a href="#;" class="site-nav">Women</a></li>
-                                            <li class="level2"><a href="#;" class="site-nav">Child</a></li>
-                                            <li class="level2"><a href="#;" class="site-nav">View All Clothing</a></li>
+                                        	<li class="level2"><a href="#;" class="site-nav"><%= category.name %></a></li>
+                                            
                                         </ul>
-                                    </li>
-                                    <li class="level1 sub-level"><a href="#;" class="site-nav">Jewellery</a>
-                                    	<ul class="sublinks">
-                                        	<li class="level2"><a href="#;" class="site-nav">Ring</a></li>
-                                            <li class="level2"><a href="#;" class="site-nav">Neckalses</a></li>
-                                            <li class="level2"><a href="#;" class="site-nav">Eaarings</a></li>
-                                            <li class="level2"><a href="#;" class="site-nav">View All Jewellery</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="lvl-1"><a href="#;" class="site-nav">Shoes</a></li>
-                                    <li class="lvl-1"><a href="#;" class="site-nav">Accessories</a></li>
-                                    <li class="lvl-1"><a href="#;" class="site-nav">Collections</a></li>
-                                    <li class="lvl-1"><a href="#;" class="site-nav">Sale</a></li>
-                                    <li class="lvl-1"><a href="#;" class="site-nav">Page</a></li>
+                                    <!-- </li> -->
                                 </ul>
+                                <% }) %>
+                                <%}%>
                             </div>
                         </div>
+                    
                         <!--Categories-->
                         <!--Price Filter-->
                         <div class="sidebar_widget filterBox filter-widget">
@@ -397,12 +390,12 @@
                                                <!-- start product image -->
                                                <div class="product-image">
                                                    <!-- start product image -->
-                                                   <a href="#">
+                                                   <a href="/single-product?id=<%= product.id %>">
                                                        <!-- image -->
-                                                       <img class="primary blur-up lazyload" data-src="user/assets/images/product-images/sharpedImages/<%= product.images[0] %> " src="user/assets/images/product-images/sharpedImages/<%= product.images[0] %> " alt="image" title="product" />
+                                                       <img class="primary blur-up lazyload" id="mainImg1" data-src="user/assets/images/product-images/sharpedImages/<%= product.images[0] %> " src="user/assets/images/product-images/sharpedImages/<%= product.images[0] %> " alt="image" title="product" />
                                                        <!-- End image -->
                                                        <!-- Hover image -->
-                                                       <img class="hover blur-up lazyload" data-src="user/assets/images/product-images/sharpedImages/<%= product.images[1] %> " src="user/assets/images/product-images/sharpedImages/<%= product.images[1] %> " alt="image" title="product" />
+                                                       <img class="hover blur-up lazyload" id="mainImg2"  data-src="user/assets/images/product-images/sharpedImages/<%= product.images[1] %> " src="user/assets/images/product-images/sharpedImages/<%= product.images[1] %> " alt="image" title="product" />
                                                        <!-- End hover image -->
                                                        <!-- product label -->
                                                        <div class="product-labels"><span class="lbl on-sale"><%= Math.floor(((product.price-product.offerPrice)/product.price)*100) %>% OFF</span></div>
@@ -411,7 +404,7 @@
                                                    <!-- end product image -->
                
                                                    <!-- Start product button -->
-                                                   <form class="variants add" action="#" onclick="window.location.href='cart.html'" method="post">
+                                                   <form class="variants add" action="/cart/<%=product._id%>" onclick="window.location.href='shop'" method="post">
                                                        <button class="btn btn-addto-cart" type="button">Add To Cart</button>
                                                    </form>
                                                    <div class="button-set">
@@ -419,7 +412,7 @@
                                                                    <i class="icon anm anm-search-plus-r"></i>
                                                                </a>
                                                        <div class="wishlist-btn">
-                                                           <a class="wishlist add-to-wishlist" href="#" title="Add to Wishlist">
+                                                           <a class="wishlist add-to-wishlist" href="wishlist/<%=product._id%>" title="Add to Wishlist">
                                                                <i class="icon anm anm-heart-l"></i>
                                                            </a>
                                                        </div>
@@ -460,11 +453,8 @@
                                                    <!-- Variant -->
                                                    <ul class="swatches">
                                                     <% for(i=0; i<4; i++){ %>
-                                                       <li  class="swatch medium rounded"><img src="user/assets/images/product-images/sharpedImages/<%= product.images[i] %>" alt="image <%=i+1%>" /></li>
-                                                       <!-- <li class="swatch medium rounded"><img src="user/assets/images/product-images/sharpedImages/<%= product.images[i] %>" alt="image2" /></li> -->
-                                                       <!-- <li class="swatch medium rounded"><img src="user/assets/images/product-images/sharpedImages/<%= product.images[i] %>" alt="image3" /></li> -->
-                                                       <!-- <li class="swatch medium rounded"><img src="user/assets/images/product-images/sharpedImages/<%= product.images[i] %>" alt="image4" /></li> -->
-                                                  <%}%>
+                                                      <a href="/single-product"> <li id="fourimg" class="swatch medium rounded" ><img src="user/assets/images/product-images/sharpedImages/<%= product.images[i] %>" alt="image <%=i+1%>"  /></li>
+                                                        <%}%></a>
                                                     </ul>
                                                    <!-- End Variant -->
                                                </div>

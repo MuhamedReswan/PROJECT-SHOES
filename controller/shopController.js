@@ -5,11 +5,8 @@ const category = require('../model/categoryModel');
 // load shop
 const loadShop = async (req,res) => {
     try {       
-        console.log('im in load shop')//------------------------------------------------------------------------------------------------------
         const categoryData =await category.find({isListed:true});
 const productData = await products.find({isListed:true}).populate('category');
-console.log('catagoryData',categoryData)//---------------------------------
-console.log('productyData',productData)//---------------------------------
 
 res.render('shop',{categoryData,productData});
     } catch (error) {
@@ -18,6 +15,26 @@ res.render('shop',{categoryData,productData});
 
 }
 
+// load single product 
+const loadSingleProduct = async (req, res)=>{
+    try {
+        const id = req.query.id;
+        console.log('id',id);
+
+        const product = await products.findOne({_id:id})
+        console.log('product',product)//-------------------------------------------
+       if(product){
+        res.render('singleProduct',{product});
+       }else{
+        console.log('no prodcut getting')//----------------------
+       }
+       
+    } catch (error) {
+        console.log();
+    }
+}
+
 module.exports={
-    loadShop
+    loadShop,
+    loadSingleProduct
 }
