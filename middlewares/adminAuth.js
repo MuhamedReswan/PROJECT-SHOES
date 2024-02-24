@@ -1,11 +1,11 @@
 const isLogin = (req, res, next) => {
     try {
-        if (req.session.user) {
-            console.log('next islogin');
+        if (req.session.admin) {
+            // console.log('next islogin');//-------------------------------
             next();
         } else {
-            console.log('login islogin');
-            res.redirect('/admin/');
+            // console.log('admin login islogin');//------------------
+            res.redirect('/admin/login');
         }
     } catch (error) {
         console.log(error);
@@ -16,11 +16,11 @@ const isLogin = (req, res, next) => {
 
 const isLogout = (req, res, next) => {
     try {
-        if (req.session.user) {
-            console.log('home logout');
-            res.redirect('/admin/');
+        if (req.session.admin) {
+            // console.log('admin home logout');//-----------------------------------
+            res.redirect('/admin/login');
         } else { 
-            console.log('next logout');
+            // console.log('next logout');//-------------------------
             next();
         }
     } catch (error) {

@@ -36,7 +36,7 @@ user_route.use((req, res, next) => {
 
 // load home
 user_route.get('/',userController.loadHome );
-// user_route.get('/home',userController.loadHome );
+
 
 // load sign up
 user_route.get('/signup',userAuth.isLogout,userController.loadRegister);

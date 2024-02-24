@@ -45,7 +45,8 @@ const verifyAdminLogin = (req, res) => {
                     email:email,
                     password:password 
                 }
-                res.redirect('/admin/dashboard');
+                console.log('session from admin control',req.session.admin);//-----------------------------
+                res.redirect('/admin');
             } else {
                 req.flash('passwordError', 'Incorrect Password');
                 res.redirect('/admin/login');
@@ -61,7 +62,19 @@ const verifyAdminLogin = (req, res) => {
     }
 }
 
+// admin logout
+const loadLogout=(req,res)=>{
+    try {
+        console.log('admin session a',req.sssion.admin);//----------
+        req.sssion.admin=null;
+        console.log('admin session b',req.sssion.admin);//-------------
 
+        res.redirect('/admin')
+    } catch (error) {
+        console.log(error);
+    }
+
+}
 
 // load customers
 const customersLoad = async (req, res) => {
@@ -121,6 +134,7 @@ module.exports = {
     verifyAdminLogin,
     customersLoad,
     blockUser,
+    loadLogout
  
     
 

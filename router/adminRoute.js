@@ -29,32 +29,38 @@ admin_route.set('views', './views/admin');
 admin_route.use((req,res,next)=>{
     res.locals.admin =req.session.admin;
     res.adminLoggedIn = req.session.admin ? true : false; 
-
+    console.log('locals.admin',res.locals.admin,);//-------------
+    console.log('adminLoggedIn',res.adminLoggedIn,);//-------------
+    next();   
 })
 
 
+// admin login
+admin_route.get('/login', adminAuth.isLogout, adminController.adminLoginLoad);
+admin_route.post('/login', adminController.verifyAdminLogin);
 
+//global middleware
+admin_route.use(adminAuth.isLogin);
 
 // admin home
 admin_route.get('/', adminController.loadDashboard);
-// admin_route.get('/dashboard', adminController.loadDashboard);
 
-// admin login
-admin_route.get('/login', adminAuth.isLogin, adminController.adminLoginLoad);
-admin_route.post('/login', adminController.verifyAdminLogin);
 
 // user management
-admin_route.get('/customers', adminAuth.isLogin, adminController.customersLoad);
+admin_route.get('/customers',adminAuth.isLogin, adminController.customersLoad);
 
 // block user
 admin_route.post('/block-user', adminController.blockUser);
+
+//admin logout 
+admin_route.get('/logout',adminAuth.isLogin, adminController.loadLogout);
 
 
 
 
 
 // list product  
-admin_route.get('/products-list', adminAuth.isLogin, productController.ProductsList);
+admin_route.get('/products-list', productController.ProductsList);
 
 //add product 
 admin_route.get('/add-products', productController.addProducts);
