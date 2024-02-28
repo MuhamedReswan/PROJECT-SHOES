@@ -29,7 +29,24 @@ const isLogout = (req, res, next) => {
 }
 
 
+const checkLogin = (req, res, next) => {
+    try {
+        if (req.session.user) {
+            console.log('check login logged');
+            next();
+        } else {
+            console.log('checkLogin notloged');
+            res.redirect('/login');
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+
 module.exports = {
     isLogin,
-    isLogout
+    isLogout,
+    checkLogin 
 }

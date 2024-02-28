@@ -13,8 +13,7 @@ const loadCategory = async (req, res) =>{
 // add category
 const addCategory = async (req, res) => {
     try {
-        const categories = await category.find({});
-        console.log('adcategory');//--------------------------     
+        const categories = await category.find({});  
         res.render('addCategory',{categories});
     } catch (error) {
         console.log(error); 
@@ -52,9 +51,7 @@ res.redirect('/admin/category');
 const loadEditCategory = async (req, res) => {
     try {
         const id = req.query.id;
-        console.log('editCategory id',id)//---------------------------------
         const editCategory = await category.findOne({_id:id});
-        console.log('editCategory',editCategory)//---------------------------------
         
         res.render('editCategory',{editCategory});       
     } catch (error) {
@@ -65,9 +62,7 @@ const loadEditCategory = async (req, res) => {
 // update category
 const updateCategory = async (req, res) => {
     try {
-        console.log('im update')//-----------------
         const id = req.body.id
-        console.log('id upadte category',id)//------------------
         const editName = req.body.ename;
         const editDescription= req.body.edescription;
 
@@ -90,17 +85,15 @@ const updateCategory = async (req, res) => {
 const categoryListAndUnlist = async (req,res) =>{
     try {
         const catagoryId =req.body.id;
-        console.log("id",catagoryId);//------------------------------------
     const catagoryData = await category.findOne({_id:catagoryId});
-    console.log("catagoryData",catagoryData);//------------------------------------
+    
     if (catagoryData.isListed===true){
         var result;
        result = await category.updateOne({_id:catagoryId},{$set:{isListed:false}})   
-
     }else{
+
         result = await category.updateOne({_id:catagoryId},{$set:{isListed:true}}) 
-    console.log('result',JSON.stringify(result))
-   
+    console.log('result',JSON.stringify(result));  
 }
 res.json({list:true})
     } catch (error) {

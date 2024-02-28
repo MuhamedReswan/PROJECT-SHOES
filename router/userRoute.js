@@ -2,10 +2,11 @@ const express = require('express');
 const user_route = express();
 const path = require('path');
 const session = require('express-session');
-const nocache =require('nocache');
+// const nocache =require('nocache');
 
 const shopController = require('../controller/shopController');
 const userController = require('../controller/userController');
+const cartController = require('../controller/cartController');
 const config = require('../config/config');
 const userAuth = require('../middlewares/userAuth');
 
@@ -14,7 +15,7 @@ user_route.use('/user',express.static(path.join(__dirname,'public/user')));
 // user_route.use(express.static(path.join(__dirname,'public/user/images')));
 
 user_route.use(session({secret:config.sessionSecret,resave:false,saveUninitialized:false}));
-user_route.use(nocache());
+// user_route.use(nocache());
 
 
 
@@ -65,11 +66,27 @@ user_route.get('/resend/:email',userController.resendOtp);
 
 
 
-//load shoap
+// load shoap
 user_route.get('/shop',shopController.loadShop);
 
 // load single Product
 user_route.get('/single-product',shopController.loadSingleProduct);
+
+
+
+
+// load cart
+user_route.get('/cart',cartController.loadCart);
+
+// add to cart
+user_route.post('/addtocart',userAuth.checkLogin,cartController.addToCart);//want to add middleware to login
+
+// remove single product from cart
+user_route.post('/remove-cart',cartController.removeFromCart);
+
+// add to cart
+user_route.post('/check-cart',cartController.checkCart);
+
 
 
 

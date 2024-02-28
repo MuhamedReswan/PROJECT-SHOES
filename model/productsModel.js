@@ -6,10 +6,7 @@ const productsSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    //     previousPrice:{
-    // type:Number,
-    // required:true
-    //     },
+
     description: {
         type: String,
         required: true
@@ -39,50 +36,31 @@ const productsSchema = mongoose.Schema({
         dafault: true,
         required: true
     },
-    // stock: {
-    //     type: Number,
-    //     required: true,
-    //     min: 0
-    // },
+
     images: {
         type: Array,
         required: true,
         validate: [arrayLimit, 'you can upload only 4 images']
     },
-    // size: {
-    //     type:Array,
-    //     required: true
-    // type: String,
-    // enum: ['S', 'M', 'L', 'XL'],
 
-    // },                           
-    created: {
-        type: Date,
-        default: Date.now  
-    },
     totalStock:{
 type:Number
     },
+
     stock: {
         type: Object,
         required: true,
     },
+
     size:{
         type:Array,
         required:true
-    }
-    // variant: [{
-    //     size: {
-    //         type: String,
-    //         required: true
-    //     },
-    //     stock: {
-    //         type: Number,
-    //         required: true
-    //     }
-    // }
-    // ]
+    },
 
+    created: {
+        type: Date,
+        default: Date.now  
+    },
 })
 
 function arrayLimit(val) {

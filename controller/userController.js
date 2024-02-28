@@ -54,7 +54,8 @@ const loadLogin = (req, res) => {
 
 
 //verify login
-const verifyLogin = async (req, res) => {
+const 
+verifyLogin = async (req, res) => {
     try {
         const Email = req.body.Email;
         const Password = req.body.Password;
@@ -75,6 +76,7 @@ const verifyLogin = async (req, res) => {
                         name: userData.name,
                         email: userData.email
                     }
+                    console.log(req.session.user);
                     res.redirect("/");
                 }
             } else {
@@ -189,7 +191,6 @@ const sendOtp = async (email) => {
 
         await transport.sendMail(mailOption);
         const hashOtp = await bcrypt.hash(createOtp, 10);
-        console.log('hashOtp= ', hashOtp)//-----------------------------------------
 
         const userOtp = await new otpModel({
             email: email,
@@ -215,11 +216,8 @@ const verifyOtp = async (req, res) => {
 
         if (otpUser) {
             const otpVerification = await bcrypt.compare(otp, otpUser.otp);
-            console.log('otpVerification =' + otpVerification)//-----------------------------------------
 
             if (otpVerification) {
-                console.log('otp verification success')//-----------------------------------------
-
                 const userData = await Users.findOne({ email: email });
                 console.log('userData2 = ', userData); //------------------------------------------
                
