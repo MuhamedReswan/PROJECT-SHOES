@@ -62,7 +62,7 @@
                                                                 <a class="qtyBtn minus" href="javascript:void(0);"><i
                                                                         class="icon icon-minus"></i></a>
                                                                 <input class="cart__qty-input qty" type="text"
-                                                                    name="updates[]" id="qty" value="1"
+                                                                    name="updates[]" id="qty" value="<%= product.quantity %>"
                                                                     pattern="[0-9]*">
                                                                 <a class="qtyBtn plus" href="javascript:void(0);"><i
                                                                         class="icon icon-plus"></i></a>
@@ -151,7 +151,7 @@
                                         <input type="submit" name="checkout" id="cartCheckout"
                                             class="btn btn--small-wide checkout" value="Proceed To Checkout"
                                             disabled="disabled">
-                                        <div class="paymnet-img"><img src="assets/images/payment-img.jpg" alt="Payment">
+                                        <div class="paymnet-img"><img src="user/assets/images/payment-img.jpg" alt="Payment">
                                         </div>
                                         <p><a href="#;">Checkout with Multiple Addresses</a></p>
                                     </div>

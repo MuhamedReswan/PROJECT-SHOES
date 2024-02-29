@@ -84,7 +84,7 @@ user_route.post('/addtocart',userAuth.checkLogin,cartController.addToCart);//wan
 // remove single product from cart
 user_route.post('/remove-cart',cartController.removeFromCart);
 
-// add to cart
+// check cart
 user_route.post('/check-cart',cartController.checkCart);
 
 

@@ -56,35 +56,21 @@
                                                 </div>
                                             </div>
                                             <div class="lightboximages">
-                                                <a href="user/assets/images/product-detail-page/camelia-reversible-big1.jpg"
-                                                    data-size="1462x2048"></a>
-                                                <a href="user/assets/images/product-detail-page/camelia-reversible-big2.jpg"
-                                                    data-size="1462x2048"></a>
-                                                <a href="user/assets/images/product-detail-page/camelia-reversible-big3.jpg"
-                                                    data-size="1462x2048"></a>
-                                                <a href="user/assets/images/product-detail-page/camelia-reversible7-big.jpg"
-                                                    data-size="1462x2048"></a>
-                                                <a href="user/assets/images/product-detail-page/camelia-reversible-big4.jpg"
-                                                    data-size="1462x2048"></a>
-                                                <a href="user/assets/images/product-detail-page/camelia-reversible-big5.jpg"
-                                                    data-size="1462x2048"></a>
-                                                <a href="user/assets/images/product-detail-page/camelia-reversible-big6.jpg"
-                                                    data-size="731x1024"></a>
-                                                <a href="user/assets/images/product-detail-page/camelia-reversible-big7.jpg"
-                                                    data-size="731x1024"></a>
-                                                <a href="user/assets/images/product-detail-page/camelia-reversible-big8.jpg"
-                                                    data-size="731x1024"></a>
-                                                <a href="user/assets/images/product-detail-page/camelia-reversible-big9.jpg"
-                                                    data-size="731x1024"></a>
-                                                <a href="user/assets/images/product-detail-page/camelia-reversible-big10.jpg"
-                                                    data-size="731x1024"></a>
+
+                                                <% for(i=0; i<4; i++){%>
+                                                    <a href="user\assets\images\product-images\sharpedImages\<%= product.images[i]%>"
+                                                        data-size="1462x2048"></a>
+                                                    <%}%>
+
                                             </div>
 
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-sm-12 col-12">
                                         <div class="product-single__meta">
-                                            <h1 class="product-single__title">Product Visitor/Sold Count</h1>
+                                            <h1 class="product-single__title">
+                                                <%= product.name %>
+                                            </h1>
                                             <div class="product-nav clearfix">
                                                 <a href="#" class="next" title="Next"><i class="fa fa-angle-right"
                                                         aria-hidden="true"></i></a>
@@ -112,28 +98,30 @@
                                             </div>
                                             <p class="product-single__price product-single__price-product-template">
                                                 <span class="visually-hidden">Regular price</span>
-                                                <s id="ComparePrice-product-template"><span class="money">₹<%=
-                                                            product.price %></span></s>
+                                                <s id="ComparePrice-product-template">
+                                                    <span class="money">₹<%= product.price %></span>
+                                                </s>
                                                 <span
                                                     class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
-                                                    <span id="ProductPrice-product-template"><span class="money">₹<%=
-                                                                product.offerPrice %>
-                                                                </s< /span></span>
+                                                    <span id="ProductPrice-product-template">
+                                                        <span class="money">₹<%= product.offerPrice %></span>
                                                     </span>
-                                                    <span class="discount-badge"> <span class="devider">|</span>&nbsp;
-                                                        <span>You Save</span>
-                                                        <span id="SaveAmount-product-template"
-                                                            class="product-single__save-amount">
-                                                            <span class="money">₹<%= product.price - product.offerPrice
-                                                                    %>
-                                                                    </s< /span>
-                                                            </span>
-                                                            <span class="off">(<span>
-                                                                    <%= Math.round((product.price -
-                                                                        product.offerPrice)/product.price*100) %>
-                                                                </span>%)</span>
+                                                </span>
+                                                <span class="discount-badge">
+                                                    <span class="devider">|</span>&nbsp;
+                                                    <span>You Save</span>
+                                                    <span id="SaveAmount-product-template"
+                                                        class="product-single__save-amount">
+                                                        <span class="money">₹<%= product.price - product.offerPrice %>
                                                         </span>
+                                                    </span>
+                                                    <span class="off">(<span>
+                                                            <%= Math.round((product.price - product.offerPrice) /
+                                                                product.price * 100) %>
+                                                        </span>%)</span>
+                                                </span>
                                             </p>
+
 
                                             <div class="product-single__description rte">
                                                 <ul>
@@ -189,22 +177,7 @@
                                                                                     </div>
                                                                                     <%}%>
                                                                                         <%}%>
-                                                                                            <!-- <div data-value="7" class="swatch-element 7 available">
-                                                <input class="swatchInput" id="swatch-1-7" type="radio" name="option-1" value="7">
-                                                <label class="swatchLbl medium rounded" for="swatch-1-7" title="7">7</label>
-                                              </div>
-                                              <div data-value="8" class="swatch-element 8 available">
-                                                <input class="swatchInput" id="swatch-1-8" type="radio" name="option-1" value="8">
-                                                <label class="swatchLbl medium rounded" for="swatch-1-8" title="8">8</label>
-                                              </div>
-                                              <div data-value="9" class="swatch-element 9 available">
-                                                <input class="swatchInput" id="swatch-1-9" type="radio" name="option-1" value="9">
-                                                <label class="swatchLbl medium rounded" for="swatch-1-9" title="9">9</label>
-                                              </div>
-                                              <div data-value="10" class="swatch-element l 10 available">
-                                                <input class="swatchInput" id="swatch-1-10" type="radio" name="option-1" value="10">
-                                                <label class="swatchLbl medium rounded" for="swatch-1-10" title="10">10</label>
-                                              </div> -->
+
                                                                         </div>
                                                                     </div>
 
@@ -238,691 +211,713 @@
                                                         <span>Add to cart</span>
                                                     </button>
                                                 </div>
-                                                <div class="shopify-payment-button" data-shopify="payment-button">
+                                                <div class="shopify-payment-button " data-shopify="payment-button">
                                                     <button type="button"
                                                         class="shopify-payment-button__button shopify-payment-button__button--unbranded">Buy
                                                         it now</button>
-                                                </div>
-                                            </div>
-                                            <!-- End Product Action -->
 
-                                            <!-- </form> -->
-                                            <div class="display-table shareRow">
-                                                <div class="display-table-cell medium-up--one-third">
-                                                    <div class="wishlist-btn">
-                                                        <a class="wishlist add-to-wishlist" href="#"
-                                                            title="Add to Wishlist"><i class="icon anm anm-heart-l"
-                                                                aria-hidden="true"></i> <span>Add to Wishlist</span></a>
+                                                </div>
+                                                <!-- End Product Action -->
+
+                                                <!-- </form> -->
+                                                <div class="display-table shareRow">
+                                                    <div class="display-table-cell medium-up--one-third">
+                                                        <div class="wishlist-btn">
+                                                            <a class="wishlist add-to-wishlist" href="#"
+                                                                title="Add to Wishlist"><i class="icon anm anm-heart-l"
+                                                                    aria-hidden="true"></i> <span>Add to
+                                                                    Wishlist</span></a>
+                                                        </div>
                                                     </div>
+
                                                 </div>
-                                                <!-- <div class="display-table-cell text-right">
-                                                <div class="social-sharing">
-                                                    <a target="_blank" href="#" class="btn btn--small btn--secondary btn--share share-facebook" title="Share on Facebook">
-                                                        <i class="fa fa-facebook-square" aria-hidden="true"></i> <span class="share-title" aria-hidden="true">Share</span>
-                                                    </a>
-                                                    <a target="_blank" href="#" class="btn btn--small btn--secondary btn--share share-twitter" title="Tweet on Twitter">
-                                                        <i class="fa fa-twitter" aria-hidden="true"></i> <span class="share-title" aria-hidden="true">Tweet</span>
-                                                    </a>
-                                                    <a href="#" title="Share on google+" class="btn btn--small btn--secondary btn--share" >
-                                                        <i class="fa fa-google-plus" aria-hidden="true"></i> <span class="share-title" aria-hidden="true">Google+</span>
-                                                    </a>
-                                                    <a target="_blank" href="#" class="btn btn--small btn--secondary btn--share share-pinterest" title="Pin on Pinterest">
-                                                        <i class="fa fa-pinterest" aria-hidden="true"></i> <span class="share-title" aria-hidden="true">Pin it</span>
-                                                    </a>
-                                                    <a href="#" class="btn btn--small btn--secondary btn--share share-pinterest" title="Share by Email" target="_blank">
-                                                        <i class="fa fa-envelope" aria-hidden="true"></i> <span class="share-title" aria-hidden="true">Email</span>
-                                                    </a>
-                                                 </div>
-                                            </div> -->
+
+                                                <p id="freeShipMsg" class="freeShipMsg" data-price="199"><i
+                                                        class="fa fa-truck" aria-hidden="true"></i> GETTING CLOSER! ONLY
+                                                    <b class="freeShip"><span class="money" data-currency-usd="₹199.00"
+                                                            data-currency="USD">₹199.00</span></b> AWAY FROM <b>FREE
+                                                        SHIPPING!</b>
+                                                </p>
+                                                <p class="shippingMsg"><i class="fa fa-clock-o" aria-hidden="true"></i>
+                                                    ESTIMATED DELIVERY BETWEEN <b id="fromDate">
+                                                        <%= startDate %>
+                                                    </b> and <b id="toDate">
+                                                        <%= deliveryDate %>
+                                                    </b>.</p>
+
                                             </div>
-
-                                            <p id="freeShipMsg" class="freeShipMsg" data-price="199"><i
-                                                    class="fa fa-truck" aria-hidden="true"></i> GETTING CLOSER! ONLY <b
-                                                    class="freeShip"><span class="money" data-currency-usd="₹199.00"
-                                                        data-currency="USD">₹199.00</span></b> AWAY FROM <b>FREE
-                                                    SHIPPING!</b></p>
-                                            <p class="shippingMsg"><i class="fa fa-clock-o" aria-hidden="true"></i>
-                                                ESTIMATED DELIVERY BETWEEN <b id="fromDate">
-                                                    <%= startDate %>
-                                                </b> and <b id="toDate">
-                                                    <%= deliveryDate %>
-                                                </b>.</p>
+                                            <%}%>
 
                                         </div>
-                                        <%}%>
-
                                     </div>
+                                    <!--End-product-single-->
+
+                                    <!-- below -->
                             </div>
-                            <!--End-product-single-->
-                            <!--Product Fearure-->
-                            <div class="prFeatures">
-                                <div class="row">
-                                    <div class="col-12 col-sm-6 col-md-6 col-lg-3 feature">
-                                        <img src="user/assets/images/credit-card.png" alt="Safe Payment"
-                                            title="Safe Payment" />
-                                        <div class="details">
-                                            <h3>Safe Payment</h3>Pay with the world's most payment methods.
+                            <div class="row">
+                                <!--Product Fearure-->
+                                <div class="prFeatures">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 feature">
+                                            <img src="user/assets/images/credit-card.png" alt="Safe Payment"
+                                                title="Safe Payment" />
+                                            <div class="details">
+                                                <h3>Safe Payment</h3>Pay with the world's most payment methods.
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-12 col-sm-6 col-md-6 col-lg-3 feature">
-                                        <img src="user/assets/images/shield.png" alt="Confidence" title="Confidence" />
-                                        <div class="details">
-                                            <h3>Confidence</h3>Protection covers your purchase and personal data.
+                                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 feature">
+                                            <img src="user/assets/images/shield.png" alt="Confidence"
+                                                title="Confidence" />
+                                            <div class="details">
+                                                <h3>Confidence</h3>Protection covers your purchase and personal
+                                                data.
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-12 col-sm-6 col-md-6 col-lg-3 feature">
-                                        <img src="user/assets/images/worldwide.png" alt="Worldwide Delivery"
-                                            title="Worldwide Delivery" />
-                                        <div class="details">
-                                            <h3>Worldwide Delivery</h3>FREE &amp; fast shipping to over 200+ countries
-                                            &amp; regions.
+                                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 feature">
+                                            <img src="user/assets/images/worldwide.png" alt="Worldwide Delivery"
+                                                title="Worldwide Delivery" />
+                                            <div class="details">
+                                                <h3>Worldwide Delivery</h3>FREE &amp; fast shipping to over 200+
+                                                countries
+                                                &amp; regions.
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-12 col-sm-6 col-md-6 col-lg-3 feature">
-                                        <img src="user/assets/images/phone-call.png" alt="Hotline" title="Hotline" />
-                                        <div class="details">
-                                            <h3>Hotline</h3>Talk to help line for your question on 4141 456 789, 4125
-                                            666 888
+                                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 feature">
+                                            <img src="user/assets/images/phone-call.png" alt="Hotline"
+                                                title="Hotline" />
+                                            <div class="details">
+                                                <h3>Hotline</h3>Talk to help line for your question on 4141 456 789,
+                                                4125
+                                                666 888
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!--End Product Fearure-->
-                            <!--Product Tabs-->
-                            <div class="tabs-listing">
-                                <ul class="product-tabs">
-                                    <li rel="tab1"><a class="tablink">Product Details</a></li>
-                                    <li rel="tab2"><a class="tablink">Product Reviews</a></li>
-                                    <li rel="tab3"><a class="tablink">Size Chart</a></li>
-                                    <li rel="tab4"><a class="tablink">Shipping &amp; Returns</a></li>
-                                </ul>
-                                <div class="tab-container">
-                                    <div id="tab1" class="tab-content">
-                                        <div class="product-description rte">
-                                            <h3>overview</h3>
-                                            <p>The <%= product.name %> is designed to offer responsive cushioning and a
-                                                    secure fit for your daily runs. With an updated mesh upper and
-                                                    responsive cushioning, this shoe provides comfort and support mile
-                                                    after mile.</p>
-                                            <ul>
-                                                <li>Durable rubber outsole for traction on various surfaces</li>
-                                                <li>Cushlon foam midsole for lightweight, responsive cushioning</li>
-                                                <li>Zoom Air unit in the forefoot for responsive cushioning</li>
+                                <!--End Product Fearure-->
+                                <!--Product Tabs-->
+                                <div class="tabs-listing">
+                                    <ul class="product-tabs">
+                                        <li rel="tab1"><a class="tablink">Product Details</a></li>
+                                        <li rel="tab2"><a class="tablink">Product Reviews</a></li>
+                                        <li rel="tab3"><a class="tablink">Size Chart</a></li>
+                                        <li rel="tab4"><a class="tablink">Shipping &amp; Returns</a></li>
+                                    </ul>
+                                    <div class="tab-container">
+                                        <div id="tab1" class="tab-content">
+                                            <div class="product-description rte">
+                                                <h3>overview</h3>
+                                                <p>The <%= product.name %> is designed to offer responsive
+                                                        cushioning and a
+                                                        secure fit for your daily runs. With an updated mesh upper
+                                                        and
+                                                        responsive cushioning, this shoe provides comfort and
+                                                        support mile
+                                                        after mile.</p>
+                                                <ul>
+                                                    <li>
+                                                        <%= product.description %>
+                                                    </li>
+                                                    <li>Durable rubber outsole for traction on various surfaces</li>
+                                                    <li>Cushlon foam midsole for lightweight, responsive cushioning
+                                                    </li>
+                                                    <li>Zoom Air unit in the forefoot for responsive cushioning</li>
 
-                                            </ul>
-                                            <h3></h3>
+                                                </ul>
+                                                <h3></h3>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div id="tab2" class="tab-content">
-                                        <div id="shopify-product-reviews">
-                                            <div class="spr-container">
-                                                <div class="spr-header clearfix">
-                                                    <div class="spr-summary">
-                                                        <span class="product-review"><a class="reviewLink"><i
-                                                                    class="font-13 fa fa-star"></i><i
-                                                                    class="font-13 fa fa-star"></i><i
-                                                                    class="font-13 fa fa-star"></i><i
-                                                                    class="font-13 fa fa-star-o"></i><i
-                                                                    class="font-13 fa fa-star-o"></i> </a><span
-                                                                class="spr-summary-actions-togglereviews">Based on 6
-                                                                reviews456</span></span>
-                                                        <span class="spr-summary-actions">
-                                                            <a href="#" class="spr-summary-actions-newreview btn">Write
-                                                                a review</a>
-                                                        </span>
+                                        <div id="tab2" class="tab-content">
+                                            <div id="shopify-product-reviews">
+                                                <div class="spr-container">
+                                                    <div class="spr-header clearfix">
+                                                        <div class="spr-summary">
+                                                            <span class="product-review"><a class="reviewLink"><i
+                                                                        class="font-13 fa fa-star"></i><i
+                                                                        class="font-13 fa fa-star"></i><i
+                                                                        class="font-13 fa fa-star"></i><i
+                                                                        class="font-13 fa fa-star-o"></i><i
+                                                                        class="font-13 fa fa-star-o"></i> </a><span
+                                                                    class="spr-summary-actions-togglereviews">Based
+                                                                    on 6
+                                                                    reviews456</span></span>
+                                                            <span class="spr-summary-actions">
+                                                                <a href="#"
+                                                                    class="spr-summary-actions-newreview btn">Write
+                                                                    a review</a>
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="spr-content">
-                                                    <div class="spr-form clearfix">
-                                                        <form method="post" action="#" id="new-review-form"
-                                                            class="new-review-form">
-                                                            <h3 class="spr-form-title">Write a review</h3>
-                                                            <fieldset class="spr-form-contact">
-                                                                <div class="spr-form-contact-name">
-                                                                    <label class="spr-form-label"
-                                                                        for="review_author_10508262282">Name</label>
-                                                                    <input class="spr-form-input spr-form-input-text "
-                                                                        id="review_author_10508262282" type="text"
-                                                                        name="review[author]" value=""
-                                                                        placeholder="Enter your name">
-                                                                </div>
-                                                                <div class="spr-form-contact-email">
-                                                                    <label class="spr-form-label"
-                                                                        for="review_email_10508262282">Email</label>
-                                                                    <input class="spr-form-input spr-form-input-email "
-                                                                        id="review_email_10508262282" type="email"
-                                                                        name="review[email]" value=""
-                                                                        placeholder="john.smith@example.com">
-                                                                </div>
-                                                            </fieldset>
-                                                            <fieldset class="spr-form-review">
-                                                                <div class="spr-form-review-rating">
-                                                                    <label class="spr-form-label">Rating</label>
-                                                                    <div class="spr-form-input spr-starrating">
-                                                                        <div class="product-review"><a
-                                                                                class="reviewLink" href="#"><i
-                                                                                    class="fa fa-star-o"></i><i
-                                                                                    class="font-13 fa fa-star-o"></i><i
-                                                                                    class="font-13 fa fa-star-o"></i><i
-                                                                                    class="font-13 fa fa-star-o"></i><i
-                                                                                    class="font-13 fa fa-star-o"></i></a>
+                                                    <div class="spr-content">
+                                                        <div class="spr-form clearfix">
+                                                            <form method="post" action="#" id="new-review-form"
+                                                                class="new-review-form">
+                                                                <h3 class="spr-form-title">Write a review</h3>
+                                                                <fieldset class="spr-form-contact">
+                                                                    <div class="spr-form-contact-name">
+                                                                        <label class="spr-form-label"
+                                                                            for="review_author_10508262282">Name</label>
+                                                                        <input
+                                                                            class="spr-form-input spr-form-input-text "
+                                                                            id="review_author_10508262282" type="text"
+                                                                            name="review[author]" value=""
+                                                                            placeholder="Enter your name">
+                                                                    </div>
+                                                                    <div class="spr-form-contact-email">
+                                                                        <label class="spr-form-label"
+                                                                            for="review_email_10508262282">Email</label>
+                                                                        <input
+                                                                            class="spr-form-input spr-form-input-email "
+                                                                            id="review_email_10508262282" type="email"
+                                                                            name="review[email]" value=""
+                                                                            placeholder="john.smith@example.com">
+                                                                    </div>
+                                                                </fieldset>
+                                                                <fieldset class="spr-form-review">
+                                                                    <div class="spr-form-review-rating">
+                                                                        <label class="spr-form-label">Rating</label>
+                                                                        <div class="spr-form-input spr-starrating">
+                                                                            <div class="product-review"><a
+                                                                                    class="reviewLink" href="#"><i
+                                                                                        class="fa fa-star-o"></i><i
+                                                                                        class="font-13 fa fa-star-o"></i><i
+                                                                                        class="font-13 fa fa-star-o"></i><i
+                                                                                        class="font-13 fa fa-star-o"></i><i
+                                                                                        class="font-13 fa fa-star-o"></i></a>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
 
-                                                                <div class="spr-form-review-title">
-                                                                    <label class="spr-form-label"
-                                                                        for="review_title_10508262282">Review
-                                                                        Title</label>
-                                                                    <input class="spr-form-input spr-form-input-text "
-                                                                        id="review_title_10508262282" type="text"
-                                                                        name="review[title]" value=""
-                                                                        placeholder="Give your review a title">
-                                                                </div>
-
-                                                                <div class="spr-form-review-body">
-                                                                    <label class="spr-form-label"
-                                                                        for="review_body_10508262282">Body of Review
-                                                                        <span
-                                                                            class="spr-form-review-body-charactersremaining">(1500)</span></label>
-                                                                    <div class="spr-form-input">
-                                                                        <textarea
-                                                                            class="spr-form-input spr-form-input-textarea "
-                                                                            id="review_body_10508262282"
-                                                                            data-product-id="10508262282"
-                                                                            name="review[body]" rows="10"
-                                                                            placeholder="Write your comments here"></textarea>
+                                                                    <div class="spr-form-review-title">
+                                                                        <label class="spr-form-label"
+                                                                            for="review_title_10508262282">Review
+                                                                            Title</label>
+                                                                        <input
+                                                                            class="spr-form-input spr-form-input-text "
+                                                                            id="review_title_10508262282" type="text"
+                                                                            name="review[title]" value=""
+                                                                            placeholder="Give your review a title">
                                                                     </div>
+
+                                                                    <div class="spr-form-review-body">
+                                                                        <label class="spr-form-label"
+                                                                            for="review_body_10508262282">Body of
+                                                                            Review
+                                                                            <span
+                                                                                class="spr-form-review-body-charactersremaining">(1500)</span></label>
+                                                                        <div class="spr-form-input">
+                                                                            <textarea
+                                                                                class="spr-form-input spr-form-input-textarea "
+                                                                                id="review_body_10508262282"
+                                                                                data-product-id="10508262282"
+                                                                                name="review[body]" rows="10"
+                                                                                placeholder="Write your comments here"></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </fieldset>
+                                                                <fieldset class="spr-form-actions">
+                                                                    <input type="submit"
+                                                                        class="spr-button spr-button-primary button button-primary btn btn-primary"
+                                                                        value="Submit Review">
+                                                                </fieldset>
+                                                            </form>
+                                                        </div>
+                                                        <div class="spr-reviews">
+                                                            <div class="spr-review">
+                                                                <div class="spr-review-header">
+                                                                    <span
+                                                                        class="product-review spr-starratings spr-review-header-starratings"><span
+                                                                            class="reviewLink"><i
+                                                                                class="fa fa-star"></i><i
+                                                                                class="font-13 fa fa-star"></i><i
+                                                                                class="font-13 fa fa-star"></i><i
+                                                                                class="font-13 fa fa-star"></i><i
+                                                                                class="font-13 fa fa-star"></i></span></span>
+                                                                    <h3 class="spr-review-header-title">Lorem ipsum
+                                                                        dolor
+                                                                        sit amet</h3>
+                                                                    <span
+                                                                        class="spr-review-header-byline"><strong>dsacc</strong>
+                                                                        on <strong>Apr 09, 2019</strong></span>
                                                                 </div>
-                                                            </fieldset>
-                                                            <fieldset class="spr-form-actions">
-                                                                <input type="submit"
-                                                                    class="spr-button spr-button-primary button button-primary btn btn-primary"
-                                                                    value="Submit Review">
-                                                            </fieldset>
-                                                        </form>
-                                                    </div>
-                                                    <div class="spr-reviews">
-                                                        <div class="spr-review">
-                                                            <div class="spr-review-header">
-                                                                <span
-                                                                    class="product-review spr-starratings spr-review-header-starratings"><span
-                                                                        class="reviewLink"><i class="fa fa-star"></i><i
-                                                                            class="font-13 fa fa-star"></i><i
-                                                                            class="font-13 fa fa-star"></i><i
-                                                                            class="font-13 fa fa-star"></i><i
-                                                                            class="font-13 fa fa-star"></i></span></span>
-                                                                <h3 class="spr-review-header-title">Lorem ipsum dolor
-                                                                    sit amet</h3>
-                                                                <span
-                                                                    class="spr-review-header-byline"><strong>dsacc</strong>
-                                                                    on <strong>Apr 09, 2019</strong></span>
+                                                                <div class="spr-review-content">
+                                                                    <p class="spr-review-content-body">Lorem ipsum
+                                                                        dolor sit
+                                                                        amet, consectetur adipiscing elit, sed do
+                                                                        eiusmod
+                                                                        tempor incididunt ut labore et dolore magna
+                                                                        aliqua.
+                                                                        Ut enim ad minim veniam, quis nostrud
+                                                                        exercitation
+                                                                        ullamco laboris nisi ut aliquip ex ea
+                                                                        commodo
+                                                                        consequat.</p>
+                                                                </div>
                                                             </div>
-                                                            <div class="spr-review-content">
-                                                                <p class="spr-review-content-body">Lorem ipsum dolor sit
-                                                                    amet, consectetur adipiscing elit, sed do eiusmod
-                                                                    tempor incididunt ut labore et dolore magna aliqua.
-                                                                    Ut enim ad minim veniam, quis nostrud exercitation
-                                                                    ullamco laboris nisi ut aliquip ex ea commodo
-                                                                    consequat.</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="spr-review">
-                                                            <div class="spr-review-header">
-                                                                <span
-                                                                    class="product-review spr-starratings spr-review-header-starratings"><span
-                                                                        class="reviewLink"><i class="fa fa-star"></i><i
-                                                                            class="font-13 fa fa-star"></i><i
-                                                                            class="font-13 fa fa-star"></i><i
-                                                                            class="font-13 fa fa-star"></i><i
-                                                                            class="font-13 fa fa-star"></i></span></span>
-                                                                <h3 class="spr-review-header-title">Lorem Ipsum is
-                                                                    simply dummy text of the printing</h3>
-                                                                <span
-                                                                    class="spr-review-header-byline"><strong>larrydude</strong>
-                                                                    on <strong>Dec 30, 2018</strong></span>
-                                                            </div>
+                                                            <div class="spr-review">
+                                                                <div class="spr-review-header">
+                                                                    <span
+                                                                        class="product-review spr-starratings spr-review-header-starratings"><span
+                                                                            class="reviewLink"><i
+                                                                                class="fa fa-star"></i><i
+                                                                                class="font-13 fa fa-star"></i><i
+                                                                                class="font-13 fa fa-star"></i><i
+                                                                                class="font-13 fa fa-star"></i><i
+                                                                                class="font-13 fa fa-star"></i></span></span>
+                                                                    <h3 class="spr-review-header-title">Lorem Ipsum
+                                                                        is
+                                                                        simply dummy text of the printing</h3>
+                                                                    <span
+                                                                        class="spr-review-header-byline"><strong>larrydude</strong>
+                                                                        on <strong>Dec 30, 2018</strong></span>
+                                                                </div>
 
-                                                            <div class="spr-review-content">
-                                                                <p class="spr-review-content-body">Sed ut perspiciatis
-                                                                    unde omnis iste natus error sit voluptatem
-                                                                    accusantium doloremque laudantium, totam rem
-                                                                    aperiam, eaque ipsa quae ab illo inventore veritatis
-                                                                    et quasi architecto beatae vitae dicta sunt
-                                                                    explicabo.
-                                                                </p>
+                                                                <div class="spr-review-content">
+                                                                    <p class="spr-review-content-body">Sed ut
+                                                                        perspiciatis
+                                                                        unde omnis iste natus error sit voluptatem
+                                                                        accusantium doloremque laudantium, totam rem
+                                                                        aperiam, eaque ipsa quae ab illo inventore
+                                                                        veritatis
+                                                                        et quasi architecto beatae vitae dicta sunt
+                                                                        explicabo.
+                                                                    </p>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="spr-review">
-                                                            <div class="spr-review-header">
-                                                                <span
-                                                                    class="product-review spr-starratings spr-review-header-starratings"><span
-                                                                        class="reviewLink"><i class="fa fa-star"></i><i
-                                                                            class="font-13 fa fa-star"></i><i
-                                                                            class="font-13 fa fa-star"></i><i
-                                                                            class="font-13 fa fa-star"></i><i
-                                                                            class="font-13 fa fa-star"></i></span></span>
-                                                                <h3 class="spr-review-header-title">Neque porro quisquam
-                                                                    est qui dolorem ipsum quia dolor sit amet,
-                                                                    consectetur, adipisci velit...</h3>
-                                                                <span
-                                                                    class="spr-review-header-byline"><strong>quoctri1905</strong>
-                                                                    on <strong>Dec 30, 2018</strong></span>
-                                                            </div>
+                                                            <div class="spr-review">
+                                                                <div class="spr-review-header">
+                                                                    <span
+                                                                        class="product-review spr-starratings spr-review-header-starratings"><span
+                                                                            class="reviewLink"><i
+                                                                                class="fa fa-star"></i><i
+                                                                                class="font-13 fa fa-star"></i><i
+                                                                                class="font-13 fa fa-star"></i><i
+                                                                                class="font-13 fa fa-star"></i><i
+                                                                                class="font-13 fa fa-star"></i></span></span>
+                                                                    <h3 class="spr-review-header-title">Neque porro
+                                                                        quisquam
+                                                                        est qui dolorem ipsum quia dolor sit amet,
+                                                                        consectetur, adipisci velit...</h3>
+                                                                    <span
+                                                                        class="spr-review-header-byline"><strong>quoctri1905</strong>
+                                                                        on <strong>Dec 30, 2018</strong></span>
+                                                                </div>
 
-                                                            <div class="spr-review-content">
-                                                                <p class="spr-review-content-body">Lorem Ipsum is simply
-                                                                    dummy text of the printing and typesetting industry.
-                                                                    Lorem Ipsum has been the industry's standard dummy
-                                                                    text ever since the 1500s, when an unknown printer
-                                                                    took a galley of type and scrambled.<br>
-                                                                    <br>Lorem Ipsum is simply dummy text of the printing
-                                                                    and typesetting industry.
-                                                                </p>
+                                                                <div class="spr-review-content">
+                                                                    <p class="spr-review-content-body">Lorem Ipsum
+                                                                        is simply
+                                                                        dummy text of the printing and typesetting
+                                                                        industry.
+                                                                        Lorem Ipsum has been the industry's standard
+                                                                        dummy
+                                                                        text ever since the 1500s, when an unknown
+                                                                        printer
+                                                                        took a galley of type and scrambled.<br>
+                                                                        <br>Lorem Ipsum is simply dummy text of the
+                                                                        printing
+                                                                        and typesetting industry.
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div id="tab3" class="tab-content">
-
-
-                                        <h3>SHOES SIZING CHART</h3>
-                                        <table>
-                                            <tbody>
-                                                <tr>
-                                                    <th>Size</th>
-                                                    <th>6</th>
-                                                    <th>7</th>
-                                                    <th>8</th>
-                                                    <th>9</th>
-                                                    <th>10</th>
-                                                </tr>
-                                                <tr>
-                                                    <td>UK</td>
-                                                    <td>6</td>
-                                                    <td>7</td>
-                                                    <td>8</td>
-                                                    <td>9</td>
-                                                    <td>10</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>US</td>
-                                                    <td>7</td>
-                                                    <td>8</td>
-                                                    <td>9</td>
-                                                    <td>10</td>
-                                                    <td>11</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>EURO</td>
-                                                    <td>40</td>
-                                                    <td>41</td>
-                                                    <td>42</td>
-                                                    <td>43</td>
-                                                    <td>44</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>CM</td>
-                                                    <td>24.4</td>
-                                                    <td>25.4</td>
-                                                    <td>26.0</td>
-                                                    <td>27.4</td>
-                                                    <td>27.9</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-
-                                    </div>
-
-                                    <div id="tab4" class="tab-content">
-                                        <h4>Returns Policy</h4>
-                                        <p>At [web site name], we are committed to ensuring your satisfaction with every
-                                            purchase. If you are not entirely satisfied with your purchase, we're here
-                                            to help. Please review our return policy below:</p>
-
-                                        <ul>
-                                            <li>Shoes must be returned within 30 days from the date of delivery.</li>
-                                            <li>The shoes must be unworn, unused, and in the same condition as received.
-                                            </li>
-                                            <li>Original tags, packaging, and shoebox must be included with the return.
-                                            </li>
-                                            <li>Any signs of wear, damage, or alteration to the shoes may result in the
-                                                return being rejected.</li>
-                                        </ul>
-                                        <h4> Non-Returnable Items:
-                                        </h4>
-                                        <ul>
-                                            <li>Shoes that have been worn or used.
-                                            </li>
-                                            <li>Items marked as final sale or clearance.
-                                            </li>
-                                            <li>Products damaged due to misuse, negligence, or improper care.</li>
-
-                                        </ul>
-                                        <h4>Refund Process</h4>
-                                        <ul>
-                                            <li>Once we receive your returned shoes, our quality assurance team will
-                                                inspect them to ensure they meet the return policy criteria.</li>
-                                            <li>Upon approval, we will process your refund to the original payment
-                                                method within 7 business days.</li>
-                                            <li>Shipping charges are non-refundable unless the return is due to our
-                                                error or a defective product.</li>
-
-                                        </ul>
+                                        <div id="tab3" class="tab-content">
 
 
-                                        <h4>cancel of Shipping</h4>
-                                        <p> If the refund is initiated before the order has been shipped or while it's
-                                            still in transit, the shipping process will be canceled. The shipping
-                                            carrier may be notified to return the package to the sender or redirect it
-                                            back to the e-commerce warehouse.</p>
+                                            <h3>SHOES SIZING CHART</h3>
+                                            <table>
+                                                <tbody>
+                                                    <tr>
+                                                        <th>Size</th>
+                                                        <th>6</th>
+                                                        <th>7</th>
+                                                        <th>8</th>
+                                                        <th>9</th>
+                                                        <th>10</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>UK</td>
+                                                        <td>6</td>
+                                                        <td>7</td>
+                                                        <td>8</td>
+                                                        <td>9</td>
+                                                        <td>10</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>US</td>
+                                                        <td>7</td>
+                                                        <td>8</td>
+                                                        <td>9</td>
+                                                        <td>10</td>
+                                                        <td>11</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>EURO</td>
+                                                        <td>40</td>
+                                                        <td>41</td>
+                                                        <td>42</td>
+                                                        <td>43</td>
+                                                        <td>44</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>CM</td>
+                                                        <td>24.4</td>
+                                                        <td>25.4</td>
+                                                        <td>26.0</td>
+                                                        <td>27.4</td>
+                                                        <td>27.9</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                        <div id="tab4" class="tab-content">
+                                            <h4>Returns Policy</h4>
+                                            <p>At [web site name], we are committed to ensuring your satisfaction
+                                                with every
+                                                purchase. If you are not entirely satisfied with your purchase,
+                                                we're here
+                                                to help. Please review our return policy below:</p>
+
+                                            <ul>
+                                                <li>Shoes must be returned within 30 days from the date of delivery.
+                                                </li>
+                                                <li>The shoes must be unworn, unused, and in the same condition as
+                                                    received.
+                                                </li>
+                                                <li>Original tags, packaging, and shoebox must be included with the
+                                                    return.
+                                                </li>
+                                                <li>Any signs of wear, damage, or alteration to the shoes may result
+                                                    in the
+                                                    return being rejected.</li>
+                                            </ul>
+                                            <h4> Non-Returnable Items:
+                                            </h4>
+                                            <ul>
+                                                <li>Shoes that have been worn or used.
+                                                </li>
+                                                <li>Items marked as final sale or clearance.
+                                                </li>
+                                                <li>Products damaged due to misuse, negligence, or improper care.
+                                                </li>
+
+                                            </ul>
+                                            <h4>Refund Process</h4>
+                                            <ul>
+                                                <li>Once we receive your returned shoes, our quality assurance team
+                                                    will
+                                                    inspect them to ensure they meet the return policy criteria.
+                                                </li>
+                                                <li>Upon approval, we will process your refund to the original
+                                                    payment
+                                                    method within 7 business days.</li>
+                                                <li>Shipping charges are non-refundable unless the return is due to
+                                                    our
+                                                    error or a defective product.</li>
+
+                                            </ul>
+
+
+                                            <h4>cancel of Shipping</h4>
+                                            <p> If the refund is initiated before the order has been shipped or
+                                                while it's
+                                                still in transit, the shipping process will be canceled. The
+                                                shipping
+                                                carrier may be notified to return the package to the sender or
+                                                redirect it
+                                                back to the e-commerce warehouse.</p>
+                                        </div>
                                     </div>
                                 </div>
+                                <!--End Product Tabs-->
+
                             </div>
-                            <!--End Product Tabs-->
-
-
+                            <!--#ProductSection-product-template-->
                         </div>
-                        <!--#ProductSection-product-template-->
+                        <!--MainContent-->
                     </div>
-                    <!--MainContent-->
-                </div>
-                <!--End Body Content-->
+                    <!--End Body Content-->
 
-                <%- include('../partials/userBodyFooter.ejs')-%>
+                    <%- include('../partials/userBodyFooter.ejs')-%>
 
-                    <!--Scoll Top-->
-                    <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
-                    <!--End Scoll Top-->
+                        <!--Scoll Top-->
+                        <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
+                        <!--End Scoll Top-->
 
-                    <div class="hide">
-                        <div id="sizechart">
-                            <h3>SHOES SIZING CHART</h3>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <th>Size</th>
-                                        <th>6</th>
-                                        <th>7</th>
-                                        <th>8</th>
-                                        <th>9</th>
-                                        <th>10</th>
-                                    </tr>
-                                    <tr>
-                                        <td>UK</td>
-                                        <td>6</td>
-                                        <td>7</td>
-                                        <td>8</td>
-                                        <td>9</td>
-                                        <td>10</td>
-                                    </tr>
-                                    <tr>
-                                        <td>US</td>
-                                        <td>7</td>
-                                        <td>8</td>
-                                        <td>9</td>
-                                        <td>10</td>
-                                        <td>11</td>
-                                    </tr>
-                                    <tr>
-                                        <td>EURO</td>
-                                        <td>40</td>
-                                        <td>41</td>
-                                        <td>42</td>
-                                        <td>43</td>
-                                        <td>44</td>
-                                    </tr>
-                                    <tr>
-                                        <td>CM</td>
-                                        <td>24.4</td>
-                                        <td>25.4</td>
-                                        <td>26.0</td>
-                                        <td>27.4</td>
-                                        <td>27.9</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="hide">
+                            <div id="sizechart">
+                                <h3>SHOES SIZING CHART</h3>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <th>Size</th>
+                                            <th>6</th>
+                                            <th>7</th>
+                                            <th>8</th>
+                                            <th>9</th>
+                                            <th>10</th>
+                                        </tr>
+                                        <tr>
+                                            <td>UK</td>
+                                            <td>6</td>
+                                            <td>7</td>
+                                            <td>8</td>
+                                            <td>9</td>
+                                            <td>10</td>
+                                        </tr>
+                                        <tr>
+                                            <td>US</td>
+                                            <td>7</td>
+                                            <td>8</td>
+                                            <td>9</td>
+                                            <td>10</td>
+                                            <td>11</td>
+                                        </tr>
+                                        <tr>
+                                            <td>EURO</td>
+                                            <td>40</td>
+                                            <td>41</td>
+                                            <td>42</td>
+                                            <td>43</td>
+                                            <td>44</td>
+                                        </tr>
+                                        <tr>
+                                            <td>CM</td>
+                                            <td>24.4</td>
+                                            <td>25.4</td>
+                                            <td>26.0</td>
+                                            <td>27.4</td>
+                                            <td>27.9</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
 
 
-                    <!-- Including Jquery -->
-                    <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
-                    <script src="user/assets/js/vendor/jquery.cookie.js"></script>
-                    <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
-                    <script src="user/assets/js/vendor/wow.min.js"></script>
-                    <!-- Including Javascript -->
-                    <script src="user/assets/js/bootstrap.min.js"></script>
-                    <script src="user/assets/js/plugins.js"></script>
-                    <script src="user/assets/js/popper.min.js"></script>
-                    <script src="user/assets/js/lazysizes.js"></script>
-                    <script src="user/assets/js/main.js"></script>
-                    <!-- Photoswipe Gallery -->
-                    <script src="user/assets/js/vendor/photoswipe.min.js"></script>
-                    <script src="user/assets/js/vendor/photoswipe-ui-default.min.js"></script>
+                        <!-- Including Jquery -->
+                        <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
+                        <script src="user/assets/js/vendor/jquery.cookie.js"></script>
+                        <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+                        <script src="user/assets/js/vendor/wow.min.js"></script>
+                        <!-- Including Javascript -->
+                        <script src="user/assets/js/bootstrap.min.js"></script>
+                        <script src="user/assets/js/plugins.js"></script>
+                        <script src="user/assets/js/popper.min.js"></script>
+                        <script src="user/assets/js/lazysizes.js"></script>
+                        <script src="user/assets/js/main.js"></script>
+                        <!-- Photoswipe Gallery -->
+                        <script src="user/assets/js/vendor/photoswipe.min.js"></script>
+                        <script src="user/assets/js/vendor/photoswipe-ui-default.min.js"></script>
 
-                    <script>
-                        $(function () {
-                            var $pswp = $('.pswp')[0],
-                                image = [],
-                                getItems = function () {
-                                    var items = [];
-                                    $('.lightboximages a').each(function () {
-                                        var $href = $(this).attr('href'),
-                                            $size = $(this).data('size').split('x'),
-                                            item = {
-                                                src: $href,
-                                                w: $size[0],
-                                                h: $size[1]
-                                            }
-                                        items.push(item);
-                                    });
-                                    return items;
-                                }
-                            var items = getItems();
-
-                            $.each(items, function (index, value) {
-                                image[index] = new Image();
-                                image[index].src = value['src'];
-                            });
-                            $('.prlightbox').on('click', function (event) {
-                                event.preventDefault();
-
-                                var $index = $(".active-thumb").parent().attr('data-slick-index');
-                                $index++;
-                                $index = $index - 1;
-
-                                var options = {
-                                    index: $index,
-                                    bgOpacity: 0.9,
-                                    showHideOpacity: true
-                                }
-                                var lightBox = new PhotoSwipe($pswp, PhotoSwipeUI_Default, items, options);
-                                lightBox.init();
-                            });
-                        });
-                    </script>
-
-                    <script>
-
-                        function addtocart(id) {
-                            console.log('im in function')//-----------
-                            if (document.querySelector('[name="option-1"]:checked')) {
-                                var selectedSize = document.querySelector('[name="option-1"]:checked');
-
-                                var size = document.querySelector('[name="option-1"]:checked').value;
-                                console.log(size, "size");//-------------
-                                var quantity = document.getElementById('Quantity').value;
-                                let data = { productId: id, size: size, quantity: quantity }
-
-                                //    
-
-
-                                if (size) {
-
-                                    $.ajax({
-                                        method: "POST",
-                                        url: '/addtocart',
-                                        contentType: 'application/json',
-                                        data: JSON.stringify(data),
-                                        success: function (res) {
-                                            if (res.added == true) {
-                                                Swal.fire({
-                                                    title: `Added to cart`,
-                                                    icon: "success",
-                                                    timer: 1000
-                                                })
-
-
-                                            }
-
-                                        },
-                                        error: function (error) {
-                                            console.log(error);
-                                        }
-                                    })
-
-                                }
-                            }
-                            else {
-                                let paragraph = document.createElement('p');
-                                let text = document.createTextNode('Please select size.');
-                                paragraph.classList.add('text-danger');
-                                paragraph.appendChild(text);
-                                let sizeError = document.getElementById('sizeError');
-                                sizeError.appendChild(paragraph);
-                                setTimeout(() => {
-                                    sizeError.innerText = "";
-                                }, 3000)
-
-                            }
-
-                        }
-
-                        function checkCart(productId, size) {
-                            console.log('hey clicked')
-                            console.log(productId, size, 'sis')
-                            if (!productId || !size) {
-                                console.log('data not found');
-                                return;
-                            }
-                            const data = {
-                                productId,
-                                size
-                            }
-
-                            $.ajax({
-                                url: '/check-cart',
-                                type: 'post',
-                                contentType: 'application/json',
-                                data: JSON.stringify(data),
-                                success: function (res) {
-                                    console.log('hellooeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
-                                    console.log(res,);
-                                    if (res.exist) {
-
-                                        // Create a new anchor element
-var anchor = document.createElement("a");
-
-// Set attributes for the anchor
-anchor.setAttribute("id", "addToCartBtn");
-anchor.setAttribute("href", "/cart"); // Set your href value here
-anchor.setAttribute("name", "add");
-anchor.setAttribute("class", "btn product-form__cart-submit"); // Add your classes here
-
-// Create a span element for the anchor text
-var span = document.createElement("span");
-span.textContent = "view cart";
-
-// Append the span element to the anchor
-anchor.appendChild(span);
-
-// Get the container element with the class 'product-form__item--submit'
-var container = document.querySelector('.product-form__item--submit');
-container.innerHTML = ''; // Clear container's content
-
-// Append the anchor to the container
-container.appendChild(anchor);
-
-                                      
-                                    } else if(res.not) {
-                                        console.log('recicfd');
-                                        // Create a new button element
-                                        var button = $('<button></button>');
-
-                                        // Set attributes for the button
-                                        button.attr('id', 'addToCartBtn');
-                                        button.attr('type', 'button');
-                                        button.attr('name', 'add');
-                                        button.addClass('btn product-form__cart-submit');
-                                        button.attr('onclick', `addtocart('${res.productId}')`);
-
-
-                                        // Create a span element for the button text
-                                        var span = $('<span></span>').text('add to cart');
-
-                                        // Append the span element to the button
-                                        button.append(span);
-
-                                        // Get the container element with the class 'product-form__item--submit'
-                                        var container = $('.product-form__item--submit');
-                                        container.html('');
-
-                                        // Append the button to the container
-                                        container.append(button);
+                        <script>
+                            $(function () {
+                                var $pswp = $('.pswp')[0],
+                                    image = [],
+                                    getItems = function () {
+                                        var items = [];
+                                        $('.lightboximages a').each(function () {
+                                            var $href = $(this).attr('href'),
+                                                $size = $(this).data('size').split('x'),
+                                                item = {
+                                                    src: $href,
+                                                    w: $size[0],
+                                                    h: $size[1]
+                                                }
+                                            items.push(item);
+                                        });
+                                        return items;
                                     }
-                                },
-                                error: function (error) {
-                                    console.log(error);
-                                }
-                            });
-                        }
-                    </script>
-                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-            </div>
+                                var items = getItems();
 
-            <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="pswp__bg"></div>
-                <div class="pswp__scroll-wrap">
-                    <div class="pswp__container">
-                        <div class="pswp__item"></div>
-                        <div class="pswp__item"></div>
-                        <div class="pswp__item"></div>
-                    </div>
-                    <div class="pswp__ui pswp__ui--hidden">
-                        <div class="pswp__top-bar">
-                            <div class="pswp__counter"></div><button class="pswp__button pswp__button--close"
-                                title="Close (Esc)"></button><button class="pswp__button pswp__button--share"
-                                title="Share"></button><button class="pswp__button pswp__button--fs"
-                                title="Toggle fullscreen"></button><button class="pswp__button pswp__button--zoom"
-                                title="Zoom in/out"></button>
-                            <div class="pswp__preloader">
-                                <div class="pswp__preloader__icn">
-                                    <div class="pswp__preloader__cut">
-                                        <div class="pswp__preloader__donut"></div>
+                                $.each(items, function (index, value) {
+                                    image[index] = new Image();
+                                    image[index].src = value['src'];
+                                });
+                                $('.prlightbox').on('click', function (event) {
+                                    event.preventDefault();
+
+                                    var $index = $(".active-thumb").parent().attr('data-slick-index');
+                                    $index++;
+                                    $index = $index - 1;
+
+                                    var options = {
+                                        index: $index,
+                                        bgOpacity: 0.9,
+                                        showHideOpacity: true
+                                    }
+                                    var lightBox = new PhotoSwipe($pswp, PhotoSwipeUI_Default, items, options);
+                                    lightBox.init();
+                                });
+                            });
+                        </script>
+
+                        <script>
+
+                            function addtocart(id) {
+                                console.log('im in function')//-----------
+                                if (document.querySelector('[name="option-1"]:checked')) {
+                                    var selectedSize = document.querySelector('[name="option-1"]:checked');
+
+                                    var size = document.querySelector('[name="option-1"]:checked').value;
+                                    console.log(size, "size");//-------------
+                                    var quantity = document.getElementById('Quantity').value;
+                                    let data = { productId: id, size: size, quantity: quantity }
+
+
+                                    if (size) {
+
+                                        $.ajax({
+                                            method: "POST",
+                                            url: '/addtocart',
+                                            contentType: 'application/json',
+                                            data: JSON.stringify(data),
+                                            success: function (res) {
+                                                if (res.added == true) {
+                                                    Swal.fire({
+                                                        title: `Added to cart`,
+                                                        icon: "success",
+                                                        timer: 1000
+                                                    })
+
+
+                                                }
+
+                                            },
+                                            error: function (error) {
+                                                console.log(error);
+                                            }
+                                        })
+
+                                    }
+                                }
+                                else {
+                                    let paragraph = document.createElement('p');
+                                    let text = document.createTextNode('Please select size.');
+                                    paragraph.classList.add('text-danger');
+                                    paragraph.appendChild(text);
+                                    let sizeError = document.getElementById('sizeError');
+                                    sizeError.appendChild(paragraph);
+                                    setTimeout(() => {
+                                        sizeError.innerText = "";
+                                    }, 3000)
+
+                                }
+
+                            }
+
+                            function checkCart(productId, size) {
+                                console.log('hey clicked')
+                                console.log(productId, size, 'sis')
+                                if (!productId || !size) {
+                                    console.log('data not found');
+                                    return;
+                                }
+                                const data = {
+                                    productId,
+                                    size
+                                }
+
+                                $.ajax({
+                                    url: '/check-cart',
+                                    type: 'post',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify(data),
+                                    success: function (res) {
+                                        console.log('hellooeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+                                        console.log(res,);
+                                        if (res.exist) {
+
+                                            var anchor = document.createElement("a");
+
+                                            anchor.setAttribute("id", "addToCartBtn");
+                                            anchor.setAttribute("href", "/cart");
+                                            anchor.setAttribute("name", "add");
+                                            anchor.setAttribute("class", "btn product-form__cart-submit");
+
+                                            var span = document.createElement('span');
+                                            span.textContent = 'view cart';
+
+                                            anchor.appendChild(span);
+                                            var container = document.querySelector('.product-form__item--submit');
+                                            container.innerHTML = '';
+
+                                            container.appendChild(anchor);
+
+
+                                        } else if (res.not) {
+                                            console.log('recicfd');
+                                            var button = document.createElement('button');
+
+                                            button.setAttribute('id', 'addToCartBtn');
+                                            button.setAttribute('type', 'button');
+                                            button.setAttribute('name', 'add');
+                                            button.classList.add('btn', 'product-form__cart-submit');
+                                            button.setAttribute('onclick', "addtocart('" + res.productId + "')");
+
+                                            var span = document.createElement('span');
+                                            span.innerText = 'add to cart';
+                                            button.appendChild(span);
+
+                                            var container = document.querySelector('.product-form__item--submit');
+                                            container.innerHTML = '';
+
+                                            container.appendChild(button);
+
+                                        }
+                                    },
+                                    error: function (error) {
+                                        console.log(error);
+                                    }
+                                });
+                            }
+                        </script>
+                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                </div>
+
+                <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="pswp__bg"></div>
+                    <div class="pswp__scroll-wrap">
+                        <div class="pswp__container">
+                            <div class="pswp__item"></div>
+                            <div class="pswp__item"></div>
+                            <div class="pswp__item"></div>
+                        </div>
+                        <div class="pswp__ui pswp__ui--hidden">
+                            <div class="pswp__top-bar">
+                                <div class="pswp__counter"></div><button class="pswp__button pswp__button--close"
+                                    title="Close (Esc)"></button><button class="pswp__button pswp__button--share"
+                                    title="Share"></button><button class="pswp__button pswp__button--fs"
+                                    title="Toggle fullscreen"></button><button class="pswp__button pswp__button--zoom"
+                                    title="Zoom in/out"></button>
+                                <div class="pswp__preloader">
+                                    <div class="pswp__preloader__icn">
+                                        <div class="pswp__preloader__cut">
+                                            <div class="pswp__preloader__donut"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                            <div class="pswp__share-tooltip"></div>
-                        </div><button class="pswp__button pswp__button--arrow--left"
-                            title="Previous (arrow left)"></button><button
-                            class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
-                        <div class="pswp__caption">
-                            <div class="pswp__caption__center"></div>
+                            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                                <div class="pswp__share-tooltip"></div>
+                            </div><button class="pswp__button pswp__button--arrow--left"
+                                title="Previous (arrow left)"></button><button
+                                class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+                            <div class="pswp__caption">
+                                <div class="pswp__caption__center"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            </body>
+                </body>
 
-            <!-- belle/product-visitor-sold-count.html   11 Nov 2019 12:43:12 GMT -->
+                <!-- belle/product-visitor-sold-count.html   11 Nov 2019 12:43:12 GMT -->
 
-            </html>
+                </html>

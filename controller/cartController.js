@@ -25,7 +25,7 @@ const addToCart = async (req, res) => {
         console.log(" add to cart startedd>>>>>>");//-------------------
         console.log('userId', req.session.user.id);//---------------
         console.log(">>>>>>");//----------------------
-        const userId = req.session.user.id
+        const userId = req.session.user.id;
 
         const { size, quantity, productId } = req.body
         const productData = await products.findOne({ _id: productId });
@@ -33,7 +33,7 @@ const addToCart = async (req, res) => {
         console.log('size', size)//--------------------
         console.log('userId', userId)//--------------------
         console.log('q', quantity)//--------------------
-        const cartData = await Cart.find({ user: userId });
+        const cartData = await Cart.findOne({ user: userId });
 
         if (cartData) {
             let product = {
@@ -43,8 +43,10 @@ const addToCart = async (req, res) => {
                 price: productData.offerPrice,
                 totalPrice: productData.offerPrice * quantity
             }
-            const pro = await Cart.findOne({ user: userId, 'products.productId': productId })
-            const productDetails = pro.products.find((el) => el.size == size);
+            const pro = await Cart.findOne({ user: userId, 'products.productId': productId });
+            console.log(pro,'pro');//----------------------
+            if (pro !== null && typeof pro === 'object' && typeof pro.products !== 'undefined') {
+                const productDetails = pro.products.find((el) => el.size == size);
 
             if (!productDetails ) {
                 await Cart.updateOne({ user: userId }, {
@@ -52,7 +54,27 @@ const addToCart = async (req, res) => {
                         products: product,
                     }
                 })
+                console.log('product added to cart existing cart')//------------------
+            
             }
+            } else {
+                let product = {
+                    productId: productId,
+                    quantity: quantity,
+                    size: size,
+                    price: productData.offerPrice,
+                    totalPrice: productData.offerPrice * quantity
+                }
+                await Cart.updateOne({user: userId}, {
+                    $push: {
+                        products: product
+                    }
+                })
+                console.log("Pro is null or undefined, or 'products' property does not exist.");//--------------
+              
+            }
+            
+            
         } else {
             let product = {
                 productId: productId,
@@ -70,12 +92,13 @@ const addToCart = async (req, res) => {
 
             if (cartProduct) {
                 await cartProduct.save();
+               
             }
 
         }
 
-
         res.json({ added: true });
+        
     } catch (error) {
         console.log(error);
     }
@@ -85,6 +108,7 @@ const addToCart = async (req, res) => {
 // remove product from Cart
 const removeFromCart = async (req, res) => {
     try {
+        console.log('removeFromCart');//------------------
         const id = req.session.user.id;
         const productId = req.body.productId;
         const size = req.body.size;
@@ -98,21 +122,21 @@ const removeFromCart = async (req, res) => {
         console.log(error);
     }
 }
-
+// check cart
 const checkCart = async (req, res) => {
     try {
         console.log('checkCart back end');//-------------
         const userId = req.session.user.id;
         const { productId, size } = req.body;
-        console.log(req.body, userId)
+        console.log(req.body, userId)//=-----------------
         if (!userId) {
             return res.json({ nouser: true })
         }
-        const cart = await Cart.find({ user: userId, 'products.productId': productId });
+        const cart = await Cart.findOne({ user: userId, 'products.productId': productId });
         console.log('cart',cart);//----------------
         if (cart && cart.products && Array.isArray(cart.products)) {
         const product = cart.products.find((el) => el.size == size);
-        console.log(product, 'dddddddddd');
+        console.log(product, 'dddddddddd');//---------------
         if (product) {
             console.log('product exist',product)//-----------------
             res.json({ exist: true,})
@@ -120,6 +144,8 @@ const checkCart = async (req, res) => {
             res.json({ not: true, productId });
             console.log('product not exist',product)//-----------------
         }
+    }else{
+        res.json({ not: true, productId });
     }
 
     } catch (error) {
