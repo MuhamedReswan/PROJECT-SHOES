@@ -165,10 +165,6 @@ $.ajax({
     contentType:'application/json',
     success:(Response) => {
         if (Response.block == true){
-            // button=document.getElementById('block-button');
-            // button.innerText="hhh"
-
-            // location.reload()
 
             $('#reload').load('/admin/customers #reload',null,()=>{
                 Swal.fire({
@@ -186,8 +182,7 @@ $.ajax({
 
    
   }
-});
-// })            
+});           
           }
         </script>
         <script>

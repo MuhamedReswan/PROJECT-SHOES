@@ -16,8 +16,10 @@
                 <!--End Page Title-->
 
                 <div class="container">
+                    <% if(cartData.products.length>0){%>
+                        <%cartData.products.forEach((product,i)=>{%>
                     <div class="row">
-                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col" id="cartContainer">
                             <div class="alert alert-success text-uppercase" role="alert">
                                 <i class="icon anm anm-truck-l icon-large"></i> &nbsp;<strong>Congratulations!</strong>
                                 You've got free shipping!
@@ -34,8 +36,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% if(cartData){%>
-                                            <%cartData.products.forEach((product,i)=>{%>
+                                       
                                                 <tr class="cart__row border-bottom line1 cart-flex border-top">
                                                     <td class="cart__image-wrapper cart-flex-item">
                                                         <a href="#"><img class="cart__image"
@@ -74,13 +75,12 @@
                                                         </div>
                                                     </td>
                                                     <td class="text-center small--hide"><span
-                                                            onclick="removeProduct('<%= product.productId._id%>,<%= product.size%>')"
+                                                            onclick="removeProduct('<%= product.productId._id%>','<%= product.size%>')"
                                                             class="btn btn--secondary cart__remove"
                                                             title="Remove tem"><i
                                                                 class="icon icon anm anm-times-l"></i></span></td>
                                                 </tr>
-                                                <%})%>
-                                        <%}%>
+                                        
                                     </tbody>
                                     <tfoot>
                                         <tr>
@@ -161,6 +161,32 @@
                         </div>
 
                     </div>
+                    <%})%>
+                    <%}else{%>
+                  <div class="row">
+
+<div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center text-uppercase" >
+<div class="d-flex justify-content-center">
+<div  style="height: 160px; width: 200px;">
+    <img src="user/assets/images/mine/empty cart.jpg" alt="">
+</div>
+</div>
+    <div>
+
+        <h1>
+            Your cart is empty
+        </h1>
+    </div>
+    <div class="pt-2">
+        <h3></h3>
+    </div>
+    <div>
+        <a class="btn" href="/shop">Explore Shopping</a>
+    </div>
+
+</div>
+                  </div>
+                        <%}%>
                 </div>
 
             </div>
@@ -184,28 +210,46 @@
                 <script src="user/assets/js/popper.min.js"></script>
                 <script src="user/assets/js/lazysizes.js"></script>
                 <script src="user/assets/js/main.js"></script>
+
                 <script>
                     function removeProduct(id, size) {
-                        console.log('remove cart function')
-                        let data = { productId: id, size: size }
+                        console.log('id-',id,'size-',size)//-------------
+                        console.log('remove cart function')//-------------------
+                        let data = { productId: id, size }
 
-                        fetch('/remove-cart', {
-                            method: 'post',
-                            headers: {
-                                'contect-type': 'application/json'
-                            },
-                            body: JSON.stringify({ data: data })
+                  
+let cartDiv = document.getElementById('cartContainer');
 
-                        }).then((res) => {
-                            window.location.reload()
-                        }).catch((error) => {
-                            console.log(error)
-                        })
-                    }
+                    $.ajax({
+                        type:'post',
+                        url:'/remove-cart',
+                        data:JSON.stringify(data),
+                        contentType:'application/json',                      
+                        success:(response)=>{
+if(response.removed==true){
+    // window.location.reload();
+$('#cartContainer').load('/cart',null,()=>{
+    swal.fire({
+        title:'Removed',
+        icon:'success',
+        timer:1000
+    })
+})
+   
+}
+                        },
+                        error:(error)=>{
+console.log(error);
+                        }
 
-                    
+                    })
+
+                      }
                 </script>
+                <script>
 
+                </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </div>
     </body>
 

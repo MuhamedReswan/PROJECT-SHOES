@@ -58,10 +58,7 @@
                                     <input type="number" placeholder="Type here" id="price" class="form-control"
                                         name="price"  value="<%= productData.price %>"/>
                                 </div>
-                                <div>
-                                    <input type="hidden"  id="id" class="form-control"
-                                    name="id"  value="<%= productData._id %>"/>
-                                </div>
+                               
                                 <div class="col-md-4 mb-3">
                                     <label for="product_color" class="form-label">Brand</label>
                                     <input type="text" placeholder="Type here" class="form-control"
@@ -72,7 +69,10 @@
                                     <input type="number" placeholder="Type here" class="form-control"
                                         id="offer_Price" name="offerPrice" value="<%= productData.offerPrice%>"/>
                                 </div>
-
+                                <div>
+                                    <input type="hidden"  id="id" class="form-control"
+                                    name="id"  value="<%= productData._id %>"/>
+                                </div>
                             </div>
                             <div class="row gx-3">
 
