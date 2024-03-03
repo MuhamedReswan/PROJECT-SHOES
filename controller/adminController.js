@@ -21,7 +21,7 @@ const adminLoginLoad = (req, res) => {
     try {
         res.render('aaadmin-login');  
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 
 }

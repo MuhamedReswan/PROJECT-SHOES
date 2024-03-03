@@ -4,10 +4,9 @@ const category = require('../model/categoryModel');
 
 // load shop
 const loadShop = async (req,res) => {
-    try {       
+    try {   
         const categoryData =await category.find({isListed:true});
 const productData = await products.find({isListed:true}).populate('category');
-
 res.render('shop',{categoryData,productData});
     } catch (error) {
         console.log(error);
@@ -31,7 +30,6 @@ const loadSingleProduct = async (req, res)=>{
         const deliveryDate=dDate.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'2-digit'}).replaceAll(',', "-");
         console.log('startDate ',startDate )//----------------------
         console.log('veryDate',deliveryDate)//----------------------
-
         console.log('product',product)//-------------------------------------------
        if(product){
         res.render('singleProduct',{product,deliveryDate,startDate});

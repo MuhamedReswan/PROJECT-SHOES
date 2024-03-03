@@ -96,7 +96,6 @@ const addToCart = async (req, res) => {
             }
 
         }
-
         res.json({ added: true });
 
     } catch (error) {
@@ -110,8 +109,6 @@ const removeFromCart = async (req, res) => {
     try {
         console.log('removeFromCart', req.body);//------------------
         const id = req.session.user.id;
-        // const productId = req.body.productId;
-        // const size = req.body.size;
         const {productId,size}=req.body;
         console.log('productId',productId)//-----------------------------
         console.log('size',size)//-----------------------------

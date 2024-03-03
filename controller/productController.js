@@ -39,7 +39,7 @@ for (let i = 0; i <req.files.length; i++) {
 
     try {
         await sharp(inputPath)
-            .resize(500, 500)
+            .resize(500,500,)
             .toFile(outputPath);
 
     } catch (error) {
@@ -109,7 +109,7 @@ const updateProduct =async (req, res) => {
         
             try {
                 await sharp(inputPath)
-                    .resize(500, 500)
+                    .resize(800, 400)
                     .toFile(outputPath);
         
             } catch (error) {

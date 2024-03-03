@@ -38,7 +38,6 @@ user_route.use((req, res, next) => {
 // load home
 user_route.get('/',userController.loadHome );
 
-
 // load sign up
 user_route.get('/signup',userAuth.isLogout,userController.loadRegister);
 
@@ -62,6 +61,9 @@ user_route.post('/otp',userController.verifyOtp);
 
 // resend otp
 user_route.get('/resend/:email',userController.resendOtp);
+
+//forgot password
+user_route.get('forgot-password', userController.loadForgotPassword);
 
 
 
@@ -93,7 +95,8 @@ user_route.post('/check-cart',cartController.checkCart);
 
 
 
-
+// 404 error
+// user_route.get('/*',userController.loadError)//
 
 
 module.exports=user_route;

@@ -278,7 +278,19 @@ const resendOtp = async (req, res) => {
 
 // ============================================== user signup and verification end =============================================
 
+// forgot password
+const loadForgotPassword =(req,res)=>{
+    res.render('');
+}
 
+// 404 Error
+const loadError= (req,res)=>{
+try {
+    res.render('404');
+} catch (error) {
+ console.log(error);   
+}
+}
 
 module.exports = {
     loadHome,
@@ -291,6 +303,8 @@ module.exports = {
     sendOtp,
     resendOtp,
     userLogout,
+    loadError,
+    loadForgotPassword
 
 
 

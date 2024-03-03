@@ -15,28 +15,29 @@
                 </div>
                 <!--End Page Title-->
 
-                <div class="container">
+                <div class="container" id="main">
                     <% if(cartData.products.length>0){%>
                         <%cartData.products.forEach((product,i)=>{%>
-                    <div class="row">
-                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col" id="cartContainer">
-                            <div class="alert alert-success text-uppercase" role="alert">
-                                <i class="icon anm anm-truck-l icon-large"></i> &nbsp;<strong>Congratulations!</strong>
-                                You've got free shipping!
-                            </div>
-                            <form action="#" method="post" class="cart style2">
-                                <table>
-                                    <thead class="cart__row cart__header">
-                                        <tr>
-                                            <th colspan="2" class="text-center">Product</th>
-                                            <th class="text-center">Price</th>
-                                            <th class="text-center">Quantity</th>
-                                            <th class="text-right">Total</th>
-                                            <th class="action">&nbsp;</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                       
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col" id="cartContainer">
+                                    <div class="alert alert-success text-uppercase" role="alert">
+                                        <i class="icon anm anm-truck-l icon-large"></i>
+                                        &nbsp;<strong>Congratulations!</strong>
+                                        You've got free shipping!
+                                    </div>
+                                    <form action="#" method="post" class="cart style2">
+                                        <table>
+                                            <thead class="cart__row cart__header">
+                                                <tr>
+                                                    <th colspan="2" class="text-center">Product</th>
+                                                    <th class="text-center">Price</th>
+                                                    <th class="text-center">Quantity</th>
+                                                    <th class="text-right">Total</th>
+                                                    <th class="action">&nbsp;</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
                                                 <tr class="cart__row border-bottom line1 cart-flex border-top">
                                                     <td class="cart__image-wrapper cart-flex-item">
                                                         <a href="#"><img class="cart__image"
@@ -63,8 +64,8 @@
                                                                 <a class="qtyBtn minus" href="javascript:void(0);"><i
                                                                         class="icon icon-minus"></i></a>
                                                                 <input class="cart__qty-input qty" type="text"
-                                                                    name="updates[]" id="qty" value="<%= product.quantity %>"
-                                                                    pattern="[0-9]*">
+                                                                    name="updates[]" id="qty"
+                                                                    value="<%= product.quantity %>" pattern="[0-9]*" data-product-id="<%= product.productId %>" data-produt-size="<%= product.size %>" >
                                                                 <a class="qtyBtn plus" href="javascript:void(0);"><i
                                                                         class="icon icon-plus"></i></a>
                                                             </div>
@@ -80,113 +81,116 @@
                                                             title="Remove tem"><i
                                                                 class="icon icon anm anm-times-l"></i></span></td>
                                                 </tr>
-                                        
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="3" class="text-left"><a href="/shop"
-                                                    class="btn btn-secondary btn--small cart-continue">Continue
-                                                    shopping</a></td>
-                                            <td colspan="3" class="text-right">
-                                                <button type="submit" name="clear"
-                                                    class="btn btn-secondary btn--small  small--hide">Clear
-                                                    Cart</button>
-                                                <button type="submit" name="update"
-                                                    class="btn btn-secondary btn--small cart-continue ml-2">Update
-                                                    Cart</button>
-                                            </td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </form>
-                        </div>
 
-
-                        <div class="container mt-4">
-                            <div class="row">
-                                <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
-                                    <h5>Discount Codes</h5>
-                                    <form action="#" method="post">
-                                        <div class="form-group">
-                                            <label for="address_zip">Enter your coupon code if you have one.</label>
-                                            <input type="text" name="coupon">
-                                        </div>
-                                        <div class="actionRow">
-                                            <div><input type="button" class="btn btn-secondary btn--small"
-                                                    value="Apply Coupon"></div>
-                                        </div>
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="3" class="text-left"><a href="/shop"
+                                                            class="btn btn-secondary btn--small cart-continue">Continue
+                                                            shopping</a></td>
+                                                    <td colspan="3" class="text-right">
+                                                        <button type="submit" name="clear"
+                                                            class="btn btn-secondary btn--small  small--hide">Clear
+                                                            Cart</button>
+                                                        <button type="submit" name="update"
+                                                            class="btn btn-secondary btn--small cart-continue ml-2">Update
+                                                            Cart</button>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
                                     </form>
                                 </div>
 
-                                <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
-                                    <div class="solid-border">
-                                        <div class="row border-bottom pb-2">
-                                            <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
-                                            <span class="col-12 col-sm-6 text-right"><span
-                                                    class="money">$735.00</span></span>
+
+                                <div class="container mt-4">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
+                                            <h5>Discount Codes</h5>
+                                            <form action="#" method="post">
+                                                <div class="form-group">
+                                                    <label for="address_zip">Enter your coupon code if you have
+                                                        one.</label>
+                                                    <input type="text" name="coupon">
+                                                </div>
+                                                <div class="actionRow">
+                                                    <div><input type="button" class="btn btn-secondary btn--small"
+                                                            value="Apply Coupon"></div>
+                                                </div>
+                                            </form>
                                         </div>
-                                        <div class="row border-bottom pb-2 pt-2">
-                                            <span class="col-12 col-sm-6 cart__subtotal-title">Discount</span>
-                                            <span class="col-12 col-sm-6 text-right">0</span>
+
+                                        <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
+                                            <div class="solid-border">
+                                                <div class="row border-bottom pb-2">
+                                                    <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
+                                                    <span class="col-12 col-sm-6 text-right"><span
+                                                            class="money">$735.00</span></span>
+                                                </div>
+                                                <div class="row border-bottom pb-2 pt-2">
+                                                    <span class="col-12 col-sm-6 cart__subtotal-title">Discount</span>
+                                                    <span class="col-12 col-sm-6 text-right">0</span>
+                                                </div>
+                                                <div class="row border-bottom pb-2 pt-2">
+                                                    <span class="col-12 col-sm-6 cart__subtotal-title">Shipping</span>
+                                                    <span class="col-12 col-sm-6 text-right">Free shipping</span>
+                                                </div>
+                                                <div class="row border-bottom pb-2 pt-2">
+                                                    <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand
+                                                            Total</strong></span>
+                                                    <span
+                                                        class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span
+                                                            class="money">$1001.00</span></span>
+                                                </div>
+                                                <div class="cart__shipping">Shipping &amp; taxes calculated at checkout
+                                                </div>
+                                                <p class="cart_tearm">
+                                                    <label>
+                                                        <input type="checkbox" name="tearm" class="checkbox"
+                                                            value="tearm" required="">
+                                                        I agree with the terms and conditions
+                                                    </label>
+                                                </p>
+                                                <input type="submit" name="checkout" id="cartCheckout"
+                                                    class="btn btn--small-wide checkout" value="Proceed To Checkout"
+                                                    disabled="disabled">
+                                                <div class="paymnet-img"><img src="user/assets/images/payment-img.jpg"
+                                                        alt="Payment">
+                                                </div>
+                                                <p><a href="#;">Checkout with Multiple Addresses</a></p>
+                                            </div>
+
                                         </div>
-                                        <div class="row border-bottom pb-2 pt-2">
-                                            <span class="col-12 col-sm-6 cart__subtotal-title">Shipping</span>
-                                            <span class="col-12 col-sm-6 text-right">Free shipping</span>
-                                        </div>
-                                        <div class="row border-bottom pb-2 pt-2">
-                                            <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand
-                                                    Total</strong></span>
-                                            <span
-                                                class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span
-                                                    class="money">$1001.00</span></span>
-                                        </div>
-                                        <div class="cart__shipping">Shipping &amp; taxes calculated at checkout</div>
-                                        <p class="cart_tearm">
-                                            <label>
-                                                <input type="checkbox" name="tearm" class="checkbox" value="tearm"
-                                                    required="">
-                                                I agree with the terms and conditions
-                                            </label>
-                                        </p>
-                                        <input type="submit" name="checkout" id="cartCheckout"
-                                            class="btn btn--small-wide checkout" value="Proceed To Checkout"
-                                            disabled="disabled">
-                                        <div class="paymnet-img"><img src="user/assets/images/payment-img.jpg" alt="Payment">
-                                        </div>
-                                        <p><a href="#;">Checkout with Multiple Addresses</a></p>
                                     </div>
-
                                 </div>
+
                             </div>
-                        </div>
+                            <%})%>
+                                <%}else{%>
+                                    <div class="row">
 
-                    </div>
-                    <%})%>
-                    <%}else{%>
-                  <div class="row">
+                                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center text-uppercase">
+                                            <div class="d-flex justify-content-center">
+                                                <div style="height: 160px; width: 200px;">
+                                                    <img src="user/assets/images/mine/empty cart.jpg" alt="">
+                                                </div>
+                                            </div>
+                                            <div>
 
-<div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center text-uppercase" >
-<div class="d-flex justify-content-center">
-<div  style="height: 160px; width: 200px;">
-    <img src="user/assets/images/mine/empty cart.jpg" alt="">
-</div>
-</div>
-    <div>
+                                                <h1>
+                                                    Your cart is empty
+                                                </h1>
+                                            </div>
+                                            <div class="pt-2">
+                                                <h3></h3>
+                                            </div>
+                                            <div>
+                                                <a class="btn" href="/shop">Explore Shopping</a>
+                                            </div>
 
-        <h1>
-            Your cart is empty
-        </h1>
-    </div>
-    <div class="pt-2">
-        <h3></h3>
-    </div>
-    <div>
-        <a class="btn" href="/shop">Explore Shopping</a>
-    </div>
-
-</div>
-                  </div>
-                        <%}%>
+                                        </div>
+                                    </div>
+                                    <%}%>
                 </div>
 
             </div>
@@ -213,43 +217,82 @@
 
                 <script>
                     function removeProduct(id, size) {
-                        console.log('id-',id,'size-',size)//-------------
+                        console.log('id-', id, 'size-', size)//-------------
                         console.log('remove cart function')//-------------------
                         let data = { productId: id, size }
 
-                  
-let cartDiv = document.getElementById('cartContainer');
+                        $.ajax({
+                            type: 'post',
+                            url: '/remove-cart',
+                            data: JSON.stringify(data),
+                            contentType: 'application/json',
+                            success: (response) => {
+                                if (response.removed == true) {
+                                    $('#main').load('/cart #main', null, () => {
+                                        swal.fire({
+                                            title: 'Removed',
+                                            icon: 'success',
+                                            timer: 1000
+                                        })
+                                    })
 
-                    $.ajax({
-                        type:'post',
-                        url:'/remove-cart',
-                        data:JSON.stringify(data),
-                        contentType:'application/json',                      
-                        success:(response)=>{
-if(response.removed==true){
-    // window.location.reload();
-$('#cartContainer').load('/cart',null,()=>{
-    swal.fire({
-        title:'Removed',
-        icon:'success',
-        timer:1000
-    })
-})
-   
-}
-                        },
-                        error:(error)=>{
-console.log(error);
-                        }
+                                }
+                            },
+                            error: (error) => {
+                                console.log(error);
+                            }
 
-                    })
+                        })
 
-                      }
+                    }
                 </script>
+
+
                 <script>
+// JavaScript
+document.addEventListener("DOMContentLoaded", function() {
+    // Get the input element
+    var qtyInput = document.querySelector('.cart__qty-input');
 
+    // Get the plus and minus buttons
+    var plusBtn = document.querySelector('.plus');
+    var minusBtn = document.querySelector('.minus');
+
+    // Add event listener for the plus button
+    plusBtn.addEventListener('click', function(event) {
+        qtyInput.value = parseInt(qtyInput.value) + 1;
+    });
+
+    // Add event listener for the minus button
+    minusBtn.addEventListener('click', function() {
+       let input= document.getElementById('qty');
+      let size=input.getAttribute('')
+        if (parseInt(qtyInput.value) > 1) {
+            qtyInput.value = parseInt(qtyInput.value) - 1;
+        }
+    }); 
+
+  
+
+
+});
+
+function call(data){
+    let data=data;
+    $ajax({
+            type:'POST',
+            url:'/change-quantity',
+            contentType:'application/json',
+            data:JSON.stringify(data),
+            success:(res)=>{
+            },
+            error:(error)=>{
+console.log(error);
+            }
+        })
+}
                 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </div>
     </body>
 
