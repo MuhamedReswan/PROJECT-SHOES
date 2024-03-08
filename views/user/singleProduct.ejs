@@ -323,6 +323,7 @@
 
                                                 </ul>
                                                 <h3></h3>
+
                                             </div>
                                         </div>
 
@@ -782,8 +783,27 @@
                                                     Swal.fire({
                                                         title: `Added to cart`,
                                                         icon: "success",
+                                                        showConfrimationButton: false,
                                                         timer: 1000
                                                     })
+
+                                                    var anchor = document.createElement("a");
+
+                                                    anchor.setAttribute("id", "addToCartBtn");
+                                                    anchor.setAttribute("href", "/cart");
+                                                    anchor.setAttribute("name", "add");
+                                                    anchor.setAttribute("name", "add");
+                                                    anchor.setAttribute("class", "btn product-form__cart-submit");
+                                                    anchor.setAttribute("style", "margin-top: 2px");
+
+                                                    var span = document.createElement('span');
+                                                    span.textContent = 'view cart';
+
+                                                    anchor.appendChild(span);
+                                                    var container = document.querySelector('.product-form__item--submit');
+                                                    container.innerHTML = '';
+
+                                                    container.appendChild(anchor);
 
 
                                                 }
@@ -829,7 +849,7 @@
                                     contentType: 'application/json',
                                     data: JSON.stringify(data),
                                     success: function (res) {
-                                        console.log('hellooeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+                                        console.log('hellooeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');//-------------------
                                         console.log(res,);
                                         if (res.exist) {
 
@@ -851,7 +871,7 @@
 
 
                                         } else if (res.not) {
-                                            console.log('recicfd');
+                                            console.log('recicfd');//--------------------------
                                             var button = document.createElement('button');
 
                                             button.setAttribute('id', 'addToCartBtn');

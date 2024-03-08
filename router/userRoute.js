@@ -63,8 +63,17 @@ user_route.post('/otp',userController.verifyOtp);
 user_route.get('/resend/:email',userController.resendOtp);
 
 //forgot password
-user_route.get('forgot-password', userController.loadForgotPassword);
+user_route.get('/forgot-password', userController.loadForgotPassword);
 
+//update password
+user_route.post('/forgot-password', userController.forgotPassword);
+
+// reset Password 
+user_route.get('/reset-password/:id/:token', userController.loadResetPassword);
+user_route.post('/reset-password', userController.resetPassword);
+
+//profile
+user_route.get('/profile', userController.loadProfile)
 
 
 

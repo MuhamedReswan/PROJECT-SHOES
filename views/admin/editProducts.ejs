@@ -282,7 +282,7 @@
                     <div class="col-6 mx-auto mb-3" >
                         <div class="d-flex justify-content-center align-items-center ">
                         
-                            <button class="btn btn-md rounded font-sm hover-up mr-5 text-left">Upload</button>
+                            <button class="btn btn-md rounded font-sm hover-up mr-5 text-left" >Upload</button>
                             <a href="/admin/category" class="btn btn-md rounded font-sm hover-up ml-5">Back</a>
                         </div>
                     </div>
@@ -305,11 +305,14 @@ function previewImages(input, index) {
 
         reader.onload = function(e) {
             $('#imagePreview' + (parseInt(index) + 1)).attr('src', e.target.result);
+            var fileName = input.files[0].name;
+            $('#imageInput' + (parseInt(index) + 1)).siblings('.image-name').val(fileName);
         }
 
         reader.readAsDataURL(input.files[0]);
     }
 }
+
 
 
 </script>

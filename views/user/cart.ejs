@@ -1,11 +1,11 @@
 <%- include('../layout/user/header.ejs') -%>
 
     <div class="pageWrapper">
-        <%-include('../partials/userNavbar')-%>
+       
 
             <!--Body Content-->
             <div id="page-content">
-                <!--Page Title-->
+                <!-- Page Title -->
                 <div class="page section-header text-center">
                     <div class="page-title">
                         <div class="wrapper">
@@ -16,16 +16,19 @@
                 <!--End Page Title-->
 
                 <div class="container" id="main">
-                    <% if(cartData.products.length>0){%>
-                        <%cartData.products.forEach((product,i)=>{%>
-                            <div class="row">
+                    <div class="row" >
+                    
+                       
                                 <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col" id="cartContainer">
+                                    <% if(cartData.products.length>0){%>
                                     <div class="alert alert-success text-uppercase" role="alert">
                                         <i class="icon anm anm-truck-l icon-large"></i>
                                         &nbsp;<strong>Congratulations!</strong>
                                         You've got free shipping!
                                     </div>
                                     <form action="#" method="post" class="cart style2">
+                                        
+                                            
                                         <table>
                                             <thead class="cart__row cart__header">
                                                 <tr>
@@ -36,6 +39,7 @@
                                                     <th class="action">&nbsp;</th>
                                                 </tr>
                                             </thead>
+                                            <%cartData.products.forEach((product,i)=>{%>
                                             <tbody>
 
                                                 <tr class="cart__row border-bottom line1 cart-flex border-top">
@@ -83,6 +87,8 @@
                                                 </tr>
 
                                             </tbody>
+                                            <%})%>
+                                            
                                             <tfoot>
                                                 <tr>
                                                     <td colspan="3" class="text-left"><a href="/shop"
@@ -163,10 +169,9 @@
                                         </div>
                                     </div>
                                 </div>
-
+                               
                             </div>
-                            <%})%>
-                                <%}else{%>
+                            <%}else{%>
                                     <div class="row">
 
                                         <div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center text-uppercase">
@@ -197,7 +202,7 @@
             <!--End Body Content-->
 
             <!--Footer-->
-            <%-include('../partials/userBodyFooter.ejs')-%>
+            
                 <!--End Footer-->
                 <!--Scoll Top-->
                 <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
@@ -228,13 +233,14 @@
                             contentType: 'application/json',
                             success: (response) => {
                                 if (response.removed == true) {
-                                    $('#main').load('/cart #main', null, () => {
+                                    // $('#main').load('/cart', null, () => {
+                                        location.reload();
                                         swal.fire({
                                             title: 'Removed',
                                             icon: 'success',
                                             timer: 1000
                                         })
-                                    })
+                                    // })
 
                                 }
                             },
@@ -266,7 +272,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add event listener for the minus button
     minusBtn.addEventListener('click', function() {
        let input= document.getElementById('qty');
-      let size=input.getAttribute('')
+      let size=input.getAttribute('data-produt-size')
         if (parseInt(qtyInput.value) > 1) {
             qtyInput.value = parseInt(qtyInput.value) - 1;
         }

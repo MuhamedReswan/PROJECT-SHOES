@@ -3,81 +3,155 @@
 
 <div class="pageWrapper">
 
-    
+  
         <!--Body Content-->
-        <div id="page-content">
-            <!--Page Title-->
-            <!-- <div class="page section-header text-center">
-                <div class="page-title">
-                    <div class="wrapper"><h1 class="page-width">Login</h1></div>
-                  </div>
-            </div> -->
-            <!--End Page Title-->
-            
-            <div class="container"  >
-                <div class="row mb-4 login-form "  style="display: flex; align-items: center;">
-                    <div class="col-12 col-sm-12 col-md-6 col-lg-6 main-col offset-md-3 pt-5 d-flex justify-content-center " >
-                        <div class="mb-4 d-flex justify-content-center"style="background-color: rgb(244, 239, 230);" >
-                           <form method="post" action="" id="CustomerLoginForm" accept-charset="UTF-8" class="contact-form p-5 " >
-                         <div class="text-center">  <%if(messages.passwordError) {%>
+        <style>
+          /* Style for input fields */
+input[type="email"],
+input[type="password"] {
+    width: calc(100% - 20px); /* Adjust width as needed */
+    padding: 8px; /* Adjust padding as needed */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    box-sizing: border-box; /* Ensure padding and border are included in element's total width and height */
+}
 
-                            <div class="text text-align text-danger mb-3">
-                                    <strong>  <span><%= messages.passwordError %>..!</span></strong>
-                               </div>
-                               <%}%>
+/* Style for input fields when focused */
+input[type="email"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: black; /* Change color when input is focused */
+    box-shadow: 0 0 5px black; /* Add a subtle shadow when input is focused */
+}
+
+/* Style for submit button */
+input[type="submit"] {
+    background-color: black; /* Black background */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+/* Change button background color on hover */
+input[type="submit"]:hover {
+    background-color: #333; /* Darken the background color on hover */
+}
+
+/* Style for links */
+a {
+    color: black; /* Black color */
+    text-decoration: none;
+}
+
+/* Change link color on hover */
+a:hover {
+    color: #333; /* Darken the link color on hover */
+}
+
+.contact-form{
+    max-width: 400px;
+    max-height: 400px;
+  }
+/* .wrapper-otp{
+  max-width: 500px;
+  
+}
+     */
+
+        </style>
+
+
+        <div id="page-content" >
+          <!-- Page Title -->
+          <div class="page section-header text-center">
+              <div class="page-title">
+                  <div class="wrapper"><h1 class="page-width">Login</h1></div>
+              </div>
+          </div>
+          <!-- End Page Title -->
+         
         
-                               <%if(messages.emailError) {%>
-                    
-                                <div class="text text-align text-danger  mb-3">
-                                    <strong>  <span><%= messages.emailError %>..!</span></strong>
-                               </div>
-                               <%}%>
-                               <%if(messages.blocked) {%>
-                    
-                                <div class="text text-align text-danger mb-3 ">
-                                    <strong>  <span><%= messages.blocked %>..!</span></strong>
-                               </div>
-                               <%}%>
+
+          <div class="container">
+            <div class="row login-form" style="display: flex; align-items: center;">
+                <div class="col-12 col-sm-12 col-md-6 col-lg-6 main-col offset-md-3 pt-5 d-flex justify-content-center">
+                    <div class="mb-4 d-flex justify-content-center" style="background-color: #f8f9fa; border-radius: 15px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);">
+                        <form method="post" action="/login"  id="CustomerLoginForm" accept-charset="UTF-8" class="contact-form p-5">
+                            <div class="text-center"> 
+                               
+                              <div class="text text-align text-danger mb-3" id="emailErrorMessage" style="display: none;">
+                                <strong>Please enter email!</strong>
+                            </div>
+                            
+                            <div class="text text-align text-danger mb-3" id="passwordErrorMessage" style="display: none;">
+                                <strong>Please enter password!</strong>
+                            </div>
+                            
+                                <%if(messages.passwordError) {%>
+                                    <div class="text text-align text-danger mb-3">
+                                        <strong><span><%= messages.passwordError %>..!</span></strong>
+                                    </div>
+                                <%}%>
+            
+                                <%if(messages.emailError) {%>
+                                    <div class="text text-align text-danger  mb-3">
+                                        <strong><span><%= messages.emailError %>..!</span></strong>
+                                    </div>
+                                <%}%>
+            
+                                <%if(messages.blocked) {%>
+                                    <div class="text text-align text-danger mb-3">
+                                        <strong><span><%= messages.blocked %>..!</span></strong>
+                                    </div>
+                                <%}%>
+                                <%if(messages.success) {%>
+                                    <div class="text text-align text-success mb-3">
+                                        <strong><span><%= messages.success %>..!</span></strong>
+                                    </div>
+                                <%}%>
+                                <div class="text text-align text-danger mb-3" id="emailErrorMessage" style="display: none;">
+                                    <strong>Please enter email!</strong>
+                                </div>
                             </div> 
-                              <div class="row">
-                                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-12 mx-auto">
                                     <div class="form-group">
-                                        <label for="CustomerEmail">Enter Your Email</label>
-                                        <input type="email" name="Email" placeholder="" id="CustomerEmail" class="bg-white" autocorrect="off" autocapitalize="off" autofocus="">
+                                        <input type="email" name="Email" placeholder="Enter Your Email" id="CustomerEmail" class="bg-white" autocorrect="off" autocapitalize="off" autofocus="">
                                     </div>
                                 </div>
                                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                                     <div class="form-group">
-                                        <label for="CustomerPassword">Enter Your Password</label>
-                                        <input type="password" value="" name="Password" placeholder="" id="CustomerPassword" class="bg-white">                        	
+                                        <input type="password" value="" name="Password" placeholder="Enter Your Password" id="CustomerPassword" class="bg-white">                        	
                                     </div>
                                 </div>
-                              </div>
-                              <div class="row">
+                            </div>
+                            <div class="row">
                                 <div class="text-center col-12 col-sm-12 col-md-12 col-lg-12">
-                                    <input type="submit" class="btn mb-3" value="Sign In">
+                                    <input type="submit" class="btn mb-3" value="Sign In" onclick="validateForm()">
                                     <p class="mb-4">
-                                        <a href="#" id="RecoverPassword btn" data-toggle="modal" data-target="#exampleModal" >Forgot your password?</a> 
+                                        <a href="/forgot-password" id="RecoverPassword btn" >Forgot your password?</a> 
                                         <a href="/signup" id="customer_register_link">Create account</a>
                                     </p>
                                 </div>
-                             </div>
-                         </form>
-                        </div>
-                       </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-            
         </div>
+        
+      </div>
+      
         <!--End Body Content-->
 
-   <!-- Button trigger modal -->
-<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"> -->
-    <!-- Launch demo modal -->
-  </button>
-  
+ 
+
   <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" tyle="background-color: #f8f9fa; border-radius: 15px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -90,12 +164,15 @@
           </button>
         </div>
         <div class="modal-body">
-            <label for="">Enter Your Email</label>
-          <input type="text" id="forgot-email">
+            <form action="/forgot-password" method="post">
+              <div class="form-group">
+          <input type="text" id="forgot-password" placeholder="Enter Your Email" name="forgotpassword">      
+        </div>
+       </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">upload</button>
+          <button type="submit" class="btn btn-primary" id="sendButton">Send</button>
         </div>
       </div>
     </div>
@@ -103,10 +180,49 @@
     
     <!--Footer-->
     <!--End Footer-->
+ 
       <!--Scoll Top-->
       <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
       <!--End Scoll Top-->
       
+      <script>
+
+        function validateForm(event) {
+    event.preventDefault(); // Prevent the default form submission behavior
+            
+    var email = document.getElementById("CustomerEmail").value.trim();
+    var password = document.getElementById("CustomerPassword").value.trim();
+    var emailErrorMessage = document.getElementById("emailErrorMessage");
+    var passwordErrorMessage = document.getElementById("passwordErrorMessage");
+    
+    if (email === "") {
+        emailErrorMessage.style.display = "block";
+        passwordErrorMessage.style.display = "none";
+        setTimeout(function() {
+            emailErrorMessage.style.display = "none";
+        }, 3000); // Hide after 3 seconds
+    } else if (password === "") {
+        passwordErrorMessage.style.display = "block";
+        emailErrorMessage.style.display = "none";
+        setTimeout(function() {
+            passwordErrorMessage.style.display = "none";
+        }, 3000); // Hide after 3 seconds
+    } else {
+        // Both fields are filled, proceed with form submission or other actions
+        emailErrorMessage.style.display = "none";
+        passwordErrorMessage.style.display = "none";
+        
+        // For now, I'm just logging a message indicating the form would be submitted
+        console.log("Form would be submitted.");
+        document.getElementById("CustomerLoginForm").submit();
+    }
+}
+
+document.getElementById("CustomerLoginForm").onsubmit = validateForm;
+
+
+    </script>
+    
        <!-- Including Jquery -->
        <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
        <script src="user/assets/js/vendor/jquery.cookie.js"></script>
