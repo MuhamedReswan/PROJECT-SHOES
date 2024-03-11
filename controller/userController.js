@@ -418,6 +418,7 @@ const loadProfile = (req,res)=>{
 }
 
 
+
 // 404 Error
 const loadError = (req, res) => {
     try {
@@ -443,7 +444,8 @@ module.exports = {
     forgotPassword,
     loadResetPassword,
     resetPassword,
-    loadProfile
+    loadProfile,
+
 
 
 

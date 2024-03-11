@@ -29,6 +29,23 @@ const userSchema = mongoose.Schema({
     isAdmin: {
         type: Boolean
     },
+    addresses:[{
+        name:{
+            type:String
+        },
+        state:{
+            type:String
+        },
+        city:{
+            type:String
+        },
+        phoneNo:{
+            type:Number
+        },
+        pinNo:{
+            type:Number
+        }
+    }],
     date:{
         type:Date,
         default:Date.now

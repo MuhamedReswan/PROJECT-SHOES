@@ -8,12 +8,6 @@ function validate(){
     const password = document.getElementById('password');
     const conform = document.getElementById('conform');    
 
-    // const lname = document.getElementById('name');
-    // const lemail = document.getElementById('email');
-    // const lmobile = document.getElementById('mobile');
-    // const lpassword = document.getElementById('password');
-    // const lrpassword = document.getElementById('rpassword');    
-
     if (!/^\w+$/.test(username.value)){
         console.log("im in function")
 // lname.style.display=''
@@ -88,13 +82,13 @@ return false
 
 
 
-function alert(id) {
-    setTimeout(() => {
-        id.style.border = '';
-        id.textContent = '';
-        id.classList.remove('custom_alert');
-    }, 3000); 
-}
+// function alert(id) {
+//     setTimeout(() => {
+//         id.style.border = '';
+//         id.textContent = '';
+//         id.classList.remove('custom_alert');
+//     }, 3000); 
+// }
 
 //  const serverError = document.querySelector('.serverError');
 

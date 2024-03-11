@@ -98,6 +98,12 @@ user_route.post('/remove-cart',cartController.removeFromCart);
 // check cart
 user_route.post('/check-cart',cartController.checkCart);
 
+// change cart quantity
+user_route.post('/change-quantity',cartController.changeQuantity)
+
+
+//checkout 
+user_route.get('/checkout',cartController.loadCheckout)
 
 
 
