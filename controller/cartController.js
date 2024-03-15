@@ -1,20 +1,27 @@
 const products = require('../model/productsModel');
 const Cart = require('../model/cartModel');
 const { json } = require('express');
+const mongoose = require('mongoose');
 
 
 //load Cart
 const loadCart = async (req, res) => {
     try {
         console.log('im in caert');//-----------------------------
-        const userId = req.session.user.id;
-        if (userId) {
-            const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
-            // console.log("cartData", cartData);//--------------------------------
-            res.render('Cart', { cartData });
+        if (!req.session.user || !req.session.user.id) {
+            req.flash('error', 'please Login then only service');
+            res.redirect('/login')
         } else {
-            res.render('Cart');
+            const userId = req.session.user.id;
+            if (userId) {
+                const cartData = await Cart.findOne({ user: userId }).populate('products.productId').exec();
+                // console.log("cartData", cartData);//--------------------------------
+                res.render('Cart', { cartData });
+            } else {
+                res.render('Cart');
+            }
         }
+
     } catch (error) {
         console.log(error);
     }
@@ -116,9 +123,13 @@ const removeFromCart = async (req, res) => {
     try {
         console.log('removeFromCart', req.body);//------------------
         const id = req.session.user.id;
-        const { productId, size } = req.body;
+        let { productId, size } = req.body;
+        productId=productId.trim()
         console.log('productId', productId)//-----------------------------
         console.log('size', size)//-----------------------------
+if (!mongoose.Types.ObjectId.isValid(productId)){
+    return res.status(400).json({ error: 'Invalid productId' });
+}
         const cartProducts = await Cart.updateOne({ user: id }, {
             $pull: {
                 products: { productId: productId, size: size }
@@ -162,69 +173,134 @@ const checkCart = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 }
+// ================================
+// cart change quantity
+// const changeQuantity = async (req, res) => {
+//     try {
+//         console.log('im in change qty')//--------------
+//         const { productId, size, qtyBtn, } = req.body
+//         const quantity = parseInt(req.body.quantity);
+//         console.log('req,body changepppppppppppppppppppppppppppppppppp', productId)//--------------
+//         const userId = req.session.user.id;
+//         console.log('userId',userId);//------------------------
+//         const product = await products.findOne({ _id: productId });
+//         console.log("product.stock.size", product.stock[size]);//-----------
+
+//         console.log('product', product)//--------------------
+//         if (!product) {
+//             return res.status(404).json({ error: 'Product not found' });
+//         } else {
+
+//             if (qtyBtn == true) {
+//                 const sizeQuantity = parseInt(product.stock[size]);
+//                 console.log('qtyBtn == true')//--------------------------
+//                 console.log('product.stock[size]=', product.stock[size], typeof product.stock[size], "quantity", quantity, typeof quantity);//-------------------------
+//                 console.log('product.stock[size] > quantity', product.stock[size] > quantity, 'sizeQuantity', sizeQuantity)//--------------------------
+//                 if (sizeQuantity > quantity) {
+//                     console.log('productId from qtybtn == true', productId)//--------------------
+//                     await Cart.findOneAndUpdate(
+//                         { user: userId, 'products.productId': productId},  
+//                         { $inc: { 'products.$.quantity': 1 } },
+//                         { new: true }
+//                     );
+//                     res.json({ update: true })
+//                 } else {
+//                     console.log('true eror')//--------------------------
+
+//                     res.json({ update: false, quantity: 'maximum' })
+//                 }
+//             } else if (qtyBtn == false) {
+//                 console.log('qtyBtn,-----------', qtyBtn)//--------------------------
+//                 console.log('qtyBtn == false')//--------------------------
+//                 if (quantity > 1) {
+//                     await Cart.findOneAndUpdate(
+//                         { user: userId, 'products.productId': productId, 'products.size': size },
+//                         { $inc: { 'products.$.quantity': -1 } },
+//                         { new: true }
+//                     );
+//                     res.json({ update: true });
+//                 } else {
+//                     console.log('false eror')//--------------------------
+//                     res.json({ update: false, quantity: 'minimum' });
+//                 }
+//             }
+//         }
+
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+
+// }
+// ================================
 
 // cart change quantity
 const changeQuantity = async (req, res) => {
     try {
         console.log('im in change qty')//--------------
-        const { productId, size, qtyBtn, } = req.body
-        const quantity = parseInt(req.body.quantity);
-        console.log('req,body change', productId)//--------------
-        const userId = req.session.user.id
+        const { productId, id, status } = req.body;
+        const userId = req.session.user.id;
+        console.log('req.body=', req.body);//------------
+        console.log('type.stauts=', typeof req.body.status);//------------
+        console.log('id', id)//------
+        const cart = await Cart.findOne({ user: userId });
+        console.log('cart =', cart);//--------
         const product = await products.findOne({ _id: productId });
-        console.log("product.stock.size", product.stock[size]);//-----------
+        console.log('product =', product);//--------        
+        const cartProduct = await cart.products.find((n) => n._id == id)
+        console.log('cartProduct =', cartProduct);//------
 
-        console.log('product', product)//--------------------
-        if (!product) {
-            return res.status(404).json({ error: 'Product not found' });
-        } else {
-
-            if (qtyBtn == true) {
-                const sizeQuantity = parseInt(product.stock[size]);
-                console.log('qtyBtn == true')//--------------------------
-                console.log('product.stock[size]=', product.stock[size], typeof product.stock[size], "quantity", quantity, typeof quantity);//-------------------------
-                console.log('product.stock[size] > quantity', product.stock[size] > quantity, 'sizeQuantity', sizeQuantity)//--------------------------
-                if (sizeQuantity > quantity) {
-                    await Cart.findOneAndUpdate(
-                        { user: userId, 'products.productId': productId, 'products.size': size },
-                        { $inc: { 'products.$.quantity': 1 } },
-                        { new: true }
-                    );
-                    res.json({ update: true })
+        if (status) {
+            const size = cartProduct.size;
+            const cartQuantity = cartProduct.quantity;
+            const productQuantity = parseInt(product.stock[size]);
+            console.log('cartQuantity', cartQuantity);//---------------
+            console.log('productQuantity', productQuantity);//---------------
+            console.log('size', size);//---------------
+            if (status == -1) {
+                if (cartQuantity > 1) {
+                    await Cart.updateOne(
+                        { user: userId, products: { $elemMatch: { _id: id } } },
+                        { $inc: { 'products.$.quantity': -1 } }
+                    )
+                    return res.json({ update: true })
                 } else {
-                    console.log('true eror')//--------------------------
-
-                    res.json({ update: false, quantity: 'maximum' })
+                    console.log('minimum quantity required');
+                    return res.json({ min: true });
                 }
-            } else if (qtyBtn == false) {
-                console.log('qtyBtn,-----------', qtyBtn)//--------------------------
-                console.log('qtyBtn == false')//--------------------------
-                if (quantity > 1) {
-                    await Cart.findOneAndUpdate(
-                        { user: userId, 'products.productId': productId, 'products.size': size },
-                        { $inc: { 'products.$.quantity': -1 } },
-                        { new: true }
-                    );
-                    res.json({ update: true });
+            }
+
+            if (cartQuantity == 5) {
+                console.log('max qty');
+                return res.json({ maxQty: true })
+            }
+
+            if (status == 1) {
+                if (cartQuantity < productQuantity) {
+                    console.log('ffggggggggggggggggggggggggggg');//---------------------
+
+                    await Cart.updateOne(
+                        { user: userId, products: { $elemMatch: { _id: id } } },
+                        { $inc: { "products.$.quantity": 1 } } 
+                    )
+                    return res.json({ update: true })
                 } else {
-                    console.log('false eror')//--------------------------
-                    res.json({ update: false, quantity: 'minimum' });
+                    console.log('cart quantity equal');//--------------
+                    return res.json({ max: true });
                 }
             }
         }
-
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
-
 }
 
 // load checkout
 const loadCheckout = (req, res) => {
     try {
         console.log('im in checkout');//-----------
-        res.render('checkout1');
+        res.render('checkout');
     } catch (error) {
         console.log(error);
     }

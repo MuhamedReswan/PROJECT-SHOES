@@ -1671,6 +1671,9 @@ body.home15-funiture-template { font-size:14px; }
   
 }
      */
+     .cart__qty-input{
+      width: 50px;
+     }
 
 
 .blur-up.lazyloaded { -webkit-filter:blur(0); filter:blur(0); }

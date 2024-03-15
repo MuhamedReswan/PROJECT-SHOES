@@ -102,20 +102,30 @@ const updateProduct =async (req, res) => {
         }
         console.log('arrimages',arrImages);//------------------
         
-        
         for (let i = 0; i <req.files.length; i++) {
             const inputPath = req.files[i].path;
             const outputPath = path.join(__dirname,'..', 'public', 'user', 'assets', 'images', 'product-images', 'sharpedImages', req.files[i].filename);
         
             try {
                 await sharp(inputPath)
-                    .resize(800, 400)
+                    .resize(500, 500)
                     .toFile(outputPath);
         
             } catch (error) {
                 console.error('Error processing image:', error);
             }
         }
+        
+        
+       const dbData = await products.findOne({name:updateData.name})
+        console.log('dbData',dbData);//----------------
+        const dbImages = [...dbData.images];
+        console.log('dbImages',dbImages);//-----------
+for(let i=0; i<arrImages.length; i++){
+    dbImages[parseInt(updateData.index[i])] =arrImages[i]
+}
+console.log('dbImages',dbImages);//-----------
+
         
            const updateObj = {}
            const size = updateData.size;
@@ -141,10 +151,9 @@ const productUpdate = await products.updateOne({_id:updateData.id},{
         category:updateData.category,
         brand:updateData.brand,
         isListed:updateData.isListed,
-        stock: updateObj,
-        
+        stock: updateObj,       
         size:updateData.size,
-        // images:arrImages,
+        images:dbImages,
         totalStock:totalStock
     }
 })

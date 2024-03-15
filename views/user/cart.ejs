@@ -1,6 +1,6 @@
 <%- include('../layout/user/header.ejs') -%>
 
-    <div class="pageWrapper">
+    <div class="pageWrapper " id="wrapper">
 
 
         <!--Body Content-->
@@ -26,117 +26,95 @@
                                 &nbsp;<strong>Congratulations!</strong>
                                 You've got free shipping!
                             </div>
-                            <form action="#" method="post" class="cart style2">
+                             <table>
+                                <thead class="cart__row cart__header">
+                                    <tr>
+                                        <th colspan="2" class="text-center">Product</th>
+                                        <th class="text-center">Price</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-right">Total</th>
+                                        <th class="action">&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <% let totalPrice=0, totalOfferPrice=0 %>
+                                    <%cartData.products.forEach((product,i)=>{%>
+                                        <tbody>
 
+                                            <tr class="cart__row border-bottom line1 cart-flex border-top">
+                                                <td class="cart__image-wrapper cart-flex-item">
+                                                    <a href="#"><img class="cart__image"
+                                                            src="user/assets/images/product-images/sharpedImages/<%= product.productId.images[0] %>"
+                                                            alt="Elastic Waist Dress - Navy / Small"></a>
+                                                </td>
+                                                <td class="cart__meta small--text-left cart-flex-item">
+                                                    <div class="list-view-item__title">
+                                                        <a href="#">
+                                                            <%= product.productId.name %>
+                                                        </a>
+                                                    </div>
 
-                                <table>
-                                    <thead class="cart__row cart__header">
-                                        <tr>
-                                            <th colspan="2" class="text-center">Product</th>
-                                            <th class="text-center">Price</th>
-                                            <th class="text-center">Quantity</th>
-                                            <th class="text-right">Total</th>
-                                            <th class="action">&nbsp;</th>
-                                        </tr>
-                                    </thead>
-                                    <% let totalPrice=0, totalOfferPrice=0 %>
-                                        <%cartData.products.forEach((product,i)=>{%>
-                                            <tbody>
+                                                    <div class="cart__meta-text">
+                                                        <br>Size: <%= product.size %> <br>
+                                                    </div>
+                                                </td>
+                                                <td class="cart__price-wrapper cart-flex-item">
+                                                    <span class="money">₹<%= product.price %></span>
+                                                </td>
+                                                <td class="cart__update-wrapper cart-flex-item text-center ">
 
-                                                <tr class="cart__row border-bottom line1 cart-flex border-top">
-                                                    <td class="cart__image-wrapper cart-flex-item">
-                                                        <a href="#"><img class="cart__image"
-                                                                src="user/assets/images/product-images/sharpedImages/<%= product.productId.images[0] %>"
-                                                                alt="Elastic Waist Dress - Navy / Small"></a>
-                                                    </td>
-                                                    <td class="cart__meta small--text-left cart-flex-item">
-                                                        <div class="list-view-item__title">
-                                                            <a href="#">
-                                                                <%= product.productId.name %>
-                                                            </a>
-                                                        </div>
+                                                    <div class="cart__qty text-center d-flex justify-content-center">
 
-                                                        <div class="cart__meta-text">
-                                                            <br>Size: <%= product.size %> <br>
-                                                        </div>
-                                                    </td>
-                                                    <td class="cart__price-wrapper cart-flex-item">
-                                                        <span class="money">₹<%= product.price %></span>
-                                                    </td>
-                                                    <td class="cart__update-wrapper cart-flex-item text-right">
-                                                        <div class="cart__qty text-center">
-                                                            <div class="qtyField">
-                                                                <a class="qtyBtn minus" href="javascript:void(0);"><i
-                                                                        class="icon icon-minus"></i></a>
-                                                                <input class="cart__qty-input qty" type="text" max="10"
-                                                                    name="updates[]" id="qty"
-                                                                    value="<%= product.quantity %>" pattern="[0-9]*"
-                                                                    data-product-id="<%= product.productId._id %>"
-                                                                    data-produt-size="<%= product.size %>">
-                                                                <a class="qtyBtn plus" href="javascript:void(0);"><i
-                                                                        class="icon icon-plus"></i></a>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td class="text-right small--hide cart-price">
-                                                        <div><span class="money">₹ <%= product.price * product.quantity
-                                                                    %></span>
-                                                        </div>
-                                                    </td>
-                                                    <td class="text-center small--hide"><span
-                                                            onclick="removeProduct('<%= product.productId._id %>','<%= product.size %>')"
-                                                            class="btn btn--secondary cart__remove"
-                                                            title="Remove tem"><i
-                                                                class="icon icon anm anm-times-l"></i></span></td>
-                                                </tr>
+                                                        <button type="button" class="qtyBtn minus"
+                                                            onclick="changeQuantity('<%=product.productId._id %>','<%=product._id%>',-1)"><i
+                                                                class="icon icon-minus"></i></button>
 
-                                            </tbody>
+                                                        <input class="cart__qty-input qty text-center" type="text"
+                                                            max="10" name="updates[]" id="qty"
+                                                            value="<%= product.quantity %>" pattern="[0-9]*"
+                                                            data-product-id="<%= product.productId._id %>"
+                                                            data-produt-size="<%= product.size %>">
 
-                                            <% totalPrice +=product.price * product.quantity,
-                                                totalOfferPrice+=product.offerPrice * product.quantity %>
-                                                <% console.log('totalPrice',totalPrice,'totalOfferPrice/',totalOfferPrice)
-                                                    %>
-                                                    <% console.log('product.offerPrice',product.offerPrice) %>
+                                                        <button type="button" class="qtyBtn plus"
+                                                            onclick="changeQuantity('<%=product.productId._id %>','<%=product._id%>',1)"><i
+                                                                class="icon icon-plus"></i></button>
+                                                    </div>
+                                                </td>
+                                                <td class="text-right small--hide cart-price">
+                                                    <div><span class="money">₹ <%= product.price * product.quantity %>
+                                                                </span>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center small--hide"><span
+                                                        onclick="removeProduct(' <%=product.productId._id %>','<%=product.size %>')"
+                                                        class="btn btn--secondary cart__remove" title="Remove tem"><i
+                                                            class="icon icon anm anm-times-l"></i></span>
+                                                </td>
+                                            </tr>
 
-                                                        <%})%>
+                                        </tbody>
 
-                                                            <tfoot>
-                                                                <tr>
-                                                                    <td colspan="3" class="text-left"><a href="/shop"
-                                                                            class="btn btn-secondary btn--small cart-continue">Continue
-                                                                            shopping</a></td>
-                                                                    <!-- <td colspan="3" class="text-right">
-                                                        <button type="submit" name="clear"
-                                                            class="btn btn-secondary btn--small  small--hide">Clear
-                                                            Cart</button>
-                                                        <button type="submit" name="update"
-                                                            class="btn btn-secondary btn--small cart-continue ml-2">Update
-                                                            Cart</button>
-                                                    </td> -->
-                                                                </tr>
-                                                            </tfoot>
-                                </table>
-                            </form>
+                                        <% totalPrice +=product.price * product.quantity,
+                                            totalOfferPrice+=product.offerPrice * product.quantity %>
+                                            <% console.log('totalPrice',totalPrice,'totalOfferPrice/',totalOfferPrice)
+                                                %>
+                                                <% console.log('product.offerPrice',product.offerPrice) %>
+
+                                                    <%})%>
+
+                                                        <tfoot>
+                                                            <tr>
+                                                                <td colspan="3" class="text-left"><a href="/shop"
+                                                                        class="btn btn-secondary btn--small cart-continue">Continue
+                                                                        shopping</a></td>
+
+                                                            </tr>
+                                                        </tfoot>
+                            </table>
                     </div>
 
 
                     <div class="container mt-4">
                         <div class="row d-flex justify-content-center">
-                            <!-- <div class="col-12 col-sm-12 col-md-4 col-lg-4 mb-4">
-                                            <h5>Discount Codes</h5>
-                                            <form action="#" method="post">
-                                                <div class="form-group">
-                                                    <label for="address_zip">Enter your coupon code if you have
-                                                        one.</label>
-                                                    <input type="text" name="coupon">
-                                                </div>
-                                                <div class="actionRow">
-                                                    <div><input type="button" class="btn btn-secondary btn--small"
-                                                            value="Apply Coupon"></div>
-                                                </div>
-                                            </form>
-                                        </div> -->
-
                             <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
                                 <div class="solid-border">
                                     <div class="row border-bottom pb-2">
@@ -160,21 +138,10 @@
                                             class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span
                                                 class="money">₹ <%= totalOfferPrice %>.00</span></span>
                                     </div>
-                                    <!-- <div class="cart__shipping">Shipping &amp; taxes calculated at checkout
-                                                </div>
-                                                <p class="cart_tearm">
-                                                    <label>
-                                                        <input type="checkbox" name="tearm" class="checkbox"
-                                                            value="tearm" required="">
-                                                        I agree with the terms and conditions
-                                                    </label>
-                                                </p> -->
+
                                     <a href="/checkout" type="button" name="checkout" id="cartCheckout"
                                         class="btn btn--small-wide checkout" disabled="disabled">Proceed to checkout</a>
-                                    <!-- <div class="paymnet-img"><img src="user/assets/images/payment-img.jpg"
-                                                        alt="Payment">
-                                                </div> -->
-                                    <!-- <p><a href="#;">Checkout with Multiple Addresses</a></p> -->
+
                                 </div>
 
                             </div>
@@ -233,8 +200,8 @@
 
         <script>
             function removeProduct(id, size) {
-                console.log('id-', id, 'size-', size)//-------------
-                console.log('remove cart function')//-------------------
+                console.log('id-', id, 'size-', size);//---
+                console.log('remove cart function');//---
                 let data = { productId: id, size }
 
                 Swal.fire({
@@ -254,7 +221,7 @@
                             contentType: 'application/json',
                             success: (response) => {
                                 if (response.removed == true) {
-                                    $('#main').load('/cart #main', null, () => {
+                                    $('#wrapper').load('/cart #wrapper', null, () => {
                                         Swal.fire({
                                             title: "Removed!",
                                             text: "Your product has been removed from cart.",
@@ -276,98 +243,43 @@
             }
         </script>
 
-
         <script>
-            // JavaScript
-            document.addEventListener("DOMContentLoaded", function () {
-                console.log('im add dom functioon');
-                // Get all plus and minus buttons
-                var plusBtns = document.querySelectorAll('.plus');
-                var minusBtns = document.querySelectorAll('.minus');
-                console.log(plusBtns);
-                console.log(minusBtns);
-                // Add event listener for each plus button
-                plusBtns.forEach(function (plusBtn) {
-                    plusBtn.addEventListener('click', function (event) {
-                        event.preventDefault();
-
-                        let qtyInput = this.previousElementSibling;
-                        let qt = qtyInput.value
-
-                        console.log('qt', qt);
-
-                        let productId = qtyInput.getAttribute('data-product-id');
-                        let productSize = qtyInput.getAttribute('data-produt-size');
-                        let qtyBtn = true
-
-                        call(productId, productSize, qtyBtn, qt);
-
-                        console.log('product.quantity', qt);//------------------
-                    });
-                });
-
-                // Add event listener for each minus button
-                minusBtns.forEach(function (minusBtn) {
-                    minusBtn.addEventListener('click', function (event) {
-                        event.preventDefault();
-                        let qtyInput = this.nextElementSibling;
-                        let qt = qtyInput.value;
-                        console.log('qty', qt);
-
-                        let productId = qtyInput.getAttribute('data-product-id');
-                        let productSize = qtyInput.getAttribute('data-produt-size');
-                        let qtyBtn = false
-                        call(productId, productSize, qtyBtn, qt);
-                    });
-                });
-            });
-
-            function call(productId, size, qtyBtn, qty) {
-                console.log('call function call');
-                let data = { productId: productId, size: size, qtyBtn: qtyBtn, quantity: qty };
-
+            function changeQuantity(productId, id, status) {
+                console.log('im in change quantity 2');
+                let data = { productId: productId, id: id, status: status }
+                console.log('data=', data);
                 $.ajax({
-                    type: 'POST',
-                    url: '/change-quantity',
+                    type: 'post',
+                    url: 'change-quantity',
                     contentType: 'application/json',
                     data: JSON.stringify(data),
-                    success: function (res) {
-                       
-                            if (res.update == true) {
-
-                                // window.location.reload()
-                                $('#main').load('/cart #main',()=>{
-                                    console.log('true');//-----------
-                                })
-                            } else if(res.update == false && res.quantity=='maximum'){
-
-                                $('#main').load('/cart #main', () => {
-                                    swal.fire({
-                                        icon: "warning",
-                                        title: "Oops...",
-                                        text: "No More products !",
-                                    })
-                                    console.log('false',res.quantity);//-----------
-                                })
-
-                            }else if(res.update == false && res.quantity=='minimum'){
-
-                                $('#main').load('/cart #main', () => {
-                                    swal.fire({
-                                        icon: "warning",
-                                        title: "Oops...",
-                                        text: "Minimum quantity required!",
-                                    })
-                                    console.log('false',res.quantity);//-----------
-                                })
-                            }else{
-                                console.log('eroor from ajax')
-                            }                                  
-                    },
-                    error: function(error) {
-                            console.log(error);
+                    success: (res) => {
+                        $('#wrapper').load('/cart #wrapper');
+                        if (res.min) {
+                            swal.fire({
+                                icon: "warning",
+                                title: "Oops...",
+                                text: "Minimum Quantity Required !",
+                            });
+                        } else if (res.maxQty) {
+                            swal.fire({
+                                icon: "warning",
+                                title: "Oops...",
+                                text: "Maximum quantity user!",
+                            });
+                        } else if (res.max) {
+                            swal.fire({
+                                icon: "warning",
+                                title: "Oops...",
+                                text: "No More products !",
+                            });
+                        } else if (res.update) {
+                            console.log('updated Sucessfuly !');
                         }
-
+                    },
+                    error: (error) => {
+                        console.log(error);
+                    }
                 });
             }
 

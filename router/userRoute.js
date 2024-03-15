@@ -7,6 +7,7 @@ const session = require('express-session');
 const shopController = require('../controller/shopController');
 const userController = require('../controller/userController');
 const cartController = require('../controller/cartController');
+const wishlistController = require('../controller/wishlistController');
 const config = require('../config/config');
 const userAuth = require('../middlewares/userAuth');
 
@@ -77,7 +78,7 @@ user_route.get('/profile', userController.loadProfile)
 
 
 
-// load shoap
+// load shop
 user_route.get('/shop',shopController.loadShop);
 
 // load single Product
@@ -99,12 +100,18 @@ user_route.post('/remove-cart',cartController.removeFromCart);
 user_route.post('/check-cart',cartController.checkCart);
 
 // change cart quantity
-user_route.post('/change-quantity',cartController.changeQuantity)
+// user_route.post('/change-quantity',cartController.changeQuantity);
+
+
+user_route.post('/change-quantity',cartController.changeQuantity);
 
 
 //checkout 
-user_route.get('/checkout',cartController.loadCheckout)
+user_route.get('/checkout',cartController.loadCheckout);
 
+
+//wishlist 
+user_route.get('/wishlist',wishlistController.loadWishlist);
 
 
 

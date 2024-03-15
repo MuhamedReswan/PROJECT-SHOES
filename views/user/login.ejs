@@ -113,6 +113,11 @@ a:hover {
                                         <strong><span><%= messages.success %>..!</span></strong>
                                     </div>
                                 <%}%>
+                                <%if(messages.error) {%>
+                                    <div class="text text-align text-success mb-3">
+                                        <strong><span><%= messages.error %>..!</span></strong>
+                                    </div>
+                                <%}%>
                                 <div class="text text-align text-danger mb-3" id="emailErrorMessage" style="display: none;">
                                     <strong>Please enter email!</strong>
                                 </div>

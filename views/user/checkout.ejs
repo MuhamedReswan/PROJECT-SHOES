@@ -19,8 +19,10 @@
         	<div class="row">
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
                     <div class="customer-box returning-customer">
-                        <h3><i class="icon anm anm-user-al"></i> Returning customer? <a href="#customer-login" id="customer" class="text-white text-decoration-underline" data-toggle="collapse">Click here to login</a></h3>
-                        <div id="customer-login" class="collapse customer-content">
+                        <h3><i class="icon anm anm-user-al"></i> Do want add new address? <a href="#addAddress" id="customer" class="text-white text-decoration-underline" data-toggle="collapse">Add New address</a></h3>
+                        <!-- <h3><i class="icon anm anm-user-al"></i> Do want add new address? <a href="#customer-login" id="customer" class="text-white text-decoration-underline" data-toggle="collapse">Add New address</a></h3> -->
+                      
+                        <!-- <div id="customer-login" class="collapse customer-content">
                             <div class="customer-info">
                                 <p class="coupon-text">If you have shopped with us before, please enter your details in the boxes below. If you are a new customer, please proceed to the Billing &amp; Shipping section.</p>
                                 <form>
@@ -47,7 +49,122 @@
                                     </div>
                                 </form>
                             </div>
+                        </div> -->
+
+                        <div id="addAddress" class="create-ac-content bg-light-gray padding-20px-all collapse">
+                            <form action="/add-address" method="post">
+                                <fieldset>
+                                    <h2 class="login-title mb-3">Billing details</h2>
+                                    <div class="row">
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <label for="input-firstname">Full Name <span class="required-f">*</span></label>
+                                            <input name="name" value="" id="input-firstname" type="text">
+                                        </div>
+                                        <!-- <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <label for="input-lastname">Last Name <span class="required-f">*</span></label>
+                                            <input name="lastname" value="" id="input-lastname" type="text">
+                                        </div> -->
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <label for="input-telephone">Mobile <span class="required-f">*</span></label>
+                                            <input name="mobile" value="" id="input-telephone" type="tel">
+                                        </div>
+                                    </div>
+                                  
+                                </fieldset>
+    
+                                <fieldset>
+                                    <div class="row">
+                                       
+                                        <div class="form-group col-md-12 col-lg-12 col-xl-12 required">
+                                            <label for="input-address-1">Address <span class="required-f">*</span></label>
+                                            <input name="address" value="" id="input-address-1" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6">
+                                            <label for="input-address-2">Distric <span class="required-f">*</span></label>
+                                            <input name="distric" value="" id="input-address-2" type="text">
+                                        </div>
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <label for="input-city">City <span class="required-f">*</span></label>
+                                            <input name="city" value="" id="input-city" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <label for="input-postcode">Post Code <span class="required-f">*</span></label>
+                                            <input name="postcode" value="" id="input-postcode" type="text">
+                                        </div>
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <label for="input-country">Country <span class="required-f">*</span></label>
+                                            <select name="country" id="input-country">
+                                                <option value="India" selected>India</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <!-- <label for="input-zone">Region / State <span class="required-f">*</span></label>
+                                            <select name="zone_id" id="input-zone">
+                                                <option value=""> --- Please Select --- </option>
+                                                <option value="3513">Aberdeen</option>
+                                                <option value="3514">Aberdeenshire</option>
+                                                <option value="3515">Anglesey</option>
+                                                <option value="3516">Angus</option>
+                                            </select> -->
+                                            
+                                            <label for="input-zone">Region / State <span class="required-f">*</span></label>
+                                            <select name="zone_id" id="input-zone">
+                                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                                <option value="Assam">Assam</option>
+                                                <option value="Bihar">Bihar</option>
+                                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                                <option value="Goa">Goa</option>
+                                                <option value="Gujarat">Gujarat</option>
+                                                <option value="Haryana">Haryana</option>
+                                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                                <option value="Jharkhand">Jharkhand</option>
+                                                <option value="Karnataka">Karnataka</option>
+                                                <option value="Kerala" selected>Kerala</option>
+                                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                                <option value="Maharashtra">Maharashtra</option>
+                                                <option value="Manipur">Manipur</option>
+                                                <option value="Meghalaya">Meghalaya</option>
+                                                <option value="Mizoram">Mizoram</option>
+                                                <option value="Nagaland">Nagaland</option>
+                                                <option value="Odisha">Odisha</option>
+                                                <option value="Punjab">Punjab</option>
+                                                <option value="Rajasthan">Rajasthan</option>
+                                                <option value="Sikkim">Sikkim</option>
+                                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                                <option value="Telangana">Telangana</option>
+                                                <option value="Tripura">Tripura</option>
+                                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                                <option value="Uttarakhand">Uttarakhand</option>
+                                                <option value="West Bengal">West Bengal</option>
+                                                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                                <option value="Chandigarh">Chandigarh</option>
+                                                <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                                                <option value="Daman and Diu">Daman and Diu</option>
+                                                <option value="Lakshadweep">Lakshadweep</option>
+                                                <option value="Delhi">Delhi</option>
+                                                <option value="Puducherry">Puducherry</option>
+                                            </select>
+                                            
+                                        </div>
+                                    </div>
+                                </fieldset>
+    
+    
+                                <fieldset>
+                                    <div class="row">
+                                      <div class="btn">submit</div>
+                                    </div>
+                                </fieldset>
+                            </form>
                         </div>
+
                     </div>
                 </div>
 
@@ -70,7 +187,7 @@
 
             <div class="row billing-fields">
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 sm-margin-30px-bottom">
-                    <div class="create-ac-content bg-light-gray padding-20px-all">
+                    <!-- <div class="create-ac-content bg-light-gray padding-20px-all">
                         <form>
                             <fieldset>
                                 <h2 class="login-title mb-3">Billing details</h2>
@@ -169,7 +286,8 @@
                                 </div>
                             </fieldset>
                         </form>
-                    </div>
+                    </div> -->
+                    <div class="text-center"><h1>add address</h1></div>
                 </div>
 
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
