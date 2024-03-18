@@ -2,6 +2,7 @@ const products = require('../model/productsModel');
 const Cart = require('../model/cartModel');
 const { json } = require('express');
 const mongoose = require('mongoose');
+const Users = require('../model/userModel');
 
 
 //load Cart
@@ -16,9 +17,9 @@ const loadCart = async (req, res) => {
             if (userId) {
                 const cartData = await Cart.findOne({ user: userId }).populate('products.productId').exec();
                 // console.log("cartData", cartData);//--------------------------------
-                res.render('Cart', { cartData });
+                res.render('cart', { cartData });
             } else {
-                res.render('Cart');
+                res.render('cart');
             }
         }
 
@@ -51,9 +52,9 @@ const addToCart = async (req, res) => {
                 price: productData.price,
                 offerPrice: productData.offerPrice
             }
-            console.log('product from addto Cart 0', product);//-------------------
+            // console.log('product from addto Cart 0', product);//-------------------
             const pro = await Cart.findOne({ user: userId, 'products.productId': productId });
-            console.log(pro, 'pro');//----------------------
+            // console.log(pro, 'pro');//----------------------
             if (pro !== null && typeof pro === 'object' && typeof pro.products !== 'undefined') {
                 const productDetails = pro.products.find((el) => el.size == size);
 
@@ -68,7 +69,7 @@ const addToCart = async (req, res) => {
                 }
             }
             else {
-                let product = {
+                const product = {
                     productId: productId,
                     quantity: quantity,
                     size: size,
@@ -97,7 +98,7 @@ const addToCart = async (req, res) => {
                 price: productData.price,
                 offerPrice: productData.offerPrice
             }
-            console.log('product from addto Cart2', product);//-------------------
+            // console.log('product from addto Cart2', product);//-------------------
 
             const cartProduct = new Cart({
                 user: userId,
@@ -148,21 +149,21 @@ const checkCart = async (req, res) => {
         const userId = req.session.user.id;
 
         const { productId, size } = req.body;
-        console.log(req.body, userId)//=-----------------
+        // console.log(req.body, userId)//=-----------------
         if (!userId) {
             return res.json({ nouser: true })
         }
         const cart = await Cart.findOne({ user: userId, 'products.productId': productId });
-        console.log('cart', cart);//----------------
+        // console.log('cart', cart);//----------------
         if (cart && cart.products && Array.isArray(cart.products)) {
             const product = cart.products.find((el) => el.size == size);
             // console.log(product, 'dddddddddd');//---------------
             if (product) {
-                console.log('product exist', product)//-----------------
+                // console.log('product exist', product)//-----------------
                 res.json({ exist: true, })
             } else {
                 res.json({ not: true, productId });
-                console.log('product not exist', product)//-----------------
+                // console.log('product not exist', product)//-----------------
             }
         } else {
             res.json({ not: true, productId });
@@ -173,91 +174,32 @@ const checkCart = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 }
-// ================================
-// cart change quantity
-// const changeQuantity = async (req, res) => {
-//     try {
-//         console.log('im in change qty')//--------------
-//         const { productId, size, qtyBtn, } = req.body
-//         const quantity = parseInt(req.body.quantity);
-//         console.log('req,body changepppppppppppppppppppppppppppppppppp', productId)//--------------
-//         const userId = req.session.user.id;
-//         console.log('userId',userId);//------------------------
-//         const product = await products.findOne({ _id: productId });
-//         console.log("product.stock.size", product.stock[size]);//-----------
 
-//         console.log('product', product)//--------------------
-//         if (!product) {
-//             return res.status(404).json({ error: 'Product not found' });
-//         } else {
-
-//             if (qtyBtn == true) {
-//                 const sizeQuantity = parseInt(product.stock[size]);
-//                 console.log('qtyBtn == true')//--------------------------
-//                 console.log('product.stock[size]=', product.stock[size], typeof product.stock[size], "quantity", quantity, typeof quantity);//-------------------------
-//                 console.log('product.stock[size] > quantity', product.stock[size] > quantity, 'sizeQuantity', sizeQuantity)//--------------------------
-//                 if (sizeQuantity > quantity) {
-//                     console.log('productId from qtybtn == true', productId)//--------------------
-//                     await Cart.findOneAndUpdate(
-//                         { user: userId, 'products.productId': productId},  
-//                         { $inc: { 'products.$.quantity': 1 } },
-//                         { new: true }
-//                     );
-//                     res.json({ update: true })
-//                 } else {
-//                     console.log('true eror')//--------------------------
-
-//                     res.json({ update: false, quantity: 'maximum' })
-//                 }
-//             } else if (qtyBtn == false) {
-//                 console.log('qtyBtn,-----------', qtyBtn)//--------------------------
-//                 console.log('qtyBtn == false')//--------------------------
-//                 if (quantity > 1) {
-//                     await Cart.findOneAndUpdate(
-//                         { user: userId, 'products.productId': productId, 'products.size': size },
-//                         { $inc: { 'products.$.quantity': -1 } },
-//                         { new: true }
-//                     );
-//                     res.json({ update: true });
-//                 } else {
-//                     console.log('false eror')//--------------------------
-//                     res.json({ update: false, quantity: 'minimum' });
-//                 }
-//             }
-//         }
-
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-
-// }
-// ================================
 
 // cart change quantity
 const changeQuantity = async (req, res) => {
     try {
         console.log('im in change qty')//--------------
-        const { productId, id, status } = req.body;
+        const { productId, id, buttonStatus } = req.body;
         const userId = req.session.user.id;
-        console.log('req.body=', req.body);//------------
-        console.log('type.stauts=', typeof req.body.status);//------------
+        // console.log('req.body=', req.body);//------------
+        console.log('type.stauts=', typeof req.body.buttonStatus);//------------
         console.log('id', id)//------
         const cart = await Cart.findOne({ user: userId });
-        console.log('cart =', cart);//--------
+        // console.log('cart =', cart);//--------
         const product = await products.findOne({ _id: productId });
-        console.log('product =', product);//--------        
+        // console.log('product =', product);//--------        
         const cartProduct = await cart.products.find((n) => n._id == id)
-        console.log('cartProduct =', cartProduct);//------
+        // console.log('cartProduct =', cartProduct);//------
 
-        if (status) {
+        if (buttonStatus) {
             const size = cartProduct.size;
             const cartQuantity = cartProduct.quantity;
             const productQuantity = parseInt(product.stock[size]);
-            console.log('cartQuantity', cartQuantity);//---------------
-            console.log('productQuantity', productQuantity);//---------------
-            console.log('size', size);//---------------
-            if (status == -1) {
+            // console.log('cartQuantity', cartQuantity);//---------------
+            // console.log('productQuantity', productQuantity);//---------------
+            // console.log('size', size);//---------------
+            if (buttonStatus == -1) {
                 if (cartQuantity > 1) {
                     await Cart.updateOne(
                         { user: userId, products: { $elemMatch: { _id: id } } },
@@ -275,9 +217,9 @@ const changeQuantity = async (req, res) => {
                 return res.json({ maxQty: true })
             }
 
-            if (status == 1) {
+            if (buttonStatus == 1) {
                 if (cartQuantity < productQuantity) {
-                    console.log('ffggggggggggggggggggggggggggg');//---------------------
+                    // console.log('ffggggggggggggggggggggggggggg');//---------------------
 
                     await Cart.updateOne(
                         { user: userId, products: { $elemMatch: { _id: id } } },
@@ -285,7 +227,7 @@ const changeQuantity = async (req, res) => {
                     )
                     return res.json({ update: true })
                 } else {
-                    console.log('cart quantity equal');//--------------
+                    // console.log('cart quantity equal');//--------------
                     return res.json({ max: true });
                 }
             }
@@ -297,10 +239,16 @@ const changeQuantity = async (req, res) => {
 }
 
 // load checkout
-const loadCheckout = (req, res) => {
+const loadCheckout = async (req, res) => {
     try {
         console.log('im in checkout');//-----------
-        res.render('checkout');
+        const userId =req.session.user.id;
+        console.log('userId chsckout',userId);//------------
+        const userData = await Users.findOne({_id:userId});
+       const cartData= await Cart.findOne({user:userId}).populate('products.productId');
+       console.log('userData',userData);//-----------------
+       console.log('cartData',cartData);//-----------------
+        res.render('checkout',{userData,cartData});
     } catch (error) {
         console.log(error);
     }

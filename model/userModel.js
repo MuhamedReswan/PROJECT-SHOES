@@ -29,21 +29,38 @@ const userSchema = mongoose.Schema({
     isAdmin: {
         type: Boolean
     },
-    addresses:[{
-        name:{
-            type:String
+    addresses: [{
+        name: {
+            type: String,
+            required: true
         },
-        state:{
-            type:String
+        mobile: {
+            type: String,
+            required: true
         },
-        city:{
-            type:String
+        address: {
+            type: String,
+            required: true
         },
-        phoneNo:{
-            type:Number
+        district: {
+            type: String,
+            required: true
         },
-        pinNo:{
-            type:Number
+        city: {
+            type: String,
+            required: true
+        },
+         pincode: {
+            type: String,
+            required: true
+        },
+        state: {
+            type: String,
+            required: true
+        },
+        country: {
+            type: String,
+            required: true
         }
     }],
     date:{

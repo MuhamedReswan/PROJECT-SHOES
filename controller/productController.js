@@ -86,7 +86,6 @@ console.log('product saved');
     }
 }
 
-
 // update edit product
 const updateProduct =async (req, res) => {
     try {
@@ -118,13 +117,13 @@ const updateProduct =async (req, res) => {
         
         
        const dbData = await products.findOne({name:updateData.name})
-        console.log('dbData',dbData);//----------------
+        // console.log('dbData',dbData);//----------------
         const dbImages = [...dbData.images];
-        console.log('dbImages',dbImages);//-----------
+        // console.log('dbImages',dbImages);//-----------
 for(let i=0; i<arrImages.length; i++){
     dbImages[parseInt(updateData.index[i])] =arrImages[i]
 }
-console.log('dbImages',dbImages);//-----------
+// console.log('dbImages',dbImages);//-----------
 
         
            const updateObj = {}

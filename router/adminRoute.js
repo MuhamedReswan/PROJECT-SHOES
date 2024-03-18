@@ -54,8 +54,7 @@ admin_route.post('/block-user', adminController.blockUser);
 
 //admin logout 
 admin_route.get('/logout',adminAuth.isLogin, adminController.loadLogout);
-
-
+  
 
 
 

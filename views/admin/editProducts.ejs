@@ -3,34 +3,6 @@
 
 <main class="main-wrap ">
      <%- include('../partials/adminHeaderBody') -%>
-     <style>
-        .image-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-}
-
-.image-container {
-    margin: 10px;
-    text-align: center;
-}
-
-.preview-image {
-    width: 100px;
-    height: 100px;
-    margin-bottom: 5px;
-}
-
-.image-label {
-    display: block;
-    cursor: pointer;
-}
-
-.imageInput {
-    display: none;
-}
-
-     </style>
     <section class="content-main  mx-auto">
         <form action="/admin/edit-products" onsubmit="return editValidateForm()" enctype="multipart/form-data"
             method="post">
@@ -176,6 +148,54 @@
         </div>
     <% } %>
 </div>
+
+                    </div>
+                    <div class="col-6 mx-auto mb-3" >
+                        <div class="d-flex justify-content-center align-items-center ">
+                        
+                            <button class="btn btn-md rounded font-sm hover-up mr-5 text-left" >Upload</button>
+                            <a href="/admin/category" class="btn btn-md rounded font-sm hover-up ml-5">Back</a>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <!-- card end// -->
+
+                </div>
+            </div>
+
+        </form>
+    </section>
+</main>
+<style>
+    .image-row {
+display: flex;
+flex-wrap: wrap;
+justify-content: space-around;
+}
+
+.image-container {
+margin: 10px;
+text-align: center;
+}
+
+.preview-image {
+width: 100px;
+height: 100px;
+margin-bottom: 5px;
+}
+
+.image-label {
+display: block;
+cursor: pointer;
+}
+
+.imageInput {
+display: none;
+}
+
+ </style>
 <style>
     .image-row {
     display: flex;
@@ -243,57 +263,20 @@
 }
 
 </style>
-                    </div>
-                    <div class="col-6 mx-auto mb-3" >
-                        <div class="d-flex justify-content-center align-items-center ">
-                        
-                            <button class="btn btn-md rounded font-sm hover-up mr-5 text-left" >Upload</button>
-                            <a href="/admin/category" class="btn btn-md rounded font-sm hover-up ml-5">Back</a>
-                        </div>
-                    </div>
-                    
-                    
-                    
-                    <!-- card end// -->
-
-                </div>
-            </div>
-
-        </form>
-    </section>
-</main>
 
 <script>
-// function previewImages(input, index) {
-//     if (input.files && input.files[0]) {
-//         var reader = new FileReader();
-
-//         reader.onload = function(e) {
-//             $('#imagePreview' + (parseInt(index) + 1)).attr('src', e.target.result);
-//             console.log('e.target.result',e.target.result)//--------
-//             var fileName = input.files[0].name;
-//             console.log('fileName',fileName)//--------
-//             $('#imageInput' + (parseInt(index) + 1)).siblings('.image-name').val(fileName);
-//         }
-
-//         reader.readAsDataURL(input.files[0]);
-//     }
-// }
-
 
 function previewImages(input, index) {
     if (input.files && input.files[0]) {
-        var reader = new FileReader();
+        let reader = new FileReader();
 
         reader.onload = function(e) {
             $('#imagePreview' + (parseInt(index) + 1)).attr('src', e.target.result);
-            console.log('e.target.result',e.target.result)//--------
-            var fileName = input.files[0].name;
-            console.log('fileName',fileName)//--------
+            let fileName = input.files[0].name;
             $('#imageInput' + (parseInt(index) + 1)).siblings('.image-name').val(fileName);
             
             // Create and append the hidden input field for old image
-            var oldImageInput = $('<input>').attr({
+            let oldImageInput = $('<input>').attr({
                 type: 'hidden',
                 name: 'index',
                 id: 'oldImageInput' + (parseInt(index) + 1),
@@ -311,83 +294,25 @@ function previewImages(input, index) {
 
 </script>
 
-        <!-- <script>
-
-function previewImages(input) {
-    const previewContainer = document.getElementById('previewContainer');
-    previewContainer.innerHTML = ''; // Clear previous previews
-
-    const files = input.files;
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.alt = 'Preview';
-            img.style.height = '150px';
-            img.style.width = '150px';
-
-            const fileName = document.createElement('p');
-            fileName.textContent = file.name;
-            fileName.style.whiteSpace = 'nowrap'; // Prevent line breaks
-            fileName.style.overflow = 'hidden'; // Hide overflow text
-            fileName.style.textOverflow = 'ellipsis'; // Show ellipsis (...) for overflow text
-            fileName.style.width = '100%'; // Ensure the file name stays within its container
-
-            const changeBtn = document.createElement('button');
-            changeBtn.textContent = 'Change Image';
-            changeBtn.onclick = function() {
-                const newInput = document.createElement('input');
-                newInput.type = 'file';
-                newInput.accept = 'image/*';
-                newInput.onchange = function(event) {
-                    const newFile = event.target.files[0];
-                    const newReader = new FileReader();
-                    newReader.onload = function (evt) {
-                        img.src = evt.target.result;
-                        fileName.textContent = newFile.name; // Update file name
-                    };
-                    newReader.readAsDataURL(newFile);
-                };
-                newInput.click();
-            };
-
-            const previewDiv = document.createElement('div');
-            previewDiv.className = 'col-lg-3 col-md-4 mb-3';
-            previewDiv.appendChild(img);
-            previewDiv.appendChild(fileName);
-            previewDiv.appendChild(changeBtn);
-            previewContainer.appendChild(previewDiv);
-        };
-
-        reader.readAsDataURL(file);
-    }
-}
-
-
-</script> -->
-
     <script>
     function editValidateForm() {
-    var name = document.getElementById('product_title').value.trim();
-    var description = document.getElementById('description').value.trim();
-    var price = document.getElementById('price').value.trim();
-    var brand = document.getElementById('product_brand').value.trim();
-    var offerPrice = document.getElementById('offer_Price').value.trim();
-    var imageInput = document.getElementById('imageInput').files.length;
+    let name = document.getElementById('product_title').value.trim();
+    let description = document.getElementById('description').value.trim();
+    let price = document.getElementById('price').value.trim();
+    let brand = document.getElementById('product_brand').value.trim();
+    let offerPrice = document.getElementById('offer_Price').value.trim();
+    // let imageInput = document.getElementById('imageInput').files.length;
     
-    var quantityInputs = document.querySelectorAll('.quantity-input');
-    var hasQuantity = false;
+    let quantityInputs = document.querySelectorAll('.quantity-input');
+    let hasQuantity = false;
     quantityInputs.forEach(function(input) {
         if (parseInt(input.value) > 0) {
             hasQuantity = true;
         }
     });
 
-    var lettersAndNumbersRegex = /^[a-zA-Z\s]*$/;
-    var errorMessageContainer = document.getElementById('errorMessages');
+    let lettersAndNumbersRegex = /^[a-zA-Z\s]*$/;
+    let errorMessageContainer = document.getElementById('errorMessages');
 
     errorMessageContainer.innerHTML = '';
 
@@ -447,25 +372,10 @@ function previewImages(input) {
                     errorMessageContainer.innerHTML = '';
                 }, 3000);
                  return false;
+            }
     
-    // } else if (imageInput < 4) {
-    //     errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Please add 4 images of the product.</div></div>';
-    //     setTimeout(function() {
-    //                 errorMessageContainer.innerHTML = '';
-    //             }, 3000);
-    //              return false;
-    
-    // } else if (imageInput > 4) {
-    //     errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Only 4 images are allowed.</div></div>';
-    //     setTimeout(function() {
-    //                 errorMessageContainer.innerHTML = '';
-    //             }, 3000);
-    //             return false;
-    
-    } else {
-        return true;
-    }
-
+    return true;
+        console.log('true');//---------------------
    
 }
 

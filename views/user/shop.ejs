@@ -166,7 +166,7 @@
                                                                    <i class="icon anm anm-search-plus-r"></i>
                                                                </a>
                                                        <div class="wishlist-btn">
-                                                           <a class="wishlist add-to-wishlist" href="wishlist/<%=product._id%>" title="Add to Wishlist">
+                                                           <a class="wishlist add-to-wishlist"  title="Add to Wishlist" onclick="addToWishlist('<%=product._id%>')">
                                                                <i class="icon anm anm-heart-l"></i>
                                                            </a>
                                                        </div>
@@ -249,6 +249,26 @@
     <!--End Scoll Top-->
     
 
+
+    <script>
+        function addToWishlist(productId){
+            console.log('im add to wishlist function');//--------------
+let data = {productId:productId}
+console.log('data',data)//-------------
+$.ajax({
+    type:'post',
+    url:'/add-to-wishlist',
+    contentType:'application/json',
+    data:JSON.stringify(data),
+    success: (res)=>{
+
+    },
+    error:(error)=>{
+console.log(error);
+    }
+})
+        }
+    </script>
     
      <!-- Including Jquery -->
      <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>

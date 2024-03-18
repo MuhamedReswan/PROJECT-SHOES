@@ -39,8 +39,8 @@ const verifyAdminLogin = (req, res) => {
         const password = req.body.Password;
         console.log(` admin entered email = ${email}`)//--------------------------------------------------------------------
 
-        if (Email == email) {
-            if (Password == password) {               
+        if (Email === email) {
+            if (Password === password) {               
                 req.session.admin = {
                     email:email,
                     password:password 
@@ -65,9 +65,10 @@ const verifyAdminLogin = (req, res) => {
 // admin logout
 const loadLogout=(req,res)=>{
     try {
-        console.log('admin session a',req.sssion.admin);//----------
-        req.sssion.admin=null;
-        console.log('admin session b',req.sssion.admin);//-------------
+        console.log('im in logout admin');//--------------------
+        console.log('admin session a',req.session.admin);//----------
+        req.session.admin=null;
+        console.log('admin session b',req.session.admin);//-------------
 
         res.redirect('/admin')
     } catch (error) {

@@ -10,6 +10,7 @@ const cartController = require('../controller/cartController');
 const wishlistController = require('../controller/wishlistController');
 const config = require('../config/config');
 const userAuth = require('../middlewares/userAuth');
+const userProfileController = require('../controller/userProfileController');
 
 
 user_route.use('/user',express.static(path.join(__dirname,'public/user')));
@@ -34,7 +35,10 @@ user_route.use((req, res, next) => {
     next();
 })
 
-
+user_route.use((req, res, next) => {
+    console.log('method',req.method,'path', req.path);
+    next();
+})
 
 // load home
 user_route.get('/',userController.loadHome );
@@ -88,10 +92,10 @@ user_route.get('/single-product',shopController.loadSingleProduct);
 
 
 // load cart
-user_route.get('/cart',cartController.loadCart);
+user_route.get('/cart',userAuth.checkLogin,cartController.loadCart);
 
 // add to cart
-user_route.post('/addtocart',userAuth.checkLogin,cartController.addToCart);//want to add middleware to login
+user_route.post('/addtocart',userAuth.isLogin,cartController.addToCart);//want to add middleware to login
 
 // remove single product from cart
 user_route.post('/remove-cart',cartController.removeFromCart);
@@ -100,9 +104,6 @@ user_route.post('/remove-cart',cartController.removeFromCart);
 user_route.post('/check-cart',cartController.checkCart);
 
 // change cart quantity
-// user_route.post('/change-quantity',cartController.changeQuantity);
-
-
 user_route.post('/change-quantity',cartController.changeQuantity);
 
 
@@ -112,6 +113,12 @@ user_route.get('/checkout',cartController.loadCheckout);
 
 //wishlist 
 user_route.get('/wishlist',wishlistController.loadWishlist);
+
+//add to wishlist
+user_route.post('/add-to-wishlist',userAuth.checkLogin,wishlistController.addToWishlist);
+
+//add address
+user_route.post('/add-address',userAuth.checkLogin,userProfileController.addAddress);
 
 
 

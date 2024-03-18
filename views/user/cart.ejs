@@ -26,7 +26,7 @@
                                 &nbsp;<strong>Congratulations!</strong>
                                 You've got free shipping!
                             </div>
-                             <table>
+                            <table>
                                 <thead class="cart__row cart__header">
                                     <tr>
                                         <th colspan="2" class="text-center">Product</th>
@@ -81,7 +81,7 @@
                                                 </td>
                                                 <td class="text-right small--hide cart-price">
                                                     <div><span class="money">₹ <%= product.price * product.quantity %>
-                                                                </span>
+                                                        </span>
                                                     </div>
                                                 </td>
                                                 <td class="text-center small--hide"><span
@@ -246,7 +246,7 @@
         <script>
             function changeQuantity(productId, id, status) {
                 console.log('im in change quantity 2');
-                let data = { productId: productId, id: id, status: status }
+                let data = { productId: productId, id: id, buttonStatus: status }
                 console.log('data=', data);
                 $.ajax({
                     type: 'post',

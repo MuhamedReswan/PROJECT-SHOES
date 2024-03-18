@@ -7,8 +7,7 @@
         <div class="col col-md-8 col-lg-6 col-xxl-5">
           <div class="shadow-xl p-4 p-lg-5 bg-white">
             <h1 class="text-center fw-bold mb-5 fs-2">Add Category</h1>
-
-            <!-- Your category addition form here -->
+          <!-- Your category addition form here -->
             <form action="/admin/add-category" method="post" onsubmit="return validateCategory()">
               
               <% if (messages.nameExist) { %>
@@ -41,7 +40,6 @@
                 </select>
               </div>
 
-
               <div class="mt-4"> <button type="submit" class="btn btn-primary ">Submit</button>
                 <a href="/admin/category" class="btn btn-primary">
                   <span class="text">Back</span>
@@ -53,7 +51,6 @@
       </section>
     </div>
 
-
     <script>
 
       function validateCategory() {
@@ -61,8 +58,8 @@
     let description = document.getElementById('description').value.trim();
     let lettersRegex = /^[A-Za-z ]+$/;
     
-    if (name === '') {
-        alert('Please fill in the category name.');
+    if (name === '' || name.length>20 ) {
+        alert('Please fill a proper category name .');
         return false;
 
     } else if (!lettersRegex.test(name)) {

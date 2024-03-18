@@ -222,7 +222,7 @@ const verifyOtp = async (req, res) => {
 
             if (otpVerification) {
                 const userData = await Users.findOne({ email: email });
-                console.log('userData2 = ', userData); //------------------------------------------
+                // console.log('userData2 = ', userData); //------------------------------------------
 
                 if (userData) {
                     const verifiedTrue = await Users.findByIdAndUpdate({ _id: userData._id }, { $set: { verified: true } });
