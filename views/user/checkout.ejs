@@ -54,7 +54,7 @@
                         <div id="addAddress" class="create-ac-content bg-light-gray padding-20px-all collapse">
                             <form action="/add-address" method="post" onsubmit="return addAddressValidation()">
                                 <fieldset>
-                                    <h2 class="login-title mb-3">Billing details</h2>
+                                    <h2 class="login-title mb-3">Delivery Address</h2>
                                     <div id="error-container" class="text-center text-danger"></div>
                                     <div class="row">
                                         <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
@@ -74,17 +74,10 @@
                                 </fieldset>
     
                                 <fieldset>
-                                    <div class="row">
-                                       
-                                        <div class="form-group col-md-12 col-lg-12 col-xl-12 required">
+                                    <div class="row">                           
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                                             <label for="input-address-1">Address <span class="required-f">*</span></label>
                                             <input name="address" value="" id="input-address-1" type="text">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-md-6 col-lg-6 col-xl-6">
-                                            <label for="input-address-2">District <span class="required-f">*</span></label>
-                                            <input name="district" value="" id="input-address-2" type="text">
                                         </div>
                                         <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                                             <label for="input-city">City <span class="required-f">*</span></label>
@@ -92,21 +85,11 @@
                                         </div>
                                     </div>
                                     <div class="row">
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6">
+                                            <label for="input-address-2">District <span class="required-f">*</span></label>
+                                            <input name="district" value="" id="input-address-2" type="text">
+                                        </div>                                     
                                         <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                            <label for="input-postcode">Post Code <span class="required-f">*</span></label>
-                                            <input name="pincode" value="" id="input-postcode" type="text">
-                                        </div>
-                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                            <label for="input-country">Country <span class="required-f">*</span></label>
-                                            <select name="country" id="input-country">
-                                                <option value="India" selected>India</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                         
-                                            
                                             <label for="input-zone">State <span class="required-f">*</span></label>
                                             <select name="state" id="input-zone">
                                                 <option value="Andhra Pradesh">Andhra Pradesh</option>
@@ -147,6 +130,21 @@
                                             </select>
                                             
                                         </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <label for="input-postcode">Post Code <span class="required-f">*</span></label>
+                                            <input name="pincode" value="" id="input-postcode" type="text">
+                                        </div>
+                                        <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                            <label for="input-country">Country <span class="required-f">*</span></label>
+                                            <select name="country" id="input-country">
+                                                <option value="India" selected>India</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        
                                     </div>
                                 </fieldset>
     
@@ -280,7 +278,21 @@
                             </fieldset>
                         </form>
                     </div> -->
-                    <div class="text-center"><h1>add address</h1></div>
+                    <div class="text-left pl-2"><h3>select address</h3></div>
+                    <% if (userData){%>
+                        <% userData.addresses.forEach((address, index)=>{%> 
+                            <div  style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;width: 250px;">
+                                
+                                <h3> <span> <input type="radio" id="address-<%= index %>" name="selectedAddress" value="<%= index %>">
+                                    <label for="address-<%= index %>"></label></span><%= address.name %></h3>
+                                <p><%= address.address %>,<%= address.place %> <%= address.city %> <%= address.state %> <%= address.country %></p>
+                                <!-- Add radio button for each address -->
+                               
+                            </div>
+                        <%})%>
+                    <%}%>
+                    
+                    
                 </div>
 <% if(cartData){%>
 <% console.log('cart',cartData)%>
@@ -303,28 +315,28 @@
                                         </tr>
                                     </thead>
                                     <% let subtotal= 0 %>
-                                    <% cartData.forEach((product,index)=>{%>
+                                    <% cartData.products.forEach((product,index)=>{%>
                                     <tbody>
                                        
                                         <tr>
-                                            <td class="text-left"><%= product.name %></td>
-                                            <td><%= product.price%></td>
+                                            <td class="text-left"><%= product.productId.name %></td>
+                                            <td>₹<%= product.price%>.00</td>
                                             <td><%= product.size %></td>
                                             <td><%= product.quantity %></td>
-                                            <td><%= product.size * product.quantity %></td>
+                                            <td>₹<%= product.price * product.quantity %>.00</td>
                                         </tr>
 
-                                       <% subtotal+= product.price %>
+                                       <% subtotal+= product.price * product.quantity %>
                                     </tbody>
-                                })%>
+                               <% })%>
                                     <tfoot class="font-weight-600">
                                         <tr>
                                             <td colspan="4" class="text-right">Shipping </td>
-                                            <td>$50.00</td>
+                                            <td>₹0.00</td>
                                         </tr>
                                         <tr>
                                             <td colspan="4" class="text-right">Total</td>
-                                            <td><%= subtotal%></td>
+                                            <td>₹<%= subtotal%>.00</td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -340,89 +352,24 @@
                                 <div class="payment-accordion">
                                     <div id="accordion" class="payment-section">
                                         <div class="card mb-2">
-                                            <div class="card-header">
-                                                <a class="card-link" data-toggle="collapse" href="#collapseOne">Direct Bank Transfer </a>
-                                            </div>
-                                            <div id="collapseOne" class="collapse" data-parent="#accordion">
-                                                <div class="card-body">
-                                                    <p class="no-margin font-15">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won't be shipped until the funds have cleared in our account.</p>
-                                                </div>
+                                            <div class="card-header d-flex ">
+                                                <input class="mr-2" type="radio" name="paymentOption" value="cashOnDelivery">
+                                                <label class="card-link" for="cashOnDelivery">Cash on Delivery</label>
                                             </div>
                                         </div>
                                         <div class="card mb-2">
-                                            <div class="card-header">
-                                                <a class="collapsed card-link" data-toggle="collapse" href="#collapseTwo">Cheque Payment</a>
-                                            </div>
-                                            <div id="collapseTwo" class="collapse" data-parent="#accordion">
-                                                <div class="card-body">
-                                                    <p class="no-margin font-15">Please send your cheque to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="card margin-15px-bottom border-radius-none">
-                                            <div class="card-header">
-                                                <a class="collapsed card-link" data-toggle="collapse" href="#collapseThree"> PayPal </a>
-                                            </div>
-                                            <div id="collapseThree" class="collapse" data-parent="#accordion">
-                                                <div class="card-body">
-                                                    <p class="no-margin font-15">Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="card mb-2">
-                                            <div class="card-header">
-                                                <a class="collapsed card-link" data-toggle="collapse" href="#collapseFour"> Payment Information </a>
-                                            </div>
-                                            <div id="collapseFour" class="collapse" data-parent="#accordion">
-                                                <div class="card-body">
-                                                    <fieldset>
-                                                        <div class="row">
-                                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                                <label for="input-cardname">Name on Card <span class="required-f">*</span></label>
-                                                                <input name="cardname" value="" placeholder="Card Name" id="input-cardname" class="form-control" type="text">
-                                                            </div>
-                                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                                <label for="input-country">Credit Card Type <span class="required-f">*</span></label>
-                                                                <select name="country_id" class="form-control">
-                                                                    <option value=""> --- Please Select --- </option>
-                                                                    <option value="1">American Express</option>
-                                                                    <option value="2">Visa Card</option>
-                                                                    <option value="3">Master Card</option>
-                                                                    <option value="4">Discover Card</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                                <label for="input-cardno">Credit Card Number  <span class="required-f">*</span></label>
-                                                                <input name="cardno" value="" placeholder="Credit Card Number" id="input-cardno" class="form-control" type="text">
-                                                            </div>
-                                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                                <label for="input-cvv">CVV Code <span class="required-f">*</span></label>
-                                                                <input name="cvv" value="" placeholder="Card Verification Number" id="input-cvv" class="form-control" type="text">
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                                <label>Expiration Date <span class="required-f">*</span></label>
-                                                                <input type="date" name="exdate" class="form-control">
-                                                            </div>
-                                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                                <img class="padding-25px-top xs-padding-5px-top" src="assets/images/payment-img.jpg" alt="card" title="card" />
-                                                            </div>
-                                                        </div>
-                                                    </fieldset>
-
-                                                </div>
+                                            <div class="card-header d-flex ">
+                                                <input class="mr-2" type="radio" name="paymentOption" value="debitCard">
+                                                <label class="card-link" for="debitCard">Debit Card</label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="order-button-payment">
                                     <button class="btn" value="Place order" type="submit">Place order</button>
                                 </div>
                             </div>
+                            
                         </div>
                     </div>
                 </div>

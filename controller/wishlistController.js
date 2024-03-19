@@ -5,7 +5,8 @@ const Wishlist = require('../model/wishlistModel');
 // load wishlist
 const loadWishlist = (req,res)=>{
     try {
-        res.render('wishlist');
+        res.render('account');
+        // res.render('wishlist');
     } catch (error) {
         console.log(error);
     }
