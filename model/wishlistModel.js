@@ -7,11 +7,14 @@ const wishlistSchema = mongoose.Schema({
         required: true,
         ref: 'Users'
     },
-    product: {
-        type: objectId,
-        required: true,
-        ref: 'products'
-    }
+    products:[{
+        product: {
+            type: objectId,
+            required: true,
+            ref: 'products'
+        }
+    }]
+   
 })
 
 module.exports = mongoose.model('wishlist', wishlistSchema);

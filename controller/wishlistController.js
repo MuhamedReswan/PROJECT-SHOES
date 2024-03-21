@@ -5,10 +5,12 @@ const Wishlist = require('../model/wishlistModel');
 // load wishlist
 const loadWishlist = (req,res)=>{
     try {
-        res.render('account');
-        // res.render('wishlist');
+        // res.render('addAddress');
+        // res.render('account');
+        res.render('wishlist');
     } catch (error) {
         console.log(error);
+        res.status(500).send('Internal Server Error');
     }
 }
 
@@ -33,7 +35,6 @@ console.log('userId',userId)//-----------
 } catch (error) {
     console.log(error);
     res.status(500).send('Internal Server Error');
-
 }
 }
 

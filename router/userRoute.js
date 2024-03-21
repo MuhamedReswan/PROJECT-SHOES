@@ -8,9 +8,10 @@ const shopController = require('../controller/shopController');
 const userController = require('../controller/userController');
 const cartController = require('../controller/cartController');
 const wishlistController = require('../controller/wishlistController');
+const userProfileController = require('../controller/userProfileController');
+const orderController =require('../controller/orderController');
 const config = require('../config/config');
 const userAuth = require('../middlewares/userAuth');
-const userProfileController = require('../controller/userProfileController');
 
 
 user_route.use('/user',express.static(path.join(__dirname,'public/user')));
@@ -107,8 +108,15 @@ user_route.post('/check-cart',cartController.checkCart);
 user_route.post('/change-quantity',cartController.changeQuantity);
 
 
+
+
+
 //checkout 
 user_route.get('/checkout',cartController.loadCheckout);
+ 
+// place order
+user_route.post('/place-order',orderController.placeOrder);
+
 
 
 //wishlist 
@@ -116,6 +124,10 @@ user_route.get('/wishlist',wishlistController.loadWishlist);
 
 //add to wishlist
 user_route.post('/add-to-wishlist',userAuth.checkLogin,wishlistController.addToWishlist);
+
+
+
+
 
 //add address
 user_route.post('/add-address',userAuth.checkLogin,userProfileController.addAddress);

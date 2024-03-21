@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<!-- belle/register.html   11 Nov 2019 12:22:27 GMT -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<title>Create an Account &ndash; Ecomerce For Shoes</title>
+<meta name="description" content="description">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Favicon -->
+<link rel="shortcut icon" href="/user/assets/images/favicon.png" />
+<!-- Plugins CSS -->
+<link rel="stylesheet" href="/user/assets/css/plugins.css">
+<!-- Bootstap CSS -->
+<link rel="stylesheet" href="/user/assets/css/bootstrap.min.css">
+<!-- Main Style CSS -->
+<link rel="stylesheet" href="/user/assets/css/style.css">
+<link rel="stylesheet" href="/user/assets/css/responsive.css">
+<link rel="stylesheet" href="/user/assets/css/otp.css">
+<link rel="stylesheet" href="/user/assets/css/customised.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+
+<!-- <script>
+    // Add JavaScript functionalities if needed
+// For example, handling click events for profile and logout buttons
+document.getElementById("profileBtn").addEventListener("click", function() {
+    // Handle profile button click event
+    console.log("Profile button clicked");
+});
+
+document.getElementById("logoutBtn").addEventListener("click", function() {
+    // Handle logout button click event
+    console.log("Logout button clicked");
+});
+
+</script> -->
+<!-- <link rel="stylesheet" href="user/molla/assets/css/bootstrap.min.css">
+Main CSS File
+<link rel="stylesheet" href="user/molla/assets/css/style.css"> -->
+</head>
+<style>
+    /* Style for input fields */
+    input[type="email"],
+    input[type="password"],
+    input[type="text"],
+    select {
+        width: calc(100% - 20px); /* Adjust width as needed */
+        padding: 8px; /* Adjust padding as needed */
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        box-sizing: border-box; /* Ensure padding and border are included in element's total width and height */
+    }
+
+    /* Style for input fields when focused */
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="text"]:focus,
+    select:focus {
+        outline: none;
+        border-color: black; /* Change color when input is focused */
+        box-shadow: 0 0 5px black; /* Add a subtle shadow when input is focused */
+    }
+
+    /* Style for submit button */
+    input[type="submit"] {
+        background-color: black; /* Black background */
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s; /* Smooth transition for background color */
+    }
+
+    /* Change button background color on hover */
+    input[type="submit"]:hover {
+        background-color: #333; /* Darken the background color on hover */
+    }
+
+    /* Style for links */
+    a {
+        color: black; /* Black color */
+        text-decoration: none;
+    }
+
+    /* Change link color on hover */
+    a:hover {
+        color: #333; /* Darken the link color on hover */
+    }
+
+    /* .contact-form {
+        max-width: 400px;
+        max-height: 400px;
+    } */
+</style>
+<body class="page-template belle">
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="row d-flex justify-content-center align-items-center my-5">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
+                    <div id="addAddress" class="create-ac-content bg-light-gray padding-20px-all">
+                        <form action="/add-address" method="post" onsubmit="return addAddressValidation()">
+                            <fieldset>
+                                <h2 class="login-title mb-3">Delivery Address</h2>
+                                <div id="error-container" class="text-center text-danger"></div>
+                                <div class="row">
+                                    <div class="form-group col-12 required">
+                                        <label for="input-firstname">Full Name <span class="required-f">*</span></label>
+                                        <input name="name" value="" id="input-firstname" type="text">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-12 required">
+                                        <label for="input-telephone">Mobile <span class="required-f">*</span></label>
+                                        <input name="mobile" value="" id="input-telephone" type="text">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-12 required">
+                                        <label for="input-address-1">Address <span class="required-f">*</span></label>
+                                        <input name="address" value="" id="input-address-1" type="text">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-12 required">
+                                        <label for="input-city">City <span class="required-f">*</span></label>
+                                        <input name="city" value="" id="input-city" type="text">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <label for="input-address-2">District <span class="required-f">*</span></label>
+                                        <input name="district" value="" id="input-address-2" type="text">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-12 required">
+                                        <label for="input-zone">State <span class="required-f">*</span></label>
+                                        <select name="state" id="input-zone">
+                                            <!-- State options -->
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-12 required">
+                                        <label for="input-postcode">Post Code <span class="required-f">*</span></label>
+                                        <input name="pincode" value="" id="input-postcode" type="text">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-12 required">
+                                        <label for="input-country">Country <span class="required-f">*</span></label>
+                                        <select name="country" id="input-country">
+                                            <option value="India" selected>India</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <div class="row d-flex justify-content-center">
+                                    <button type="submit" class="btn">submit</button>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</body>
+</html>
