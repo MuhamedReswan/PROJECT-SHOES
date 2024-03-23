@@ -46,7 +46,7 @@ const orderSchema = mongoose.Schema({
     },
     date: {
         type: Date,
-        required: true
+        default: Date.now
     },
     status: {
         type: String,

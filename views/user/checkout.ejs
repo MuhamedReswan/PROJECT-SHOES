@@ -91,9 +91,9 @@
                                         </div>
                                         <div class="row">
                                             <div class="form-group col-md-6 col-lg-6 col-xl-6">
-                                                <label for="input-address-2">District <span
+                                                <label for="input-district">District <span
                                                         class="required-f">*</span></label>
-                                                <input name="district" value="" id="input-address-2" type="text">
+                                                <input name="district" value="" id="input-district" type="text">
                                             </div>
                                             <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                                                 <label for="input-zone">State <span class="required-f">*</span></label>
@@ -439,13 +439,13 @@
                 const name = document.getElementById('input-firstname').value.trim();
                 const mobile = document.getElementById('input-telephone').value.trim();
                 const address = document.getElementById('input-address-1').value.trim();
-                const district = document.getElementById('input-address-2').value.trim();
+                const district = document.getElementById('input-district').value.trim();
                 const city = document.getElementById('input-city').value.trim();
                 const pincode = document.getElementById('input-postcode').value.trim();
 
                 // Regular expressions for validation
                 const nameRegex = /^[^\s].+/;
-                const mobileRegex = /^\d{10}$/;
+                const mobileRegex =/^\d{10}$/;
                 const textRegex = /^[^\d]+$/;
                 const pincodeRegex = /^\d{6}$/;
 
@@ -453,42 +453,42 @@
                 const errors = [];
 
                 // Validate each field
-                if (!nameRegex.test(name)) {
+                if (!nameRegex.test(name) || name == '') {
                     errors.push('Please enter a proper name');
                     document.getElementById('input-firstname').classList.add('error');
                     displayErrors(errors);
                     return false;
                 }
 
-                if (!mobileRegex.test(mobile)) {
+                if (!mobileRegex.test(mobile) || mobile.length > 10 || mobile.length < 10 ) {
                     errors.push('Mobile number should be 10 digits.');
                     document.getElementById('input-telephone').classList.add('error');
                     displayErrors(errors);
                     return false;
                 }
 
-                if (!textRegex.test(address)) {
+         if (!textRegex.test(address) || address == '') {
                     errors.push('Please enter a valid address');
                     document.getElementById('input-address-1').classList.add('error');
                     displayErrors(errors);
                     return false;
-                }
+                }       
 
-                if (!textRegex.test(district)) {
+                if (!textRegex.test(district) || district=='') {
                     errors.push('Please enter a valid distric name.');
-                    document.getElementById('input-address-2').classList.add('error');
+                    document.getElementById('input-district').classList.add('error');
                     displayErrors(errors);
                     return false;
                 }
 
-                if (!textRegex.test(city)) {
+                if (!textRegex.test(city) || city =='') {
                     errors.push('Please enter a valid city name.');
                     document.getElementById('input-city').classList.add('error');
                     displayErrors(errors);
                     return false;
                 }
 
-                if (!pincodeRegex.test(pincode)) {
+                if (!pincodeRegex.test(pincode) || pincode == '') {
                     errors.push('Pincode should be 6 digits.');
                     document.getElementById('input-postcode').classList.add('error');
                     displayErrors(errors);
@@ -545,11 +545,6 @@
                 }
 
                 if (!addressSelected) {
-                    // addressError.innerText ='Please select a address !'
-                    // setTimeout(()=>{
-                    //     addressError.innerText='';
-                    // },3000);
-
                     Swal.fire({
                         icon: 'warning',
                         text: " please Select Delivery Address !",
@@ -559,12 +554,6 @@
                     return false;
 
                 } else if (!paymentSelected) {
-                    // paymentError.innerText ='Please select payment option !'
-                    //     setTimeout(()=>{
-                    //         paymentError.innerText='';
-                    //     },3000);
-
-                    //payment
                     Swal.fire({
                         icon: 'warning',
                         text: "Please Select Payment Method !",
@@ -574,7 +563,7 @@
                     return false;
 
                 } else {
-                    console.log('true is working')
+                    console.log('true is working')//----------
                     const radioButtonAddress = document.querySelector('input[name="selectedAddress"]:checked');
                     const index = radioButtonAddress ? radioButtonAddress.value : null
                     console.log('index',index)//----------
@@ -599,7 +588,18 @@
                                     body: JSON.stringify(data)
                                 })
                                     .then(Response => Response.json())
-                                    .then(data => console.log('data=' + data))
+                                    .then((data) =>{
+                                        if(data.quant){
+                                             Swal.fire({
+                                    icon: 'warning',
+                                    text: `Sorry your product ${data.lessQuantity} size ${data.size}  is Out Of Stock'`,
+                                    showConfirmButton: false
+                                });
+                                        }
+                                        if(data.ok){
+location.href =`/order-success/${data.orderId}`
+                                        }
+                                    })
                                     .catch(error => console.log(error))
                             }
 

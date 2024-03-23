@@ -123,7 +123,7 @@ user_route.post('/place-order',orderController.placeOrder);
 user_route.get('/wishlist',wishlistController.loadWishlist);
 
 //add to wishlist
-user_route.post('/add-to-wishlist',userAuth.checkLogin,wishlistController.addToWishlist);
+// user_route.post('/add-to-wishlist',userAuth.checkLogin,wishlistController.addToWishlist);
 
 
 
@@ -133,7 +133,11 @@ user_route.post('/add-to-wishlist',userAuth.checkLogin,wishlistController.addToW
 user_route.post('/add-address',userAuth.checkLogin,userProfileController.addAddress);
 
 
+//order success
+user_route.get('/order-success/:orderId', orderController.loadOrderSuccess);
 
+//order details
+user_route.get('/order-details', orderController.loadOrderDetails);
 
 
 // 404 error
