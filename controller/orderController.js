@@ -70,18 +70,34 @@ const placeOrder = async (req, res) => {
                     const productId = products[i].productId._id;
                     const productQuantity = products[i].quantity;
                     const productSize = products[i].size;
+                    const productTotalStock = products[i].totalStock;
+                    const productSizeQuantity =products[i].productId.stock[products[i].size];
+                    const updatedQuantity = productSizeQuantity-productQuantity;
+                    // let updatedTotalStock=0;
+                    // updatedTotalStock += products[i].stock.productSize
+                    // console.log('updatedTotalStock',updatedTotalStock);//------------
+                    console.log('productTotalStock',productTotalStock);//------------
+                    console.log('updatedQuantity',updatedQuantity);//------------
                     console.log('productId',productId);//------------
                     console.log('productSize',productSize);//------------
                     console.log('productQuantity',productQuantity);//------------
+                    console.log('productSizeQuantity',productSizeQuantity);//------------
+                    const updateProduct = await Products.findByIdAndUpdate({_id:productId},{$set:{[`stock.${productSize}`]:updatedQuantity}},
+                    {
+                        $inc: { totalStock: -productQuantity}
+                     });
+                     console.log("updateProduct", updateProduct);//--------------------------
 
-                    const updateProduct = await Products.updateOne({ _id: productId }, { $inc: { [`stock.size`]: -productQuantity } });
-                    console.log("productSize", productSize);//--------------------------
+                    }
+                            
+                    // const updateProduct = await Products.updateOne({ _id: productId }, { $inc: { [`stock.size`]: -productQuantity } });
                 }
                 await Cart.deleteOne({ user: userId });
+                res.json({ ok: true, orderId });
             }
-            res.json({ ok: true, orderId });
+            
 
-        }
+        
 
     } catch (error) {
         console.log(error);
