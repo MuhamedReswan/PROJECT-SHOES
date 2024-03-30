@@ -1,224 +1,247 @@
 <%- include('../layout/admin/adminHeader.ejs') -%>
-<%- include('../partials/adminSideNav.ejs') -%>
+    <%- include('../partials/adminSideNav.ejs') -%>
 
         <main class="main-wrap">
             <%- include('../partials/adminHeaderBody') -%>
-           
 
-            <section class="content-main">
-                <div class="content-header">
-                    <div>
-                   <h2 class="content-title card-title">Customers Details</h2>                   
-                    </div>             
-                </div>
 
-                <div class="card mb-4">
-                    <header class="card-header">
-                        <div class="row gx-3">
-                            <div class="col-lg-4 col-md-6 me-auto">
-                                <!-- <input type="text" placeholder="Search..." class="form-control" /> -->
-                                <form class="searchform">
-                                    <div class="input-group">
-                                        <input list="search_terms" type="text" class="form-control" placeholder="Search term" id="customersSearch" />
-                                        <button class="btn btn-light bg" type="button"><i class="material-icons md-search"></i></button>
-                                    </div>
-                                    <!-- <datalist id="search_terms">
-                                        <option value="Products"></option>
-                                        <option value="New orders"></option>
-                                        <option value="Apple iphone"></option>
-                                        <option value="Ahmed Hassan"></option>
-                                    </datalist> -->
-                                </form>
-                            </div>
-                            <div class="col-lg-2 col-6 col-md-3">
-                                <select class="form-select">
-                                    <option>Status</option>
-                                    <option>Active</option>
-                                    <option>Disabled</option>
-                                    <option>Show all</option>
-                                </select>
-                            </div>
-                            <!-- <div class="col-lg-2 col-6 col-md-3">
-                                <select class="form-select">
-                                    <option>Show 20</option>
-                                    <option>Show 30</option>
-                                    <option>Show 40</option>
-                                </select>
-                            </div> -->
+                <section class="content-main">
+                    <div class="content-header">
+                        <div>
+                            <h2 class="content-title card-title">Customers Details</h2>
                         </div>
-                    </header>
-                    <!-- card-header end// -->
-                    <div class="card-body">
-                        <div class="table-responsive"  id="reload">
-                            <table class="table table-hover" id="customerTable">
-                                <thead class="bg-dark text-white bg-opacity-50" >
-                                    <tr class="text-center">
-                                        <th>ID</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Mobile</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Joined At</th>
-                                        <th scope="col">Action</th>
-                                        <!-- <th scope="col" class="text-end">Action</th> -->
-                                    </tr>
-                                </thead>
-                                <tbody >
-                                    <% if(userData){%>
-                                <% userData.forEach((user,i)=>{%>
-                                    <tr class="text-center">
-                                        <td><%=i+1%></td>
-                                        <td><b><%=user.name%></b></td>
-                                        <td><%=user.email%></td>
-                                        <td><%=user.mobile%></td>
-
-                                        <% if (user.verified){%>
-                                            <td><span class="btn btn-sm btn-dark rounded font-sm text-center">Verified</span></td>
-                                            <%}else{%>
-                                                <td><span class='btn btn-sm btn-danger rounded font-sm text-center'>Not Verified</span></td>
-                                                <%}%>
-                                                <% const formatedDate=user.date.toDateString()%>
-                                        <td><%=formatedDate%></td>
-                                        <!-- <td><%=user.isBlocked%></td> -->
-                                        <td class="text-end">
-                                            <button type="button" id="block-button" class="btn btn-outline-dark block-button btn-sm" data-user-id="<%=user._id%>" data-status="<%=user.isBlocked%>" onclick="block('<%=user._id%>',event)" >
-                                                <%=user.isBlocked ? "Unblock" : "Block" %>
-                                            </button>
-
-
-                                            <!-- dropdown //end -->
-                                        </td>
-                                    </tr>
-                             <% })%>
-                             <%}else{%>
-                                <tr>
-                                    <td colspan="8" class="text-center">No User Found in Database !</td>
-                                </tr>
-                                <%}%>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- table-responsive //end -->
                     </div>
-                    <!-- card-body end// -->
-                </div>
-                <!-- card end// -->
-                <div class="pagination-area mt-15 mb-50">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-start">
-                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                            <li class="page-item"><a class="page-link" href="#">02</a></li>
-                            <li class="page-item"><a class="page-link" href="#">03</a></li>
-                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                            <li class="page-item"><a class="page-link" href="#">16</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </section>
-            <!-- content-main end// -->
-       
+
+                    <div class="card mb-4">
+                        <header class="card-header">
+                            <div class="row gx-3">
+                                <div class="col-lg-4 col-md-6 me-auto">
+                                    <!-- <input type="text" placeholder="Search..." class="form-control" /> -->
+                                    <form class="searchform">
+                                        <div class="input-group">
+                                            <input list="search_terms" type="text" class="form-control"
+                                                placeholder="Search term" id="customersSearch" />
+                                            <button class="btn btn-light bg" type="button"><i
+                                                    class="material-icons md-search"></i></button>
+                                        </div>
+                                        <!-- <datalist id="search_terms">
+                                                                        <option value="Products"></option>
+                                                                        <option value="New orders"></option>
+                                                                        <option value="Apple iphone"></option>
+                                                                        <option value="Ahmed Hassan"></option>
+                                                                    </datalist> -->
+                                    </form>
+                                </div>
+                                <div class="col-lg-2 col-6 col-md-3">
+                                    <select class="form-select">
+                                        <option>Status</option>
+                                        <option>Active</option>
+                                        <option>Disabled</option>
+                                        <option>Show all</option>
+                                    </select>
+                                </div>
+                                <!-- <div class="col-lg-2 col-6 col-md-3">
+                                                                <select class="form-select">
+                                                                    <option>Show 20</option>
+                                                                    <option>Show 30</option>
+                                                                    <option>Show 40</option>
+                                                                </select>
+                                                            </div> -->
+                            </div>
+                        </header>
+                        <!-- card-header end// -->
+                        <div class="card-body">
+                            <div class="table-responsive" id="reload">
+                                <table class="table table-hover" id="customerTable">
+                                    <thead class="bg-dark text-white bg-opacity-50">
+                                        <tr class="text-center">
+                                            <th>ID</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Mobile</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Joined At</th>
+                                            <th scope="col">Action</th>
+                                            <!-- <th scope="col" class="text-end">Action</th> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if(userData){%>
+                                            <% userData.forEach((user,i)=>{%>
+                                                <tr class="text-center">
+                                                    <td>
+                                                        <%=i+1%>
+                                                    </td>
+                                                    <td><b>
+                                                            <%=user.name%>
+                                                        </b></td>
+                                                    <td>
+                                                        <%=user.email%>
+                                                    </td>
+                                                    <td>
+                                                        <%=user.mobile%>
+                                                    </td>
+
+                                                    <% if (user.verified){%>
+                                                        <td><span
+                                                                class="btn btn-sm btn-dark rounded font-sm text-center">Verified</span>
+                                                        </td>
+                                                        <%}else{%>
+                                                            <td><span
+                                                                    class='btn btn-sm btn-danger rounded font-sm text-center'>Not
+                                                                    Verified</span></td>
+                                                            <%}%>
+                                                                <% const formatedDate=user.date.toDateString()%>
+                                                                    <td>
+                                                                        <%=formatedDate%>
+                                                                    </td>
+                                                                    <!-- <td><%=user.isBlocked%></td> -->
+                                                                    <td class="text-end">
+                                                                        <button type="button" id="block-button"
+                                                                            class="btn btn-outline-dark block-button btn-sm"
+                                                                            data-user-id="<%=user._id%>"
+                                                                            data-status="<%=user.isBlocked%>"
+                                                                            onclick="block('<%=user._id%>',event)">
+                                                                            <%=user.isBlocked ? "Unblock" : "Block" %>
+                                                                        </button>
+
+
+                                                                        <!-- dropdown //end -->
+                                                                    </td>
+                                                </tr>
+                                                <% })%>
+                                                    <%}else{%>
+                                                        <tr>
+                                                            <td colspan="8" class="text-center">No User Found in
+                                                                Database !</td>
+                                                        </tr>
+                                                        <%}%>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- table-responsive //end -->
+                        </div>
+                        <!-- card-body end// -->
+                    </div>
+                    <!-- card end// -->
+                    <div class="pagination-area mt-15 mb-50">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-start">
+                                <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                                <li class="page-item"><a class="page-link" href="#">02</a></li>
+                                <li class="page-item"><a class="page-link" href="#">03</a></li>
+                                <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                                <li class="page-item"><a class="page-link" href="#">16</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </section>
+                <!-- content-main end// -->
+
         </main>
-        
+
 
 
         <script>
-            function block(id,event){
+            function block(id, event) {
                 event.preventDefault();
-                const data ={id:id}
+                const data = { id: id }
                 // console.log(`data from ajax ${data}`)//---------------------------------------------------
-// const btn = document.getElementById('button');
-// btn.addEventListener('click',()=>{
-//     var stat;
-//     const status = btn.getAttribute('data-status');
-// console.log('ststus',status)
-//     if(status){
+                // const btn = document.getElementById('button');
+                // btn.addEventListener('click',()=>{
+                //     var stat;
+                //     const status = btn.getAttribute('data-status');
+                // console.log('ststus',status)
+                //     if(status){
 
-//         stat='Un Block';
-//         console.log('true status ='+status)//------------------------------------------------------------------
-//         console.log('stat true ='+stat)//------------------------------------------------------------------
-//     }else{
+                //         stat='Un Block';
+                //         console.log('true status ='+status)//------------------------------------------------------------------
+                //         console.log('stat true ='+stat)//------------------------------------------------------------------
+                //     }else{
 
-//         stat='Block'
-//         console.log('false status ='+status)//------------------------------------------------------------------
-//         console.log('stat false='+stat)//------------------------------------------------------------------
-//     }
+                //         stat='Block'
+                //         console.log('false status ='+status)//------------------------------------------------------------------
+                //         console.log('stat false='+stat)//------------------------------------------------------------------
+                //     }
 
-Swal.fire({
-  title: "Are you sure?",
-  text: `Do you want to block/Unblock this user !`,
-  icon: "warning",
-  showCancelButton: true,
-  confirmButtonColor: "#3085d6",
-  cancelButtonColor: "#d33",
-  confirmButtonText: "Yes!"
-}).then((result) => {
-  if (result.isConfirmed) {
-
-$.ajax({
-
-    method:"post",
-    url:"/admin/block-user",
-    data:JSON.stringify(data),
-    contentType:'application/json',
-    success:(Response) => {
-        if (Response.block == true){
-
-            $('#reload').load('/admin/customers #reload',null,()=>{
                 Swal.fire({
-      title: `Done`,
-      icon: "success",
-      timer:1000
+                    title: "Are you sure?",
+                    text: `Do you want to block/Unblock this user !`,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes!",
+                }).then((result) => {
+                    if (result.isConfirmed) {
 
-    });
+                        $.ajax({
 
-            })
-        }
-    }
-    
-});
+                            method: "post",
+                            url: "/admin/block-user",
+                            data: JSON.stringify(data),
+                            contentType: 'application/json',
+                            success: (Response) => {
+                                if (Response.block == true) {
 
-   
-  }
-});           
-          }
+                                    $('#reload').load('/admin/customers #reload', null, () => {
+                                        Swal.fire({
+                                            title: `Done`,
+                                            icon: "success",
+                                            timer: 1000
+
+                                        });
+
+                                    })
+                                }
+                            }
+
+                        });
+
+
+                    }
+                });
+            }
         </script>
         <script>
-document.addEventListener('DOMContentLoaded',()=>{
+            document.addEventListener('DOMContentLoaded', () => {
 
-    let searchInput = document.getElementById('customersSearch');
-            searchInput.addEventListener('keyup',()=>{
+                let searchInput = document.getElementById('customersSearch');
+                searchInput.addEventListener('keyup', () => {
 
-                let searchTerm = searchInput.value.toLowerCase();
-                let  tableRow = document.querySelectorAll('#customerTable tbody tr');
+                    let searchTerm = searchInput.value.toLowerCase();
+                    let tableRow = document.querySelectorAll('#customerTable tbody tr');
 
-                tableRow.forEach(function (row){
-                   let nameColoumn= row.querySelector('td:nth-child(2)');
+                    tableRow.forEach(function (row) {
+                        let nameColoumn = row.querySelector('td:nth-child(2)');
 
-                   if(nameColoumn){
-                    let nameText= nameColoumn.textContent.toLowerCase()
-                    row.style.display = nameText.includes(searchTerm) ? "" : "none";
-                   }
+                        if (nameColoumn) {
+                            let nameText = nameColoumn.textContent.toLowerCase()
+                            row.style.display = nameText.includes(searchTerm) ? "" : "none";
+                        }
+                    })
+
+
                 })
-
-
             })
-})
 
-            
-            
+
+
         </script>
-<script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
-<script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
-<script src="assets/js/vendors/select2.min.js"></script>
-<script src="assets/js/vendors/perfect-scrollbar.js"></script>
-<script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
-<!-- Main Script -->
-<script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+        <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/vendors/select2.min.js"></script>
+        <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- </body>
-</html> -->
-<%- include('../layout/admin/adminFooter.ejs') -%>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <!-- </body>
+                                </html> -->
+        <%- include('../layout/admin/adminFooter.ejs') -%>

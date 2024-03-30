@@ -11,7 +11,7 @@ const placeOrder = async (req, res) => {
         console.log('req.body=' + req.body); //-----------
         console.log('userId=' + userId); //-----------
         console.log('req.body.index=' + req.body.index); //-----------
-        console.log('req.body.paymentMethod=' + req.body.paymentMethod);//----------- 
+        console.log('req.body.paymentMethod=' , req.body.paymentMethod);//----------- 
         const {
             subtotal,
             paymentMethod,
@@ -59,7 +59,6 @@ const placeOrder = async (req, res) => {
                 status: status,
                 paymentMethod: paymentMethod,
                 deliveryAddress: address
-
             })
 
             const orderDetails = await order.save();
