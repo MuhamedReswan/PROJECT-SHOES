@@ -22,25 +22,21 @@ const placeOrder = async (req, res) => {
         const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
         console.log('car place order', cartData);//-----------
         let products = cartData.products
-        console.log(' products ', products);//-----------
+        // console.log(' products ', products);//-----------
         let lessQuantity = 0
         let size = 0
         products.forEach((product) => {
-            if (product.quantity > product.productId.stock[product.size]) {
+            if (product.quantity > product.productId.totalStock) {
                 // console.log('product.productId.stock',product.productId.stock)//------------------
                 // console.log('product.productId',product.productId)//------------------
-                // console.log('product.size',product.size)//------------------
                 lessQuantity = product.productId.name;
-                size = product.size;
             }
         });
-        // console.log('product.size',product.size)//--------------
-        // console.log('product.productId.stock[product.size]',product.productId.stock[product.size])//--------------
-        // console.log('product.quantiy>product.productId.stock[product.size]',product.quantity>product.productId.stock[product.size])//--------------
+
         console.log('lessQuantity', lessQuantity)//--------------
 
         if (lessQuantity && lessQuantity !== 0) {
-            res.json({ quant: true, lessQuantity, size });
+            res.json({ quant: true, lessQuantity });
             console.log('within if case');//--------------------------
         } else {
             console.log('within else case');//--------------------------
@@ -67,36 +63,27 @@ const placeOrder = async (req, res) => {
             if (orderDetails.status == 'placed') {             
                 for (let i = 0; i < products.length; i++) {
                     const productId = products[i].productId._id;
-                    const productQuantity = products[i].quantity;
-                    const productSize = products[i].size;
-                    const productTotalStock = products[i].totalStock;
-                    const productSizeQuantity =products[i].productId.stock[products[i].size];
-                    const updatedQuantity = productSizeQuantity-productQuantity;
-                    // let updatedTotalStock=0;
-                    // updatedTotalStock += products[i].stock.productSize
-                    // console.log('updatedTotalStock',updatedTotalStock);//------------
+                    const productTotalStock = products[i].productId.totalStock;
+                    const productCartQuantity =products[i].quantity;
+                    const updatedQuantity = productTotalStock-productCartQuantity;
+
                     console.log('productTotalStock',productTotalStock);//------------
                     console.log('updatedQuantity',updatedQuantity);//------------
                     console.log('productId',productId);//------------
-                    console.log('productSize',productSize);//------------
-                    console.log('productQuantity',productQuantity);//------------
-                    console.log('productSizeQuantity',productSizeQuantity);//------------
-                    const updateProduct = await Products.findByIdAndUpdate({_id:productId},{$set:{[`stock.${productSize}`]:updatedQuantity}},
-                    {
-                        $inc: { totalStock: -productQuantity}
-                     });
+                    console.log('productCartQuantity',productCartQuantity);//------------
+                    const updateProduct = await Products.findByIdAndUpdate({_id:productId});
                      console.log("updateProduct", updateProduct);//--------------------------
+                     updateProduct.totalStock+= -updatedQuantity;
+                     updateProduct.save()
+                     console.log("updateProduct  111111111", updateProduct);//--------------------------
+
 
                     }
                             
-                    // const updateProduct = await Products.updateOne({ _id: productId }, { $inc: { [`stock.size`]: -productQuantity } });
                 }
                 await Cart.deleteOne({ user: userId });
                 res.json({ ok: true, orderId });
             }
-            
-
-        
 
     } catch (error) {
         console.log(error);

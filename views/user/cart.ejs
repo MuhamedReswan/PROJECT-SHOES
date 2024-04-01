@@ -53,9 +53,6 @@
                                                         </a>
                                                     </div>
 
-                                                    <div class="cart__meta-text">
-                                                        <br>Size: <%= product.size %> <br>
-                                                    </div>
                                                 </td>
                                                 <td class="cart__price-wrapper cart-flex-item">
                                                     <span class="money">₹<%= product.price %></span>
@@ -85,7 +82,7 @@
                                                     </div>
                                                 </td>
                                                 <td class="text-center small--hide"><span
-                                                        onclick="removeProduct(' <%=product.productId._id %>','<%=product.size %>')"
+                                                        onclick="removeProduct(' <%=product.productId._id %>')"
                                                         class="btn btn--secondary cart__remove" title="Remove tem"><i
                                                             class="icon icon anm anm-times-l"></i></span>
                                                 </td>
@@ -199,10 +196,10 @@
         <script src="user/assets/js/main.js"></script>
 
         <script>
-            function removeProduct(id, size) {
-                console.log('id-', id, 'size-', size);//---
+            function removeProduct(id) {
+                console.log('id-', id);//---
                 console.log('remove cart function');//---
-                let data = { productId: id, size }
+                let data = { productId: id }
 
                 Swal.fire({
                     title: "Are you sure?",
@@ -245,9 +242,9 @@
 
         <script>
             function changeQuantity(productId, id, status) {
-                console.log('im in change quantity 2');
+                console.log('im in change quantity 2');//---------------
                 let data = { productId: productId, id: id, buttonStatus: status }
-                console.log('data=', data);
+                console.log('data=', data);//----------------
                 $.ajax({
                     type: 'post',
                     url: 'change-quantity',

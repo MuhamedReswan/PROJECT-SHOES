@@ -47,34 +47,16 @@ for (let i = 0; i <req.files.length; i++) {
     }
 }
 
-   const obj = {}
-   const size = req.body.size;
-   let totalStock=0;
-for(let i = 0; i <5; i++) {
-     if(size[i]==i+6){
-        if(req.body.quantity[i]=='') req.body.quantity[i]='0'; 
-         obj[size[i]] = req.body.quantity[i]; 
-
-         totalStock += Number(req.body.quantity[i])  
-         console.log(Number(req.body.quantity[i]) )//----------------------------------------------  
-     }      
-}
-console.log('total stock=', totalStock)//-------------------------------
-console.log('obj=', obj)//-----------------------------
-
 const product = await new products({
-    name:details.name,
-    description:details.description,
-    price:details.price,
-    offerPrice:details.offerPrice,
-    category:details.category,
-    brand:details.brand,
-    isListed:details.isListed,
-    stock: obj,
-    size:details.size,
-    images:arrImages,
-    totalStock:totalStock
-
+        name:details.name,
+        description:details.description,
+        price:details.price,
+        offerPrice:details.offerPrice,
+        category:details.category,
+        brand:details.brand,
+        isListed:details.isListed,
+        images:arrImages,
+        totalStock:details.quantity
 });
 
 await product.save();
@@ -115,7 +97,6 @@ const updateProduct =async (req, res) => {
             }
         }
         
-        
        const dbData = await products.findOne({name:updateData.name})
         // console.log('dbData',dbData);//----------------
         const dbImages = [...dbData.images];
@@ -126,21 +107,6 @@ for(let i=0; i<arrImages.length; i++){
 // console.log('dbImages',dbImages);//-----------
 
         
-           const updateObj = {}
-           const size = updateData.size;
-           let totalStock=0;
-        for(let i = 0; i <5; i++) {
-             if(size[i]==i+6){
-                if(updateData.quantity[i]=='') updateData.quantity[i]='0'; 
-                updateObj[size[i]] = updateData.quantity[i]; 
-        
-                 totalStock += Number(updateData.quantity[i])  
-                 console.log(Number(updateData.quantity[i]) )//----------------------------------------------  
-             }      
-        }
-        console.log('update total stock=', totalStock)//-------------------------------
-        console.log('update obj=', updateObj)//-----------------------------
-        
 const productUpdate = await products.updateOne({_id:updateData.id},{
     $set:{
         name:updateData.name,
@@ -150,10 +116,8 @@ const productUpdate = await products.updateOne({_id:updateData.id},{
         category:updateData.category,
         brand:updateData.brand,
         isListed:updateData.isListed,
-        stock: updateObj,       
-        size:updateData.size,
         images:dbImages,
-        totalStock:totalStock
+        totalStock:updateData.quantity
     }
 })
 

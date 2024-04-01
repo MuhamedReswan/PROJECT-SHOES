@@ -36,7 +36,7 @@ const addToCart = async (req, res) => {
         console.log(">>>>>>");//----------------------
         const userId = req.session.user.id;
 
-        const { size, quantity, productId } = req.body
+        const { /*size,*/ quantity, productId } = req.body
         const productData = await products.findOne({ _id: productId });
         console.log('productId', productId)//--------------------
         // console.log('size', size)//--------------------
@@ -48,17 +48,17 @@ const addToCart = async (req, res) => {
             let product = {
                 productId: productId,
                 quantity: quantity,
-                size: size,
+                // size: size,
                 price: productData.price,
                 offerPrice: productData.offerPrice
             }
             // console.log('product from addto Cart 0', product);//-------------------
             const pro = await Cart.findOne({ user: userId, 'products.productId': productId });
             // console.log(pro, 'pro');//----------------------
-            if (pro !== null && typeof pro === 'object' && typeof pro.products !== 'undefined') {
-                const productDetails = pro.products.find((el) => el.size == size);
+            // if (pro !== null && typeof pro === 'object' && typeof pro.products !== 'undefined') {
+            //     const productDetails = pro.products.find((el) => el.size == size);
 
-                if (!productDetails) {
+                if (!pro) {
                     await Cart.updateOne({ user: userId }, {
                         $push: {
                             products: product,
@@ -66,35 +66,37 @@ const addToCart = async (req, res) => {
                     })
                     console.log('product added to cart existing cart')//------------------
 
+                }else{
+                    res.json({ exist: true })
                 }
-            }
-            else {
-                const product = {
-                    productId: productId,
-                    quantity: quantity,
-                    size: size,
-                    price: productData.price,
-                    offerPrice: productData.offerPrice
-                }
-                // console.log('quantity',quantity)//-----------
-                // console.log('productData.price',productData.price)//-----------
-                // console.log('totalOrginalPrice2', product.totalOrginalPrice);//-------------------
-                console.log('product from addto Cart1', product);//-------------------
-                await Cart.updateOne({ user: userId }, {
-                    $push: {
-                        products: product
-                    }
-                })
-                console.log("Pro is null or undefined, or 'products' property does not exist.");//--------------
+            // }
+            // else {
+            //     const product = {
+            //         productId: productId,
+            //         quantity: quantity,
+            //         size: size,
+            //         price: productData.price,
+            //         offerPrice: productData.offerPrice
+            //     }
+            //     // console.log('quantity',quantity)//-----------
+            //     // console.log('productData.price',productData.price)//-----------
+            //     // console.log('totalOrginalPrice2', product.totalOrginalPrice);//-------------------
+            //     console.log('product from addto Cart1', product);//-------------------
+            //     await Cart.updateOne({ user: userId }, {
+            //         $push: {
+            //             products: product
+            //         }
+            //     })
+            //     console.log("Pro is null or undefined, or 'products' property does not exist.");//--------------
 
-            }
+            // }
 
 
         } else {
             let product = {
                 productId: productId,
                 quantity: quantity,
-                size: size,
+                // size: size,
                 price: productData.price,
                 offerPrice: productData.offerPrice
             }
@@ -124,16 +126,15 @@ const removeFromCart = async (req, res) => {
     try {
         console.log('removeFromCart', req.body);//------------------
         const id = req.session.user.id;
-        let { productId, size } = req.body;
+        let { productId} = req.body;
         productId=productId.trim()
         console.log('productId', productId)//-----------------------------
-        console.log('size', size)//-----------------------------
 if (!mongoose.Types.ObjectId.isValid(productId)){
     return res.status(400).json({ error: 'Invalid productId' });
 }
         const cartProducts = await Cart.updateOne({ user: id }, {
             $pull: {
-                products: { productId: productId, size: size }
+                products: { productId: productId }
             }
         })
 
@@ -148,26 +149,26 @@ const checkCart = async (req, res) => {
         console.log('checkCart back end');//-------------
         const userId = req.session.user.id;
 
-        const { productId, size } = req.body;
+        const { productId/*, size */} = req.body;
         // console.log(req.body, userId)//=-----------------
         if (!userId) {
             return res.json({ nouser: true })
         }
         const cart = await Cart.findOne({ user: userId, 'products.productId': productId });
         // console.log('cart', cart);//----------------
-        if (cart && cart.products && Array.isArray(cart.products)) {
-            const product = cart.products.find((el) => el.size == size);
+        // if (cart && cart.products && Array.isArray(cart.products)) {
+        //     const product = cart.products.find((el) => el.size == size);
             // console.log(product, 'dddddddddd');//---------------
-            if (product) {
+            if (cart) {
                 // console.log('product exist', product)//-----------------
                 res.json({ exist: true, })
             } else {
                 res.json({ not: true, productId });
                 // console.log('product not exist', product)//-----------------
             }
-        } else {
-            res.json({ not: true, productId });
-        }
+        // } else {
+        //     res.json({ not: true, productId });
+        // }
 
     } catch (error) {
         console.log(error);
@@ -193,9 +194,9 @@ const changeQuantity = async (req, res) => {
         // console.log('cartProduct =', cartProduct);//------
 
         if (buttonStatus) {
-            const size = cartProduct.size;
+            // const size = cartProduct.size;
             const cartQuantity = cartProduct.quantity;
-            const productQuantity = parseInt(product.stock[size]);
+            const productQuantity = product.totalStock;
             // console.log('cartQuantity', cartQuantity);//---------------
             // console.log('productQuantity', productQuantity);//---------------
             // console.log('size', size);//---------------

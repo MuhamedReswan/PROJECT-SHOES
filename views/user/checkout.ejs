@@ -341,7 +341,7 @@
                                                     <tr>
                                                         <th class="text-left">Product Name</th>
                                                         <th>Price</th>
-                                                        <th>Size</th>
+                                                        <!-- <th>Size</th> -->
                                                         <th>Qty</th>
                                                         <th>Subtotal</th>
                                                     </tr>
@@ -355,9 +355,9 @@
                                                                     <%= product.productId.name %>
                                                                 </td>
                                                                 <td>₹<%= product.price%>.00</td>
-                                                                <td>
+                                                                   <!-- <td>
                                                                     <%= product.size %>
-                                                                </td>
+                                                                </td> -->
                                                                 <td>
                                                                     <%= product.quantity %>
                                                                 </td>
@@ -369,11 +369,11 @@
                                                         <% })%>
                                                             <tfoot class="font-weight-600">
                                                                 <tr>
-                                                                    <td colspan="4" class="text-right">Shipping </td>
+                                                                    <td colspan="3" class="text-right">Shipping </td>
                                                                     <td>₹0.00</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td colspan="4" class="text-right">Total</td>
+                                                                    <td colspan="3" class="text-right">Total</td>
                                                                     <td id="sub-total" data-subtotal="<%= subtotal%>">₹
                                                                         <%= subtotal%>.00</td>
                                                                 </tr>
@@ -592,7 +592,7 @@
                                         if(data.quant){
                                              Swal.fire({
                                     icon: 'warning',
-                                    text: `Sorry your product ${data.lessQuantity} size ${data.size}  is Out Of Stock'`,
+                                    text: `Sorry your product ${data.lessQuantity} is Out Of Stock'`,
                                     showConfirmButton: false
                                 });
                                         }

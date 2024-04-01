@@ -47,15 +47,15 @@ const productsSchema = mongoose.Schema({
 type:Number
     },
 
-    stock: {
-        type: Object,
-        required: true,
-    },
+    // stock: {
+    //     type: Object,
+    //     required: true,
+    // },
 
-    size:{
-        type:Array,
-        required:true
-    },
+    // size:{
+    //     type:Array,
+    //     required:true
+    // },
 
     created: {
         type: Date,
