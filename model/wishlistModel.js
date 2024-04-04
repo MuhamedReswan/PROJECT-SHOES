@@ -11,10 +11,10 @@ const wishlistSchema = mongoose.Schema({
         product: {
             type: objectId,
             required: true,
-            ref: 'products'
+            ref: 'Products'
         }
     }]
    
 })
 
-module.exports = mongoose.model('wishlist', wishlistSchema);
+module.exports = mongoose.model('Wishlist', wishlistSchema);

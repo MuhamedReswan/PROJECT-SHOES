@@ -25,7 +25,7 @@ const productsSchema = mongoose.Schema({
     category: {
         type: ObjectId,
         required: true,
-        ref: 'category'
+        ref: 'Category'
     },
     brand: {
         type: String,
@@ -33,7 +33,7 @@ const productsSchema = mongoose.Schema({
     },
     isListed: {
         type: Boolean,
-        dafault: true,
+        default: true,
         required: true
     },
 
@@ -68,4 +68,4 @@ function arrayLimit(val) {
 
 }
 
-module.exports = mongoose.model('products', productsSchema);
+module.exports = mongoose.model('Products', productsSchema);

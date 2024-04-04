@@ -47,6 +47,7 @@ const placeOrder = async (req, res) => {
             const status = paymentMethod == "cashOnDelivery" ? 'placed' : 'pending';
             const address = user.addresses[index];
             console.log('addresses', user.addresses);//--------------
+            console.log('order addres', address);//--------------
             const date = Date.now();
             const order = new Orders({
                 user: userId,
@@ -65,15 +66,15 @@ const placeOrder = async (req, res) => {
                     const productId = products[i].productId._id;
                     const productTotalStock = products[i].productId.totalStock;
                     const productCartQuantity =products[i].quantity;
-                    const updatedQuantity = productTotalStock-productCartQuantity;
+                    // const updatedQuantity = productTotalStock-productCartQuantity;
 
                     console.log('productTotalStock',productTotalStock);//------------
-                    console.log('updatedQuantity',updatedQuantity);//------------
+                    // console.log('updatedQuantity',updatedQuantity);//------------
                     console.log('productId',productId);//------------
                     console.log('productCartQuantity',productCartQuantity);//------------
                     const updateProduct = await Products.findByIdAndUpdate({_id:productId});
                      console.log("updateProduct", updateProduct);//--------------------------
-                     updateProduct.totalStock+= -updatedQuantity;
+                     updateProduct.totalStock-= productCartQuantity;
                      updateProduct.save()
                      console.log("updateProduct  111111111", updateProduct);//--------------------------
 
@@ -104,14 +105,14 @@ const loadOrderSuccess = (req, res) => {
 // order details
 const loadOrderDetails = async (req,res)=>{
 try {
-
     console.log('im in order details'); //--------------
    const orderId = req.query.id;
    const userId = req.session.user.id;
    console.log('userId',userId); //--------------
    console.log('query id',orderId); //--------------
 
-const orderDetails = await Orders.findOne({user:userId});
+const orderDetails = await Orders.findOne({user:userId,_id:orderId}).populate('products.productId');
+console.log('orderDetails=',orderDetails)//-------------
 res.render('orderDetails',{orderDetails});
     
 } catch (error) {

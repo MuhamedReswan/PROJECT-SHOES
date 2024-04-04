@@ -4,7 +4,11 @@
     <%-include('../partials/userNavbar')-%>
 
 
-
+    <style>
+        .product-labels .lbl {
+            font-size: 8px;
+        }
+    </style>
 
     
     <!--Body Content-->
@@ -69,24 +73,7 @@
                             </form>
                         </div>
                         <!--End Price Filter-->
-                        <!--Size Swatches-->
-                        <div class="sidebar_widget filterBox filter-widget size-swacthes">
-                            <div class="widget-title"><h2>Size</h2></div>
-                            <div class="filter-color swacth-list">
-                            	<ul>
-                                    <li><span class="swacth-btn checked">6</span></li>
-                                    <li><span class="swacth-btn">7</span></li>
-                                    <li><span class="swacth-btn">8</span></li>
-                                    <li><span class="swacth-btn">9</span></li>
-                                    <li><span class="swacth-btn">10</span></li>
-                                
-                                </ul>
-                            </div>
-                        </div>
-                        <!--End Size Swatches-->
-                   
-                    
-                    
+    
             
                     </div>
                 </div>
@@ -151,15 +138,22 @@
                                                        <!-- Hover image -->
                                                        <img class="hover blur-up lazyload" id="mainImg2"  data-src="user/assets/images/product-images/sharpedImages/<%= product.images[1] %> " src="user/assets/images/product-images/sharpedImages/<%= product.images[1] %> " alt="image" title="product" />
                                                        <!-- End hover image -->
-                                                       <!-- product label -->
+
+                                                       <% if(product.totalStock>0){%>   
+                                                      <!-- product label -->
                                                        <div class="product-labels"><span class="lbl on-sale"><%= Math.floor(((product.price-product.offerPrice)/product.price)*100) %>% OFF</span></div>
                                                        <!-- End product label -->
+                                                       <%}else{%>
+                                                        <div class="product-labels "><span class="lbl on-sale">out of stock</span></div>
+                                                        <%}%>
+
                                                    </a>
                                                    <!-- end product image -->
                
                                                    <!-- Start product button -->
-                                                   <form class="variants add" action="/cart/<%=product._id%>" onclick="window.location.href='shop'" method="post">
-                                                       <button class="btn btn-addto-cart" type="button">Add To Cart</button>
+                                                   <form class="variants add" action="/single-product?id=<%= product.id %>"  method="post">
+                                                   <!-- <form class="variants add" action="/cart/<%=product._id%>" onclick="window.location.href='shop'" method="post"> -->
+                                                       <button class="btn btn-addto-cart" type="submit">view Details</button>
                                                    </form>
                                                    <div class="button-set">
                                                        <a href="javascript:void(0)" title="Quick View" class="quick-view-popup quick-view" data-toggle="modal" data-target="#content_quickview">
@@ -233,12 +227,6 @@
     </div>
     <!--End Body Content-->
 
-
-
-
-
-
-    
     
     <!--Footer-->
     <%-include('../partials/userBodyFooter.ejs')-%>

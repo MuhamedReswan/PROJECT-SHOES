@@ -411,6 +411,7 @@ const resetPassword = async (req, res) => {
 const loadProfile = (req,res)=>{
     try {
         console.log('profile working');//------------------
+        const orders = await 
         res.render('addProfile')
     } catch (error) {
         console.log(error)
@@ -444,7 +445,7 @@ module.exports = {
     forgotPassword,
     loadResetPassword,
     resetPassword,
-    loadProfile,
+    
 
 
 

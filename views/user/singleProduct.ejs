@@ -143,7 +143,10 @@
                                             </div>
                                             <!-- </div> -->
                                             <!-- Product Action -->
-                                            <div class="product-action clearfix">
+
+                                           
+                                                <div class="product-action clearfix">
+                                                    <% if(product.totalStock>0){%>
                                                 <div class="product-form__item--quantity">
                                                     <div class="wrapQtyBtn">
                                                         <div class="qtyField">
@@ -151,7 +154,7 @@
                                                                     class="fa anm anm-minus-r"
                                                                     aria-hidden="true"></i></a>
                                                             <input type="text" id="Quantity" name="quantity" value="1"
-                                                                class="product-form__input qty">
+                                                                class="product-form__input qty" max="5">
                                                             <a class="qtyBtn plus" href="javascript:void(0);"><i
                                                                     class="fa anm anm-plus-r"
                                                                     aria-hidden="true"></i></a>
@@ -171,6 +174,17 @@
                                                         it now</button>
 
                                                 </div>
+                                                <%}else{%>
+                                                    <div class="product-form__item--submit mb-2">
+                                                        <a href="/shop">
+                                                             <button id="addToCartBtn" type="button" name="add"
+                                                            class="btn product-form__cart-submit">
+                                                            <span>continue shopping</span>
+                                                        </button></a>
+                                                       
+                                                    </div>
+                                                  
+                                                    <%}%>
                                                 <!-- End Product Action -->
 
                                                 <!-- </form> -->
@@ -674,9 +688,6 @@
                                     var quantity = document.getElementById('Quantity').value;
                                     let data = { productId: id, quantity: quantity }
 
-
-                                    // if (size) {
-
                                         $.ajax({
                                             method: "POST",
                                             url: '/addtocart',
@@ -717,26 +728,11 @@
                                             }
                                         })
 
-                                    // }
-                                // }
-                                // else {
-                                //     let paragraph = document.createElement('p');
-                                //     let text = document.createTextNode('Please select size.');
-                                //     paragraph.classList.add('text-danger');
-                                //     paragraph.appendChild(text);
-                                //     let sizeError = document.getElementById('sizeError');
-                                //     sizeError.appendChild(paragraph);
-                                //     setTimeout(() => {
-                                //         sizeError.innerText = "";
-                                //     }, 3000)
-
-                                // }
-
                             }
 
-                            function checkCart(productId/*, size*/) {
+                            function checkCart(productId) {
                                 console.log('hey clicked')
-                                console.log(productId/*, size,*/, 'sis')
+                                console.log(productId)
                                 if (!productId ) {
                                     console.log('data not found');
                                     return;
@@ -799,6 +795,7 @@
                                 });
                             }
                         </script>
+                        
                         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 </div>
 

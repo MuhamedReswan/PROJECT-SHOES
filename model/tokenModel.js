@@ -7,7 +7,7 @@ const tokenSchema = mongoose.Schema({
     },
     userId: {
         type: objectId,
-        ref: 'user',
+        ref: 'Users',
         required: true
     },
     createdAt: {

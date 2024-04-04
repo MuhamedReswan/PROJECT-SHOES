@@ -26,13 +26,14 @@
                                 &nbsp;<strong>Congratulations!</strong>
                                 You've got free shipping!
                             </div>
-                            <table>
+                            <table class="col-12 col-sm-12 col-md-12 col-lg-12 text-center" >
                                 <thead class="cart__row cart__header">
                                     <tr>
-                                        <th colspan="2" class="text-center">Product</th>
-                                        <th class="text-center">Price</th>
-                                        <th class="text-center">Quantity</th>
-                                        <th class="text-right">Total</th>
+                                        <th>image</th>
+                                        <th>product</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th >Total</th>
                                         <th class="action">&nbsp;</th>
                                     </tr>
                                 </thead>
@@ -76,12 +77,12 @@
                                                                 class="icon icon-plus"></i></button>
                                                     </div>
                                                 </td>
-                                                <td class="text-right small--hide cart-price">
+                                                <td class="small--hide cart-price">
                                                     <div><span class="money">₹ <%= product.price * product.quantity %>
                                                         </span>
                                                     </div>
                                                 </td>
-                                                <td class="text-center small--hide"><span
+                                                <td class="small--hide"><span
                                                         onclick="removeProduct(' <%=product.productId._id %>')"
                                                         class="btn btn--secondary cart__remove" title="Remove tem"><i
                                                             class="icon icon anm anm-times-l"></i></span>

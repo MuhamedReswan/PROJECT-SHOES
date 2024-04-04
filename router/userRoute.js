@@ -79,7 +79,7 @@ user_route.get('/reset-password/:id/:token', userController.loadResetPassword);
 user_route.post('/reset-password', userController.resetPassword);
 
 //profile
-user_route.get('/profile', userController.loadProfile)
+user_route.get('/profile', userProfileController.loadProfile)
 
 
 

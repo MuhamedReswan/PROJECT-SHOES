@@ -24,9 +24,9 @@ const orderSchema = mongoose.Schema({
             quantity: {
                 type: Number
             },
-            size: {
-                type: Number
-            },
+            // size: {
+            //     type: Number
+            // },
             dascription: {
                 type: String
             },
@@ -57,7 +57,7 @@ const orderSchema = mongoose.Schema({
         required: true
     },
     deliveryAddress: {
-        type: String
+        type: Object
     },
     paymentId: {
         type: String
