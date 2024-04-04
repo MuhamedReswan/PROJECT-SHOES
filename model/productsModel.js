@@ -22,6 +22,9 @@ const productsSchema = mongoose.Schema({
         required: false,
         min: 0
     },
+    discountedPrice:{
+        type: Number,
+    },
     category: {
         type: ObjectId,
         required: true,

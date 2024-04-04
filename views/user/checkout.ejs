@@ -354,17 +354,16 @@
                                                                 <td class="text-left">
                                                                     <%= product.productId.name %>
                                                                 </td>
-                                                                <td>₹<%= product.price%>.00</td>
-                                                                   <!-- <td>
-                                                                    <%= product.size %>
-                                                                </td> -->
+                                                                <td>₹<%= product.offerPrice%>.00</td>
+
                                                                 <td>
                                                                     <%= product.quantity %>
                                                                 </td>
-                                                                <td>₹<%= product.price * product.quantity %>.00</td>
+                                                                <td>₹<%= product.offerPrice * product.quantity %>.00
+                                                                </td>
                                                             </tr>
 
-                                                            <% subtotal+=product.price * product.quantity %>
+                                                            <% subtotal+=product.offerPrice * product.quantity %>
                                                         </tbody>
                                                         <% })%>
                                                             <tfoot class="font-weight-600">
@@ -375,7 +374,8 @@
                                                                 <tr>
                                                                     <td colspan="3" class="text-right">Total</td>
                                                                     <td id="sub-total" data-subtotal="<%= subtotal%>">₹
-                                                                        <%= subtotal%>.00</td>
+                                                                        <%= subtotal%>.00
+                                                                    </td>
                                                                 </tr>
                                                             </tfoot>
                                             </table>
@@ -445,7 +445,7 @@
 
                 // Regular expressions for validation
                 const nameRegex = /^[^\s].+/;
-                const mobileRegex =/^\d{10}$/;
+                const mobileRegex = /^\d{10}$/;
                 const textRegex = /^[^\d]+$/;
                 const pincodeRegex = /^\d{6}$/;
 
@@ -460,28 +460,28 @@
                     return false;
                 }
 
-                if (!mobileRegex.test(mobile) || mobile.length > 10 || mobile.length < 10 ) {
+                if (!mobileRegex.test(mobile) || mobile.length > 10 || mobile.length < 10) {
                     errors.push('Mobile number should be 10 digits.');
                     document.getElementById('input-telephone').classList.add('error');
                     displayErrors(errors);
                     return false;
                 }
 
-         if (!textRegex.test(address) || address == '') {
+                if (!textRegex.test(address) || address == '') {
                     errors.push('Please enter a valid address');
                     document.getElementById('input-address-1').classList.add('error');
                     displayErrors(errors);
                     return false;
-                }       
+                }
 
-                if (!textRegex.test(district) || district=='') {
+                if (!textRegex.test(district) || district == '') {
                     errors.push('Please enter a valid distric name.');
                     document.getElementById('input-district').classList.add('error');
                     displayErrors(errors);
                     return false;
                 }
 
-                if (!textRegex.test(city) || city =='') {
+                if (!textRegex.test(city) || city == '') {
                     errors.push('Please enter a valid city name.');
                     document.getElementById('input-city').classList.add('error');
                     displayErrors(errors);
@@ -566,18 +566,18 @@
                     console.log('true is working')//----------
                     const radioButtonAddress = document.querySelector('input[name="selectedAddress"]:checked');
                     const index = radioButtonAddress ? radioButtonAddress.value : null
-                    console.log('index',index)//----------
+                    console.log('index', index)//----------
                     if (index) {
-                        console.log('index1',index)//----------
+                        console.log('index1', index)//----------
                         const radioButtonPayment = document.querySelector('input[name="paymentOption"]:checked');
                         const paymentMethod = radioButtonPayment ? radioButtonPayment.value : null;
-                        console.log('paymentMethod',paymentMethod)//----------
+                        console.log('paymentMethod', paymentMethod)//----------
                         if (paymentMethod) {
-                            console.log('paymentMethod1',paymentMethod)//----------
+                            console.log('paymentMethod1', paymentMethod)//----------
                             const subtotal = document.getElementById('sub-total').getAttribute('data-subtotal');
-                            console.log('data-sudtotal' +subtotal)//-------------------
+                            console.log('data-sudtotal' + subtotal)//-------------------
                             if (subtotal) {
-                                console.log('subtotal',subtotal)//----------
+                                console.log('subtotal', subtotal)//----------
                                 let data = { index: index, subtotal: subtotal, paymentMethod: paymentMethod }
 
                                 fetch('/place-order', {
@@ -588,16 +588,16 @@
                                     body: JSON.stringify(data)
                                 })
                                     .then(Response => Response.json())
-                                    .then((data) =>{
-                                        if(data.quant){
-                                             Swal.fire({
-                                    icon: 'warning',
-                                    text: `Sorry your product ${data.lessQuantity} is Out Of Stock'`,
-                                    showConfirmButton: false
-                                });
+                                    .then((data) => {
+                                        if (data.quant) {
+                                            Swal.fire({
+                                                icon: 'warning',
+                                                text: `Sorry your product ${data.lessQuantity} is Out Of Stock'`,
+                                                showConfirmButton: false
+                                            });
                                         }
-                                        if(data.ok){
-location.href =`/order-success/${data.orderId}`
+                                        if (data.ok) {
+                                            location.href = `/order-success/${data.orderId}`
                                         }
                                     })
                                     .catch(error => console.log(error))

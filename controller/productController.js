@@ -2,6 +2,7 @@ const products = require('../model/productsModel');
 const category = require('../model/categoryModel');
 const sharp = require('sharp');
 const path = require('path');
+const { log } = require('console');
 
 // add product 
 const addProducts = async (req, res) => {
@@ -46,7 +47,6 @@ for (let i = 0; i <req.files.length; i++) {
         console.error('Error processing image:', error);
     }
 }
-
 const product = await new products({
         name:details.name,
         description:details.description,
@@ -56,7 +56,7 @@ const product = await new products({
         brand:details.brand,
         isListed:details.isListed,
         images:arrImages,
-        totalStock:details.quantity
+        totalStock:details.quantity,
 });
 
 await product.save();
@@ -106,7 +106,6 @@ for(let i=0; i<arrImages.length; i++){
 }
 // console.log('dbImages',dbImages);//-----------
 
-        
 const productUpdate = await products.updateOne({_id:updateData.id},{
     $set:{
         name:updateData.name,
@@ -117,7 +116,7 @@ const productUpdate = await products.updateOne({_id:updateData.id},{
         brand:updateData.brand,
         isListed:updateData.isListed,
         images:dbImages,
-        totalStock:updateData.quantity
+        totalStock:updateData.quantity,
     }
 })
 

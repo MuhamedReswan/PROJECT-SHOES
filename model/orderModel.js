@@ -64,7 +64,11 @@ const orderSchema = mongoose.Schema({
     },
     couponApplied: {
         type: Number
+    },
+    discountedPrice:{
+        type:Number
     }
+
 })
 
 module.exports = mongoose.model('Orders', orderSchema);

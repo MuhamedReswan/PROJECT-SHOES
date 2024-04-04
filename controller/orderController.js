@@ -55,7 +55,7 @@ const placeOrder = async (req, res) => {
                 totalAmount: subtotal,
                 status: status,
                 paymentMethod: paymentMethod,
-                deliveryAddress: address
+                deliveryAddress: address,
             })
 
             const orderDetails = await order.save();

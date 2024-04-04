@@ -15,104 +15,102 @@
     <%console.log('orederDetailsfrom od',orderDetails)%>
         <%if(orderDetails){%>
             <main>
-<%let originalDateString = orderDetails.date%>
-<%const date = new Date(originalDateString);%>
-<%const formattedDate = date.toLocaleDateString('en-US', {
-    weekday: 'short',
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-   });%>
-   <%let total = 0%>
-                <section class="order-summary">
-                    <h2>Order Summary</h2>
-                    <ul>
-                        <li><strong>Order ID:</strong> #123456</li>
-                        <li><strong>Date:</strong>
-                            <%=formattedDate%>
-                        </li>
-                        <li><strong>Status:</strong>
-                            <%=orderDetails.status%>
-                        </li>
-                        <li><strong>Payment Method:</strong>
-                            <%=orderDetails.paymentMethod%>
-                        </li>
-                    </ul>
-                </section>
-                <section class="shipping-details">
-                    <h2>Shipping Details</h2>
-                    <ul>
-                        <li><strong>Name: </strong>
-                            <%=orderDetails.deliveryAddress.name%>
-                        </li>
-                        <li><strong>Address: </strong>
-                            <%=orderDetails.deliveryAddress.address%>(H)
-                        </li>
+                <%let originalDateString=orderDetails.date%>
+                    <%const date=new Date(originalDateString);%>
+                        <%const formattedDate=date.toLocaleDateString('en-US', { weekday: 'short' , year: 'numeric' ,
+                            month: 'short' , day: 'numeric' });%>
+                            <%let total=0%>
+                                <section class="order-summary">
+                                    <h2>Order Summary</h2>
+                                    <ul>
+                                        <li><strong>Order ID:</strong> #123456</li>
+                                        <li><strong>Date:</strong>
+                                            <%=formattedDate%>
+                                        </li>
+                                        <li><strong>Status:</strong>
+                                            <%=orderDetails.status%>
+                                        </li>
+                                        <li><strong>Payment Method:</strong>
+                                            <%=orderDetails.paymentMethod%>
+                                        </li>
+                                    </ul>
+                                </section>
+                                <section class="shipping-details">
+                                    <h2>Shipping Details</h2>
+                                    <ul>
+                                        <li><strong>Name: </strong>
+                                            <%=orderDetails.deliveryAddress.name%>
+                                        </li>
+                                        <li><strong>Address: </strong>
+                                            <%=orderDetails.deliveryAddress.address%>(H)
+                                        </li>
 
-                        <li><strong>Place: </strong>
-                            <%=orderDetails.deliveryAddress.city%>
-                        </li>
-                        <li><strong>District: </strong>
-                            <%=orderDetails.deliveryAddress.district%>
-                        </li>
-                        <li><strong>Phone:</strong>
-                            <%=orderDetails.deliveryAddress.mobile%>
-                        </li>
-                        <li><strong>State:</strong>
-                            <%=orderDetails.deliveryAddress.state%>
-                        </li>
-                        <li><strong>Pincode:</strong>
-                            <%=orderDetails.deliveryAddress.pincode%>
-                        </li>
+                                        <li><strong>Place: </strong>
+                                            <%=orderDetails.deliveryAddress.city%>
+                                        </li>
+                                        <li><strong>District: </strong>
+                                            <%=orderDetails.deliveryAddress.district%>
+                                        </li>
+                                        <li><strong>Phone:</strong>
+                                            <%=orderDetails.deliveryAddress.mobile%>
+                                        </li>
+                                        <li><strong>State:</strong>
+                                            <%=orderDetails.deliveryAddress.state%>
+                                        </li>
+                                        <li><strong>Pincode:</strong>
+                                            <%=orderDetails.deliveryAddress.pincode%>
+                                        </li>
 
-                    </ul>
-                </section>
-                <style>
+                                    </ul>
+                                </section>
+                                <style>
 
-                </style>
-                <section class="order-items">
-                    <h2>Order Items</h2>
+                                </style>
+                                <section class="order-items">
+                                    <h2>Order Items</h2>
 
-                    <div style="overflow-x: auto;">
+                                    <div style="overflow-x: auto;">
 
-                        <table class="table-responsive ">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Quantity</th>
-                                    <th>Price</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <% if( Array.isArray(orderDetails.products)){%>
-                                <% orderDetails.products.forEach((product)=> {%>
-                                    <tbody >
-                                        <tr >
-                                            <td class="center-text">
-                                                <%=product.productId.name%>
-                                            </td>
-                                            <td class="center-text">
-                                                <%=product.quantity%>
-                                            </td>
-                                            <td class="center-text">
-                                                <%=product.price%>
-                                            </td>
-                                            <td class="center-text">
-                                                <%=product.price*product.quantity%>
-                                            </td>
-                                        </tr>
-                    <% total += product.price*product.quantity %>
-                    <%console.log('total',total)%>
-                                    </tbody>
-                                    <%});%>
-                                        <%}%>
-                        </table>
-                    </div>
-                </section>
-                <section class="order-total">
-                    <h2>Order Total</h2>
-                    <p><strong>Total:</strong> <%=total%></p>
-                </section>
+                                        <table class="table-responsive ">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th>Quantity</th>
+                                                    <th>Price</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <% if( Array.isArray(orderDetails.products)){%>
+                                                <% orderDetails.products.forEach((product)=> {%>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="center-text">
+                                                                <%=product.productId.name%>
+                                                            </td>
+                                                            <td class="center-text">
+                                                                <%=product.quantity%>
+                                                            </td>
+                                                            <td class="center-text">
+                                                                <%=product.productId.offerPrice%>
+                                                            </td>
+                                                            <td class="center-text">
+                                                                <%=product.productId.offerPrice*product.quantity%>
+                                                            </td>
+                                                        </tr>
+                                                        <% total +=product.productId.offerPrice*product.quantity %>
+                                                            <%console.log('total',total)%>
+                                                    </tbody>
+                                                    <%});%>
+                                                        <%}%>
+                                        </table>
+                                    </div>
+                                </section>
+                                <section class="order-total">
+                                    <h2>Order Total</h2>
+                                    <p><strong>Total:</strong>
+                                        <%=total%>
+                                    </p>
+                                </section>
             </main>
             <%}%>
                 <footer>
@@ -181,7 +179,8 @@
         width: 100%;
         max-width: 100%;
     }
+
     .center-text {
-    text-align: center;
-}
+        text-align: center;
+    }
 </style>

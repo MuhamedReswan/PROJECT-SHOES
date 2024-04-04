@@ -20,20 +20,20 @@
 
 
                     <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col" id="cartContainer">
-                        <% if(cartData && cartData.products && cartData.products.length > 0){%>
+                        <% if(cartData && cartData.products && cartData.products.length> 0){%>
                             <div class="alert alert-success text-uppercase" role="alert">
                                 <i class="icon anm anm-truck-l icon-large"></i>
                                 &nbsp;<strong>Congratulations!</strong>
                                 You've got free shipping!
                             </div>
-                            <table class="col-12 col-sm-12 col-md-12 col-lg-12 text-center" >
+                            <table class="col-12 col-sm-12 col-md-12 col-lg-12 text-center">
                                 <thead class="cart__row cart__header">
                                     <tr>
                                         <th>image</th>
                                         <th>product</th>
                                         <th>Price</th>
                                         <th>Quantity</th>
-                                        <th >Total</th>
+                                        <th>Total</th>
                                         <th class="action">&nbsp;</th>
                                     </tr>
                                 </thead>
@@ -56,7 +56,7 @@
 
                                                 </td>
                                                 <td class="cart__price-wrapper cart-flex-item">
-                                                    <span class="money">₹<%= product.price %></span>
+                                                    <span class="money">₹<%= product.offerPrice %></span>
                                                 </td>
                                                 <td class="cart__update-wrapper cart-flex-item text-center ">
 
@@ -78,7 +78,8 @@
                                                     </div>
                                                 </td>
                                                 <td class="small--hide cart-price">
-                                                    <div><span class="money">₹ <%= product.price * product.quantity %>
+                                                    <div><span class="money">₹ <%= product.offerPrice * product.quantity
+                                                                %>
                                                         </span>
                                                     </div>
                                                 </td>
@@ -117,7 +118,8 @@
                                 <div class="solid-border">
                                     <div class="row border-bottom pb-2">
                                         <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
-                                        <span class="col-12 col-sm-6 text-right"><span class="money">₹ <%= totalPrice %>
+                                        <span class="col-12 col-sm-6 text-right"><span class="money">₹ <%=
+                                                    totalOfferPrice %>
                                                     .00</span></span>
                                     </div>
                                     <div class="row border-bottom pb-2 pt-2">
