@@ -58,10 +58,17 @@ const product = await new products({
         images:arrImages,
         totalStock:details.quantity,
 });
-
-await product.save();
+const productAlready = await products.findOne({name:details.name})
+if(productAlready){
+console.log('Product alredy exist');
+req.flash('already','Product name already exist !')
+res.redirect('/admin/add-products')
+}else{
+    await product.save();
 res.redirect('/admin/add-products');
 console.log('product saved');
+}
+
 
 } catch (error) {
         console.log(error);

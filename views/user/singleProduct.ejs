@@ -138,80 +138,88 @@
                                                     <%}else{%>
                                                         <div id="quantity_message" class="text-danger">currently out of
                                                             stock</div>
-                                                        <%}%>  
-                                                        
+                                                        <%}%>
+
                                             </div>
                                             <!-- </div> -->
                                             <!-- Product Action -->
 
-                                           
-                                                <div class="product-action clearfix">
-                                                    <% if(product.totalStock>0){%>
-                                                <div class="product-form__item--quantity">
-                                                    <div class="wrapQtyBtn">
-                                                        <div class="qtyField">
-                                                            <a class="qtyBtn minus" href="javascript:void(0);"><i
-                                                                    class="fa anm anm-minus-r"
-                                                                    aria-hidden="true"></i></a>
-                                                            <input type="text" id="Quantity" name="quantity" value="1"
-                                                                class="product-form__input qty" max="5">
-                                                            <a class="qtyBtn plus" href="javascript:void(0);"><i
-                                                                    class="fa anm anm-plus-r"
-                                                                    aria-hidden="true"></i></a>
+
+                                            <div class="product-action clearfix" id="buttons">
+                                                <% if(product.totalStock>0){%>
+                                                    <div class="product-form__item--quantity">
+                                                        <div class="wrapQtyBtn">
+                                                            <div class="qtyField">
+                                                                <a class="qtyBtn minus" href="javascript:void(0);"><i
+                                                                        class="fa anm anm-minus-r"
+                                                                        aria-hidden="true"></i></a>
+                                                                <input type="text" id="Quantity" name="quantity"
+                                                                    value="1" class="product-form__input qty" max="5">
+                                                                <a class="qtyBtn plus" href="javascript:void(0);"><i
+                                                                        class="fa anm anm-plus-r"
+                                                                        aria-hidden="true"></i></a>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="product-form__item--submit mb-2">
-                                                    <button id="addToCartBtn" type="button" name="add"
-                                                        class="btn product-form__cart-submit"
-                                                        onclick="addtocart('<%= product._id %>')">
-                                                        <span>Add to cart</span>
-                                                    </button>
-                                                </div>
-                                                <div class="shopify-payment-button " data-shopify="payment-button">
-                                                    <button type="button"
-                                                        class="shopify-payment-button__button shopify-payment-button__button--unbranded">Buy
-                                                        it now</button>
-
-                                                </div>
-                                                <%}else{%>
                                                     <div class="product-form__item--submit mb-2">
-                                                        <a href="/shop">
-                                                             <button id="addToCartBtn" type="button" name="add"
-                                                            class="btn product-form__cart-submit">
-                                                            <span>continue shopping</span>
-                                                        </button></a>
-                                                       
+                                                        <button id="addToCartBtn" type="button" name="add"
+                                                            class="btn product-form__cart-submit"
+                                                            onclick="addtocart('<%= product._id %>')">
+                                                            <span>Add to cart</span>
+                                                        </button>
                                                     </div>
-                                                  
-                                                    <%}%>
-                                                <!-- End Product Action -->
+                                                    <%if(wishlistData && wishlistData !=null){%>
+                                                        <div class="shopify-payment-button"
+                                                            data-shopify="payment-button">
+                                                            <a href="/wishlist"><button type="button"
+                                                                    class="shopify-payment-button__button shopify-payment-button__button--unbranded"><i
+                                                                        class="icon anm anm-heart-l"
+                                                                        aria-hidden="true"></i> View wishlist</button>
+                                                            </a>
 
-                                                <!-- </form> -->
-                                                <div class="display-table shareRow">
-                                                    <div class="display-table-cell medium-up--one-third">
-                                                        <div class="wishlist-btn">
-                                                            <a class="wishlist add-to-wishlist" href="#"
-                                                                title="Add to Wishlist"><i class="icon anm anm-heart-l"
-                                                                    aria-hidden="true"></i> <span>Add to
-                                                                    Wishlist</span></a>
                                                         </div>
-                                                    </div>
+                                                        <%}else{%>
+                                                            <div class="shopify-payment-button"
+                                                                data-shopify="payment-button">
+                                                                <button id="add-to-wishlist"
+                                                                    onclick="addToWishlist('<%= product._id %>','add-to-wishlist')"
+                                                                    type="button"
+                                                                    class="shopify-payment-button__button shopify-payment-button__button--unbranded"><i
+                                                                        class="icon anm anm-heart-l"
+                                                                        aria-hidden="true"></i> Add to wishlist</button>
 
-                                                </div>
+                                                            </div>
+                                                            <%}%>
+                                                                <%}else{%>
+                                                                    <div class="product-form__item--submit mb-2">
+                                                                        <a href="/shop">
+                                                                            <button id="addToCartBtn" type="button"
+                                                                                name="add"
+                                                                                class="btn product-form__cart-submit">
+                                                                                <span>continue shopping</span>
+                                                                            </button></a>
 
-                                                <p id="freeShipMsg" class="freeShipMsg" data-price="199"><i
-                                                        class="fa fa-truck" aria-hidden="true"></i> GETTING CLOSER! ONLY
-                                                    <b class="freeShip"><span class="money" data-currency-usd="₹199.00"
-                                                            data-currency="USD">₹199.00</span></b> AWAY FROM <b>FREE
-                                                        SHIPPING!</b>
-                                                </p>
-                                                <p class="shippingMsg"><i class="fa fa-clock-o" aria-hidden="true"></i>
-                                                    ESTIMATED DELIVERY BETWEEN <b id="fromDate">
-                                                        <%= startDate %>
-                                                    </b> and <b id="toDate">
-                                                        <%= deliveryDate %>
-                                                    </b>.</p>
+                                                                    </div>
+
+                                                                    <%}%>
+                                                                    
+                                                                        <p id="freeShipMsg" class="freeShipMsg"
+                                                                            data-price="199"><i class="fa fa-truck"
+                                                                                aria-hidden="true"></i> GETTING CLOSER!
+                                                                            ONLY
+                                                                            <b class="freeShip"><span class="money"
+                                                                                    data-currency-usd="₹199.00"
+                                                                                    data-currency="USD">₹199.00</span></b>
+                                                                            AWAY FROM <b>FREE
+                                                                                SHIPPING!</b>
+                                                                        </p>
+                                                                        <p class="shippingMsg"><i class="fa fa-clock-o"
+                                                                                aria-hidden="true"></i>
+                                                                            ESTIMATED DELIVERY BETWEEN <b id="fromDate">
+                                                                                <%= startDate %>
+                                                                            </b> and <b id="toDate">
+                                                                                <%= deliveryDate %>
+                                                                            </b>.</p>
 
                                             </div>
                                             <%}%>
@@ -285,7 +293,7 @@
                                                     <li>
                                                         <%= product.description %>
                                                     </li>
-                                                    <li>Durable rubber outsole for traction on various surfaces</li>
+                                                    <li>Durable rubber outsole for traction on letious surfaces</li>
                                                     <li>Cushlon foam midsole for lightweight, responsive cushioning
                                                     </li>
                                                     <li>Zoom Air unit in the forefoot for responsive cushioning</li>
@@ -493,57 +501,6 @@
                                                 </div>
                                             </div>
                                         </div>
-<!-- 
-                                        <div id="tab3" class="tab-content">
-
-
-                                            <h3>SHOES SIZING CHART</h3>
-                                            <table>
-                                                <tbody>
-                                                    <tr>
-                                                        <th>Size</th>
-                                                        <th>6</th>
-                                                        <th>7</th>
-                                                        <th>8</th>
-                                                        <th>9</th>
-                                                        <th>10</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>UK</td>
-                                                        <td>6</td>
-                                                        <td>7</td>
-                                                        <td>8</td>
-                                                        <td>9</td>
-                                                        <td>10</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>US</td>
-                                                        <td>7</td>
-                                                        <td>8</td>
-                                                        <td>9</td>
-                                                        <td>10</td>
-                                                        <td>11</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>EURO</td>
-                                                        <td>40</td>
-                                                        <td>41</td>
-                                                        <td>42</td>
-                                                        <td>43</td>
-                                                        <td>44</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>CM</td>
-                                                        <td>24.4</td>
-                                                        <td>25.4</td>
-                                                        <td>26.0</td>
-                                                        <td>27.4</td>
-                                                        <td>27.9</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-
-                                        </div> -->
 
                                         <div id="tab4" class="tab-content">
                                             <h4>Returns Policy</h4>
@@ -636,12 +593,12 @@
 
                         <script>
                             $(function () {
-                                var $pswp = $('.pswp')[0],
+                                let $pswp = $('.pswp')[0],
                                     image = [],
                                     getItems = function () {
-                                        var items = [];
+                                        let items = [];
                                         $('.lightboximages a').each(function () {
-                                            var $href = $(this).attr('href'),
+                                            let $href = $(this).attr('href'),
                                                 $size = $(this).data('size').split('x'),
                                                 item = {
                                                     src: $href,
@@ -652,7 +609,7 @@
                                         });
                                         return items;
                                     }
-                                var items = getItems();
+                                let items = getItems();
 
                                 $.each(items, function (index, value) {
                                     image[index] = new Image();
@@ -661,16 +618,16 @@
                                 $('.prlightbox').on('click', function (event) {
                                     event.preventDefault();
 
-                                    var $index = $(".active-thumb").parent().attr('data-slick-index');
+                                    let $index = $(".active-thumb").parent().attr('data-slick-index');
                                     $index++;
                                     $index = $index - 1;
 
-                                    var options = {
+                                    let options = {
                                         index: $index,
                                         bgOpacity: 0.9,
                                         showHideOpacity: true
                                     }
-                                    var lightBox = new PhotoSwipe($pswp, PhotoSwipeUI_Default, items, options);
+                                    let lightBox = new PhotoSwipe($pswp, PhotoSwipeUI_Default, items, options);
                                     lightBox.init();
                                 });
                             });
@@ -680,64 +637,55 @@
 
                             function addtocart(id) {
                                 console.log('im in function')//-----------
-                                // if (document.querySelector('[name="option-1"]:checked')) {
-                                //     var selectedSize = document.querySelector('[name="option-1"]:checked');
+                                let quantity = document.getElementById('Quantity').value;
+                                let data = { productId: id, quantity: quantity }
 
-                                //     var size = document.querySelector('[name="option-1"]:checked').value;
-                                //     console.log(size, "size");//-------------
-                                    var quantity = document.getElementById('Quantity').value;
-                                    let data = { productId: id, quantity: quantity }
+                                $.ajax({
+                                    method: "POST",
+                                    url: '/addtocart',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify(data),
+                                    success: function (res) {
+                                        if (res.added == true || res.exist) {
+                                            Swal.fire({
+                                                title: `Added to cart`,
+                                                icon: "success",
+                                                showConfirmationButton: false,
+                                                timer: 1000
+                                            })
 
-                                        $.ajax({
-                                            method: "POST",
-                                            url: '/addtocart',
-                                            contentType: 'application/json',
-                                            data: JSON.stringify(data),
-                                            success: function (res) {
-                                                if (res.added == true || res.exist) {
-                                                    Swal.fire({
-                                                        title: `Added to cart`,
-                                                        icon: "success",
-                                                        showConfrimationButton: false,
-                                                        timer: 1000
-                                                    })
+                                            let anchor = document.createElement("a");
 
-                                                    var anchor = document.createElement("a");
+                                            anchor.setAttribute("id", "addToCartBtn");
+                                            anchor.setAttribute("href", "/cart");
+                                            anchor.setAttribute("name", "add");
+                                            anchor.setAttribute("class", "btn product-form__cart-submit");
+                                            anchor.setAttribute("style", "margin-top: 2px");
 
-                                                    anchor.setAttribute("id", "addToCartBtn");
-                                                    anchor.setAttribute("href", "/cart");
-                                                    anchor.setAttribute("name", "add");
-                                                    anchor.setAttribute("class", "btn product-form__cart-submit");
-                                                    anchor.setAttribute("style", "margin-top: 2px");
+                                            let span = document.createElement('span');
+                                            span.textContent = 'view cart';
 
-                                                    var span = document.createElement('span');
-                                                    span.textContent = 'view cart';
+                                            anchor.appendChild(span);
+                                            let container = document.querySelector('.product-form__item--submit');
+                                            container.innerHTML = '';
 
-                                                    anchor.appendChild(span);
-                                                    var container = document.querySelector('.product-form__item--submit');
-                                                    container.innerHTML = '';
-
-                                                    container.appendChild(anchor);
-
-
-                                                }
-
-                                            },
-                                            error: function (error) {
-                                                console.log(error);
-                                            }
-                                        })
-
+                                            container.appendChild(anchor);
+                                        }
+                                    },
+                                    error: function (error) {
+                                        console.log(error);
+                                    }
+                                })
                             }
 
                             function checkCart(productId) {
-                                console.log('hey clicked')
+                                console.log('hey clicked')//---------
                                 console.log(productId)
-                                if (!productId ) {
+                                if (!productId) {
                                     console.log('data not found');
                                     return;
                                 }
-                                const data = {productId }
+                                const data = { productId }
 
                                 $.ajax({
                                     url: '/check-cart',
@@ -746,31 +694,30 @@
                                     data: JSON.stringify(data),
                                     success: function (res) {
                                         console.log('hellooeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');//-------------------
-                                        console.log(res,'res');//---------------------
+                                        console.log(res, 'res');//---------------------
                                         if (res.exist) {
 
-                                            var anchor = document.createElement("a");
+                                            let anchor = document.createElement("a");
 
                                             anchor.setAttribute("id", "addToCartBtn");
                                             anchor.setAttribute("href", "/cart");
                                             anchor.setAttribute("name", "add");
                                             anchor.setAttribute("class", "btn product-form__cart-submit");
                                             anchor.setAttribute("style", "margin-top: 2px");
-                                            var span = document.createElement('span');
+                                            let span = document.createElement('span');
                                             span.textContent = 'view cart';
-                             
+
 
                                             anchor.appendChild(span);
-                                            var container = document.querySelector('.product-form__item--submit');
+                                            let container = document.querySelector('.product-form__item--submit');
                                             container.innerHTML = '';
 
                                             container.appendChild(anchor);
 
 
                                         }
-                                         else if (res.not) {
-                                            console.log('recicfd');//--------------------------
-                                            var button = document.createElement('button');
+                                        else if (res.not) {
+                                            let button = document.createElement('button');
 
                                             button.setAttribute('id', 'addToCartBtn');
                                             button.setAttribute('type', 'button');
@@ -778,15 +725,14 @@
                                             button.classList.add('btn', 'product-form__cart-submit');
                                             button.setAttribute('onclick', "addtocart('" + res.productId + "')");
 
-                                            var span = document.createElement('span');
+                                            let span = document.createElement('span');
                                             span.innerText = 'add to cart';
                                             button.appendChild(span);
 
-                                            var container = document.querySelector('.product-form__item--submit');
+                                            let container = document.querySelector('.product-form__item--submit');
                                             container.innerHTML = '';
 
                                             container.appendChild(button);
-
                                         }
                                     },
                                     error: function (error) {
@@ -794,8 +740,66 @@
                                     }
                                 });
                             }
+
+                            const buttonDiv = document.getElementById('buttons');
+
+                            function addToWishlist(productId, id) {
+                                let data = { productId: productId }
+
+                                $.ajax({
+                                    method: 'post',
+                                    url: '/add-to-wishlist',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify(data),
+                                    success: (res) => {
+                                        if (res.added) {
+
+                                            $('#buttons').load(`/single-product?id=${productId} #buttons`, null, function () {
+                                                swal.fire({
+                                                    title: 'Added',
+                                                    icon: 'success',
+                                                    text: 'successfully added to wishlist !',
+                                                    timer: 1000
+                                                })
+                                            })
+                                        }
+                                        if (res.exist) {
+
+                                            removeWishlist(id)
+                                            $('#buttons').onload(`/single-product?id=${id} #buttons`, null, () => {
+                                                swal.fire({
+                                                    title: `succesfully removed`,
+                                                    icon: "success",
+                                                    showConfirmationButton: false,
+                                                    timer: 1000
+                                                })
+                                            })
+                                        }
+                                    },
+                                    error: (error) => {
+                                        console.log(error);
+                                    }
+                                })
+                            }
+
+                            function viewWishlist(id) {
+                                const button = document.getElementById(`${id}`);
+                                button.innerText = 'View Wishlist'
+                                button.removeAttribute('onclick');
+
+                                let a = document.createElement('a')
+                                a.setAttribute('href', '/wishlist')
+                                a.appendChild(button);
+                            }
+
+                            function removeWishlist(id) {
+                                const button = document.getElementById(`${id}`);
+                                button.innerText = 'View Wishlist'
+                                button.setAttribute('onclick', '<%= product._id %>')
+
+                            }
                         </script>
-                        
+
                         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 </div>
 

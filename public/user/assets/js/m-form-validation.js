@@ -79,20 +79,3 @@ return false
     }
 
 }
-
-
-
-// function alert(id) {
-//     setTimeout(() => {
-//         id.style.border = '';
-//         id.textContent = '';
-//         id.classList.remove('custom_alert');
-//     }, 3000); 
-// }
-
-//  const serverError = document.querySelector('.serverError');
-
-//  setTimeout(() => {
-// serverError.style.display = 'none'
-//  },3000)
-

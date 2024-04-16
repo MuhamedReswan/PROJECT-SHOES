@@ -35,15 +35,17 @@ const addToCart = async (req, res) => {
         console.log('userId', req.session.user.id);//---------------
         console.log(">>>>>>");//----------------------
         const userId = req.session.user.id;
+console.log('body a cart',req.body)//--------------
+        const  productId = req.body.productId;
+        const quantity = req.body?.quantity ? req.body.quantity : 1;
 
-        const { /*size,*/ quantity, productId } = req.body
         const productData = await products.findOne({ _id: productId });
         console.log('productId', productId)//--------------------
         // console.log('size', size)//--------------------
         // console.log('userId', userId)//--------------------
         // console.log('q', quantity)//--------------------
         const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
-        // console.log('cartData',cartData);//-------------------
+        console.log('cartData',cartData);//-------------------
         if (cartData) {
             let product = {
                 productId: productId,

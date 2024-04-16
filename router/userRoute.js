@@ -80,6 +80,8 @@ user_route.post('/reset-password', userController.resetPassword);
 
 //profile
 user_route.get('/profile', userProfileController.loadProfile)
+// update profile
+user_route.post('/update-profile', userProfileController.updateProfile)
 
 
 
@@ -123,7 +125,11 @@ user_route.post('/place-order',orderController.placeOrder);
 user_route.get('/wishlist',wishlistController.loadWishlist);
 
 //add to wishlist
-// user_route.post('/add-to-wishlist',userAuth.checkLogin,wishlistController.addToWishlist);
+user_route.post('/add-to-wishlist',userAuth.checkLogin,wishlistController.addToWishlist);
+
+//remove from wishlist
+user_route.post('/remove-wishlist',userAuth.checkLogin,wishlistController.removeFromWishlist);
+
 
 
 
@@ -131,6 +137,7 @@ user_route.get('/wishlist',wishlistController.loadWishlist);
 
 //add address
 user_route.post('/add-address',userAuth.checkLogin,userProfileController.addAddress);
+user_route.get('/edit-address',userAuth.checkLogin,userProfileController.editAddress);
 
 
 //order success

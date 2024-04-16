@@ -3,11 +3,16 @@ const Users = require('../model/userModel');
 const Wishlist = require('../model/wishlistModel');
 
 // load wishlist
-const loadWishlist = (req,res)=>{
+const loadWishlist = async (req,res)=>{
     try {
+        console.log('loadwishilist');//-------------
+        const userId = req.session.user.id;       
+         console.log('userId',userId);//-------------
         // res.render('addAddress');
-        res.render('account');
-        // res.render('wishlist');
+        // res.render('account');
+const wishlistData = await Wishlist.find({user:userId}).populate('product');
+console.log('wishlistData.......',wishlistData);//-----------------------
+        res.render('wishlist',{wishlistData});
     } catch (error) {
         console.log(error);
         res.status(500).send('Internal Server Error');
@@ -15,30 +20,61 @@ const loadWishlist = (req,res)=>{
 }
 
 // add to wishlist 
-// const addToWishlist = async (req,res)=>{
-// try {
-//     console.log('im in add wishlist back');//--------------
-//     console.log('req.body',req.body);//------------
-//     console.log('req.session.user._id',req.session.user.id);//------------
-//     if(! req.session.user || ! req.session.user.id ){
-//         req.flash('error', 'please Login then only service');
-//         res.redirect('/login')
-//     }else{
-//         const userId = req.session.user.id;
-//         const productId = req.body.productId;
-//         const user = await Users.findOne({_id:userId});
-// console.log('user',user)//-----------
-// console.log('productId',productId)//-----------
-// console.log('userId',userId)//-----------
+const addToWishlist = async (req,res)=>{
+try {
+    console.log('im in add wishlist back');//--------------
+    console.log('req.body',req.body);//------------
+    console.log('req.session.user._id',req.session.user.id);//------------
+    if(! req.session.user || ! req.session.user.id ){
+        req.flash('error', 'please Login then only service');
+        res.redirect('/login')
+    }else{
+        const userId = req.session.user.id;
+        const productId = req.body.productId;
+console.log('productId',productId)//-----------
+console.log('userId',userId)//-----------
 
-//     }
-// } catch (error) {
-//     console.log(error);
-//     res.status(500).send('Internal Server Error');
-// }
-// }
+const wishlistData = await Wishlist.findOne({user:userId,product:productId});
+
+if(wishlistData){
+    console.log('exist wishlit')//--------------
+await Wishlist.deleteOne({user:userId,product:productId});
+res.status(200).json({removed: true}); 
+
+}else{
+    console.log('not wishlit ')//--------------
+
+    const wishlistProduct =new Wishlist({
+        user:userId,
+        product:productId
+    })
+    await wishlistProduct.save();
+    console.log('wishlistProduct',wishlistProduct)///-------------------
+    res.status(200).json({added:true});
+}
+    }
+} catch (error) {
+    console.log(error);
+    res.status(500).send('Internal Server Error');
+}
+}
+
+// remove from wishlist
+const removeFromWishlist = async (req,res)=>{
+    try {
+        const {productId}=req.body;
+        const userId = req.session.user.id;
+
+        await Wishlist.deleteOne({user:userId,product:productId})
+        res.status(200).json({removed:true})
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
+}
 
 module.exports={
     loadWishlist,
-    // addToWishlist
+    addToWishlist,
+    removeFromWishlist
 }

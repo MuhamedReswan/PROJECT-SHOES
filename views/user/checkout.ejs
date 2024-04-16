@@ -292,10 +292,15 @@
                         </form>
                     </div> -->
                         <div class="text-left pl-2">
-                            <h3>Choose a delivery address </h3>
+                            <% if (userData){%>
+                                <%if(userData.addresses.length>0){%>
+                                    <h3>Choose a delivery address </h3>
+                                    <%}else{%>
+                                        <h3>Please add delivery address </h3>
+                                    <%}%>
                         </div>
                         <div id='addressError' class="text-danger"></div>
-                        <% if (userData){%>
+                        
                             <% userData.addresses.forEach((address, index)=>{%>
                                 <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
                                     <span> <input type="radio" id="address-<%= index %>" name="selectedAddress"

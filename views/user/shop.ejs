@@ -118,7 +118,7 @@
                             </div>
                         </div>
                         <!--End Toolbar-->
-                        <div class="grid-products grid--view-items">
+                        <div class="grid-products grid--view-items" id="product-div">
 <% if(productData){ %>
    
 
@@ -151,17 +151,14 @@
                                                    <!-- end product image -->
                
                                                    <!-- Start product button -->
-                                                   <form class="variants add" action="/single-product?id=<%= product.id %>"  method="post">
-                                                   <!-- <form class="variants add" action="/cart/<%=product._id%>" onclick="window.location.href='shop'" method="post"> -->
-                                                       <button class="btn btn-addto-cart" type="submit">view Details</button>
-                                                   </form>
+                                                      <a class="variants add" href="/single-product?id=<%= product.id %>"><button class="btn btn-addto-cart" type="submit">view Details</button></a> 
                                                    <div class="button-set">
-                                                       <a href="javascript:void(0)" title="Quick View" class="quick-view-popup quick-view" data-toggle="modal" data-target="#content_quickview">
+                                                       <!-- <a href="javascript:void(0)" title="Quick View" class="quick-view-popup quick-view" data-toggle="modal" data-target="#content_quickview">
                                                                    <i class="icon anm anm-search-plus-r"></i>
-                                                               </a>
-                                                       <div class="wishlist-btn">
-                                                           <a class="wishlist add-to-wishlist"  title="Add to Wishlist" onclick="addToWishlist('<%=product._id%>')">
-                                                               <i class="icon anm anm-heart-l"></i>
+                                                               </a> -->
+                                                       <div class="wishlist-btn" >
+                                                           <a class="wishlist add-to-wishlist" id="wishlist<%= index%>"  title="Add to Wishlist" onclick="addToWishlist('<%=product._id%>', 'wishlist<%= index%>')">
+                                                               <i class="icon anm anm-heart-l "></i>
                                                            </a>
                                                        </div>
                                                    
@@ -197,7 +194,7 @@
                                                    <!-- Variant -->
                                                    <ul class="swatches">
                                                     <% for(i=0; i<4; i++){ %>
-                                                      <a href="/single-product"> <li id="fourimg" class="swatch medium rounded" ><img src="user/assets/images/product-images/sharpedImages/<%= product.images[i] %>" alt="image <%=i+1%>"  /></li>
+                                                      <a href="/single-product?id=<%= product.id %>"> <li id="fourimg" class="swatch medium rounded" ><img src="user/assets/images/product-images/sharpedImages/<%= product.images[i] %>" alt="image <%=i+1%>"  /></li>
                                                         <%}%></a>
                                                     </ul>
                                                    <!-- End Variant -->
@@ -239,7 +236,7 @@
 
 
     <script>
-        function addToWishlist(productId){
+        function addToWishlist(productId, id){
             console.log('im add to wishlist function');//--------------
 let data = {productId:productId}
 console.log('data',data)//-------------
@@ -248,14 +245,49 @@ $.ajax({
     url:'/add-to-wishlist',
     contentType:'application/json',
     data:JSON.stringify(data),
-    success: (res)=>{
 
+    success: (res)=>{
+        if(res.removed){
+            swal.fire({
+            title:'Removed',
+            icon:'success',
+            text:'Removed from wishlist !',
+            timer:1000
+        
+           })
+           removeColourText(id)
+        }
+        if(res.added){
+          
+            swal.fire({
+            title:'Added',
+            icon:'success',
+            text:'successfully added to wishlist !',
+            timer:1000
+        
+           })
+           addColourText(id)
+        }
     },
     error:(error)=>{
 console.log(error);
     }
 })
         }
+
+           function addColourText(id){
+            console.log('add')//------------
+            const button = document.getElementById(`${id}`);
+            button.classList.add('text-danger');
+            button.setAttribute('title','remove from wishlist')
+           }
+           
+           function removeColourText(id){
+            console.log('remove')//------------
+            const button = document.getElementById(`${id}`);
+            button.classList.remove('text-danger');
+            button.setAttribute('title','remove from wishlist');
+           }
     </script>
     
      <!-- Including Jquery -->
@@ -269,6 +301,9 @@ console.log(error);
      <script src="user/assets/js/popper.min.js"></script>
      <script src="user/assets/js/lazysizes.js"></script>
      <script src="user/assets/js/main.js"></script>
+
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </div>
 
 <%- include('../layout/user/footer.ejs') -%>
