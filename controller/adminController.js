@@ -80,9 +80,36 @@ const loadLogout=(req,res)=>{
 // load customers
 const customersLoad = async (req, res) => {
 try {
+
+    let page=1;
+    let limit = 6;
+    if(req.query.id){
+        page=req.query.id
+    }
+    let next = page+1
+    let previous = page>1 ? page-1 : 1
+    let start = (page-1)*limit
+    console.log('start',start);//---------------------
+    const count = await Users.find({}).count()
+
+let totalPage= Math.ceil(count/limit)
+if(next>totalPage){
+    next=totalPage
+}
+
     const userData = await Users.find({})
+    .limit(limit)
+    .skip((page-1)*limit)
+    .exec()
     // console.log(`userData = ${userData}`)//--------------------------------------------------------------------------------
-    res.render("userManagement",{userData});
+    res.render("userManagement",{
+        users:userData,
+        page:page,
+    previous:previous,
+        next:next,
+        totalPage:totalPage,
+        start:start
+    });
 } catch (error) {
     console.log(error);
 }
@@ -113,9 +140,11 @@ try {
     }
 }else{
     console.log('id not getting in the block user');//------------------------------------------
+    res.status(404).json({ error: 'user not loged' });
 }  
 } catch (error) {
     console.log(error);
+    res.status(500).json({ error: 'An error occurred' });
 }
 
 
