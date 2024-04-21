@@ -91,6 +91,9 @@ user_route.get('/shop',shopController.loadShop);
 // load single Product
 user_route.get('/single-product',shopController.loadSingleProduct);
 
+//filter
+user_route.post('/filter-shop',shopController.filterShop);
+
 
 
 
@@ -138,6 +141,7 @@ user_route.post('/remove-wishlist',userAuth.checkLogin,wishlistController.remove
 //add address
 user_route.post('/add-address',userAuth.checkLogin,userProfileController.addAddress);
 user_route.get('/edit-address',userAuth.checkLogin,userProfileController.editAddress);
+user_route.post('/edit-address',userAuth.checkLogin,userProfileController.updateAddress);
 
 
 //order success

@@ -2,10 +2,11 @@
 <div class="pageWrapper">
     <div class="row">
         <div class="col-lg-12 d-flex justify-content-center align-items-center mt-4">
-
+<%if(address){%>
+ 
     
     <div id="addAddress" class="create-ac-content bg-light-gray padding-20px-all my-auto">
-        <form action="/add-address" method="post" onsubmit="return addAddressValidation()">
+        <!-- <form action="/add-address" method="post" onsubmit="return addAddressValidation()"> -->
             <fieldset>
                 <h2 class="login-title mb-3">Delivery Address</h2>
                 <div id="error-container" class="text-center text-danger"></div>
@@ -13,7 +14,7 @@
                     <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                         <label for="input-firstname">Full Name <span
                                 class="required-f">*</span></label>
-                        <input name="name" value="" id="input-firstname" type="text">
+                        <input name="name" value="<%= address.name %>" data-id="<%= address._id %>" id="input-firstname" type="text">
                     </div>
 
                     <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
@@ -44,8 +45,8 @@
                         <input name="district" value="<%= address.district %>" id="input-district" type="text">
                     </div>
                     <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                        <label for="input-zone">State <span class="required-f">*</span></label>
-                        <select name="state" id="input-zone">
+                        <label for="input-state">State <span class="required-f">*</span></label>
+                        <select name="state" id="input-state">
                             <option value="Andhra Pradesh">Andhra Pradesh</option>
                             <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                             <option value="Assam">Assam</option>
@@ -102,27 +103,40 @@
                     </div>
                 </div>
                 <div class="row d-flex justify-content-center">
-                    <button type="submit" class="btn">submit</button>
+                    <button  id="submit-button" type="submit" class="btn">submit</button>
                 </div>
             </fieldset>
-        </form>
-    </div>
+        <!-- </form> -->
+    </div>   <%}else{%>
+        <div class="row text-center">
+            <h1>no address getting</h1>
+        </div>
+        
+        <%}%>
+
 
     </div>
     </div>
 
 </div>
 <script>
+
+let submit = document.getElementById('submit-button');
+submit.addEventListener('click',addAddressValidation);
+
     function addAddressValidation() {
-        // event.preventDefault(); // Prevent form submission if validation fails
+        event.preventDefault(); // Prevent form submission if validation fails
         console.log('im add-address validation');
         // Get form fields
         const name = document.getElementById('input-firstname').value.trim();
+        const id = document.getElementById('input-firstname').getAttribute('data-id')
         const mobile = document.getElementById('input-telephone').value.trim();
         const address = document.getElementById('input-address-1').value.trim();
         const district = document.getElementById('input-district').value.trim();
         const city = document.getElementById('input-city').value.trim();
         const pincode = document.getElementById('input-postcode').value.trim();
+        const state = document.getElementById('input-state').value.trim();
+        const country = document.getElementById('input-country').value.trim();
 
         // Regular expressions for validation
         const nameRegex =/^(?!.*\d)[^\W\d]\w*$/;
@@ -178,8 +192,26 @@
         }
 
         // If all validations pass, return true
-        console.log('return true');
-        return true;
+        console.log('validation success');       
+
+let data={name, mobile, address, district, city, pincode, country, state, id }
+
+        fetch('/edit-address',{
+            method:'Post',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(data)
+        })
+        .then(res=> res.json())
+        .then((res)=>{
+           if(res.success){
+            setTimeout(() => {
+                window.location.href = '/profile'
+            }, 1000);
+            
+           }
+        })
     }
 
     function displayErrors(errors) {

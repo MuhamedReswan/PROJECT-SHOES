@@ -38,6 +38,7 @@ const loadProfile = async (req,res)=>{
         res.render('addProfile',{orders,user});
     } catch (error) {
         console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
@@ -61,8 +62,10 @@ const updateProfile = async (req, res)=>{
        res.status(200).json({updated:true});
     } catch (error) {
         console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
 
 
 // edit adddress
@@ -80,14 +83,58 @@ console.log('user',user)//----------------------
         // res.render('editAddress')
     } catch (error) {
         console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 } 
 
+
+
+// update address
+const updateAddress = async (req, res)=>{
+    try {
+        console.log('im in update address');//-----------------------
+        console.log('req.body',req.body)//--------------------
+        const { name, mobile, address, district, city, pincode, country, state,id }=req.body;
+        const userId = req.session.user.id;
+        // const userAdress = await Users.findOne({_id:userId, 'addresses.name':name});
+        // if (userAdress){
+        //     res.json({nameAlready:true})
+        // }else{
+            const update = await  Users.findOneAndUpdate(
+                {_id:userId, 'addresses._id':id},
+                {
+                    $set:{
+                'addresses.$.name':name,
+                'addresses.$.address':address,
+                'addresses.$.city':city,
+                'addresses.$.mobile':mobile,
+                'addresses.$.state':state,
+                'addresses.$.district':district,
+                'addresses.$.pincode':pincode,
+                'addresses.$.country':country
+                    }
+                },{ new:true}
+            )
+            return res.json({
+                success: true,
+                error: false,
+                message:'Address updated successfully'
+            })
+                    //console.log('update',update)//--------------------
+           
+        //}
+        // console.log('userAdress',userAdress)//-------------------- 
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
 
 module.exports = {
     addAddress,
     loadProfile,
     updateProfile,
-    editAddress  
+    editAddress,
+    updateAddress 
 }

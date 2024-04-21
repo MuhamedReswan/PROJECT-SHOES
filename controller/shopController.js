@@ -7,11 +7,44 @@ const Wishlist = require('../model/wishlistModel');
 const loadShop = async (req,res) => {
     try {   
         const userId = req.session.user.id;
+console.log('req.body',req.body)//-------------
+console.log('req.query.page',req.query.page)//-------------
+        let count = await Products.find({isListed:true}).count();
+        let limit = 8
+        let page = 1
+        if (req.query.page){
+            page=req.query.page;
+        }
+        let previous = page-1
+        let next = page+1
+        let totalPage = Math.ceil(count/limit);
+        previous = previous>1 ? page-1 : 1
+        next = next>totalPage ? totalPage : page+1
+        let start = (page-1)*limit
+
         const categoryData =await Category.find({isListed:true});
-const productData = await Products.find({isListed:true}).populate('category');
+const productData = await Products.find({isListed:true})
+.sort({createdAt:1})
+.limit(limit)
+.skip(start)
+.populate('category');
 const wishlistData = await Wishlist.find({user:userId});
 console.log('wishlistData',wishlistData)//----------------
-res.render('shop',{categoryData,productData,wishlistData});
+console.log('count',count)//----------------
+console.log('totalPage',totalPage)//----------------
+console.log('previous',previous)//----------------
+console.log('next',next)//----------------
+
+res.render('shop',{
+    categoryData:categoryData,
+    productData:productData,
+    wishlistData:wishlistData,
+    next:next,
+    previous:previous,
+    totalPage:totalPage,
+    start:start,
+    page:page
+});
     } catch (error) {
         console.log(error);
     }
@@ -43,9 +76,23 @@ const  userId = req.session.user.id;
 
 
 
+//filter shop 
+const filterShop = (req, res)=>{
+    try {
+        console.log('imi filter-shop')//---------------
+        console.log('req.body filterShop',req.body)//--------------
+
+        res.json({products:'prodfsdfsfddsds'})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
 
 module.exports={
     loadShop,
     loadSingleProduct,
+    filterShop
   
 }
