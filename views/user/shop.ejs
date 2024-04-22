@@ -60,7 +60,7 @@
                                 <% if(categoryData){ %>
                                     <% categoryData.forEach((category,index) =>{ %>
                                 <li>
-                                  <input type="checkbox" class="category-input-filter" value="<%= category.name %>" id="category<%=index%>">
+                                  <input type="checkbox" class="category-input-filter" value="<%= category._id %>" id="category<%=index%>">
                                   <label for="check1"><span><span></span></span><%= category.name %></label>
                                 </li>
                                 <% }) %>
@@ -80,7 +80,7 @@
                                     <option value="low-high">Price, low to high</option>
                                     <option value="high-low">Price, high to low</option>
                                   </select>
-                                  <input class="collection-header__default-sort" type="hidden" value="manual">
+                                  <input class="collection-header__default-sort" type="radio" value="manual">
                             </div>
                         </div>
                         <!--Price Filter-->
@@ -111,38 +111,25 @@
                 </div>
                 <!--End Sidebar-->
                 <!--Main Content-->
-                <div class="col-12 col-sm-12 col-md-9 col-lg-9 main-col">
+                <div class="col-12 col-sm-12 col-md-9 col-lg-9 main-col" id="product-container">
                 	<div class="productList">
                     	<!--Toolbar-->
                         <button type="button" class="btn btn-filter d-block d-md-none d-lg-none"> Product Filters</button>
                     	<div class="toolbar">
                         	<div class="filters-toolbar-wrapper">
-                            	<div class="row">
-                                	<div class="col-4 col-md-4 col-lg-4 filters-toolbar__item collection-view-as d-flex justify-content-start align-items-center">
+                            	<div class="row d-flex justify-content-center align-items-center">
+                                    
+                                	<!-- <div class="col-4 col-md-4 col-lg-4 filters-toolbar__item collection-view-as d-flex justify-content-start align-items-center">
                                     	<a href="shop-left-sidebar.html" title="Grid View" class="change-view change-view--active">
                                         	<img src="user/assets/images/grid.jpg" alt="Grid" />
                                         </a>
                                         <a href="shop-listview.html" title="List View" class="change-view">
                                         	<img src="user/assets/images/list.jpg" alt="List" />
                                         </a>
-                                    </div>
+                                    </div> -->
                                     <div class="col-4 col-md-4 col-lg-4 text-center filters-toolbar__item filters-toolbar__item--count d-flex justify-content-center align-items-center">
                                     	<span class="filters-toolbar__product-count">Showing:<%= productData.length %></span>
                                     </div>
-                                    <!-- <div class="col-4 col-md-4 col-lg-4 text-right ">
-                                    	<div class="filters-toolbar__item">
-                                      		<label for="SortBy" class="hidden">Sort</label>
-                                      		<select name="SortBy" id="SortBy" class="filters-toolbar__input filters-toolbar__input--sort">
-                                                <option value="all"  selected="selected">all</option>
-                                                <option value="a-z">Alphabetically, A-Z</option>
-                                                <option value="z-a">Alphabetically, Z-A</option>
-                                                <option value="low-high">Price, low to high</option>
-                                                <option value="high-low">Price, high to low</option>
-                                      		</select>
-                                      		<input class="collection-header__default-sort" type="hidden" value="manual">
-                                        </div>
-                                    </div> -->
-
                                 </div>
                             </div>
                         </div>
@@ -245,7 +232,7 @@
                             <!-- <a href="#" class="btn loadMore">Load More</a> -->
                             <ul>
                                 <li class="btn"><a href="/shop?page=<%=previous%>"><</a></li>
-                                <li class="btn text-white"><a href="/shop?page=<%=page%>"><%=page%></a></li>
+                                <li class="btn text-white"><a href="/shop?page=<%=page%>" id="current-page" data-page="<%=page%>" ><%=page%></a></li>
                                 <li class="btn"><a href="/shop?page=<%=next%>">></a></li>   
                                                   </ul>
                         </div>
@@ -333,28 +320,36 @@ filterButton.addEventListener('click',filter
 )
 
 function filter(){
-
     let sort = document.getElementById('SortBy').value;
     let priceRange = document.getElementById('amount').value;
+    let currentPage = document.getElementById('current-page').getAttribute('data-page').value;
     let selectedCategory =  Array.from(document.querySelectorAll('.category-input-filter:checked'))
-    .map(selected=>selected.value)
+    .map(selected=>selected.value);
+let procuctDiv = document.getElementById('product-container');
+
 console.log('selectedCategory',selectedCategory)//----------
 console.log('sort',sort)//----------
 console.log('priceRange',priceRange)//----------
-if (selectedCategory.length>0){
+console.log('currentPage',currentPage)//----------
+if (selectedCategory){
 
     fetch('/filter-shop',{
         method:'Post',
         headers:{
             'content-Type':'application/json'
         },
-        body:JSON.stringify({selectedCategory:selectedCategory, sort:sort, priceRange:priceRange})
+        body:JSON.stringify({selectedCategory:selectedCategory, sortBy:sort, priceRange:priceRange, currentPage:currentPage})
     })
     .then((response) => {
+        console.log('im in response json ');//------------------
        return response.json()
 })
-    .then((response)=>{
-        console.log('res',response.products)//---------------
+    .then(data=>{
+        console.log('im daata ');//------------------
+
+        console.log('res',data)//---------------
+        console.log('productdata',data.productData)
+
     })
     .catch((error) => {
             console.error('Error:', error);
