@@ -81,15 +81,15 @@ const filterShop = async (req, res) => {
     try {
         console.log('imi filter-shop')//---------------
         console.log('req.body filterShop', req.body)//--------------
-        const { selectedCategory, sortBy, priceRange, currentPage} = req.body
-        let filter = { isListed: true }
+        const { selectedCategory, sortBy, priceRange, currentPage,buttonStatus} = req.body
+        let filterTerms = { isListed: true }
         if (selectedCategory && selectedCategory.length > 0) {
             filtercategory = { $in: selectedCategory }
         }
         let price = priceRange.split('-');
         let min = parseInt(price[0].substring(1).trim());
         let max = parseInt(price[1].substring(1).replace('₹', ""));
-        filter.price = { $gte: min, $lte: max }
+        filterTerms.price = { $gte: min, $lte: max }
 
         let sortOption = {}
         if (sortBy === 'all') {
@@ -104,31 +104,39 @@ const filterShop = async (req, res) => {
             sortOption = { price: -1 }
         }
 
-        const count = await Products.find(filter).sort(sortOption).count()
+        const count = await Products.find(filterTerms).count()
 
         let limit = 8
         let page = 1
         if (currentPage>1) {
             page = currentPage;
         }
-        let previous = page - 1
-        let next = page + 1
+
+        // let previous = page - 1
+        // let next = page + 1
         let totalPage = Math.ceil(count / limit);
-        previous = previous > 1 ? page - 1 : 1
-        next = next > totalPage ? totalPage : page + 1
+        // previous = previous > 1 ? page - 1 : 1
+        // next = next > totalPage ? totalPage : page + 1
         let start = (page - 1) * limit
 
+        if( buttonStatus !==undefined && buttonStatus==='previous'){
+            page= page-1>1 ? page-1 :1
+        }
+        
+        if( buttonStatus !==undefined && buttonStatus==='next'){
+        page= page+1>totalPage ? totalPage :page+1
+        }
         
         console.log('price', price)//-------------
         console.log('min', min)//-------------
         console.log('max', max)//-------------
         console.log('currentPage', currentPage)//-------------
-        console.log('filter', filter)//-------------
+        console.log('filter', filterTerms)//-------------
         console.log('count', count)//-------------
 
      
 
-        const filterdProduct = await Products.find(filter)
+        const filterdProduct = await Products.find(filterTerms)
         .sort(sortOption)
         .limit(limit)
         .skip(start)
@@ -137,11 +145,11 @@ const filterShop = async (req, res) => {
         console.log('filterdProductax', filterdProduct)//-------------
 
         res.json({
-             productData: filterdProduct,
-             next: next,
-             previous: previous,
+            filterdProduct: filterdProduct,
+            //  next: next,
+            //  previous: previous,
              totalPage: totalPage,
-             start: start,
+            //  start: start,
              page: page 
             })
     } catch (error) {
