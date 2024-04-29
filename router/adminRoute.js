@@ -12,6 +12,7 @@ const adminController = require('../controller/adminController');
 const productController =require('../controller/productController');
 const categoryController =require('../controller/categoryController');
 const adminAuth = require('../middlewares/adminAuth');
+const orderController = require('../controller/orderController')
 
 
 // admin_route.use(express.static(path.join(__dirname,'public')));
@@ -88,6 +89,13 @@ admin_route.post('/edit-category', categoryController.updateCategory);
 
 // list and unlist category
 admin_route.post('/list-category', categoryController.categoryListAndUnlist);
+
+
+//orders
+admin_route.get('/orders', orderController.adminOrders);
+//single order
+admin_route.get('/order-single', orderController.singleOrderDetails);
+
 
 
 

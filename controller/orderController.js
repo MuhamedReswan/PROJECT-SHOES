@@ -22,7 +22,6 @@ const placeOrder = async (req, res) => {
         const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
         console.log('car place order', cartData);//-----------
         let products = cartData.products
-        // console.log(' products ', products);//-----------
         let lessQuantity = 0
         let size = 0
         products.forEach((product) => {
@@ -111,7 +110,7 @@ try {
    console.log('userId',userId); //--------------
    console.log('query id',orderId); //--------------
 
-const orderDetails = await Orders.findOne({user:userId,_id:orderId}).populate('products.productId');
+const orderDetails = await Orders.findOne({user:userId,_id:orderId}).populate('user').populate('products.productId');
 console.log('orderDetails=',orderDetails)//-------------
 res.render('orderDetails',{orderDetails});
     
@@ -121,8 +120,32 @@ res.render('orderDetails',{orderDetails});
 }
 
 
+
+//admin order 
+const adminOrders = async (req, res)=>{
+    try {
+        const ordersDetails = await Orders.find({}).populate('user').populate('products.productId');
+        console.log('ordersDetails' ,JSON.stringify(ordersDetails));//------------------
+        res.render('orders',{ordersDetails})
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
+
+//single order 
+const singleOrderDetails = (req, res)=>{
+    const orderId = req.query.id;
+    const orderDetails = Orders.find({_id:orderId}).populate('user').populate('products.productId');
+    res.render('singleOrders',{orderDetails});
+}
+
 module.exports = {
     placeOrder,
     loadOrderSuccess,
-    loadOrderDetails
+    loadOrderDetails,
+    adminOrders,
+    singleOrderDetails
 }

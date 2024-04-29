@@ -1,0 +1,150 @@
+<%- include('../layout/admin/adminHeader.ejs') -%>
+    <%- include('../partials/adminSideNav.ejs') -%>
+
+        <main class="main-wrap">
+            <%- include('../partials/adminHeaderBody') -%>
+
+
+                <section class="content-main">
+                    <div class="content-header">
+                        <div>
+                            <h2 class="content-title card-title">Order Details</h2>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <header class="card-header">
+                            <div class="row gx-3">
+                                <div class="col-lg-4 col-md-6 me-auto">
+                                    <!-- <input type="text" placeholder="Search..." class="form-control" /> -->
+                                    <form class="searchform">
+                                        <div class="input-group">
+                                            <input list="search_terms" type="text" class="form-control"
+                                                placeholder="Search term" id="customersSearch" />
+                                            <button class="btn btn-light bg" type="button"><i
+                                                    class="material-icons md-search"></i></button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-lg-2 col-6 col-md-3">
+                                    <select class="form-select">
+                                        <option>Status</option>
+                                        <option>Active</option>
+                                        <option>Disabled</option>
+                                        <option>Show all</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </header>
+                        <!-- card-header end// -->
+                        <div class="card-body">
+                            <div class="table-responsive" id="reload">
+                                <table class="table table-hover" id="customerTable">
+                                    <thead class="bg-dark text-white bg-opacity-50">
+                                        <tr class="text-center">
+                                            <th>ID</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Total</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">date</th>
+                                            <th scope="col">Action</th>
+                                            <th scope="col">more details</th>
+                                        </tr>
+                                        <% console.log('ordersDetails',ordersDetails) %>
+                                    </thead>
+                                    <tbody>
+                                        <% if(ordersDetails){%>
+                                            <% ordersDetails.forEach((order,i)=>{%>
+                                                <tr class="text-center">
+                                                    <td>
+                                                        <%=i+1%>
+                                                    </td>
+                                                    <td><b>
+                                                            <%=order.user.name%>
+                                                        </b></td>
+                                                    <td>
+                                                        <%=order.user.email%>
+                                                    </td>
+                                                    <td>
+                                                        <%=order.totalAmount%>
+                                                    </td>
+
+                                                        <td>
+                                                            <%=order.status%>
+
+                                                        </td>
+                                                       
+                                                                <% const formatedDate=order.date.toDateString()%>
+                                                                    <td>
+                                                                        <%=formatedDate%>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%=order.status%>
+                                                                    </td>
+                                                                    <%=order.status%>
+                                                                    <td class="text-center">
+                                                                       <a href="/order-single?id=<%=order._id%>">more</a>
+                                                                    </td>
+                                                </tr>
+                                                <% })%>
+                                                    <%}else{%>
+                                                        <tr>
+                                                            <td colspan="8" class="text-center">No order Found !</td>
+                                                        </tr>
+                                                        <%}%>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- table-responsive //end -->
+                        </div>
+                        <!-- card-body end// -->
+                    </div>
+                    <!-- card end// -->
+                 
+                </section>
+                <!-- content-main end// -->
+
+        </main>
+
+
+       
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+
+                let searchInput = document.getElementById('customersSearch');
+                searchInput.addEventListener('keyup', () => {
+
+                    let searchTerm = searchInput.value.toLowerCase();
+                    let tableRow = document.querySelectorAll('#customerTable tbody tr');
+
+                    tableRow.forEach(function (row) {
+                        let nameColoumn = row.querySelector('td:nth-child(2)');
+
+                        if (nameColoumn) {
+                            let nameText = nameColoumn.textContent.toLowerCase()
+                            row.style.display = nameText.includes(searchTerm) ? "" : "none";
+                        }
+                    })
+
+
+                })
+            })
+
+
+
+        </script>
+        <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/vendors/select2.min.js"></script>
+        <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <!-- </body>
+                                </html> -->
+        <%- include('../layout/admin/adminFooter.ejs') -%>

@@ -95,6 +95,7 @@
                                                                 class="font-13 fa fa-star-o"></i><span
                                                                 class="spr-badge-caption">6 reviews</span></a></div>
                                             </div>
+                                            <% if( product.price != product.offerPrice) {%>
                                             <p class="product-single__price product-single__price-product-template">
                                                 <span class="visually-hidden">Regular price</span>
                                                 <s id="ComparePrice-product-template">
@@ -120,6 +121,16 @@
                                                         </span>%)</span>
                                                 </span>
                                             </p>
+                                            <%}else{%>
+                                                <p class="product-single__price product-single__price-product-template">
+                                                    <span
+                                                        class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
+                                                        <span id="ProductPrice-product-template">
+                                                            <span class="money">₹<%= product.offerPrice %></span>
+                                                        </span>
+                                                    </span>
+                                                </p>
+                                                <%}%>
 
 
                                             <div class="product-single__description rte">
