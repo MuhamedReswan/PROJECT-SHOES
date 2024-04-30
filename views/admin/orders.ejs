@@ -9,6 +9,7 @@
                     <div class="content-header">
                         <div>
                             <h2 class="content-title card-title">Order Details</h2>
+                          <p></p>
                         </div>
                     </div>
 
@@ -26,14 +27,6 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="col-lg-2 col-6 col-md-3">
-                                    <select class="form-select">
-                                        <option>Status</option>
-                                        <option>Active</option>
-                                        <option>Disabled</option>
-                                        <option>Show all</option>
-                                    </select>
-                                </div>
                             </div>
                         </header>
                         <!-- card-header end// -->
@@ -43,12 +36,12 @@
                                     <thead class="bg-dark text-white bg-opacity-50">
                                         <tr class="text-center">
                                             <th>ID</th>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Email</th>
+                                            <th scope="col">Delivery Name</th>
+                                            <th scope="col">Mobile No</th>
                                             <th scope="col">Total</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">date</th>
-                                            <th scope="col">Action</th>
+                                            <!-- <th scope="col">Action</th> -->
                                             <th scope="col">more details</th>
                                         </tr>
                                         <% console.log('ordersDetails',ordersDetails) %>
@@ -61,30 +54,27 @@
                                                         <%=i+1%>
                                                     </td>
                                                     <td><b>
-                                                            <%=order.user.name%>
+                                                            <%=order.deliveryAddress.name%>
                                                         </b></td>
                                                     <td>
-                                                        <%=order.user.email%>
+                                                        <%=order.deliveryAddress.mobile%>
                                                     </td>
                                                     <td>
                                                         <%=order.totalAmount%>
                                                     </td>
-
                                                         <td>
                                                             <%=order.status%>
-
                                                         </td>
-                                                       
                                                                 <% const formatedDate=order.date.toDateString()%>
                                                                     <td>
                                                                         <%=formatedDate%>
                                                                     </td>
-                                                                    <td>
+                                                                    <!-- <td>
                                                                         <%=order.status%>
-                                                                    </td>
-                                                                    <%=order.status%>
+                                                                    </td> -->
+                                                                   
                                                                     <td class="text-center">
-                                                                       <a href="/order-single?id=<%=order._id%>">more</a>
+                                                                       <a href="/admin/order-single?id=<%=order._id%>">more</a>
                                                                     </td>
                                                 </tr>
                                                 <% })%>

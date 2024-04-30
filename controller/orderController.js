@@ -76,8 +76,6 @@ const placeOrder = async (req, res) => {
                      updateProduct.totalStock-= productCartQuantity;
                      updateProduct.save()
                      console.log("updateProduct  111111111", updateProduct);//--------------------------
-
-
                     }
                             
                 }
@@ -109,11 +107,9 @@ try {
    const userId = req.session.user.id;
    console.log('userId',userId); //--------------
    console.log('query id',orderId); //--------------
-
 const orderDetails = await Orders.findOne({user:userId,_id:orderId}).populate('user').populate('products.productId');
 console.log('orderDetails=',orderDetails)//-------------
 res.render('orderDetails',{orderDetails});
-    
 } catch (error) {
     console.log(error);
 }
@@ -124,8 +120,11 @@ res.render('orderDetails',{orderDetails});
 //admin order 
 const adminOrders = async (req, res)=>{
     try {
+        // const userId = req.session.user.id;
+        // const user = await Users.findOne({_id:userId})
         const ordersDetails = await Orders.find({}).populate('user').populate('products.productId');
-        console.log('ordersDetails' ,JSON.stringify(ordersDetails));//------------------
+        console.log('admin ordersDetails' ,ordersDetails);//------------------
+        // console.log('user=',user)//-------------
         res.render('orders',{ordersDetails})
     } catch (error) {
         console.log(error);
@@ -136,10 +135,17 @@ const adminOrders = async (req, res)=>{
 
 
 //single order 
-const singleOrderDetails = (req, res)=>{
-    const orderId = req.query.id;
-    const orderDetails = Orders.find({_id:orderId}).populate('user').populate('products.productId');
-    res.render('singleOrders',{orderDetails});
+const singleOrderDetails = async (req, res)=>{
+    try {
+        console.log('in single orders');//------------------
+        const orderId = req.query.id;
+        const singleOrder = await Orders.findOne({_id:orderId}).populate('user').populate('products.productId');
+        console.log('orderDetails-single',JSON.stringify(singleOrder));//-----------------
+        res.render('singleOrders',{singleOrder});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 }
 
 module.exports = {

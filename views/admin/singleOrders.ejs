@@ -1,186 +1,193 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('../layout/admin/adminHeader.ejs') -%>
+    <%- include('../partials/adminSideNav.ejs') -%>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Details</title>
+        <main class="main-wrap">
+            <%- include('../partials/adminHeaderBody') -%>
 
-</head>
 
-<body>
-    <header>
-        <h1>Order Details</h1>
-    </header>
-    <%console.log('orederDetailsfrom od',orderDetails)%>
-        <%if(orderDetails){%>
-            <main>
-                <%let originalDateString=orderDetails.date%>
-                    <%const date=new Date(originalDateString);%>
-                        <%const formattedDate=date.toLocaleDateString('en-US', { weekday: 'short' , year: 'numeric' ,
-                            month: 'short' , day: 'numeric' });%>
-                            <%let total=0%>
-                                <section class="order-summary">
-                                    <h2>Order Summary</h2>
-                                    <ul>
-                                        <li><strong>Order ID:</strong> #123456</li>
-                                        <li><strong>Date:</strong>
-                                            <%=formattedDate%>
-                                        </li>
-                                        <li><strong>Status:</strong>
-                                            <%=orderDetails.status%>
-                                        </li>
-                                        <li><strong>Payment Method:</strong>
-                                            <%=orderDetails.paymentMethod%>
-                                        </li>
-                                    </ul>
-                                </section>
-                                <section class="shipping-details">
-                                    <h2>Shipping Details</h2>
-                                    <ul>
-                                        <li><strong>Name: </strong>
-                                            <%=orderDetails.deliveryAddress.name%>
-                                        </li>
-                                        <li><strong>Address: </strong>
-                                            <%=orderDetails.deliveryAddress.address%>(H)
-                                        </li>
+                <section class="content-main">
+                    <div class="content-header">
+                        <div>
+                            <h2 class="content-title card-title">Order Details</h2>
+                        </div>
+                    </div>
 
-                                        <li><strong>Place: </strong>
-                                            <%=orderDetails.deliveryAddress.city%>
-                                        </li>
-                                        <li><strong>District: </strong>
-                                            <%=orderDetails.deliveryAddress.district%>
-                                        </li>
-                                        <li><strong>Phone:</strong>
-                                            <%=orderDetails.deliveryAddress.mobile%>
-                                        </li>
-                                        <li><strong>State:</strong>
-                                            <%=orderDetails.deliveryAddress.state%>
-                                        </li>
-                                        <li><strong>Pincode:</strong>
-                                            <%=orderDetails.deliveryAddress.pincode%>
-                                        </li>
+                    <div class="card mb-4">
+                        <header class="card-header">
+                            <div class="row gx-3">
+                                <div class="col-lg-4 col-md-6 me-auto">
+                                    <!-- <input type="text" placeholder="Search..." class="form-control" /> -->
+                                    <form class="searchform">
+                                        <div class="input-group">
+                                            <input list="search_terms" type="text" class="form-control"
+                                                placeholder="Search term" id="customersSearch" />
+                                            <button class="btn btn-light bg" type="button"><i
+                                                    class="material-icons md-search"></i></button>
+                                        </div>
+                                    </form>
+                                </div>
+                               
+                            </div>
+                        </header>
+                        <!-- card-header end// -->
+                        <div class="card-body">
+                            <div class="table-responsive" id="reload">
+                                <table class="table table-hover" id="customerTable">
+                                    <thead class="bg-dark text-white bg-opacity-50">
+                                        <tr class="text-center">
+                                            <th>sI</th>
+                                            <th scope="col">Image</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Price</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Subtotal</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                        <% console.log('singleOrder front',singleOrder) %>
+                                    </thead>
+                                    <tbody>
+                                        <% if(singleOrder && singleOrder.products && singleOrder.products.length>0){%>
+                                            <% singleOrder.products.forEach((order,i)=>{%>
+                                                <% console.log('order product front',i,order) %>
+<%let subtotal=order.quantity*order.productId.offerPrice%>
+<% console.log('subtotal front',subtotal) %>
 
-                                    </ul>
-                                </section>
-                                <style>
+                                                <tr class="text-center">
+                                                    <td>
+                                                        <%=i+1%>
+                                                    </td>
+                                                    <td>
+                                                        <img style="width: 50px; height: 50px;" src="/user/assets/images/product-images/sharpedImages/<%=order.productId.images[0]%>" alt="image">
+                                                    </td>
+                                                    <td>
+                                                        <%=order.productId.name%>
+                                                    </td>
+                                                    <td>
+                                                        <%=order.productId.offerPrice%>
+                                                    </td>
+                                                    <td>
+                                                        <%=order.quantity%>
+                                                    </td>
+                                                    <td>
+                                                        <%=subtotal%>
+                                                    </td>
+                                                        <td>
+                                                            <span class="btn btn-sm bg-danger text-white" >
+                                                                <%=order.status%>
+                                                            </span>
+                                                           
+                                                        </td>
+                                                        <% let formattedDate = singleOrder.date.toDateString()%>
+                                                        <td>
+                                                            <%=formattedDate%>
+                                                        </td>
 
-                                </style>
-                                <section class="order-items">
-                                    <h2>Order Items</h2>
+                                                                    <td >
+                                                                        <div class="col-md-2 col-6 w-100 btn btn-sm text-center">
+                                                                            
+                                                                            <select class="form-select order-single-status" style="font-size: 14px;"
+                                                                            data-orderId="<%singleOrder._id%>" 
+                                                                            data-productId="<%=order.productId._id%>"
+                                                                            data-userId="<%=singleOrder.user._id%>"
+                                                                            data-index = <%=i%>
+                                                                            id="order-status"
+                                                                            name="orderStatus"
+                                                                            >
 
-                                    <div style="overflow-x: auto;">
-
-                                        <table class="table-responsive ">
-                                            <thead>
-                                                <tr>
-                                                    <th>Product</th>
-                                                    <th>Quantity</th>
-                                                    <th>Price</th>
-                                                    <th>Total</th>
+                                                                                <option selected>Change Status</option>
+                                                                                <option value="shipped" >Shipped</option>
+                                                                                <option value="Out of delivery">Out of delivery</option>
+                                                                                <option value="Delivered">Deleverd</option>
+                                                                                <option value="Cancelled" >Cancel</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </td>
                                                 </tr>
-                                            </thead>
-                                            <% if( Array.isArray(orderDetails.products)){%>
-                                                <% orderDetails.products.forEach((product)=> {%>
-                                                    <tbody>
+                                                <% })%>
+                                                    <%}else{%>
                                                         <tr>
-                                                            <td class="center-text">
-                                                                <%=product.productId.name%>
-                                                            </td>
-                                                            <td class="center-text">
-                                                                <%=product.quantity%>
-                                                            </td>
-                                                            <td class="center-text">
-                                                                <%=product.productId.offerPrice%>
-                                                            </td>
-                                                            <td class="center-text">
-                                                                <%=product.productId.offerPrice*product.quantity%>
-                                                            </td>
+                                                            <td colspan="8" class="text-center">No order Found !</td>
                                                         </tr>
-                                                        <% total +=product.productId.offerPrice*product.quantity %>
-                                                            <%console.log('total',total)%>
-                                                    </tbody>
-                                                    <%});%>
                                                         <%}%>
-                                        </table>
-                                    </div>
-                                </section>
-                                <section class="order-total">
-                                    <h2>Order Total</h2>
-                                    <p><strong>Total:</strong>
-                                        <%=total%>
-                                    </p>
-                                </section>
-            </main>
-            <%}%>
-                <footer>
-                    <!-- Footer content -->
-                </footer>
-</body>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- table-responsive //end -->
+                        </div>
+                        <!-- card-body end// -->
+                    </div>
+                    <!-- card end// -->
+                 
+                </section>
+                <!-- content-main end// -->
 
-</html>
+        </main>
 
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #fff;
-        color: #000;
-        margin: 0;
-        padding: 0;
-    }
 
-    header {
-        background-color: #fff;
-        color: #000;
-        padding: 20px;
-    }
+       
+        <script>
+            // document.addEventListener('DOMContentLoaded', () => {
 
-    main {
-        padding: 20px;
-    }
+            //     let searchInput = document.getElementById('customersSearch');
+            //     searchInput.addEventListener('keyup', () => {
 
-    h1,
-    h2 {
-        color: #000;
-    }
+            //         let searchTerm = searchInput.value.toLowerCase();
+            //         let tableRow = document.querySelectorAll('#customerTable tbody tr');
 
-    .order-summary,
-    .shipping-details,
-    .order-items,
-    .order-total {
-        margin-bottom: 20px;
-        border: 1px solid #000;
-        padding: 20px;
-    }
+            //         tableRow.forEach(function (row) {
+            //             let nameColoumn = row.querySelector('td:nth-child(2)');
 
-    .order-items table {
-        width: 100%;
-        border-collapse: collapse;
-    }
+            //             if (nameColoumn) {
+            //                 let nameText = nameColoumn.textContent.toLowerCase()
+            //                 row.style.display = nameText.includes(searchTerm) ? "" : "none";
+            //             }
+            //         })
 
-    .order-items th,
-    .order-items td {
-        border: 1px solid #000;
-        padding: 8px;
-    }
 
-    .order-total {
-        text-align: right;
-    }
+            //     })
+            // })
 
-    footer {
-        background-color: #000;
-        color: #fff;
-        padding: 20px;
-        text-align: center;
-    }
 
-    .table {
-        width: 100%;
-        max-width: 100%;
-    }
+            let  status = document.querySelectorAll('order-single-status')
+            status.forEach(element => {
+                
+            });
 
-    .center-text {
-        text-align: center;
-    }
-</style>
+            let changeStatus= document.getElementById('change-status')
+            changeStatus.addEventListener('change',(e)=>{
+                console.log('e',e.target)//------------
+                attachAddEventListerner()
+            })
+
+            function attachAddEventListerner(){
+let orderId = changeStatus.getAttribute('data-orderId')
+let productId = changeStatus.getAttribute('data-productId')
+let userId = changeStatus.getAttribute('data-userId')
+
+let data ={orderId,productId,userId}
+
+$.ajax({
+    type:'Post',
+    url:'/admin/change-status-single',
+
+    body:JSON.stringify(data)
+})
+            }
+
+        </script>
+        <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/vendors/select2.min.js"></script>
+        <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <!-- </body>
+                                </html> -->
+        <%- include('../layout/admin/adminFooter.ejs') -%>
