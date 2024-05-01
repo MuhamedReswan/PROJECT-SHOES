@@ -116,15 +116,40 @@ res.render('orderDetails',{orderDetails});
 }
 
 
+// order single product user
+const orderSingleProduct = async (req, res)=>{
+    try {
+       const orderId = req.query.id;
+       const userId = req.session.user.id
+       const orderData = await Orders.findOne({_id:orderId,user:userId}).populate('user').populate('products.productId')
+       console.log('orderId',orderId)//---------------
+       console.log('userId',userId)//---------------
+       console.log('orderData',orderData)//---------------
+       if(orderData){
+        res.status(200)
+        .json({orderData})
+       }else{
+        res.status(404).json({ error: 'Order not found' });
+       }
+      
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+
+
+//admin---------------------------------------------------------------------------------------------
+
 
 //admin order 
 const adminOrders = async (req, res)=>{
     try {
-        // const userId = req.session.user.id;
-        // const user = await Users.findOne({_id:userId})
+
         const ordersDetails = await Orders.find({}).populate('user').populate('products.productId');
         console.log('admin ordersDetails' ,ordersDetails);//------------------
-        // console.log('user=',user)//-------------
         res.render('orders',{ordersDetails})
     } catch (error) {
         console.log(error);
@@ -134,7 +159,7 @@ const adminOrders = async (req, res)=>{
 
 
 
-//single order 
+//single order admin
 const singleOrderDetails = async (req, res)=>{
     try {
         console.log('in single orders');//------------------
@@ -148,10 +173,26 @@ const singleOrderDetails = async (req, res)=>{
     }
 }
 
+
+
+// single change status admin
+const changeStatusSingle = async (req,res)=>{
+    try {
+        const {}=req.body
+        
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
 module.exports = {
     placeOrder,
     loadOrderSuccess,
     loadOrderDetails,
     adminOrders,
-    singleOrderDetails
+    singleOrderDetails,
+    changeStatusSingle,
+    orderSingleProduct
 }

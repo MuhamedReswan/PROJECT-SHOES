@@ -95,7 +95,6 @@
                                                                             id="order-status"
                                                                             name="orderStatus"
                                                                             >
-
                                                                                 <option selected>Change Status</option>
                                                                                 <option value="shipped" >Shipped</option>
                                                                                 <option value="Out of delivery">Out of delivery</option>
@@ -103,6 +102,13 @@
                                                                                 <option value="Cancelled" >Cancel</option>
                                                                             </select>
                                                                         </div>
+                                                                        <!-- <button class="btn btn-sm btn-success order-single-status" style="font-size: 14px;"
+                                                                        data-orderId="<%singleOrder._id%>" 
+                                                                        data-productId="<%=order.productId._id%>"
+                                                                        data-userId="<%=singleOrder.user._id%>"
+                                                                        data-index = <%=i%>
+                                                                        id="order-status"
+                                                                        name="orderStatus" > Delivered</button> -->
                                                                     </td>
                                                 </tr>
                                                 <% })%>
@@ -152,27 +158,35 @@
 
             let  status = document.querySelectorAll('order-single-status')
             status.forEach(element => {
-                
-            });
-
-            let changeStatus= document.getElementById('change-status')
-            changeStatus.addEventListener('change',(e)=>{
-                console.log('e',e.target)//------------
+                // let changeStatus= document.getElementById('change-status')
+                element.addEventListener('change',(e)=>{
+                console.log('e status',e.target)//------------
                 attachAddEventListerner()
             })
 
+            });
+
+            
             function attachAddEventListerner(){
+let changeStatus= document.getElementById('change-status')
 let orderId = changeStatus.getAttribute('data-orderId')
 let productId = changeStatus.getAttribute('data-productId')
 let userId = changeStatus.getAttribute('data-userId')
+let index = changeStatus.getAttribute('data-index')
 
-let data ={orderId,productId,userId}
+let data ={orderId,productId,userId,index}
 
 $.ajax({
     type:'Post',
     url:'/admin/change-status-single',
+    contentType:'application/json',
+    data:JSON.stringify(data),
+    success:function(response){
 
-    body:JSON.stringify(data)
+    },
+    error:function(error){
+        console.log(error)
+    }
 })
             }
 

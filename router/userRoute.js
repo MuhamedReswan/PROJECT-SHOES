@@ -149,6 +149,8 @@ user_route.get('/order-success/:orderId', orderController.loadOrderSuccess);
 
 //order details
 user_route.get('/order-details', orderController.loadOrderDetails);
+//order-single-product
+user_route.post('/order-product-single', orderController.orderSingleProduct);
 
 
 // 404 error

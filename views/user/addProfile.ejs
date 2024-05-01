@@ -93,7 +93,7 @@
                                                         <td>
                                                             <%=order.date.toDateString()%>
                                                         </td>
-                                                        <td><a href="/order-details?id=<%=order.id%>">more</a></td>
+                                                        <td><a id="more-button" data-id="<%=order.id%>" href="/order-details?id=<%=order.id%>">more</a></td>
                                                     </tr>
                                                 </tbody>
                                                 <% })%>
@@ -407,6 +407,37 @@
 
             // Attach the validation function to the form submit event
             // document.querySelector('form').addEventListener('submit', validateForm);
+        </script>
+
+        <script>
+            let moreButton = document.getElementById('more-button')
+            moreButton.addEventListener('click',()=>{
+
+            })
+
+            function orderSingleProduct(){
+               let orderId = moreButton.getAttribute('data-id')
+               let data = {orderId}
+               $.ajax({
+                type:'post',
+                url:`/order-product-single?id=${orderId}`,
+                contentType:'application/json',
+                success:function(res){
+if(res.orderData){
+    console.log('res.orderData',res.orderData)//-----------
+    let orderTable = document.getElementById('tab-orders')
+    orderTable.innerHTML=""
+    orderTable.innerHTML=`
+    `
+
+}
+
+                },
+                error:function(error){
+                    console.log(error)
+                }
+               })
+            }
         </script>
 
 
