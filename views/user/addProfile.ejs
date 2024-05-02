@@ -93,7 +93,7 @@
                                                         <td>
                                                             <%=order.date.toDateString()%>
                                                         </td>
-                                                        <td><a id="more-button" data-id="<%=order.id%>" href="/order-details?id=<%=order.id%>">more</a></td>
+                                                        <td><p class="btn btn-sm more-button"  data-id="<%=order.id%>">more</p></td>
                                                     </tr>
                                                 </tbody>
                                                 <% })%>
@@ -147,19 +147,6 @@
                                             <a href="add-address" class="btn btn-outline-primary-2"><span>Add NEW</span><i
                                                     class="icon-long-arrow-right"></i></a>
                                         <%}%>
-
-                                        <!-- <div class="col-lg-6">
-                                            <div class="card card-dashboard">
-                                                <div class="card-body">
-                                                    <h3 class="card-title">Shipping Address</h3>End .card-title
-
-                                                    <p>You have not set up this type of address yet.<br>
-                                                        <a href="#">Edit <i class="icon-edit"></i></a>
-                                                    </p>
-                                                </div>End .card-body
-                                            </div>End .card-dashboard
-                                        </div>End .col-lg-6 -->
-                                       
 
                                     </div><!-- End .row -->
                                 </div><!-- .End .tab-pane -->
@@ -333,7 +320,6 @@
         </div><!-- End .modal-dialog -->
     </div><!-- End .modal -->
 
-
     <!--Footer-->
     <%- include('../partials/userBodyFooter.ejs')-%>
         <!--End Footer-->
@@ -410,33 +396,81 @@
         </script>
 
         <script>
-            let moreButton = document.getElementById('more-button')
-            moreButton.addEventListener('click',()=>{
-
+            let moreButton = document.querySelectorAll('.more-button');
+            moreButton.forEach((button)=>{
+                button.addEventListener('click',(e)=>{
+                    console.log('e moreButton',e)//--------------------
+                 let orderId = e.target.getAttribute('data-id')
+                orderSingleProduct(orderId)
+            })
             })
 
-            function orderSingleProduct(){
-               let orderId = moreButton.getAttribute('data-id')
-               let data = {orderId}
+            function orderSingleProduct(orderId){
+                console.log('invoked orderSingleProduct')//---------------
                $.ajax({
                 type:'post',
                 url:`/order-product-single?id=${orderId}`,
                 contentType:'application/json',
-                success:function(res){
-if(res.orderData){
-    console.log('res.orderData',res.orderData)//-----------
-    let orderTable = document.getElementById('tab-orders')
-    orderTable.innerHTML=""
-    orderTable.innerHTML=`
-    `
+                success: function(res) {
+    if (res.orderData && res.orderData.products.length > 0) {
+        let orderTable = document.getElementById('tab-orders');
+        orderTable.innerHTML = '';
 
+        let table = document.createElement('table');
+        table.className = 'table table-bordered';
+        let thead = document.createElement('thead');
+        thead.className = 'bg-dark text-light text-center';
+        let tr = document.createElement('tr');
+        tr.innerHTML = `
+            <th>SL.No</th>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>date</th>
+            <th>Action</th>
+        `;
+        thead.appendChild(tr);
+        table.appendChild(thead);
+
+        let tbody = document.createElement('tbody');
+        tbody.className = 'text-center';
+        res.orderData.products.forEach((product, index) => {
+            let tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td><img style="width: 75px; height: 75px;" src="/user/assets/images/product-images/sharpedImages/${product.productId.images && product.productId.images.length>0 ? product.productId.images[0] : ''}" alt="product-image"></td>
+                <td>${product.productId.name}</td>
+                <td>${product.quantity}</td>
+                <td>${product.price}</td>
+                <td>${product.price*product.quantity}</td>
+                <td>${product.status}</td>
+                <td>${new Date(res.orderData.date).toDateString()}</td>
+                <td><img style="width: 75px; height: 75px;" src="/user/assets/images/product-images/sharpedImages/${product.productId.images && product.productId.images.length>0 ? product.productId.images[0] : ''}" alt="product-image"></td>
+                <td> <button class="btn btn-sm"  data-product-id="${product.productId._id}" data-action="${product.status == 'delivered' ? 'return' : 'cancel'}">${product.status =='delivered' ? "Return" :"Cancel"}</button></td>
+            `;
+            tbody.appendChild(tr);
+        }); 
+        table.appendChild(tbody);
+
+        orderTable.appendChild(table);
+    }
 }
-
-                },
+,
                 error:function(error){
                     console.log(error)
                 }
                })
+            }
+
+
+            function moreButtonclicked(productId,status,orderId){
+console.log(' invoked moreButtonclicked ')//----------------------
+console.log("productId",productId)//--------------------
+console.log("status",status)//--------------------
+console.log("orderId",orderId)//--------------------
             }
         </script>
 

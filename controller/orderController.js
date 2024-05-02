@@ -131,7 +131,6 @@ const orderSingleProduct = async (req, res)=>{
        }else{
         res.status(404).json({ error: 'Order not found' });
        }
-      
     } catch (error) {
         console.log(error)
     }
@@ -139,7 +138,17 @@ const orderSingleProduct = async (req, res)=>{
 
 
 
-
+// change product order status single
+const updateSingleOrderStatus = async ()=>{
+    try {
+        console.log('im in updateSingleOrderStatus');//-------------
+        console.log('req.body',req.body);//-------------------------
+        const {orderId,productId,userId,index}=req.body
+    } catch (error) {
+        
+    }
+    console.log(error)
+}
 
 //admin---------------------------------------------------------------------------------------------
 
@@ -194,5 +203,6 @@ module.exports = {
     adminOrders,
     singleOrderDetails,
     changeStatusSingle,
-    orderSingleProduct
+    orderSingleProduct,
+    updateSingleOrderStatus
 }

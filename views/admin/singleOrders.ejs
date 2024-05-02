@@ -3,8 +3,6 @@
 
         <main class="main-wrap">
             <%- include('../partials/adminHeaderBody') -%>
-
-
                 <section class="content-main">
                     <div class="content-header">
                         <div>
@@ -168,6 +166,7 @@
 
             
             function attachAddEventListerner(){
+                console.log(' invoked attachAddEventListerner')//-----------------------
 let changeStatus= document.getElementById('change-status')
 let orderId = changeStatus.getAttribute('data-orderId')
 let productId = changeStatus.getAttribute('data-productId')
@@ -178,7 +177,7 @@ let data ={orderId,productId,userId,index}
 
 $.ajax({
     type:'Post',
-    url:'/admin/change-status-single',
+    url:'/admin/change-order-status-single',
     contentType:'application/json',
     data:JSON.stringify(data),
     success:function(response){

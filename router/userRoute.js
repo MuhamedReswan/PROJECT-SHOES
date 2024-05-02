@@ -152,6 +152,8 @@ user_route.get('/order-details', orderController.loadOrderDetails);
 //order-single-product
 user_route.post('/order-product-single', orderController.orderSingleProduct);
 
+user_route.post('/change-order-status-single', orderController.updateSingleOrderStatus);
+
 
 // 404 error
 // user_route.get('/*',userController.loadError)//
