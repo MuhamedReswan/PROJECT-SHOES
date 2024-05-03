@@ -85,6 +85,7 @@ const placeOrder = async (req, res) => {
 
     } catch (error) {
         console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
@@ -96,6 +97,7 @@ const loadOrderSuccess = (req, res) => {
         res.render('orderSuccess', { orderId });
     } catch (error) {
         console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
@@ -112,6 +114,7 @@ console.log('orderDetails=',orderDetails)//-------------
 res.render('orderDetails',{orderDetails});
 } catch (error) {
     console.log(error);
+    res.status(500).json({ error: 'Internal Server Error' });
 }
 }
 
@@ -119,35 +122,60 @@ res.render('orderDetails',{orderDetails});
 // order single product user
 const orderSingleProduct = async (req, res)=>{
     try {
-       const orderId = req.query.id;
+        console.log('in  user orderSingleProduct')//--------------
+        console.log('req',req)//--------------
+       const orderId = req.query.orderid;
+       console.log('orderId',orderId);///-------------------------
        const userId = req.session.user.id
-       const orderData = await Orders.findOne({_id:orderId,user:userId}).populate('user').populate('products.productId')
+       const orderData = await Orders.findOne({_id:orderId,user:userId}).populate('user').populate('products.productId');
        console.log('orderId',orderId)//---------------
        console.log('userId',userId)//---------------
        console.log('orderData',orderData)//---------------
        if(orderData){
-        res.status(200)
-        .json({orderData})
+        res.status(200).render('orderSingleProduct',{orderData}); 
        }else{
         res.status(404).json({ error: 'Order not found' });
        }
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
 
 
 // change product order status single
-const updateSingleOrderStatus = async ()=>{
-    try {
-        console.log('im in updateSingleOrderStatus');//-------------
-        console.log('req.body',req.body);//-------------------------
-        const {orderId,productId,userId,index}=req.body
-    } catch (error) {
+// const updateSingleOrderStatus = async ()=>{
+//     try {
+//         console.log('im in updateSingleOrderStatus');//-------------
+//         console.log('req.body',req.body);//-------------------------
+//         const {orderId,productId,userId,index}=req.body
+//     } catch (error) {
         
-    }
-    console.log(error)
+//     }
+//     console.log(error)
+//     res.status(500).json({ error: 'Internal Server Error' });
+// }
+
+// my orders
+const loadMyOrder =async(req, res)=>{
+    try {
+        
+  
+    console.log('im in my orders')//--------------
+    const userId = req.session.user.id;
+    if(userId){
+const orders = await Orders.find({user:userId}).populate('user').populate('products.productId');
+console.log('my order orders',JSON.stringify(orders))//-----------------------
+res.render('myOrders',{orders})
+    }else{
+        res.status(401).json({ error: 'User id not getting'}); 
+       }
+} catch (error) {
+       console.log(error) 
+       res.status(500).json({ error: 'Internal Server Error' });
+}
+
 }
 
 //admin---------------------------------------------------------------------------------------------
@@ -201,8 +229,9 @@ module.exports = {
     loadOrderSuccess,
     loadOrderDetails,
     adminOrders,
-    singleOrderDetails,
-    changeStatusSingle,
-    orderSingleProduct,
-    updateSingleOrderStatus
+    // singleOrderDetails,
+    // changeStatusSingle,
+    // orderSingleProduct,
+    // updateSingleOrderStatus,
+    loadMyOrder
 }

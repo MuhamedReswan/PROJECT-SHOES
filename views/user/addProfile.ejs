@@ -24,8 +24,8 @@
                                         aria-selected="true">Dashboard</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="tab-orders-link" data-toggle="tab" href="#tab-orders"
-                                        role="tab" aria-controls="tab-orders" aria-selected="false">Orders</a>
+                                    <a class="nav-link" id="tab-orders-link"  href="/my-orders"
+                                         >Orders</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads"
@@ -59,8 +59,8 @@
                                             password and account details</a>.
                                     </p>
                                 </div><!-- .End .tab-pane -->
-
-                                <div class="tab-pane fade" id="tab-orders" role="tabpanel"
+<!-- ----------------------------------------------------------------------------------------------------------------------------- -->
+                                <!-- <div class="tab-pane fade" id="tab-orders" role="tabpanel"
                                     aria-labelledby="tab-orders-link">
                                     <%if(orders && orders.length>0){%>
                                         <table class="table table-bordered">
@@ -93,7 +93,7 @@
                                                         <td>
                                                             <%=order.date.toDateString()%>
                                                         </td>
-                                                        <td><p class="btn btn-sm more-button"  data-id="<%=order.id%>">more</p></td>
+                                                        <td><a class="btn btn-sm more-button" href="/order-single-product?orderid=<%=order.id%>" data-id="<%=order.id%>">more</a></td>
                                                     </tr>
                                                 </tbody>
                                                 <% })%>
@@ -105,8 +105,13 @@
                                                     class="icon-long-arrow-right"></i></a>
                                             <%}%>
 
-                                </div><!-- .End .tab-pane -->
+                                </div>.End .tab-pane -->
 
+
+
+                              
+
+<!-- ______________________________--------------------------------------------------------- -->
                                 <div class="tab-pane fade" id="tab-downloads" role="tabpanel"
                                     aria-labelledby="tab-downloads-link">
                                     <p>No downloads available yet.</p>
@@ -394,86 +399,6 @@
             // Attach the validation function to the form submit event
             // document.querySelector('form').addEventListener('submit', validateForm);
         </script>
-
-        <script>
-            let moreButton = document.querySelectorAll('.more-button');
-            moreButton.forEach((button)=>{
-                button.addEventListener('click',(e)=>{
-                    console.log('e moreButton',e)//--------------------
-                 let orderId = e.target.getAttribute('data-id')
-                orderSingleProduct(orderId)
-            })
-            })
-
-            function orderSingleProduct(orderId){
-                console.log('invoked orderSingleProduct')//---------------
-               $.ajax({
-                type:'post',
-                url:`/order-product-single?id=${orderId}`,
-                contentType:'application/json',
-                success: function(res) {
-    if (res.orderData && res.orderData.products.length > 0) {
-        let orderTable = document.getElementById('tab-orders');
-        orderTable.innerHTML = '';
-
-        let table = document.createElement('table');
-        table.className = 'table table-bordered';
-        let thead = document.createElement('thead');
-        thead.className = 'bg-dark text-light text-center';
-        let tr = document.createElement('tr');
-        tr.innerHTML = `
-            <th>SL.No</th>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Total</th>
-            <th>Status</th>
-            <th>date</th>
-            <th>Action</th>
-        `;
-        thead.appendChild(tr);
-        table.appendChild(thead);
-
-        let tbody = document.createElement('tbody');
-        tbody.className = 'text-center';
-        res.orderData.products.forEach((product, index) => {
-            let tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${index + 1}</td>
-                <td><img style="width: 75px; height: 75px;" src="/user/assets/images/product-images/sharpedImages/${product.productId.images && product.productId.images.length>0 ? product.productId.images[0] : ''}" alt="product-image"></td>
-                <td>${product.productId.name}</td>
-                <td>${product.quantity}</td>
-                <td>${product.price}</td>
-                <td>${product.price*product.quantity}</td>
-                <td>${product.status}</td>
-                <td>${new Date(res.orderData.date).toDateString()}</td>
-                <td><img style="width: 75px; height: 75px;" src="/user/assets/images/product-images/sharpedImages/${product.productId.images && product.productId.images.length>0 ? product.productId.images[0] : ''}" alt="product-image"></td>
-                <td> <button class="btn btn-sm"  data-product-id="${product.productId._id}" data-action="${product.status == 'delivered' ? 'return' : 'cancel'}">${product.status =='delivered' ? "Return" :"Cancel"}</button></td>
-            `;
-            tbody.appendChild(tr);
-        }); 
-        table.appendChild(tbody);
-
-        orderTable.appendChild(table);
-    }
-}
-,
-                error:function(error){
-                    console.log(error)
-                }
-               })
-            }
-
-
-            function moreButtonclicked(productId,status,orderId){
-console.log(' invoked moreButtonclicked ')//----------------------
-console.log("productId",productId)//--------------------
-console.log("status",status)//--------------------
-console.log("orderId",orderId)//--------------------
-            }
-        </script>
-
 
         <!-- Including Jquery -->
         <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>

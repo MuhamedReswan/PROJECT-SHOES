@@ -1,0 +1,88 @@
+<%- include('../layout/user/header.ejs') -%>
+
+    <div class="pageWrapper">
+
+
+        <!--Body Content-->
+        <div id="page-content">
+            <!--Page Title-->
+            <div class="page section-header text-center">
+                <div class="page-title">
+                    <div class="wrapper">
+                        <h1 class="page-width">My Orders</h1>
+                    </div>
+                </div>
+            </div>
+            <!--End Page Title-->
+
+            <div class=" conatiner card-body">
+                <div class="table-responsive" id="reloadList">
+                    <%if(orders && orders.length>0){%>
+                    <table class="table table-hover">
+                        <thead class="bg-dark text-white bg-opacity-50">
+                            <tr class="text-center">
+                                <th>SI NO</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">image</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col" >Action</th>
+                                <th scope="col">Status</th>
+                               
+                            </tr>
+                        </thead>
+                        <%orders.forEach((order,index)=>{%>
+                        <tbody class="text-center" >
+                                       
+                            <tr class="text-center " >
+                                <td># <%=index+1001%></td>
+                                <%order.products.forEach((product)=>{%>
+                                <td><b><%=product.name%></b></td>
+                                <td><img  style="width: 50px; height: 50px;" src="/user/assets/images/product-images/sharpedImages/<%=product.images[0]%>" alt="product image"></td>
+                                <%})%>
+                               <td> <%=order.status%></td>
+                               <td> <%=order.paymentMethod%></td>
+                               <td><%=order.totalAmount%></td>
+                               <td><%=order.date.toDateString()%></td>
+                            </tr>
+                        </tbody>
+                        <%})%>
+                    </table>
+                    
+                    <%}else{%>
+                        <p>No order has been made yet.</p>
+                        <a href="shop" class="btn btn-outline-primary-2"><span>GO SHOP</span><i
+                                class="icon-long-arrow-right"></i></a>
+                        <%}%>
+                </div>
+            </div>
+            
+        </div>
+        <!--End Body Content-->
+
+        <!--Scoll Top-->
+        <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
+        <!--End Scoll Top-->
+
+        <!-- Including Jquery -->
+        <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
+        <script src="user/assets/js/vendor/jquery.cookie.js"></script>
+        <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+        <script src="user/assets/js/vendor/wow.min.js"></script>
+        <!-- Including Javascript -->
+        <script src="user/assets/js/bootstrap.min.js"></script>
+        <script src="user/assets/js/plugins.js"></script>
+        <script src="user/assets/js/popper.min.js"></script>
+        <script src="user/assets/js/lazysizes.js"></script>
+        <script src="user/assets/js/main.js"></script>
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </div>
+    </body>
+
+    <!-- belle/cart-variant1.html   11 Nov 2019 12:44:32 GMT -->
+
+    </html>

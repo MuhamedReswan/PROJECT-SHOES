@@ -37,7 +37,11 @@ const orderSchema = mongoose.Schema({
             },
             returnReason: {
                 type: String
-            }
+            },
+            isReturned: {
+                type: Boolean,
+                default: false,
+            },
         }
     ],
     totalAmount: {
@@ -50,11 +54,14 @@ const orderSchema = mongoose.Schema({
     },
     status: {
         type: String,
-        required: true
+        required: true,
+        enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled', 'Returned'],
+        default:'Pending'
     },
     paymentMethod: {
         type: String,
-        required: true
+        required: true,
+        enum: ['COD', 'Online', 'Wallet']
     },
     deliveryAddress: {
         type: Object
@@ -67,8 +74,24 @@ const orderSchema = mongoose.Schema({
     },
     discountedPrice:{
         type:Number
-    }
+    },
+    deliveryCharge: {
+        type: Number,
+        default: 0
+    },
+    cancelDetails: {
 
+        type: {
+            reason: {
+                type: String,
+                required: true
+            },
+            comment: {
+                type: String,
+                required: false
+            }
+        }
+    }
 })
 
 module.exports = mongoose.model('Orders', orderSchema);

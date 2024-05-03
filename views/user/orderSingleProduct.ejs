@@ -1,0 +1,93 @@
+<%- include('../layout/user/header.ejs') -%>
+
+    <div class="pageWrapper">
+
+
+        <!--Body Content-->
+        <div id="page-content">
+            <!--Page Title-->
+            <div class="page section-header text-center">
+                <div class="page-title">
+                    <div class="wrapper">
+                        <h1 class="page-width">Single Order Details</h1>
+                    </div>
+                </div>
+            </div>
+            <!--End Page Title-->
+<% console.log('orderdata------------------------------',orderData) %>
+
+
+<div class="table-responsive">
+    <table class="table table-bordered ">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">SL.No</th>
+            <th scope="col">Image</th>
+            <th scope="col">Name</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Price</th>
+            <th scope="col">Total</th>
+            <th scope="col">Status</th>
+            <th scope="col">date</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+       <% if(orderData && orderData.products.length>0){%>
+<% orderData.products.forEach((product, index)=>{%>
+
+        <tr>
+     <td><%= index + 1 %></td>
+     <td><img style="width: 75px; height: 75px;" src="/user/assets/images/product-images/sharpedImages/<%= product.productId.images[0]%>" alt="product-image"></td>
+     <td><%= product.productId.name %></td>
+     <td><%= product.quantity %></td>
+     <td><%=product.price  %></td>
+     <td><%= product.price*product.quantity %></td>
+     <td><%= product.status %></td>
+     <td><%= orderData.date.toDateString() %></td>
+     <td><%if(product.status=="delivered"){%> 
+        <button class="btn btn-sm" data-product-id="<%= product._id%>" data-status="<%= product.status %>"
+            >Return</button>
+        <%}else if(product.status=="placed"||product.status=="Pending"){%>
+            <button class="btn btn-sm" data-product-id="<%= product._id%>" data-status="<%= product.status %>">Cancel</button>
+            <%}%></td>
+       
+     <td>
+        <!-- <button class="btn btn-sm"  data-product-id="<%= product.productId._id%>" data-action="<%= product.status %> == 'delivered' ? 'return' : 'cancel'">product.status =='delivered' ? "Return" :"Cancel"</button><%=  %></td> -->
+        </tr>
+        <%}) %>
+        <%}else{%>
+            <%}%>
+    </tbody>
+    </table>
+
+</div>
+            
+        </div>
+        <!--End Body Content-->
+
+        <!--Scoll Top-->
+        <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
+        <!--End Scoll Top-->
+
+        <!-- Including Jquery -->
+        <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
+        <script src="user/assets/js/vendor/jquery.cookie.js"></script>
+        <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+        <script src="user/assets/js/vendor/wow.min.js"></script>
+        <!-- Including Javascript -->
+        <script src="user/assets/js/bootstrap.min.js"></script>
+        <script src="user/assets/js/plugins.js"></script>
+        <script src="user/assets/js/popper.min.js"></script>
+        <script src="user/assets/js/lazysizes.js"></script>
+        <script src="user/assets/js/main.js"></script>
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </div>
+    </body>
+
+    <!-- belle/cart-variant1.html   11 Nov 2019 12:44:32 GMT -->
+
+    </html>

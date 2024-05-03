@@ -149,10 +149,13 @@ user_route.get('/order-success/:orderId', orderController.loadOrderSuccess);
 
 //order details
 user_route.get('/order-details', orderController.loadOrderDetails);
-//order-single-product
-user_route.post('/order-product-single', orderController.orderSingleProduct);
 
-user_route.post('/change-order-status-single', orderController.updateSingleOrderStatus);
+// my order
+user_route.get('/my-orders', orderController.loadMyOrder)
+//order-single-product
+// user_route.get('/order-single-product', orderController.orderSingleProduct);
+
+// user_route.post('/change-order-status-single', orderController.updateSingleOrderStatus);
 
 
 // 404 error
