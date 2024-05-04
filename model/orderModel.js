@@ -27,7 +27,7 @@ const orderSchema = mongoose.Schema({
             // size: {
             //     type: Number
             // },
-            dascription: {
+            description: {
                 type: String
             },
             status: {
@@ -57,6 +57,9 @@ const orderSchema = mongoose.Schema({
         required: true,
         enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled', 'Returned'],
         default:'Pending'
+    },
+    orderId:{
+type:String
     },
     paymentMethod: {
         type: String,

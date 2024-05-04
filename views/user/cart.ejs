@@ -43,13 +43,13 @@
 
                                             <tr class="cart__row border-bottom line1 cart-flex border-top">
                                                 <td class="cart__image-wrapper cart-flex-item">
-                                                    <a href="#"><img class="cart__image"
+                                                    <a href="/single-product?id=<%= product.productId._id%>"><img class="cart__image"
                                                             src="user/assets/images/product-images/sharpedImages/<%= product.productId.images[0] %>"
                                                             alt="Elastic Waist Dress - Navy / Small"></a>
                                                 </td>
                                                 <td class="cart__meta small--text-left cart-flex-item">
                                                     <div class="list-view-item__title">
-                                                        <a href="#">
+                                                        <a style="text-decoration: none;" href="/single-product?id=<%= product.productId._id%>">
                                                             <%= product.productId.name %>
                                                         </a>
                                                     </div>

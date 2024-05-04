@@ -23,36 +23,6 @@
                                     id="customer" class="text-white text-decoration-underline"
                                     data-toggle="collapse">Add New address</a></h3>
                             <!-- <h3><i class="icon anm anm-user-al"></i> Do want add new address? <a href="#customer-login" id="customer" class="text-white text-decoration-underline" data-toggle="collapse">Add New address</a></h3> -->
-
-                            <!-- <div id="customer-login" class="collapse customer-content">
-                            <div class="customer-info">
-                                <p class="coupon-text">If you have shopped with us before, please enter your details in the boxes below. If you are a new customer, please proceed to the Billing &amp; Shipping section.</p>
-                                <form>
-                                    <div class="row">
-                                        <div class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                            <label for="exampleInputEmail1">Email address <span class="required-f">*</span></label>
-                                            <input type="email" class="no-margin" id="exampleInputEmail1">
-                                        </div>
-                                        <div class="form-group col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                            <label for="exampleInputPassword1">Password <span class="required-f">*</span></label>
-                                            <input type="password" id="exampleInputPassword1">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-check width-100 margin-20px-bottom">
-                                                <label class="form-check-label">
-                                                    <input type="checkbox" class="form-check-input" value=""> Remember me!
-                                                </label>
-                                                <a href="#" class="float-right">Forgot your password?</a>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary mt-3">Submit</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div> -->
-
                             <div id="addAddress" class="create-ac-content bg-light-gray padding-20px-all collapse ">
                                 <form action="/add-address" method="post" onsubmit="return addAddressValidation()">
                                     <fieldset>
@@ -399,7 +369,7 @@
                                                     <div class="card mb-2">
                                                         <div class="card-header d-flex ">
                                                             <input class="mr-2" type="radio" name="paymentOption"
-                                                                id="cashOnDelivery" value="cashOnDelivery">
+                                                                id="cashOnDelivery" value="COD">
                                                             <label class="card-link" for="cashOnDelivery">Cash on
                                                                 Delivery</label>
                                                         </div>
@@ -407,8 +377,8 @@
                                                     <div class="card mb-2">
                                                         <div class="card-header d-flex ">
                                                             <input class="mr-2" type="radio" name="paymentOption"
-                                                                value="debitCard" id="debitCard">
-                                                            <label class="card-link" for="debitCard">Debit Card</label>
+                                                                value="Online" id="debitCard">
+                                                            <label class="card-link" for="Online">Online Payment</label>
                                                         </div>
                                                     </div>
                                                 </div>

@@ -427,7 +427,7 @@
                                             productHtml += `<div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
                 <!-- start product image -->
                 <div class="product-image">
-                    <a href="/single-product?id=${product.id}">
+                    <a href="/single-product?id=${product._id}">
                         <img class="primary blur-up lazyload" id="mainImg1"
                             data-src="user/assets/images/product-images/sharpedImages/${product.images[0]}"
                             src="user/assets/images/product-images/sharpedImages/${product.images[0]}"
@@ -445,7 +445,7 @@
                     </a>
                     <!-- end product image -->
                     <!-- Start product button -->
-                    <a class="variants add" href="/single-product?id=${product.id}">
+                    <a class="variants add" href="/single-product?id=${product._id}">
                         <button class="btn btn-addto-cart" type="submit">view Details</button>
                     </a>
                     <div class="button-set">

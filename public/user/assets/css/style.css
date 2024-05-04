@@ -1717,3 +1717,47 @@ div:where(.swal2-container) div:where(.swal2-popup) {
   font-weight: 400;
   font-size: 12px;
 }
+.btn-warning {
+  color: #212529;
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+
+.rounded-pill {
+  border-radius: 30px; /* Adjust as needed to make the button more pill-shaped */
+}
+
+
+.btn-success {
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-success:hover {
+  color: #fff;
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+.btn-info {
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.btn-info:hover {
+  color: #fff;
+  background-color: #138496;
+  border-color: #117a8b;
+}
+
+.btn .btn-danger .rounded-pill{
+  color: white;
+  background-color:red;
+  border-color: red; 
+}
+.btn .btn-danger .rounded-pill:hover{
+  color: black;
+  background-color:white;
+  border-color: red;  
+}

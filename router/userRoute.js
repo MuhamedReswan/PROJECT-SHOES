@@ -152,6 +152,11 @@ user_route.get('/order-details', orderController.loadOrderDetails);
 
 // my order
 user_route.get('/my-orders', orderController.loadMyOrder)
+
+//cancel order
+user_route.get('/cancel-order',orderController.orderCancel);
+
+
 //order-single-product
 // user_route.get('/order-single-product', orderController.orderSingleProduct);
 

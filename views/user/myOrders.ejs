@@ -2,7 +2,14 @@
 
     <div class="pageWrapper">
 
+        <style>
 
+
+.swal2-container .swal2-popup{
+width: 25em;
+}
+
+        </style>
         <!--Body Content-->
         <div id="page-content">
             <!--Page Title-->
@@ -18,52 +25,173 @@
             <div class=" conatiner card-body">
                 <div class="table-responsive" id="reloadList">
                     <%if(orders && orders.length>0){%>
-                    <table class="table table-hover">
-                        <thead class="bg-dark text-white bg-opacity-50">
-                            <tr class="text-center">
-                                <th>SI NO</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">image</th>
-                                <th scope="col">Brand</th>
-                                <th scope="col">Category</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col" >Action</th>
-                                <th scope="col">Status</th>
-                               
-                            </tr>
-                        </thead>
-                        <%orders.forEach((order,index)=>{%>
-                        <tbody class="text-center" >
-                                       
-                            <tr class="text-center " >
-                                <td># <%=index+1001%></td>
-                                <%order.products.forEach((product)=>{%>
-                                <td><b><%=product.name%></b></td>
-                                <td><img  style="width: 50px; height: 50px;" src="/user/assets/images/product-images/sharpedImages/<%=product.images[0]%>" alt="product image"></td>
+                        
+                        <table class="table table-hover">
+                            <thead class="bg-dark text-white bg-opacity-50">
+                                <tr class="text-center">
+                                    <th>SI NO</th>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Total Amount</th>
+                                    <th scope="col">Payment Method</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+
+                            <%orders.forEach((order,index)=>{%>
+                                <tbody class="text-center">
+                                    <tr class="text-center ">
+                                        <td># <%=index+1001%>
+                                        </td>
+                                        <td class="">
+                                            <div class="d-flex">
+                                                <%order.products.forEach((product)=>{%>
+                                                    <div class="d-flex flex-column align-items-center">
+                                                        <a href="/single-product?id=<%=product.productId._id%>"><img
+                                                                style="width: 50px; height: 50px;"
+                                                                src="/user/assets/images/product-images/sharpedImages/<%=product.productId.images[0]%>"
+                                                                alt="product image"></a>
+                                                        <a href="/single-product?id=<%=product.productId._id%>"><small>
+                                                                <%=product.productId.name%>
+                                                            </small>
+                                                        </a>
+                                                    </div>
+                                            </div>
+                                            <%})%>
+                                        </td>
+                                        <td>
+                                            ₹ <%=order.totalAmount%>
+                                        </td>
+                                        <td>
+                                            <%=order.paymentMethod%>
+                                        </td>
+                                        <td>
+
+                                            <%if(order.status== 'Delivered' ){%>
+                                                <span class=" px-4 py-2 rounded-pill"
+                                                    style="font-weight: 400; background-color: rgb(46, 168, 56); color: #e1d8d8;">
+
+                                                    <%}else if(order.status=='Cancelled' ){%>
+                                                        <span class=" px-4 py-2 rounded-pill"
+                                                            style="font-weight: 400; background-color: rgb(248, 108, 20); color: #e1d8d8;">
+
+                                                            <%}else if(order.status=='Returned' ){%>
+                                                                <span class=" px-4 py-2 rounded-pill"
+                                                                    style="font-weight: 400; background-color: rgb(255, 0, 0); color: #e1d8d8;">
+
+                                                                    <%}else if(order.status=='Pending' ){%>
+                                                                        <span class=" px-4 py-2 rounded-pill"
+                                                                            style="font-weight: 400; background-color: rgb(11, 116, 148); color: #e1d8d8;">
+
+                                                                            <%}else if(order.status=='Shipped' ){%>
+                                                                                <span class=" px-4 py-2 rounded-pill"
+                                                                                    style="font-weight: 400; background-color: rgb(0, 116, 62); color: #e1d8d8;">
+                                                                                    <%}%>
+                                                                                        <%= order.status%>
+                                                                                </span>
+                                        </td>
+                                        <td>
+                                            <%=order.date.toDateString()%>
+                                        </td>
+                                        <td>
+                                            <%if(order.status=='Cancelled'){%>
+
+                                                <button class="btn btn-warning rounded-pill mt-2"
+                                                id="view-details-button " data-productId="<%=order._id%>" onclick="viewSingleOrderDetails('<%=order._id%>')">View
+                                                Details</button>
+
+                                                <%}else{%>
+                                            <div>
+                                                <button class="btn btn-danger rounded-pill" id="cancel-button-<%=index%>"
+                                                    data-productId="<%=order._id%>" onclick="cancelOrders('<%=order._id%>','cancel-button-<%=index%>')">Cancel Order</button><br>
+                                                <button class="btn btn-warning rounded-pill mt-2"
+                                                    id="view-details-button " data-productId="<%=order._id%>" onclick="viewSingleOrderDetails('<%=order._id%>')">View
+                                                    Details</button>
+                                            </div>
+                                            <%}%>
+                                        </td>
+                                    </tr>
+                                </tbody>
                                 <%})%>
-                               <td> <%=order.status%></td>
-                               <td> <%=order.paymentMethod%></td>
-                               <td><%=order.totalAmount%></td>
-                               <td><%=order.date.toDateString()%></td>
-                            </tr>
-                        </tbody>
-                        <%})%>
-                    </table>
-                    
-                    <%}else{%>
-                        <p>No order has been made yet.</p>
-                        <a href="shop" class="btn btn-outline-primary-2"><span>GO SHOP</span><i
-                                class="icon-long-arrow-right"></i></a>
-                        <%}%>
+                        </table>
+                        <%}else{%>
+                            <p>No order has been made yet.</p>
+                            <a href="shop" class="btn btn-outline-primary-2"><span>GO SHOP</span><i
+                                    class="icon-long-arrow-right"></i></a>
+                            <%}%>
+
                 </div>
             </div>
-            
+
         </div>
         <!--End Body Content-->
 
         <!--Scoll Top-->
         <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
         <!--End Scoll Top-->
+
+        <script>
+
+            function cancelOrders(orderId,buttonId){
+                let data = orderId
+                console.log('oreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',orderId)//-------------
+                const swalWithBootstrapButtons = Swal.mixin({
+  customClass: {
+    confirmButton: "btn btn-success",
+    cancelButton: "btn btn-danger"
+  },
+  buttonsStyling: false
+});
+swalWithBootstrapButtons.fire({
+  title: "Do you want cancel this order ?",
+  text: "You won't be able to revert this!",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonText: "Yes!",
+  cancelButtonText: "No!",
+  reverseButtons: true
+}).then((result) => {
+  if (result.isConfirmed) {
+
+    fetch(`/cancel-order?orderid=${orderId}`,{
+                    method:'GET',
+                    headers:{
+                        'Content-Type':'application/json'
+                    }
+                }).then((res)=>{
+return res.json()
+                }).then((response)=>{
+if(response.cancelOrder== true){
+    console.log('in orderCancel response')//----------------------
+document.getElementById('buttonId').setAttribute('display','none')
+    $('#reloadList').load('/my-orders #reloadList',null,()=>{
+        swalWithBootstrapButtons.fire({
+      title: "Cancelled!",
+      text: "Your order has been cancelled.",
+      icon: "success"
+    });
+    })    
+}
+                })
+
+   
+  } else if (
+    /* Read more about handling dismissals below */
+    result.dismiss === Swal.DismissReason.cancel
+  ) {
+    swalWithBootstrapButtons.fire({
+      title: "Not Cancelled",
+      text: "Your order is safe !)",
+      icon: "warning"
+    });
+  }
+});
+              
+                
+            }
+
+        </script>
 
         <!-- Including Jquery -->
         <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
