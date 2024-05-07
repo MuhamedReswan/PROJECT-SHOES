@@ -15,9 +15,6 @@ const orderSchema = mongoose.Schema({
                 ref: 'Products',
                 required: true
             },
-            name: {
-                type: String
-            },
             price: {
                 type: Number
             },
@@ -29,11 +26,6 @@ const orderSchema = mongoose.Schema({
             // },
             description: {
                 type: String
-            },
-            status: {
-                type: String,
-                enum: ['placed', 'outForDelivery', 'returnRequested', 'returned', 'returnDenied', 'shipped', 'delivered', 'cancelled'],
-                default: 'placed'
             },
             returnReason: {
                 type: String

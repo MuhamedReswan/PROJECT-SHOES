@@ -1,0 +1,148 @@
+<%- include('../layout/user/header.ejs') -%>
+
+    <div class="pageWrapper">
+
+
+        <!--Body Content-->
+        <div id="page-content">
+            <!--Page Title-->
+            <div class="page section-header text-center">
+                <div class="page-title">
+                    <div class="wrapper">
+                        <h1 class="page-width">Single Order Details</h1>
+                    </div>
+                </div>
+            </div>
+            <!--End Page Title-->
+<% console.log('singleOrder------------------------------',singleOrder) %>
+
+
+<div class=" conatiner card-body">
+    <div class="table-responsive" id="reloadList">
+            
+            <table class="table table-hover">
+                <thead class="bg-dark text-white bg-opacity-50">
+                    <tr class="text-center">
+                        <th>SI NO</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <%if(singleOrder && singleOrder.products.length>0){%>
+                    <% console.log('within the single od ejs') %>
+                    
+                <%singleOrder.products.forEach((product,index)=>{%>
+                    <% console.log('within the single od ejs froessss') %>
+
+                    <tbody class="text-center">
+                        <tr class="text-center ">
+                            <td># <%=index+1001%>
+                            </td>
+                            <td class="">
+                                <div class="d-flex">
+                              
+                                        <div class="d-flex flex-column align-items-center">
+                                            <a href="/single-product?id=<%=product.productId._id%>"><img
+                                                    style="width: 50px; height: 50px;"
+                                                    src="/user/assets/images/product-images/sharpedImages/<%=product.productId.images[0]%>"
+                                                    alt="product image"></a>
+                                            <a href="/single-product?id=<%=product.productId._id%>"><small>
+                                                    <%=product.productId.name%>
+                                                </small>
+                                            </a>
+                                        </div>
+                                </div>
+                            </td>
+                            <td>
+                                ₹ <%=product.price%>
+                            </td>
+                            <td>
+                                 <%=product.quantity%>
+                            </td>
+                            <td>
+                                ₹ <%=product.price * product.quantity%>
+                            </td>
+                            <td>
+                             
+                                
+                            <%if(product.status== 'Delivered' ){%>
+                                <span class=" px-4 py-2 rounded-pill"
+                                    style="font-weight: 400; background-color: rgb(46, 168, 56); color: #e1d8d8;">
+
+                                    <%}else if(product.status=='Cancelled' ){%>
+                                        <span class=" px-4 py-2 rounded-pill"
+                                            style="font-weight: 400; background-color: rgb(177, 16, 16); color: #e1d8d8;">
+
+                                            <%}else if(product.status=='Out For Delivery'
+                                                ){%>
+                                                <span class=" px-4 py-2 rounded-pill"
+                                                    style="font-weight: 400; background-color: rgb(18, 163, 163); color: #e1d8d8;">
+
+                                                    <%}else if(product.status=='Pending' ){%>
+                                                        <span class=" px-4 py-2 rounded-pill"
+                                                            style="font-weight: 400; background-color: rgb(12, 95, 120); color: #e1d8d8;">
+
+                                                            <%}else
+                                                                if(product.status=='Shipped'
+                                                                ){%>
+                                                                <span
+                                                                    class=" px-4 py-2 rounded-pill"
+                                                                    style="font-weight: 400; background-color: rgb(101, 15, 32); color: #e1d8d8;">
+                                                                    <%}%>
+                                                                    <%= product.status%>
+                                                                </span>
+                            </td>
+                            <td>
+                                <%if( product.status=='Delivered'){%>
+                                    <button class="btn btn-warning rounded-pill mt-2"
+                                    id="return-product" data-productId="<%=product.productId._id%>" onclick="returnProduct('<%=singleOrder._id%>','<%=product.productId._id%>')">Return Product</button>
+                                    <%}else{%>
+                                        <button class="btn btn-warning rounded-pill mt-2"
+                                        id="track-order" data-productId="<%=product.productId._id%>" onclick="trackOrder('<%=singleOrder._id%>','<%=product.productId._id%>')">Track Order</button>
+                                <%}%>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <%})%>
+            </table>
+            <%}else{%>
+                <p>No order has been made yet.</p>
+                <a href="shop" class="btn btn-outline-primary-2"><span>GO SHOP</span><i
+                        class="icon-long-arrow-right"></i></a>
+                <%}%>
+
+    </div>
+</div>
+
+        </div>
+        <!--End Body Content-->
+
+        <!--Scoll Top-->
+        <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
+        <!--End Scoll Top-->
+
+        <!-- Including Jquery -->
+        <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
+        <script src="user/assets/js/vendor/jquery.cookie.js"></script>
+        <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+        <script src="user/assets/js/vendor/wow.min.js"></script>
+        <!-- Including Javascript -->
+        <script src="user/assets/js/bootstrap.min.js"></script>
+        <script src="user/assets/js/plugins.js"></script>
+        <script src="user/assets/js/popper.min.js"></script>
+        <script src="user/assets/js/lazysizes.js"></script>
+        <script src="user/assets/js/main.js"></script>
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </div>
+    </body>
+
+    <!-- belle/cart-variant1.html   11 Nov 2019 12:44:32 GMT -->
+
+    </html>

@@ -7,11 +7,11 @@ const Orders = require('../model/orderModel');
 const placeOrder = async (req, res) => {
     try {
         console.log('im in place order');//-----------
-        const userId = req.session.user.id;
-        console.log('req.body=' + req.body); //-----------
-        console.log('userId=' + userId); //-----------
-        console.log('req.body.index=' + req.body.index); //-----------
-        console.log('req.body.paymentMethod=', req.body.paymentMethod);//----------- 
+        // const userId = req.session.user.id;
+        // console.log('req.body=' + req.body); //-----------
+        // console.log('userId=' + userId); //-----------
+        // console.log('req.body.index=' + req.body.index); //-----------
+        // console.log('req.body.paymentMethod=', req.body.paymentMethod);//----------- 
         const {
             subtotal,
             paymentMethod,
@@ -20,7 +20,7 @@ const placeOrder = async (req, res) => {
 
 
         const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
-        console.log('car place order', cartData);//-----------
+        // console.log('car place order', cartData);//-----------
         let products = cartData.products
         let lessQuantity = 0
         let size = 0
@@ -32,7 +32,7 @@ const placeOrder = async (req, res) => {
             }
         });
 
-        console.log('lessQuantity', lessQuantity)//--------------
+        // console.log('lessQuantity', lessQuantity)//--------------
 
         if (lessQuantity && lessQuantity !== 0) {
             res.json({ quant: true, lessQuantity });
@@ -45,8 +45,8 @@ const placeOrder = async (req, res) => {
 
             const status = paymentMethod == "cashOnDelivery" ? 'Placed' : 'Pending';
             const address = user.addresses[index];
-            console.log('addresses', user.addresses);//--------------
-            console.log('order addres', address);//--------------
+            // console.log('addresses', user.addresses);//--------------
+            // console.log('order addres', address);//--------------
             const date = Date.now();
             const randomNumber = Math.floor(100000 + Math.random() * 900000);
             const order = new Orders({
@@ -69,9 +69,9 @@ const placeOrder = async (req, res) => {
                     const productCartQuantity = products[i].quantity;
                     // const updatedQuantity = productTotalStock-productCartQuantity;
 
-                    console.log('productTotalStock', productTotalStock);//------------
+                    // console.log('productTotalStock', productTotalStock);//------------
                     // console.log('updatedQuantity',updatedQuantity);//------------
-                    console.log('productId', productId);//------------
+                    // console.log('productId', productId);//------------
                     console.log('productCartQuantity', productCartQuantity);//------------
                     const updateProduct = await Products.findByIdAndUpdate({ _id: productId });
                     console.log("updateProduct", updateProduct);//--------------------------
@@ -95,7 +95,7 @@ const placeOrder = async (req, res) => {
 const loadOrderSuccess = (req, res) => {
     try {
         const orderId = req.params.orderId;
-        console.log('orderId', orderId);//-----------
+        // console.log('orderId', orderId);//-----------
         res.render('orderSuccess', { orderId });
     } catch (error) {
         console.log(error);
@@ -202,6 +202,29 @@ const orderCancel = async (req, res) => {
 
         res.status(200).json({ orderCancel: true });
 
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
+// single order product
+const singleOrderProduct = async (req, res)=>{
+    try {
+        const orderId = req.query.orderid;
+        const userId = req.session.user.id;
+        
+
+        const singleOrder = await Orders.findOne({_id:orderId,user:userId})
+        .populate('user').
+        populate('products.productId');
+
+       console.log('single order orderId',orderId)//-----------------
+        console.log('single order userId',userId)//-----------------
+        console.log('single order singleOrder',singleOrder)//-----------------
+// res.status(200).json({sucess:true});  
+res.render('singleOrderProducts',{singleOrder});     
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'Internal Server Error' });
@@ -322,5 +345,6 @@ module.exports = {
     // orderSingleProduct,
     // updateSingleOrderStatus,
     loadMyOrder,
-    orderCancel
+    orderCancel,
+    singleOrderProduct
 }
