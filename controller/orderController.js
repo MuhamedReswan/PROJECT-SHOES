@@ -184,16 +184,15 @@ const loadMyOrder = async (req, res) => {
 // order cancel
 const orderCancel = async (req, res) => {
     try {
+        const { reason , comment, orderId } = req.body;
         console.log('im in order cancel')//---------------
-        console.log('req order cancel', req)//-----
-        const orderId = req.query.orderid;
+        console.log('req order cancel', req.body)//-----
         const userId = req.session.user.id;
-        console.log('orderId', orderId)//---------------
-        console.log('userId', userId)//---------------
+        const obj = { reason, comment}
         const orderDetails = await Orders.findOneAndUpdate({
             _id: orderId, user: userId
         }, {
-            $set: { status: 'Cancelled' }
+            $set: { status: 'Cancelled', cancelDetails: obj }
         },{
                 new: true
             })
@@ -340,7 +339,7 @@ module.exports = {
     loadOrderSuccess,
     loadOrderDetails,
     adminOrders,
-    // singleOrderDetails,
+    singleOrderDetails,
     // changeStatusSingle,
     // orderSingleProduct,
     // updateSingleOrderStatus,

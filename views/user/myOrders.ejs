@@ -116,10 +116,11 @@
 
                                                 <%}else{%>
                                                     <div>
-                                                        <button class="btn btn-danger rounded-pill cancel-order"
-                                                            id="cancel-button-<%=index%>"
-                                                            data-productId="<%=order._id%>">Cancel
-                                                            Order</button><br>
+                                                       <!-- Button to trigger the modal -->
+<button class="btn btn-danger rounded-pill cancel-order" id="cancel-button-<%=index%>"
+     data-orderId="<%=order._id%>"
+    data-toggle="modal" data-target="#customizedModal">Cancel Order</button>
+                                                            <br>
 
                                                         <a style="all: unset;"
                                                             href="/single-order-product?orderid=<%=order._id%>"><button
@@ -142,40 +143,43 @@
 
         </div>
 
-        <!-- Modal -->
-        <!-- <div class="modal fade" id="customizedModal" tabindex="-1" role="dialog" aria-labelledby="customizedModalLabel" aria-hidden="true">
+     <!-- Modal -->
+<div class="modal fade" id="customizedModal" tabindex="-1" role="dialog" aria-labelledby="customizedModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Customized Modal</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="form-group">
-                <label for="combinedInput">Combined Input:</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="combinedInput" placeholder="Enter text">
-                    <select class="form-select" id="selectOption">
-                        <option value="option1">Option 1</option>
-                        <option value="option2">Option 2</option>
-                        <option value="option3">Option 3</option>
-                    </select>
+                <div class="modal-header">
+                    <h5 class="modal-title">Customized Modal</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </div>
-            <div class="modal-footer" style="justify-content: space-around;">
-                <button type="button" class="btn btn-primary">Save Changes</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="returnReason" class="form-label">Reason for return</label>
+                        <select class="form-select" id="returnReason" name="reason" required>
+                            <option value="Wrong product shipped">Wrong product shipped</option>
+                            <option value="Damaged goods">Damaged goods</option>
+                            <option value="Item does not match the description">Item does not match the description</option>
+                            <option value="Product no longer required">Product no longer required</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="additionalComments" class="form-label">Additional Comments</label>
+                        <textarea class="form-control" id="additionalComments" rows="4" name="comment"></textarea>
+                    </div>
+                </div>
+                
+                <div class="modal-footer" style="justify-content: space-around;">
+                    <button type="button" id="cancel-confirm"  class="btn btn-primary ">Confirm</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
         </div>
     </div>
-</div> -->
-
-        <!-- Cancel Order button -->
+</div>
 
 
 
-        <!--End Body Content-->
+
 
         <!--Scoll Top-->
         <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
@@ -183,58 +187,71 @@
 
         <script>
 
-            function cancelOrders(orderId, buttonId) {
-                let data = orderId
-                console.log(' invoked cancelOrders')//----------------------
-                console.log('oreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', orderId)//-------------
-                const swalWithBootstrapButtons = Swal.mixin({
-                    customClass: {
-                        confirmButton: "btn btn-success",
-                        cancelButton: "btn btn-danger"
-                    },
-                    buttonsStyling: false
-                });
-                swalWithBootstrapButtons.fire({
-                    title: "Do you want cancel this order ?",
-                    text: "You won't be able to revert this!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Yes!",
-                    cancelButtonText: "No!",
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
+            let data = {}
+            let cancelButtons = document.querySelectorAll('.cancel-order');
+            cancelButtons.forEach((btn)=>{
+                btn.addEventListener('click', (e) => {
+                     data.orderId = btn.getAttribute('data-orderId')
+                    console.log('data.orderId',data.orderId)//----------------------
+                })
+            })
+           
 
-                        fetch(`/cancel-order?orderid=${orderId}`, {
-                            method: 'GET',
+            function cancelOrders() {
+                data.comment = document.getElementById('additionalComments').value;
+                data.reason = document.getElementById('returnReason').value;
+
+                console.log(' invoked cancelOrders', data)//----------------------
+                // const swalWithBootstrapButtons = Swal.mixin({
+                //     customClass: {
+                //         confirmButton: "btn btn-success",
+                //         cancelButton: "btn btn-danger"
+                //     },
+                //     buttonsStyling: false
+                // });
+                // swalWithBootstrapButtons.fire({
+                //     title: "Do you want cancel this order ?",
+                //     text: "You won't be able to revert this!",
+                //     icon: "warning",
+                //     showCancelButton: true,
+                //     confirmButtonText: "Yes!",
+                //     cancelButtonText: "No!",
+                //     reverseButtons: true
+                // }).then((result) => {
+                //     if (result.isConfirmed) {
+
+                        fetch(`/cancel-order`, {
+                            method: 'post',
                             headers: {
                                 'Content-Type': 'application/json'
-                            }
+                            },
+                            body:JSON.stringify(data)
+
                         }).then((res) => {
                             return res.json()
                         }).then((response) => {
-                            if (response.cancelOrder == true) {
+                            if (response.orderCancel == true) {
                                 console.log('in orderCancel response')//----------------------
-                                document.getElementById('buttonId').setAttribute('display', 'none');
-                                $('#reloadList').load('/my-orders #reloadList', null, () => {
-                                    swalWithBootstrapButtons.fire({
-                                        title: "Cancelled!",
-                                        text: "Your order has been cancelled.",
-                                        icon: "success"
-                                    });
+                                window.location.reload();
+ 
+                                swal.fire({
+                                    title: `Profile updated`,
+                                    icon: "success",
+                                    showConfirmationButton: false,
+                                    timer: 1000
                                 })
                             }
                         })
-                    } else if (
-                        result.dismiss === Swal.DismissReason.cancel
-                    ) {
-                        swalWithBootstrapButtons.fire({
-                            title: "Not Cancelled",
-                            text: "Your order is safe !",
-                            icon: "warning"
-                        });
-                    }
-                })
+                //     } else if (
+                //         result.dismiss === Swal.DismissReason.cancel
+                //     ) {
+                //         swalWithBootstrapButtons.fire({
+                //             title: "Not Cancelled",
+                //             text: "Your order is safe !",
+                //             icon: "warning"
+                //         });
+                //     }
+                // })
                     .catch((error) => {
                         console.error('Error fetching data:', error);
                     });
@@ -242,66 +259,14 @@
 
 
 
+            let cancelConfirm = document.getElementById('cancel-confirm')
 
-            //             // Get the modal
-            // var modal = document.getElementById("cancelModal");
+            cancelConfirm.addEventListener('click',(e)=>{
+                console.log('eeeeeeeeeeeee',e)//--------------------
+                cancelOrders()
+            }
+            );
 
-            // // Get the button that opens the modal
-            // var buttons = document.querySelectorAll(".cancel-order");
-
-            // // Get the <span> element that closes the modal
-            // var span = document.getElementsByClassName("close")[0];
-
-            // // When any cancel button is clicked, open the modal
-            // buttons.forEach(function(button) {
-            //   button.onclick = function() {
-            //     modal.style.display = "block";
-            //   }
-            // });
-
-            // // When the user clicks on <span> (x), close the modal
-            // span.onclick = function() {
-            //   modal.style.display = "none";
-            // }
-
-            // // When the user clicks outside of the modal, close it
-            // window.onclick = function(event) {
-            //   if (event.target == modal) {
-            //     modal.style.display = "none";
-            //   }
-            // }
-
-            // // Handle form submission
-            // document.getElementById("cancelForm").addEventListener("submit", function(event) {
-            //   event.preventDefault();
-
-            //   // Get the values from the form
-            //   var reason = document.getElementById("reason").value;
-            //   var description = document.getElementById("description").value;
-
-            //   // Now you can do whatever you want with the reason and description values,
-            //   // such as sending them to the server via fetch() or performing any other action.
-
-            //   // After handling the form submission, you can close the modal
-            //   modal.style.display = "none";
-            // });
-
-            // // Close the modal when the close button is clicked
-            // document.getElementById("cancelModalClose").addEventListener("click", function() {
-            //   modal.style.display = "none";
-            // });
-
-
-
-
-            // Add an event listener to the cancel button
-            // document.querySelectorAll('.cancel-order').forEach(item => {
-            //     item.addEventListener('click', event => {
-            //         // Show the modal when the cancel button is clicked
-            //         var customizedModal = new bootstrap.Modal(document.getElementById('customizedModal'));
-            //         customizedModal.show();
-            //     });
-            // });
 
 
         </script>

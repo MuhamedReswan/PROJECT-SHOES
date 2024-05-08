@@ -75,8 +75,6 @@ type:String
         default: 0
     },
     cancelDetails: {
-
-        type: {
             reason: {
                 type: String,
                 required: true
@@ -84,7 +82,6 @@ type:String
             comment: {
                 type: String,
                 required: false
-            }
         }
     }
 })

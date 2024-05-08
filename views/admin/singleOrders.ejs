@@ -9,21 +9,35 @@
                             <h2 class="content-title card-title">Order Details</h2>
                         </div>
                     </div>
-
-                    <div class="card mb-4">
+                    <%if(singleOrder){%>
+                    <div class="card mb-2">
                         <header class="card-header">
+                               
                             <div class="row gx-3">
-                                <div class="col-lg-4 col-md-6 me-auto">
-                                    <!-- <input type="text" placeholder="Search..." class="form-control" /> -->
-                                    <form class="searchform">
-                                        <div class="input-group">
-                                            <input list="search_terms" type="text" class="form-control"
-                                                placeholder="Search term" id="customersSearch" />
-                                            <button class="btn btn-light bg" type="button"><i
-                                                    class="material-icons md-search"></i></button>
+                                <div class="col-lg-4 col-md-6 mx-auto mb-2">
+                                    <div class="card">
+                                        <div class="card- p-3">
+                                          <h4 class="card-title">Delivery Address</h4>
+                                          <h6 class="card-subtitle mb-2 text-muted">x</h6>
+                                          <h6 class="card-subtitle mb-2 text-muted"></h6>
+                                          <h6 class="card-subtitle mb-2 text-muted"></h6>
+                                          <h6 class="card-subtitle mb-2 text-muted"></h6>
+                                          <p class="card-text">Some : quick example text to builvdsfdsfgsdfvsdfdsdsfgdfdfd on the card title and make up the bulk of the card's content.</p>
                                         </div>
-                                    </form>
+                                      </div>
                                 </div>
+                                <div class="col-lg-4 col-md-6 me-auto">
+                                    <div class="card">
+                                        <div class="card- p-2">
+                                          <h4 class="card-title">Delivery Address</h4>
+                                          <h6 class="card-subtitle mb-2 text-muted"></h6>
+                                          <p class="card-text">Some : quick example text to builvdsfdsfgsdfvsdfdsdsfgdfdfd on the card title and make up the bulk of the card's content.</p>
+                                          <a href="#" class="card-link">Card link</a>
+                                          <a href="#" class="card-link">Another link</a>
+                                        </div>
+                                      </div>
+                                </div>
+
                                
                             </div>
                         </header>
@@ -39,14 +53,14 @@
                                             <th scope="col">Price</th>
                                             <th scope="col">Quantity</th>
                                             <th scope="col">Subtotal</th>
-                                            <th scope="col">Status</th>
+                                            <!-- <th scope="col">Status</th> -->
                                             <th scope="col">Date</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                         <% console.log('singleOrder front',singleOrder) %>
                                     </thead>
                                     <tbody>
-                                        <% if(singleOrder && singleOrder.products && singleOrder.products.length>0){%>
+                                        <% if(singleOrder.products && singleOrder.products.length>0){%>
                                             <% singleOrder.products.forEach((order,i)=>{%>
                                                 <% console.log('order product front',i,order) %>
 <%let subtotal=order.quantity*order.productId.offerPrice%>
@@ -71,12 +85,11 @@
                                                     <td>
                                                         <%=subtotal%>
                                                     </td>
-                                                        <td>
-                                                            <span class="btn btn-sm bg-danger text-white" >
-                                                                <%=order.status%>
-                                                            </span>
+                                                        <!-- <td>
+                                                            <span class="px-3 py-2  rounded-pill" style="background-color: brown;">
+                                                                <%=singleOrder.status%>                                                            </span>
                                                            
-                                                        </td>
+                                                        </td> -->
                                                         <% let formattedDate = singleOrder.date.toDateString()%>
                                                         <td>
                                                             <%=formattedDate%>
@@ -122,6 +135,12 @@
                         </div>
                         <!-- card-body end// -->
                     </div>
+                    
+                        <%}else{%>
+                            <div class="text-center"> 
+                                <h4>NO Order Details not found !</h4>
+                            </div>
+                        <%}%>
                     <!-- card end// -->
                  
                 </section>
@@ -132,26 +151,6 @@
 
        
         <script>
-            // document.addEventListener('DOMContentLoaded', () => {
-
-            //     let searchInput = document.getElementById('customersSearch');
-            //     searchInput.addEventListener('keyup', () => {
-
-            //         let searchTerm = searchInput.value.toLowerCase();
-            //         let tableRow = document.querySelectorAll('#customerTable tbody tr');
-
-            //         tableRow.forEach(function (row) {
-            //             let nameColoumn = row.querySelector('td:nth-child(2)');
-
-            //             if (nameColoumn) {
-            //                 let nameText = nameColoumn.textContent.toLowerCase()
-            //                 row.style.display = nameText.includes(searchTerm) ? "" : "none";
-            //             }
-            //         })
-
-
-            //     })
-            // })
 
 
             let  status = document.querySelectorAll('order-single-status')
