@@ -16,24 +16,31 @@
                             <div class="row gx-3">
                                 <div class="col-lg-4 col-md-6 mx-auto mb-2">
                                     <div class="card">
-                                        <div class="card- p-3">
+                                        <div class="card- p-3 text-center" >
                                           <h4 class="card-title">Delivery Address</h4>
-                                          <h6 class="card-subtitle mb-2 text-muted">x</h6>
-                                          <h6 class="card-subtitle mb-2 text-muted"></h6>
-                                          <h6 class="card-subtitle mb-2 text-muted"></h6>
-                                          <h6 class="card-subtitle mb-2 text-muted"></h6>
-                                          <p class="card-text">Some : quick example text to builvdsfdsfgsdfvsdfdsdsfgdfdfd on the card title and make up the bulk of the card's content.</p>
+                                          <h5 class="card-subtitle mb-2 "><%=singleOrder.deliveryAddress.name%></h5>
+                                          <p class="card-subtitle mb-2 text-muted"><span class="text-dark"><%=singleOrder.deliveryAddress.mobile%></span></p>
+                                          <p class="card-subtitle mb-2 text-muted"><span class="text-dark"><%=singleOrder.deliveryAddress.address%> (H)</span></p>
+                                          <p class="card-subtitle mb-2 text-muted"><span class="text-dark"><%=singleOrder.deliveryAddress.city%>,<%=singleOrder.deliveryAddress.district%></span></p>
+                                          <p class="card-subtitle mb-2 text-muted"><span class="text-dark"><%=singleOrder.deliveryAddress.pincode%></span></p>
+                                          <p class="card-subtitle mb-2 text-muted"><span class="text-dark"><%=singleOrder.deliveryAddress.state%>,<%=singleOrder.deliveryAddress.country%></span></p>
+                                          <p class="card-subtitle mb-2 text-muted"><span class="text-dark"><%=singleOrder.deliveryAddress.country%></span></p>
+
+
+                                          <!-- <h6 class="card-subtitle mb-2 text-muted">Name:<%=singleOrder.deliveryAddress.name%></h6>
+                                          <h6 class="card-subtitle mb-2 text-muted">Mobile : <span class="text-dark"><%=singleOrder.deliveryAddress.mobile%></span></h6>
+                                          <h6 class="card-subtitle mb-2 text-muted">Address : <span class="text-dark"><%=singleOrder.deliveryAddress.address%>(H)</span></h6>
+                                          <h6 class="card-subtitle mb-2 text-muted">Place : <span class="text-dark"><%=singleOrder.deliveryAddress.city%>,<%=singleOrder.deliveryAddress.district%></span></h6> -->
                                         </div>
                                       </div>
                                 </div>
                                 <div class="col-lg-4 col-md-6 me-auto">
                                     <div class="card">
                                         <div class="card- p-2">
-                                          <h4 class="card-title">Delivery Address</h4>
-                                          <h6 class="card-subtitle mb-2 text-muted"></h6>
-                                          <p class="card-text">Some : quick example text to builvdsfdsfgsdfvsdfdsdsfgdfdfd on the card title and make up the bulk of the card's content.</p>
-                                          <a href="#" class="card-link">Card link</a>
-                                          <a href="#" class="card-link">Another link</a>
+                                          <h4 class="card-title">Payment Details</h4>
+                                          <h6 class="card-subtitle mb-2 text-muted">Payment Method : <span class="text-dark"><%=singleOrder.paymentMethod%></span></h6>
+                                          <h6 class="card-subtitle mb-2 text-muted">Order Id  : <span class="text-dark"><%=singleOrder.orderId%></span></h6>
+
                                         </div>
                                       </div>
                                 </div>
@@ -48,23 +55,22 @@
                                     <thead class="bg-dark text-white bg-opacity-50">
                                         <tr class="text-center">
                                             <th>sI</th>
-                                            <th scope="col">Image</th>
+                                            <th scope="col ">Image</th>
                                             <th scope="col">Name</th>
                                             <th scope="col">Price</th>
                                             <th scope="col">Quantity</th>
                                             <th scope="col">Subtotal</th>
-                                            <!-- <th scope="col">Status</th> -->
+                                            <th scope="col">Status</th>
                                             <th scope="col">Date</th>
-                                            <th scope="col">Action</th>
+                                            <!-- <th scope="col">Action</th> -->
                                         </tr>
-                                        <% console.log('singleOrder front',singleOrder) %>
                                     </thead>
                                     <tbody>
                                         <% if(singleOrder.products && singleOrder.products.length>0){%>
                                             <% singleOrder.products.forEach((order,i)=>{%>
                                                 <% console.log('order product front',i,order) %>
 <%let subtotal=order.quantity*order.productId.offerPrice%>
-<% console.log('subtotal front',subtotal) %>
+<% console.log('subtotal front',subtotal) %> 
 
                                                 <tr class="text-center">
                                                     <td>
@@ -85,42 +91,61 @@
                                                     <td>
                                                         <%=subtotal%>
                                                     </td>
-                                                        <!-- <td>
+                                                        <td>
                                                             <span class="px-3 py-2  rounded-pill" style="background-color: brown;">
-                                                                <%=singleOrder.status%>                                                            </span>
+                                                                <%=order.status%>                                                            </span>
                                                            
-                                                        </td> -->
+                                                        </td>
                                                         <% let formattedDate = singleOrder.date.toDateString()%>
                                                         <td>
                                                             <%=formattedDate%>
                                                         </td>
 
-                                                                    <td >
+                                                                    <!-- <td >
                                                                         <div class="col-md-2 col-6 w-100 btn btn-sm text-center">
-                                                                            
-                                                                            <select class="form-select order-single-status" style="font-size: 14px;"
+                                                                          
+                                                                            <%if(order.status=='Delivered' || order.status=='Cancelled' ){%>
+                                                                               
+
+                                                                            <select disabled class="form-select order-single-status" style="font-size: 14px;"
+                                                                            onchange="changeSingleProductStatus(this.value,'<%=singleOrder._id%>','<%=order.productId._id%>')"
                                                                             data-orderId="<%singleOrder._id%>" 
-                                                                            data-productId="<%=order.productId._id%>"
+                                                                            data-productId="<%=singleOrder._id%>"
                                                                             data-userId="<%=singleOrder.user._id%>"
                                                                             data-index = <%=i%>
                                                                             id="order-status"
                                                                             name="orderStatus"
                                                                             >
-                                                                                <option selected>Change Status</option>
+                                                                                <option selected value="<%=order.status%>">
+                                                                                    <%=order.status%>
+                                                                                </option>
                                                                                 <option value="shipped" >Shipped</option>
                                                                                 <option value="Out of delivery">Out of delivery</option>
                                                                                 <option value="Delivered">Deleverd</option>
                                                                                 <option value="Cancelled" >Cancel</option>
                                                                             </select>
+                                                                            <%}else{%>
+                                                                                <select  onchange="changeSingleProductStatus(this.value,'<%=singleOrder._id%>','<%=order.productId._id%>')" class="form-select order-single-status" style="font-size: 14px;"
+                                                                                value="<%=order.status%>"
+                                                                                data-orderId="<%singleOrder._id%>" 
+                                                                                data-productId="<%=order.productId._id%>"
+                                                                                data-userId="<%=singleOrder.user._id%>"
+                                                                                data-index = <%=i%>
+                                                                                id="order-status"
+                                                                                name="orderStatus"
+                                                                                >
+                                                                                    <option selected value="<%=order.status%>">
+                                                                                        <%=order.status%>
+                                                                                    </option>
+                                                                                    <option value="shipped" >Shipped</option>
+                                                                                    <option value="Out of delivery">Out of delivery</option>
+                                                                                    <option value="Delivered">Deleverd</option>
+                                                                                    <option value="Cancelled" >Cancel</option>
+                                                                                </select>
+                                                                                <%}%>
                                                                         </div>
-                                                                        <!-- <button class="btn btn-sm btn-success order-single-status" style="font-size: 14px;"
-                                                                        data-orderId="<%singleOrder._id%>" 
-                                                                        data-productId="<%=order.productId._id%>"
-                                                                        data-userId="<%=singleOrder.user._id%>"
-                                                                        data-index = <%=i%>
-                                                                        id="order-status"
-                                                                        name="orderStatus" > Delivered</button> -->
-                                                                    </td>
+                                                                       
+                                                                    </td> -->
                                                 </tr>
                                                 <% })%>
                                                     <%}else{%>
@@ -151,42 +176,12 @@
 
        
         <script>
+function changeSingleProductStatus(status,orderId,ProductId){
+    console.log('status',status)//--------------
+    console.log('orderId',orderId)//--------------
+    console.log('ProductId',ProductId)//--------------
+}
 
-
-            let  status = document.querySelectorAll('order-single-status')
-            status.forEach(element => {
-                // let changeStatus= document.getElementById('change-status')
-                element.addEventListener('change',(e)=>{
-                console.log('e status',e.target)//------------
-                attachAddEventListerner()
-            })
-
-            });
-
-            
-            function attachAddEventListerner(){
-                console.log(' invoked attachAddEventListerner')//-----------------------
-let changeStatus= document.getElementById('change-status')
-let orderId = changeStatus.getAttribute('data-orderId')
-let productId = changeStatus.getAttribute('data-productId')
-let userId = changeStatus.getAttribute('data-userId')
-let index = changeStatus.getAttribute('data-index')
-
-let data ={orderId,productId,userId,index}
-
-$.ajax({
-    type:'Post',
-    url:'/admin/change-order-status-single',
-    contentType:'application/json',
-    data:JSON.stringify(data),
-    success:function(response){
-
-    },
-    error:function(error){
-        console.log(error)
-    }
-})
-            }
 
         </script>
         <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>

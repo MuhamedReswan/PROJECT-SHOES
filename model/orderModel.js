@@ -34,6 +34,12 @@ const orderSchema = mongoose.Schema({
                 type: Boolean,
                 default: false,
             },
+            status: {
+                type: String,
+                required: true,
+                enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled', 'Returned','Placed','ReturnRequested','ReturnDenied'],
+                default:'Placed'
+            },
         }
     ],
     totalAmount: {
@@ -44,11 +50,11 @@ const orderSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    status: {
+    orderStatus: {
         type: String,
         required: true,
-        enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled', 'Returned'],
-        default:'Pending'
+        enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled', 'Returned','Placed'],
+        default:'Placed'
     },
     orderId:{
 type:String

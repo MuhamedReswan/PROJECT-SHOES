@@ -184,18 +184,18 @@ const loadMyOrder = async (req, res) => {
 // order cancel
 const orderCancel = async (req, res) => {
     try {
-        const { reason , comment, orderId } = req.body;
+        const { reason, comment, orderId } = req.body;
         console.log('im in order cancel')//---------------
         console.log('req order cancel', req.body)//-----
         const userId = req.session.user.id;
-        const obj = { reason, comment}
+        const obj = { reason, comment }
         const orderDetails = await Orders.findOneAndUpdate({
             _id: orderId, user: userId
         }, {
-            $set: { status: 'Cancelled', cancelDetails: obj }
-        },{
-                new: true
-            })
+            $set: { orderStatus: 'Cancelled', cancelDetails: obj , 'prodcuts.$[].status':'Cancelled'}
+        }, {
+            new: true
+        })
 
         console.log('orderDetails', orderDetails)//---------------
 
@@ -209,21 +209,20 @@ const orderCancel = async (req, res) => {
 
 
 // single order product
-const singleOrderProduct = async (req, res)=>{
+const singleOrderProduct = async (req, res) => {
     try {
         const orderId = req.query.orderid;
         const userId = req.session.user.id;
-        
 
-        const singleOrder = await Orders.findOne({_id:orderId,user:userId})
-        .populate('user').
-        populate('products.productId');
 
-       console.log('single order orderId',orderId)//-----------------
-        console.log('single order userId',userId)//-----------------
-        console.log('single order singleOrder',singleOrder)//-----------------
-// res.status(200).json({sucess:true});  
-res.render('singleOrderProducts',{singleOrder});     
+        const singleOrder = await Orders.findOne({ _id: orderId, user: userId })
+            .populate('user').
+            populate('products.productId');
+
+        console.log('single order orderId', orderId)//-----------------
+        console.log('single order userId', userId)//-----------------
+        console.log('single order singleOrder', singleOrder)//-----------------
+        res.status(200).render('singleOrderProducts', { singleOrder });
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'Internal Server Error' });
@@ -322,16 +321,35 @@ const singleOrderDetails = async (req, res) => {
 
 
 
-// single change status admin
-// const changeStatusSingle = async (req,res)=>{
-//     try {
-//         const {}=req.body
+// change order status 
+const changeOrderStatus = async (req, res) => {
+    try {
+        const orderId = req.query.id;
+        const chanagedStatus = req.body.orderStatus;
 
-//     } catch (error) {
-//         console.log(error)
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// }
+        console.log('im in change-order-status')//---------------
+        console.log('req.body', req.body)//---------------
+
+        const orderStatusChange = await Orders.findOneAndUpdate({
+            _id: orderId
+        },
+            {
+                $set:
+                    { orderStatus: chanagedStatus, 'products.$[].status': chanagedStatus }
+            },
+            { new: true })
+            .populate('user')
+            .populate('products.productId')
+        console.log('orderStatusChange',orderStatusChange)//---------------
+res.status(200).json({statusUpdated:true})
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
 
 
 module.exports = {
@@ -345,5 +363,6 @@ module.exports = {
     // updateSingleOrderStatus,
     loadMyOrder,
     orderCancel,
-    singleOrderProduct
+    singleOrderProduct,
+    changeOrderStatus
 }

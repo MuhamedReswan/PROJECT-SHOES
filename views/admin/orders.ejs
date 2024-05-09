@@ -4,12 +4,11 @@
         <main class="main-wrap">
             <%- include('../partials/adminHeaderBody') -%>
 
-
                 <section class="content-main">
                     <div class="content-header">
                         <div>
                             <h2 class="content-title card-title">Order Details</h2>
-                          <p></p>
+                            <p></p>
                         </div>
                     </div>
 
@@ -31,7 +30,7 @@
                         </header>
                         <!-- card-header end// -->
                         <div class="card-body">
-                            <div class="table-responsive" id="reload">
+                            <div class="table-responsive" id="orders">
                                 <table class="table table-hover" id="customerTable">
                                     <thead class="bg-dark text-white bg-opacity-50">
                                         <tr class="text-center">
@@ -41,7 +40,7 @@
                                             <th scope="col">Total</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">date</th>
-                                            <!-- <th scope="col">Action</th> -->
+                                            <th scope="col">Change Status</th>
                                             <th scope="col">more details</th>
                                         </tr>
                                         <% console.log('ordersDetails',ordersDetails) %>
@@ -62,20 +61,48 @@
                                                     <td>
                                                         <%=order.totalAmount%>
                                                     </td>
+                                                    <td>
+                                                        <%=order.orderStatus%>
+                                                    </td>
+                                                    <% const formatedDate=order.date.toDateString()%>
                                                         <td>
-                                                            <%=order.status%>
+                                                            <%=formatedDate%>
                                                         </td>
-                                                                <% const formatedDate=order.date.toDateString()%>
-                                                                    <td>
-                                                                        <%=formatedDate%>
-                                                                    </td>
-                                                                    <!-- <td>
-                                                                        <%=order.status%>
-                                                                    </td> -->
-                                                                   
-                                                                    <td class="text-center">
-                                                                       <a href="/admin/order-single?id=<%=order._id%>">more</a>
-                                                                    </td>
+                                                        <td>
+                                                            <%if(order.orderStatus=='Delivered' || order.orderStatus=='Cancelled' ){%>
+                                                            <select disabled class="form-select  change-order-status?id="
+                                                                style="font-size: 12px;" id="order-status"
+                                                                name="orderStatus"
+                                                                onchange="changeOrderStatus(this.value, '<%= order._id %>')">
+                                                                <option selected value="<%=order.orderStatus%>">
+                                                                    <%=order.orderStatus%>
+                                                                </option>
+                                                                <option value="shipped">Shipped</option>
+                                                                <option value="Delivered">Delivered</option>
+                                                                <option value="Cancelled">Cancel</option>
+                                                            </select>
+                                                            <%}else{%>
+
+                                                                <select class="form-select  change-order-status?id="
+                                                                style="font-size: 12px;" id="order-status"
+                                                                name="orderStatus"
+                                                                onchange="changeOrderStatus(this.value, '<%= order._id %>')">
+                                                                <option selected value="<%=order.orderStatus%>">
+                                                                    <%=order.orderStatus%>
+                                                                </option>
+                                                                <option value="shipped">Shipped</option>
+                                                                <option value="Delivered">Delivered</option>
+                                                                <option value="Cancelled">Cancel</option>
+                                                            </select>
+
+                                                            <%}%>
+                                                        </td>
+
+                                                        <td class="text-center">
+                                                            <a style="all: unset; color: forestgreen;"
+                                                                href="/admin/order-single?id=<%=order._id%>">more
+                                                                Details</a>
+                                                        </td>
                                                 </tr>
                                                 <% })%>
                                                     <%}else{%>
@@ -91,39 +118,88 @@
                         <!-- card-body end// -->
                     </div>
                     <!-- card end// -->
-                 
+
                 </section>
                 <!-- content-main end// -->
 
         </main>
 
 
-       
+
         <script>
-            document.addEventListener('DOMContentLoaded', () => {
+            // document.addEventListener('DOMContentLoaded', () => {
 
-                let searchInput = document.getElementById('customersSearch');
-                searchInput.addEventListener('keyup', () => {
+            //     let searchInput = document.getElementById('customersSearch');
+            //     searchInput.addEventListener('keyup', () => {
 
-                    let searchTerm = searchInput.value.toLowerCase();
-                    let tableRow = document.querySelectorAll('#customerTable tbody tr');
+            //         let searchTerm = searchInput.value.toLowerCase();
+            //         let tableRow = document.querySelectorAll('#customerTable tbody tr');
 
-                    tableRow.forEach(function (row) {
-                        let nameColoumn = row.querySelector('td:nth-child(2)');
+            //         tableRow.forEach(function (row) {
+            //             let nameColoumn = row.querySelector('td:nth-child(2)');
 
-                        if (nameColoumn) {
-                            let nameText = nameColoumn.textContent.toLowerCase()
-                            row.style.display = nameText.includes(searchTerm) ? "" : "none";
+            //             if (nameColoumn) {
+            //                 let nameText = nameColoumn.textContent.toLowerCase()
+            //                 row.style.display = nameText.includes(searchTerm) ? "" : "none";
+            //             }
+            //         })
+
+
+            //     })
+            // })
+
+            function changeOrderStatus(orderStatus, orderId) {
+                Swal.fire({
+  title: "Are you sure?",
+  text: "You won't be able to revert this!",
+  icon: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#3085d6",
+  cancelButtonColor: "#d33",
+  confirmButtonText: "Yes,!"
+}).then((result) => {
+  if (result.isConfirmed) {
+
+    fetch('/admin/change-order-status?id=' + orderId, {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ orderStatus })
+                })
+                .then((res) => {
+                        return res.json();
+                    })
+                    .then((response) => {
+
+                        if (response.statusUpdated) {
+                            $('#orders').load('/admin/orders #orders')
                         }
+                    }).catch((error) => {
+                        console.error('Error:', error);
                     })
 
-
-                })
-            })
+    Swal.fire({
+      title: "Done !",
+      text: "Order status has been changed.",
+      icon: "success",
+      timer:1000
+    });
+  }
+});
+            }
 
 
 
         </script>
+
+
+
+        <script>
+
+        </script>
+
+
         <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
         <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
         <script src="assets/js/vendors/select2.min.js"></script>
