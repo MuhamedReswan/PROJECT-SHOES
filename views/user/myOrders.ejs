@@ -148,19 +148,20 @@
     <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
         <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Customized Modal</h5>
+                    <h5 class="modal-title">Order Cancel</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="returnReason" class="form-label">Reason for return</label>
-                        <select class="form-select" id="returnReason" name="reason" required>
-                            <option value="Wrong product shipped">Wrong product shipped</option>
+                        <label for="cancelReason" class="form-label">Reason for cancel</label>
+                        <select class="form-select" id="cancelReason" name="reason" required>
+                            <option value="Wrong product shipped"></option>order by mistake
                             <option value="Damaged goods">Damaged goods</option>
-                            <option value="Item does not match the description">Item does not match the description</option>
+                            <option value="Item does not match the description">orderd multiple time</option>
                             <option value="Product no longer required">Product no longer required</option>
+                            <option value="more">more</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -199,7 +200,7 @@
 
             function cancelOrders() {
                 data.comment = document.getElementById('additionalComments').value;
-                data.reason = document.getElementById('returnReason').value;
+                data.reason = document.getElementById('cancelReason').value;
 
                 console.log(' invoked cancelOrders', data)//----------------------
 
@@ -215,13 +216,22 @@
                         }).then((response) => {
                             if (response.orderCancel) {
                                 console.log('in orderCancel response')//----------------------
-$('#reloadList').load('/my-orders #reloadList')
-                                swal.fire({
-                                    title: `Order Cancelled`,
-                                    icon: "success",
-                                    showConfirmationButton: false,
-                                    timer: 1000
-                                })
+// $('#reloadList').load('/my-orders #r/eloadList')
+// window.location.href="/my-orders"
+Swal.fire({
+    title: `Order Cancelled`,
+    icon: "success",
+    showConfirmationButton: true,
+}).then((result) => {
+    if (result.isConfirmed) {
+        setTimeout(()=>{
+ location.reload();
+        },200)
+       
+        // $('#reloadList').load('/my-orders #r/eloadList')
+    }
+});
+
                             }
                         })
                     .catch((error) => {
@@ -235,8 +245,9 @@ $('#reloadList').load('/my-orders #reloadList')
 
             cancelConfirm.addEventListener('click',(e)=>{
                 console.log('eeeeeeeeeeeee',e)//--------------------
-                // let cancelModal = document.getElementById('customizedModal')
-                // cancelModal.setAttribute('data-dismiss','modal')
+                let cancelModal = document.getElementById('customizedModal')
+               cancelModal.setAttribute('style','diplay:none')
+            //    cancelModal.classList.remove('show')
                 cancelOrders()
 
          

@@ -33,6 +33,15 @@ const orderSchema = mongoose.Schema({
             isReturned: {
                 type: Boolean,
                 default: false,
+                
+            },
+            returnDetails:{
+                returnReason:{
+                    type:String
+                },
+                returnCommand:{
+                    type:String
+                }
             },
             status: {
                 type: String,
@@ -93,3 +102,5 @@ type:String
 })
 
 module.exports = mongoose.model('Orders', orderSchema);
+
+

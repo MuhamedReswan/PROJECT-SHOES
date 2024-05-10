@@ -99,6 +99,9 @@ admin_route.get('/order-single', orderController.singleOrderDetails);
 //single order status change
 admin_route.post('/change-order-status',orderController.changeOrderStatus)
 
+// return request
+admin_route.get('/return-request',orderController.loadReturnRequest)
+
 
 
 

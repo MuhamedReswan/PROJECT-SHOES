@@ -231,6 +231,37 @@ const singleOrderProduct = async (req, res) => {
 
 
 
+// Return product 
+ const returnProduct = async (req, res)=>{
+    try {
+        console.log('im in return product ordet--------');//------------------------
+        console.log('req.body',req.body);//---------------------
+        const {returnReason,returnComment,orderId,productId}=req.body
+
+        const  ReturnRequested = await Orders.findOneAndUpdate(
+            {
+                _id: orderId,
+                'products.productId': productId
+            },
+            {
+                $set: {
+                    'products.$.status':'ReturnRequested',
+                    'products.$.returnDetails.returnReason': returnReason,
+                    'products.$.returnDetails.returnCommand': returnComment,
+                    'products.$.isReturned': true
+                }
+            },
+            { new: true }
+        );
+        console.log('ReturnRequested',ReturnRequested)//---------------------------
+
+res.status(200).json({returnRequested:true})
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+ }
+
 
 
 
@@ -350,19 +381,53 @@ res.status(200).json({statusUpdated:true})
 }
 
 
+//return request 
+const loadReturnRequest = async (req, res)=>{
+    try {
+        console.log('in requst admin return ')//---------------------
+        // const returnRequstedProducts = await Orders.find({ 'products.isReturned': true })
+        // .populate('products.productId')
+        // .populate('user')
+
+   const returnRequstedProducts = await Orders.aggregate([{$match:{'products.isReturned':true}},
+            {$unwind:'$Products'},
+            {$match:{'products.isReturned':true}},
+            {$project:{
+                _id: '$products._id',
+                    orderId: '$_id',
+                    user: '$user',
+                    productId: '$products.productId',
+                    price: '$products.price',
+                    quantity: '$products.quantity',
+                    description: '$products.description',
+                    returnReason: '$products.returnReason',
+                    returnCommand: '$products.returnDetails.returnCommand',
+                    status: '$products.status'
+            }}
+        ])
+
+     console.log('returnedOrders',returnRequstedProducts);      
+res.render('returnRequest',{returnRequstedProducts})        
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
 
 
 module.exports = {
     placeOrder,
     loadOrderSuccess,
-    loadOrderDetails,
-    adminOrders,
-    singleOrderDetails,
-    // changeStatusSingle,
-    // orderSingleProduct,
-    // updateSingleOrderStatus,
     loadMyOrder,
     orderCancel,
     singleOrderProduct,
+    returnProduct,
+    // changeStatusSingle,
+    // orderSingleProduct,
+    // updateSingleOrderStatus,
+    adminOrders,
+    loadReturnRequest,
+    loadOrderDetails,
+    singleOrderDetails,
     changeOrderStatus
 }

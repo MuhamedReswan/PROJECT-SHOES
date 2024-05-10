@@ -158,6 +158,8 @@ user_route.post('/cancel-order',orderController.orderCancel);
 
 user_route.get('/single-order-product',orderController.singleOrderProduct)
 
+user_route.post('/return-product',orderController.returnProduct)
+
 
 //order-single-product
 // user_route.get('/order-single-product', orderController.orderSingleProduct);
