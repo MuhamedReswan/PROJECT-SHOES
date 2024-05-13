@@ -104,3 +104,31 @@ type:String
 module.exports = mongoose.model('Orders', orderSchema);
 
 
+
+
+const returnSchema = mongoose.Schema({
+    user:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Users',
+        required:true
+    },
+    orderId: {
+        type:mongoose.Schema.Types.objectId,
+        ref: 'Orders',
+        requied:true
+    },
+    orderItem:{
+        type:mongoose.Schema.Types.objectId,
+        requied:true
+    },
+    reason:{
+type:String,
+requied:true
+    },
+    comment:{
+        type:String,
+        requied:false
+    }
+})
+
+module.exports = mongoose.model('Returns',returnSchema)

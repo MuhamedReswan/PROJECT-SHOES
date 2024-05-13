@@ -2,12 +2,13 @@ const Products = require('../model/productsModel');
 const Users = require('../model/userModel');
 const Cart = require('../model/cartModel');
 const Orders = require('../model/orderModel');
+const Retruns = require('../model/orderModel')
 
 // place order
 const placeOrder = async (req, res) => {
     try {
         console.log('im in place order');//-----------
-        // const userId = req.session.user.id;
+        const userId = req.session.user.id;
         // console.log('req.body=' + req.body); //-----------
         // console.log('userId=' + userId); //-----------
         // console.log('req.body.index=' + req.body.index); //-----------
@@ -197,7 +198,7 @@ const orderCancel = async (req, res) => {
             new: true
         })
 
-        console.log('orderDetails', orderDetails)//---------------
+        // console.log('orderDetails', orderDetails)//---------------
 
         res.status(200).json({ orderCancel: true });
 
@@ -237,6 +238,7 @@ const singleOrderProduct = async (req, res) => {
         console.log('im in return product ordet--------');//------------------------
         console.log('req.body',req.body);//---------------------
         const {returnReason,returnComment,orderId,productId}=req.body
+        const userId = req.session.user.id;
 
         const  ReturnRequested = await Orders.findOneAndUpdate(
             {
@@ -245,15 +247,23 @@ const singleOrderProduct = async (req, res) => {
             },
             {
                 $set: {
-                    'products.$.status':'ReturnRequested',
-                    'products.$.returnDetails.returnReason': returnReason,
-                    'products.$.returnDetails.returnCommand': returnComment,
                     'products.$.isReturned': true
                 }
             },
             { new: true }
         );
         console.log('ReturnRequested',ReturnRequested)//---------------------------
+
+
+        const returnDetails = new Retruns({
+            user:userId,
+            orderId:orderId,
+            orderItem:productId,
+            reason:returnReason,
+            comment:returnComment
+        })
+        console.log('returnDetaila',returnDetails)//-------------------------
+        returnDetails.save()
 
 res.status(200).json({returnRequested:true})
     } catch (error) {
