@@ -11,9 +11,9 @@ const orderSchema = mongoose.Schema({
     products: [
         {
             productId: {
-                type: objectId,
+                type:  mongoose.Schema.Types.ObjectId,
                 ref: 'Products',
-                required: true
+                requied:true
             },
             price: {
                 type: Number
@@ -24,30 +24,23 @@ const orderSchema = mongoose.Schema({
             // size: {
             //     type: Number
             // },
-            description: {
-                type: String
-            },
+
             returnReason: {
+                type: String,
+                enam:['Product no longer required',"Item does not match the description",'Damaged goods','Wrong product shipped']
+            },
+            returnComment: {
                 type: String
             },
             isReturned: {
                 type: Boolean,
                 default: false,
-                
-            },
-            returnDetails:{
-                returnReason:{
-                    type:String
-                },
-                returnCommand:{
-                    type:String
-                }
             },
             status: {
                 type: String,
                 required: true,
-                enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled', 'Returned','Placed','ReturnRequested','ReturnDenied'],
-                default:'Placed'
+                enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled', 'Returned', 'Placed', 'Return Requested', 'Return Denied'],
+                default: 'Placed'
             },
         }
     ],
@@ -62,16 +55,22 @@ const orderSchema = mongoose.Schema({
     orderStatus: {
         type: String,
         required: true,
-        enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled', 'Returned','Placed'],
-        default:'Placed'
+        enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled', 'Returned', 'Placed'],
+        default: 'Placed'
     },
-    orderId:{
-type:String
+    orderId: {
+        type: Number,
+        required: true
     },
     paymentMethod: {
         type: String,
         required: true,
         enum: ['COD', 'Online', 'Wallet']
+    },
+    paymentStatus: {
+        type: String,
+        default: 'Pending',
+        enum: ['Pending', 'Paid', 'Failed', 'Refunded']
     },
     deliveryAddress: {
         type: Object
@@ -82,53 +81,23 @@ type:String
     couponApplied: {
         type: Number
     },
-    discountedPrice:{
-        type:Number
+    discountedPrice: {
+        type: Number
     },
     deliveryCharge: {
         type: Number,
         default: 0
     },
     cancelDetails: {
-            reason: {
-                type: String,
-                required: true
-            },
-            comment: {
-                type: String,
-                required: false
+        reason: {
+            type: String,
+            required: true
+        },
+        comment: {
+            type: String,
+            required: false
         }
     }
 })
 
 module.exports = mongoose.model('Orders', orderSchema);
-
-
-
-
-const returnSchema = mongoose.Schema({
-    user:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Users',
-        required:true
-    },
-    orderId: {
-        type:mongoose.Schema.Types.objectId,
-        ref: 'Orders',
-        requied:true
-    },
-    orderItem:{
-        type:mongoose.Schema.Types.objectId,
-        requied:true
-    },
-    reason:{
-type:String,
-requied:true
-    },
-    comment:{
-        type:String,
-        requied:false
-    }
-})
-
-module.exports = mongoose.model('Returns',returnSchema)

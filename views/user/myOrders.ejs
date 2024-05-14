@@ -98,7 +98,7 @@
 
                                                                             <%}else if(order.orderStatus=='Shipped' ){%>
                                                                                 <span class=" px-4 py-2 rounded-pill"
-                                                                                    style="font-weight: 400; background-color: rgb(0, 116, 62); color: #e1d8d8;">
+                                                                                    style="font-weight: 400; background-color:  #007bff; color: #e1d8d8;">
                                                                                     <%}%>
                                                                                         <%= order.orderStatus%>
                                                                                 </span>
@@ -134,9 +134,19 @@
                                 <%})%>
                         </table>
                         <%}else{%>
-                            <p>No order has been made yet.</p>
+                            <div class="text-center">
+
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center text-uppercase">
+                                    <div class="d-flex justify-content-center">
+                                        <div style="height: 160px; width: 200px;">
+                                            <img src="user/assets/images/mine/empty cart.jpg" alt="">
+                                        </div>
+                                    </div>
+
+                            <h3>No order has been made yet.</h3>
                             <a href="shop" class="btn btn-outline-primary-2"><span>GO SHOP</span><i
                                     class="icon-long-arrow-right"></i></a>
+                                </div>
                             <%}%>
                 </div>
             </div>

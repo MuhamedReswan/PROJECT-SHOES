@@ -31,6 +31,7 @@ const loadProfile = async (req,res)=>{
         console.log('profile working');//------------------
         console.log('userId',userId);//------------------
         const orders = await Orders.find({user:userId}).populate('products.productId');
+        console.log('orders',Orders);//---------------------------------------------------
         // const orders = await Orders.aggregate([{$match:{user:userId}},{$unwind:'$products'}]);
         const user =  await Users.findOne({_id:userId});
         console.log('user',user)//----------------------

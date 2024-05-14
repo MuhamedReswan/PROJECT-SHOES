@@ -111,11 +111,9 @@ console.log('body a cart',req.body)//--------------
 
             if (cartProduct) {
                 await cartProduct.save();
-
-            }
-
+                res.json({ added: true });
+            }         
         }
-        res.json({ added: true });
 
     } catch (error) {
         console.log(error);

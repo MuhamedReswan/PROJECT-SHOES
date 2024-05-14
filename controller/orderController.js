@@ -20,9 +20,10 @@ const placeOrder = async (req, res) => {
         const index = req.body.index;
 
 
-        const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
+        const cartData = await Cart.findOne({ user: userId }).populate('products.productId')--;
         // console.log('car place order', cartData);//-----------
         let products = cartData.products
+        console.log('prodductssssssssssssssssssss',products);
         let lessQuantity = 0
         let size = 0
         products.forEach((product) => {
@@ -76,8 +77,10 @@ const placeOrder = async (req, res) => {
                     console.log('productCartQuantity', productCartQuantity);//------------
                     const updateProduct = await Products.findByIdAndUpdate({ _id: productId });
                     console.log("updateProduct", updateProduct);//--------------------------
-                    updateProduct.totalStock -= productCartQuantity;
-                    updateProduct.save()
+                    // updateProduct.totalStock -= productCartQuantity;
+                    const updatedQuantity = await Products.findByIdAndUpdate({_id: productId},{$inc:{totalStock:-productCartQuantity}},{new:true})
+                    console.log('updatedQuantity',updatedQuantity)//----------------------------------
+                    // updateProduct.save()
                     console.log("updateProduct  111111111", updateProduct);//--------------------------
                 }
 
@@ -91,6 +94,7 @@ const placeOrder = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
 
 //order success
 const loadOrderSuccess = (req, res) => {
@@ -247,23 +251,14 @@ const singleOrderProduct = async (req, res) => {
             },
             {
                 $set: {
-                    'products.$.isReturned': true
+                    'products.$.returnReason':returnReason,
+                    'products.$.returnComment':returnComment,
+                    'products.$.status':'Return Requested'
                 }
             },
             { new: true }
         );
         console.log('ReturnRequested',ReturnRequested)//---------------------------
-
-
-        const returnDetails = new Retruns({
-            user:userId,
-            orderId:orderId,
-            orderItem:productId,
-            reason:returnReason,
-            comment:returnComment
-        })
-        console.log('returnDetaila',returnDetails)//-------------------------
-        returnDetails.save()
 
 res.status(200).json({returnRequested:true})
     } catch (error) {

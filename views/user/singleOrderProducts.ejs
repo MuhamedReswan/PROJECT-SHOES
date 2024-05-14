@@ -71,27 +71,39 @@
                                 
                             <%if(product.status== 'Delivered' ){%>
                                 <span class=" px-4 py-2 rounded-pill"
-                                    style="font-weight: 400; background-color: rgb(46, 168, 56); color: #e1d8d8;">
+                                    style="font-weight: 400; background-color: #28a745; color: #e1d8d8;">
 
                                     <%}else if(product.status=='Cancelled' ){%>
                                         <span class=" px-4 py-2 rounded-pill"
-                                            style="font-weight: 400; background-color: rgb(177, 16, 16); color: #e1d8d8;">
+                                            style="font-weight: 400; background-color:  #6c757d; color: #e1d8d8;">
 
-                                            <%}else if(product.status=='Out For Delivery'
+                                            <%}else if(product.status=='Returned'
                                                 ){%>
                                                 <span class=" px-4 py-2 rounded-pill"
-                                                    style="font-weight: 400; background-color: rgb(18, 163, 163); color: #e1d8d8;">
+                                                    style="font-weight: 400; background-color:  #dc3545; color: #e1d8d8;">
 
                                                     <%}else if(product.status=='Pending' ){%>
                                                         <span class=" px-4 py-2 rounded-pill"
-                                                            style="font-weight: 400; background-color: rgb(12, 95, 120); color: #e1d8d8;">
+                                                            style="font-weight: 400; background-color: #ffc107; color: #e1d8d8;">
+
+                                                    <%}else if(product.status=='Return Requested' ){%>
+                                                        <span class=" px-4 py-2 rounded-pill"
+                                                            style="font-weight: 400; background-color: #2c4e34 ;color: #e1d8d8;">
+
+                                                    <%}else if(product.status=='Placed' ){%>
+                                                        <span class=" px-4 py-2 rounded-pill"
+                                                            style="font-weight: 400; background-color: #17a2b8; color: #e1d8d8;">
+                                                            
+                                                    <%}else if(product.status=='Return Denied' ){%>
+                                                        <span class=" px-4 py-2 rounded-pill"
+                                                            style="font-weight: 400; background-color: #9f007c; color: #e1d8d8;">
 
                                                             <%}else
                                                                 if(product.status=='Shipped'
                                                                 ){%>
                                                                 <span
                                                                     class=" px-4 py-2 rounded-pill"
-                                                                    style="font-weight: 400; background-color: rgb(101, 15, 32); color: #e1d8d8;">
+                                                                    style="font-weight: 400; background-color: #007bff; color: #e1d8d8;">
                                                                     <%}%>
                                                                     <%= product.status%>
                                                                 </span>
@@ -168,6 +180,7 @@
             console.log('returnButtons e',e)//-------------------------
            data.orderId = returnButton.getAttribute('data-orderId');
            data.productId = returnButton.getAttribute('data-productId');
+          
         })
     })
 
@@ -200,8 +213,13 @@ if(response.returnRequested){
 
     let returnConfirmButton = document.getElementById('return-confirm')
     returnConfirmButton.addEventListener('click',(e)=>{
+
+        data.returnReason= document.getElementById('returnReason').value
+        data.returnComment= document.getElementById('returnComments').value
         let modal = document.getElementById('customizedModal-return-product')
         $(modal).modal('hide')
+
+
 retunProduct()
     })
 
