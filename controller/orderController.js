@@ -20,7 +20,7 @@ const placeOrder = async (req, res) => {
         const index = req.body.index;
 
 
-        const cartData = await Cart.findOne({ user: userId }).populate('products.productId')--;
+        const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
         // console.log('car place order', cartData);//-----------
         let products = cartData.products
         console.log('prodductssssssssssssssssssss',products);
@@ -172,7 +172,7 @@ const loadMyOrder = async (req, res) => {
         const userId = req.session.user.id;
         if (userId) {
             const orders = await Orders.find({ user: userId }).populate('user').populate('products.productId');
-            console.log('my order orders', orders)//-----------------------
+            // console.log('my order orders', orders)//-----------------------
             res.render('myOrders', { orders })
         } else {
             res.status(401).json({ error: 'User id not getting' });
@@ -258,7 +258,7 @@ const singleOrderProduct = async (req, res) => {
             },
             { new: true }
         );
-        console.log('ReturnRequested',ReturnRequested)//---------------------------
+        // console.log('ReturnRequested',ReturnRequested)//---------------------------
 
 res.status(200).json({returnRequested:true})
     } catch (error) {
@@ -394,28 +394,80 @@ const loadReturnRequest = async (req, res)=>{
         // .populate('products.productId')
         // .populate('user')
 
-   const returnRequstedProducts = await Orders.aggregate([{$match:{'products.isReturned':true}},
-            {$unwind:'$Products'},
-            {$match:{'products.isReturned':true}},
-            {$project:{
-                _id: '$products._id',
-                    orderId: '$_id',
-                    user: '$user',
-                    productId: '$products.productId',
-                    price: '$products.price',
-                    quantity: '$products.quantity',
-                    description: '$products.description',
-                    returnReason: '$products.returnReason',
-                    returnCommand: '$products.returnDetails.returnCommand',
-                    status: '$products.status'
-            }}
-        ])
+//    const returnRequestedProducts = await Orders.aggregate([{$match:{'products.isReturned':true}},
+//             {$unwind:'$Products'},
+//             {$match:{'products.isReturned':true}},
+//             {$project:{
+//                 _id: '$products._id',
+//                     orderId: '$_id',
+//                     user: '$user',
+//                     productId: '$products.productId',
+//                     price: '$products.price',
+//                     quantity: '$products.quantity',
+//                     description: '$products.description',
+//                     returnReason: '$products.returnReason',
+//                     returnCommand: '$products.returnDetails.returnCommand',
+//                     status: '$products.status'
+//             }}
+//         ])
 
-     console.log('returnedOrders',returnRequstedProducts);      
-res.render('returnRequest',{returnRequstedProducts})        
+// const returnRequestedProducts = await Orders.find(
+//     {'products.status':'Return Requested'}
+// )
+
+const returnRequestedProducts = await Orders.aggregate([
+    {
+        $unwind: '$products'
+    },
+    {$lookup: {
+        from: 'products', 
+        localField: 'products.productId',
+        foreignField: '_id',
+        as: 'products.productId' 
+    }},
+    {$unwind:'$products.productId'},
+    {$match:{'products.status':"Return Requested"}}
+])
+
+
+
+     console.log('returnedOrders',returnRequestedProducts);  //-----------------
+     if(returnRequestedProducts) {
+        res.render('returnRequest',{returnRequestedProducts})
+     } else{
+        console.log('returnRequestedProducts is undefined or null');
+     }  
+        
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
+
+// change return product status
+const changeRetrunProductStatus = async (req, res)=>{
+    try {
+        console.log('im in changeRetrunProductStatus');//-------------
+        console.log('req.body',req.body)//---------------------------
+let {status,orderId,productId}=req.body
+
+status==='Accepted'?  status = 'Returned' : status = 'Return Denied' 
+console.log('status',status)//--------------------
+
+const statusChanged = await Orders.updateOne(
+    {_id:orderId,'products.productId':productId},
+    {$set:{'products.status':status}}
+)
+console.log("statusChanged",statusChanged);//----------------------------
+
+res.status(200).json({statusChanged:true})
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+
     }
 }
 
@@ -434,5 +486,7 @@ module.exports = {
     loadReturnRequest,
     loadOrderDetails,
     singleOrderDetails,
-    changeOrderStatus
+    changeOrderStatus,
+    changeRetrunProductStatus
+    
 }

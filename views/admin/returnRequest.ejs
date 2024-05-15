@@ -36,8 +36,8 @@
                         </header>
                         <!-- card-header end// -->
                         <div class="card-body">
-                            <div class="table-responsive" id="reload">
-                                <table class="table table-hover" id="customerTable">
+                            <div class="table-responsive" id="return-requests">
+                                <table class="table table-hover" id="return-requests">
                                     <thead class="bg-dark text-white bg-opacity-50">
                                         <tr class="text-center">
                                             <th>SL No</th>
@@ -46,10 +46,61 @@
                                             <th scope="col">Quantity</th>
                                             <th scope="col">Amount</th>
                                             <th scope="col">Total Amount</th>
+                                            <th scope="col">Return Reason</th>
                                             <th scope="col">Action</th>
                                             <!-- <th scope="col" class="text-end">Action</th> -->
                                         </tr>
                                     </thead>
+                                    <tbody>
+                                        <% if(returnRequestedProducts && returnRequestedProducts.length>0){%>
+                                            <% returnRequestedProducts.forEach((product,i)=>{%>
+                                                <%console.log('product return fornt admin',product)%>
+                                                <tr class="text-center">
+                                                    <td> 
+                                                    
+                                                        <%=i+1%>
+                                                    </td>
+
+                                                    <td>
+                                                        <%=product.orderId%>
+                                                    </td>
+
+                                                    <td>
+                                                        <%=product.products.productId.name%>
+                                                    </td>
+
+                                                    <td>
+                                                        <%=product.products.quantity%>
+                                                    </td>
+
+                                                    <td>
+                                                        <%=product.products.price%>
+                                                    </td>
+
+                                                    <% let totalAmount= product.products.quantity * product.products.price %>
+                                                    <td>
+                <%=totalAmount%>
+                                                    </td>
+                                                    <td>
+                                                        <%=product.products.returnReason%>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex justify-content-center">
+                                                            
+                                                            <button onclick="returnRequestStatus('<%=product._id%>','<%=product.products.productId._id%>','Accepted')">Accept</button>
+                                                            <button onclick="returnRequestStatus('<%=product._id%>','<%=product.products.productId._id%>','Denied')" >Denied</button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <% })%>
+                                                    <%}else{%>
+                                                        <tr>
+                                                            <td colspan="8" class="text-center">No Return Request Found
+                                                                 Found in
+                                                                Database !</td>
+                                                        </tr>
+                                                        <%}%>
+                                    </tbody>
                                    
                                 </table>
                             </div>
@@ -58,68 +109,40 @@
                         <!-- card-body end// -->
                     </div>
                     <!-- card end// -->
-                    <tbody>
-                        <% if(returnRequstedProducts returnRequstedProducts.length>0){%>
-                            <% returnRequstedProducts.forEach((product,i)=>{%>
-                                <tr class="text-center">
-                                    <td> 
-                                    
-                                        <%=i+1%>
-                                    </td>
-                                    <td>
-                                        <%=returnRequstedProducts._id%>
-                                    </td>
-                                    <td>
-                                            <%=product.name%>
-                                        </td>
-                                    <td>
-                                        <%=user.email%>
-                                    </td>
-                                    <td>
-                                        <%=user.mobile%>
-                                    </td>
-
-                                    <% if (user.verified){%>
-                                        <td><span
-                                                class="btn btn-sm btn-dark rounded font-sm text-center">Verified</span>
-                                        </td>
-                                        <%}else{%>
-                                            <td><span
-                                                    class='btn btn-sm btn-danger rounded font-sm text-center'>Not
-                                                    Verified</span></td>
-                                            <%}%>
-                                                <% const formatedDate=user.date.toDateString()%>
-                                                    <td>
-                                                        <%=formatedDate%>
-                                                    </td>
-                                                    <!-- <td><%=user.isBlocked%></td> -->
-                                                    <td class="text-center">
-                                                        <button type="button" id="block-button"
-                                                            class="btn btn-outline-dark block-button btn-sm"
-                                                            data-user-id="<%=user._id%>"
-                                                            data-status="<%=user.isBlocked%>"
-                                                            onclick="block('<%=user._id%>',event)">
-                                                            <%=user.isBlocked ? "Unblock" : "Block" %>
-                                                        </button>
-                                                        <!-- dropdown //end -->
-                                                    </td>
-                                </tr>
-                                <% })%>
-                                    <%}else{%>
-                                        <tr>
-                                            <td colspan="8" class="text-center">No Return Request Found
-                                                 Found in
-                                                Database !</td>
-                                        </tr>
-                                        <%}%>
-                    </tbody>
+                  
                 </section>
                 <!-- content-main end// -->
 
         </main>
 
 
+<script>
+   function returnRequestStatus(orderId,productId,status){
+    let data = {status,orderId,productId}
+    
+    console.log('invoked return stataus changed');//---------------------------------------------------------------------
+    console.log('data:',data);//---------------------------------------------------------------------
 
+    fetch('/admin/return-product-status-change',{
+        method:'post',
+        body:JSON.stringify(data),
+        headers:{
+            'Content-Type':'application/json'
+        }
+    }).then((res)=>res.json())
+    .then((response)=>{
+        if(response.statusChanged){
+            $('return-requests').load('/return-request #return-requests',null,()=>{
+
+            })
+        }
+    })
+    .catch((error)=>{
+        console.log(error)
+    })
+
+    }
+</script>
   
         <script>
             document.addEventListener('DOMContentLoaded', () => {
@@ -131,7 +154,7 @@
                     let tableRow = document.querySelectorAll('#customerTable tbody tr');
 
                     tableRow.forEach(function (row) {
-                        let nameColoumn = row.querySelector('td:nth-child(2)');
+                        let nameColoumn = row.querySelector('td:nth-child(3)');
 
                         if (nameColoumn) {
                             let nameText = nameColoumn.textContent.toLowerCase()

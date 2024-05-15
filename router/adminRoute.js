@@ -102,6 +102,9 @@ admin_route.post('/change-order-status',orderController.changeOrderStatus)
 // return request
 admin_route.get('/return-request',orderController.loadReturnRequest)
 
+// return product status change
+admin_route.post('/return-product-status-change',orderController.changeRetrunProductStatus)
+
 
 
 

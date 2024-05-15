@@ -91,7 +91,6 @@ const orderSchema = mongoose.Schema({
     cancelDetails: {
         reason: {
             type: String,
-            required: true
         },
         comment: {
             type: String,
