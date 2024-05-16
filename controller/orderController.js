@@ -18,6 +18,7 @@ const placeOrder = async (req, res) => {
             paymentMethod,
         } = req.body;
         const index = req.body.index;
+        console.log('index from place order',index)//------------------------------------------------------------------------------------------------------------
 
 
         const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
@@ -43,11 +44,11 @@ const placeOrder = async (req, res) => {
             console.log('within else case');//--------------------------
 
             const user = await Users.findOne({ _id: userId });
-            console.log('user', user);//--------------------------
 
-            const status = paymentMethod == "cashOnDelivery" ? 'Placed' : 'Pending';
+            const status = paymentMethod == "COD" ? 'Placed' : 'Pending';
             const address = user.addresses[index];
-            // console.log('addresses', user.addresses);//--------------
+            console.log('addresses', user.addresses[index]);//--------------
+            console.log('status', status);//------------------------
             // console.log('order addres', address);//--------------
             const date = Date.now();
             const randomNumber = Math.floor(100000 + Math.random() * 900000);
@@ -60,11 +61,14 @@ const placeOrder = async (req, res) => {
                 deliveryAddress: address,
                 orderId: randomNumber
             })
+            console.log('orderdddddddddddddddddddddddddddddddddddddddddddddd',order);//--------------------------
 
             const orderDetails = await order.save();
             const orderId = orderDetails._id;
+            console.log('orderd detailsnnnnnnnnnnnnnnnnn',orderDetails);//--------------------------
 
-            if (orderDetails.status == 'placed') {
+            if (orderDetails.status == 'Placed') {
+                console.log('within orderDetails.status == Placed')//=----------------------------------------------------------
                 for (let i = 0; i < products.length; i++) {
                     const productId = products[i].productId._id;
                     const productTotalStock = products[i].productId.totalStock;
@@ -77,13 +81,21 @@ const placeOrder = async (req, res) => {
                     console.log('productCartQuantity', productCartQuantity);//------------
                     const updateProduct = await Products.findByIdAndUpdate({ _id: productId });
                     console.log("updateProduct", updateProduct);//--------------------------
-                    // updateProduct.totalStock -= productCartQuantity;
-                    const updatedQuantity = await Products.findByIdAndUpdate({_id: productId},{$inc:{totalStock:-productCartQuantity}},{new:true})
+
+                //     updateProduct.totalStock -= productCartQuantity;
+                //    await updateProduct.save()
+                    const updatedQuantity = await Products.findByIdAndUpdate(
+                        {_id: productId},
+                        {$inc:{totalStock:-productCartQuantity}},
+                        {new:true}
+                    )
                     console.log('updatedQuantity',updatedQuantity)//----------------------------------
-                    // updateProduct.save()
-                    console.log("updateProduct  111111111", updateProduct);//--------------------------
+                    
+                    // console.log("updateProduct  111111111", updateProduct);//--------------------------
                 }
 
+            }else{
+                console.log('within else of orderDetails.status == Placed')
             }
             await Cart.deleteOne({ user: userId });
             res.json({ ok: true, orderId });
@@ -371,7 +383,10 @@ const changeOrderStatus = async (req, res) => {
         },
             {
                 $set:
-                    { orderStatus: chanagedStatus, 'products.$[].status': chanagedStatus }
+                    { 
+                        orderStatus: chanagedStatus, 
+                        'products.$[].status': chanagedStatus 
+                    }
             },
             { new: true })
             .populate('user')
@@ -451,17 +466,34 @@ const changeRetrunProductStatus = async (req, res)=>{
     try {
         console.log('im in changeRetrunProductStatus');//-------------
         console.log('req.body',req.body)//---------------------------
-let {status,orderId,productId}=req.body
+let {status,orderId, quantity,productId}=req.body
+let isReturned;
 
 status==='Accepted'?  status = 'Returned' : status = 'Return Denied' 
+status==='Accepted'?  isReturned = true : isReturned = false 
+
+console.log('statav isreturnd',isReturned)//-------------------------------
 console.log('status',status)//--------------------
+console.log('quantity',quantity)//--------------------
 
 const statusChanged = await Orders.updateOne(
     {_id:orderId,'products.productId':productId},
-    {$set:{'products.status':status}}
+    {$set:
+        {
+            'products.$.status':status
+        }
+    }
 )
 console.log("statusChanged",statusChanged);//----------------------------
 
+if(status==='Accepted'){
+    const updateReturnedQuantity = Products.findByIdAndUpdate(
+        productId,
+        {$inc:{totalStock:-quantity}},
+        {new:true}
+    )
+    console.log("updateReturnedQuantity",updateReturnedQuantity)//---------------------;
+}
 res.status(200).json({statusChanged:true})
 
     } catch (error) {

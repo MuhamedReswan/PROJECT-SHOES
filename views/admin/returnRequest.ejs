@@ -12,7 +12,7 @@
                     </div>
 
                     <div class="card mb-4">
-                        <header class="card-header">
+                        <!-- <header class="card-header">
                             <div class="row gx-3">
                                 <div class="col-lg-4 col-md-6 me-auto">
                                     <form class="searchform">
@@ -33,10 +33,10 @@
                                     </select>
                                 </div>
                             </div>
-                        </header>
+                        </header> -->
                         <!-- card-header end// -->
                         <div class="card-body">
-                            <div class="table-responsive" id="return-requests">
+                            <div class="table-responsive" id="return">
                                 <table class="table table-hover" id="return-requests">
                                     <thead class="bg-dark text-white bg-opacity-50">
                                         <tr class="text-center">
@@ -85,19 +85,21 @@
                                                         <%=product.products.returnReason%>
                                                     </td>
                                                     <td>
-                                                        <div class="d-flex justify-content-center">
+                                                        <div class="" style="display: flex; justify-content: space-between;">
                                                             
-                                                            <button onclick="returnRequestStatus('<%=product._id%>','<%=product.products.productId._id%>','Accepted')">Accept</button>
-                                                            <button onclick="returnRequestStatus('<%=product._id%>','<%=product.products.productId._id%>','Denied')" >Denied</button>
+                                                            <button class="btn-success" onclick="returnRequestStatus('<%=product._id%>','<%=product.products.productId._id%>','<%=product.products.quantity%>','Accepted')">Accept</button>
+                                                            <button class="btn-xs btn-danger" onclick="returnRequestStatus('<%=product._id%>','<%=product.products.productId._id%>','<%=product.products.quantity%>','Denied')" >Denied</button>
                                                         </div>
                                                     </td>
                                                 </tr>
                                                 <% })%>
                                                     <%}else{%>
                                                         <tr>
-                                                            <td colspan="8" class="text-center">No Return Request Found
-                                                                 Found in
-                                                                Database !</td>
+                                                            <td colspan="8" class="text-center">
+                                                                <h6> No Return Request Found
+                                                                    Found in
+                                                                   Database !</h6>
+                                                               </td>
                                                         </tr>
                                                         <%}%>
                                     </tbody>
@@ -117,8 +119,8 @@
 
 
 <script>
-   function returnRequestStatus(orderId,productId,status){
-    let data = {status,orderId,productId}
+   function returnRequestStatus(orderId,productId,quantity ,status){
+    let data = {status,orderId,quantity,productId}
     
     console.log('invoked return stataus changed');//---------------------------------------------------------------------
     console.log('data:',data);//---------------------------------------------------------------------
@@ -132,9 +134,13 @@
     }).then((res)=>res.json())
     .then((response)=>{
         if(response.statusChanged){
-            $('return-requests').load('/return-request #return-requests',null,()=>{
+            console.log('Return statuschge work respose getting')//---------------------------------------
+            $(document).ready(function() {
+    $('#return-requests').load('/admin/return-request #return-requests', null, function() {
+        console.log('Reloaded successfully');
+    });
+});
 
-            })
         }
     })
     .catch((error)=>{
@@ -144,7 +150,7 @@
     }
 </script>
   
-        <script>
+        <!-- <script>
             document.addEventListener('DOMContentLoaded', () => {
 
                 let searchInput = document.getElementById('customersSearch');
@@ -166,7 +172,7 @@
                 })
             })
 
-        </script>
+        </script> -->
 
         <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
         <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
