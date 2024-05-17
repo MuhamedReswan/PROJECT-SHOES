@@ -18,13 +18,13 @@ const placeOrder = async (req, res) => {
             paymentMethod,
         } = req.body;
         const index = req.body.index;
-        console.log('index from place order',index)//------------------------------------------------------------------------------------------------------------
+        console.log('index from place order', index)//------------------------------------------------------------------------------------------------------------
 
 
         const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
         // console.log('car place order', cartData);//-----------
         let products = cartData.products
-        console.log('prodductssssssssssssssssssss',products);
+        console.log('prodductssssssssssssssssssss', products);
         let lessQuantity = 0
         let size = 0
         products.forEach((product) => {
@@ -56,18 +56,18 @@ const placeOrder = async (req, res) => {
                 user: userId,
                 products: products,
                 totalAmount: subtotal,
-                status: status,
+                orderStatus: status,
                 paymentMethod: paymentMethod,
                 deliveryAddress: address,
                 orderId: randomNumber
             })
-            console.log('orderdddddddddddddddddddddddddddddddddddddddddddddd',order);//--------------------------
+            console.log('orderdddddddddddddddddddddddddddddddddddddddddddddd', order);//--------------------------
 
             const orderDetails = await order.save();
             const orderId = orderDetails._id;
-            console.log('orderd detailsnnnnnnnnnnnnnnnnn',orderDetails);//--------------------------
+            console.log('orderd detailsnnnnnnnnnnnnnnnnn', orderDetails);//--------------------------
 
-            if (orderDetails.status == 'Placed') {
+            if (orderDetails.orderStatus == 'Placed') {
                 console.log('within orderDetails.status == Placed')//=----------------------------------------------------------
                 for (let i = 0; i < products.length; i++) {
                     const productId = products[i].productId._id;
@@ -82,20 +82,22 @@ const placeOrder = async (req, res) => {
                     const updateProduct = await Products.findByIdAndUpdate({ _id: productId });
                     console.log("updateProduct", updateProduct);//--------------------------
 
-                //     updateProduct.totalStock -= productCartQuantity;
-                //    await updateProduct.save()
+                    //     updateProduct.totalStock -= productCartQuantity;
+                    //    await updateProduct.save()
                     const updatedQuantity = await Products.findByIdAndUpdate(
-                        {_id: productId},
-                        {$inc:{totalStock:-productCartQuantity}},
-                        {new:true}
+                        productId,
+                        { $inc: { totalStock: -productCartQuantity } },
+                        { new: true }
                     )
-                    console.log('updatedQuantity',updatedQuantity)//----------------------------------
-                    
+                    console.log('updatedQuantity', updatedQuantity)//----------------------------------
+
                     // console.log("updateProduct  111111111", updateProduct);//--------------------------
                 }
 
-            }else{
+            } else {
                 console.log('within else of orderDetails.status == Placed')
+                console.log('want do something about online payment')
+
             }
             await Cart.deleteOne({ user: userId });
             res.json({ ok: true, orderId });
@@ -206,15 +208,41 @@ const orderCancel = async (req, res) => {
         console.log('req order cancel', req.body)//-----
         const userId = req.session.user.id;
         const obj = { reason, comment }
-        const orderDetails = await Orders.findOneAndUpdate({
-            _id: orderId, user: userId
-        }, {
-            $set: { orderStatus: 'Cancelled', cancelDetails: obj , 'prodcuts.$[].status':'Cancelled'}
-        }, {
-            new: true
-        })
+        const orderDetails = await Orders.findOneAndUpdate(
+            { _id: orderId, user: userId },
+            {
+                $set: {
+                    orderStatus: 'Cancelled',
+                    cancelDetails: obj,
+                    'products.$[element].status': 'Cancelled'
+                }
+            },
+            {
+                arrayFilters: [{ 'element.status': { $exists: true } }],
+                new: true
+            }
+        );
 
-        // console.log('orderDetails', orderDetails)//---------------
+
+        if (orderDetails) {
+            let productId;
+            let quantity;
+
+            for (const product of orderDetails.products) {
+
+                productId = product.productId;
+                quantity = product.quantity;
+                console.log('quantity ', quantity);
+                console.log('productId ', productId);
+
+                const updateCancelledQuantity = await Products.updateOne(
+                    { _id: productId },
+                    { $inc: { totalStock: quantity } },
+                    { new: true }
+                );
+                console.log('updateCancelledQuantity', updateCancelledQuantity);
+            }
+        }
 
         res.status(200).json({ orderCancel: true });
 
@@ -223,6 +251,8 @@ const orderCancel = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 }
+
+
 
 
 // single order product
@@ -249,35 +279,35 @@ const singleOrderProduct = async (req, res) => {
 
 
 // Return product 
- const returnProduct = async (req, res)=>{
+const returnProduct = async (req, res) => {
     try {
         console.log('im in return product ordet--------');//------------------------
-        console.log('req.body',req.body);//---------------------
-        const {returnReason,returnComment,orderId,productId}=req.body
+        console.log('req.body', req.body);//---------------------
+        const { returnReason, returnComment, orderId, productId } = req.body
         const userId = req.session.user.id;
 
-        const  ReturnRequested = await Orders.findOneAndUpdate(
+        const ReturnRequested = await Orders.findOneAndUpdate(
             {
                 _id: orderId,
                 'products.productId': productId
             },
             {
                 $set: {
-                    'products.$.returnReason':returnReason,
-                    'products.$.returnComment':returnComment,
-                    'products.$.status':'Return Requested'
+                    'products.$.returnReason': returnReason,
+                    'products.$.returnComment': returnComment,
+                    'products.$.status': 'Return Requested'
                 }
             },
             { new: true }
         );
         // console.log('ReturnRequested',ReturnRequested)//---------------------------
 
-res.status(200).json({returnRequested:true})
+        res.status(200).json({ returnRequested: true })
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'Internal Server Error' });
     }
- }
+}
 
 
 
@@ -383,16 +413,16 @@ const changeOrderStatus = async (req, res) => {
         },
             {
                 $set:
-                    { 
-                        orderStatus: chanagedStatus, 
-                        'products.$[].status': chanagedStatus 
-                    }
+                {
+                    orderStatus: chanagedStatus,
+                    'products.$[].status': chanagedStatus
+                }
             },
             { new: true })
             .populate('user')
             .populate('products.productId')
-        console.log('orderStatusChange',orderStatusChange)//---------------
-res.status(200).json({statusUpdated:true})
+        console.log('orderStatusChange', orderStatusChange)//---------------
+        res.status(200).json({ statusUpdated: true })
 
     } catch (error) {
         console.log(error)
@@ -401,58 +431,34 @@ res.status(200).json({statusUpdated:true})
 }
 
 
+
 //return request 
-const loadReturnRequest = async (req, res)=>{
+const loadReturnRequest = async (req, res) => {
     try {
         console.log('in requst admin return ')//---------------------
-        // const returnRequstedProducts = await Orders.find({ 'products.isReturned': true })
-        // .populate('products.productId')
-        // .populate('user')
 
-//    const returnRequestedProducts = await Orders.aggregate([{$match:{'products.isReturned':true}},
-//             {$unwind:'$Products'},
-//             {$match:{'products.isReturned':true}},
-//             {$project:{
-//                 _id: '$products._id',
-//                     orderId: '$_id',
-//                     user: '$user',
-//                     productId: '$products.productId',
-//                     price: '$products.price',
-//                     quantity: '$products.quantity',
-//                     description: '$products.description',
-//                     returnReason: '$products.returnReason',
-//                     returnCommand: '$products.returnDetails.returnCommand',
-//                     status: '$products.status'
-//             }}
-//         ])
+        const returnRequestedProducts = await Orders.aggregate([
+            {
+                $unwind: '$products'
+            },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'products.productId',
+                    foreignField: '_id',
+                    as: 'products.productId'
+                }
+            },
+            { $unwind: '$products.productId' },
+            { $match: { 'products.status': "Return Requested" } }
+        ])
+        console.log('returnedOrders', returnRequestedProducts);  //-----------------
+        if (returnRequestedProducts) {
+            res.render('returnRequest', { returnRequestedProducts })
+        } else {
+            console.log('returnRequestedProducts is undefined or null');
+        }
 
-// const returnRequestedProducts = await Orders.find(
-//     {'products.status':'Return Requested'}
-// )
-
-const returnRequestedProducts = await Orders.aggregate([
-    {
-        $unwind: '$products'
-    },
-    {$lookup: {
-        from: 'products', 
-        localField: 'products.productId',
-        foreignField: '_id',
-        as: 'products.productId' 
-    }},
-    {$unwind:'$products.productId'},
-    {$match:{'products.status':"Return Requested"}}
-])
-
-
-
-     console.log('returnedOrders',returnRequestedProducts);  //-----------------
-     if(returnRequestedProducts) {
-        res.render('returnRequest',{returnRequestedProducts})
-     } else{
-        console.log('returnRequestedProducts is undefined or null');
-     }  
-        
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'Internal Server Error' });
@@ -462,39 +468,39 @@ const returnRequestedProducts = await Orders.aggregate([
 
 
 // change return product status
-const changeRetrunProductStatus = async (req, res)=>{
+const changeRetrunProductStatus = async (req, res) => {
     try {
         console.log('im in changeRetrunProductStatus');//-------------
-        console.log('req.body',req.body)//---------------------------
-let {status,orderId, quantity,productId}=req.body
-let isReturned;
+        console.log('req.body', req.body)//---------------------------
+        let { status, orderId, quantity, productId } = req.body
+        let isReturned;
 
-status==='Accepted'?  status = 'Returned' : status = 'Return Denied' 
-status==='Accepted'?  isReturned = true : isReturned = false 
+        status === 'Accepted' ? status = 'Returned' : status = 'Return Denied'
+        status === 'Accepted' ? isReturned = true : isReturned = false
 
-console.log('statav isreturnd',isReturned)//-------------------------------
-console.log('status',status)//--------------------
-console.log('quantity',quantity)//--------------------
+        console.log('statav isreturnd', isReturned)//-------------------------------
+        console.log('status', status)//--------------------
+        console.log('quantity', quantity)//--------------------
 
-const statusChanged = await Orders.updateOne(
-    {_id:orderId,'products.productId':productId},
-    {$set:
-        {
-            'products.$.status':status
+        const statusChanged = await Orders.updateOne(
+            { _id: orderId, 'products.productId': productId },
+            {
+                $set:
+                {
+                    'products.$.status': status
+                }
+            }
+        )
+
+        if (status === 'Returned') {
+            console.log('within if(status===Accepted')//-----------------------------------------------
+            const updateReturnedQuantity = await Products.findByIdAndUpdate(
+                productId,
+                { $inc: { totalStock: quantity } },
+                { new: true }
+            )
         }
-    }
-)
-console.log("statusChanged",statusChanged);//----------------------------
-
-if(status==='Accepted'){
-    const updateReturnedQuantity = Products.findByIdAndUpdate(
-        productId,
-        {$inc:{totalStock:-quantity}},
-        {new:true}
-    )
-    console.log("updateReturnedQuantity",updateReturnedQuantity)//---------------------;
-}
-res.status(200).json({statusChanged:true})
+        res.status(200).json({ statusChanged: true })
 
     } catch (error) {
         console.log(error);
@@ -520,5 +526,5 @@ module.exports = {
     singleOrderDetails,
     changeOrderStatus,
     changeRetrunProductStatus
-    
+
 }

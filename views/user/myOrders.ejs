@@ -95,6 +95,10 @@
                                                                     <%}else if(order.orderStatus=='Pending' ){%>
                                                                         <span class=" px-4 py-2 rounded-pill"
                                                                             style="font-weight: 400; background-color: rgb(11, 116, 148); color: #e1d8d8;">
+                                                                            
+                                                                    <%}else if(order.orderStatus=='Placed' ){%>
+                                                                        <span class=" px-4 py-2 rounded-pill"
+                                                                            style="font-weight: 400; background-color: rgb(80, 99, 245); color: #e1d8d8;">
 
                                                                             <%}else if(order.orderStatus=='Shipped' ){%>
                                                                                 <span class=" px-4 py-2 rounded-pill"
@@ -167,7 +171,7 @@
                     <div class="form-group">
                         <label for="cancelReason" class="form-label">Reason for cancel</label>
                         <select class="form-select" id="cancelReason" name="reason" required>
-                            <option value="Wrong product shipped"></option>order by mistake
+                            <option value="ordered by mistake">ordered by mistake</option>
                             <option value="Damaged goods">Damaged goods</option>
                             <option value="Item does not match the description">orderd multiple time</option>
                             <option value="Product no longer required">Product no longer required</option>
