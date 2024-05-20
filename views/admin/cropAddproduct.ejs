@@ -6,7 +6,7 @@
         <main class="main-wrap ">
 
             <section class="content-main  mx-auto">
-                <form  id="FormData">
+                <form id="FormData">
                     <div class="row my-3">
 
                         <div class="col-9 d-flex justify-content-center">
@@ -206,111 +206,111 @@
                 let previewContainer = document.getElementById('previewContainer');
                 let myForm = document.getElementById('FormData');
                 let croppers = [];
-            
 
 
-            inputFile.addEventListener('change', () => {
-                console.log(' input file changed')//-------------------------------------
-                previewContainer.innerHTML = ""
-                let files = this.files
 
-                // Check if more than 4 images are selected
-                if (files.length >= 4) {
-                    this.value = "";
-                    return;
-                }
+                inputFile.addEventListener('change', () => {
+                    console.log(' input file changed')//-------------------------------------
+                    previewContainer.innerHTML = ""
+                    let files = this.files
 
-                // Iterate through selected files and create cropper instances
-                for (let i = 0; i < Math.min(4, files.length); i++) {
-                    const file = files[i]
-
-                    const reader = new FileReader()
-
-                    reader.onload = function (e) {
-                        console.console.log('reader.onload(e)', e);//---------------------------------------------------
-                        const container = document.createElement('div')
-                        container.classList.add('"img-container", "mr-2"')
-
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.classList.add('img-thumbnail');
-
-                        container.style.width = "200px"
-                        container.style.height = "200px"
-
-                        container.append(img);
-                        previewContainer.append(container)
-
-                        // Create Cropper instance for each image
-                        const cropper = new Cropper(img, {
-                            aspectRatio: 1,
-                            viewMode: 1,
-                            autoCropArea: 0,
-                        });
-
-                        croppers.pust(cropper)
-
+                    // Check if more than 4 images are selected
+                    if (files.length >= 4) {
+                        this.value = "";
+                        return;
                     }
-                    // Read the file as Data URL
-                    reader.readAsDataURL(file);
-                }
+
+                    // Iterate through selected files and create cropper instances
+                    for (let i = 0; i < Math.min(4, files.length); i++) {
+                        const file = files[i]
+
+                        const reader = new FileReader()
+
+                        reader.onload = function (e) {
+                            console.console.log('reader.onload(e)', e);//---------------------------------------------------
+                            const container = document.createElement('div')
+                            container.classList.add('"img-container", "mr-2"')
+
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.classList.add('img-thumbnail');
+
+                            container.style.width = "200px"
+                            container.style.height = "200px"
+
+                            container.append(img);
+                            previewContainer.append(container)
+
+                            // Create Cropper instance for each image
+                            const cropper = new Cropper(img, {
+                                aspectRatio: 1,
+                                viewMode: 1,
+                                autoCropArea: 0,
+                            });
+
+                            croppers.pust(cropper)
+
+                        }
+                        // Read the file as Data URL
+                        reader.readAsDataURL(file);
+                    }
 
 
-            
 
-                // Event listener for form submission
-                myForm.addEventListener("submit", function (event) {
-                    console.log('on submit addevent listernre')//-----------------------------------------
 
-                      event.preventDefault();
-                  
-                      if(validateUpdateForm()){
-console.log('validateUpdateForm() returned true')//-----------------------------------------
-         // Create FormData object
-         const formData = new FormData(this);
-         console.log('formaDAsat',formData)//-----------------------------------
-                  
-                  // Iterate through croppers and append cropped images to FormData
-                  croppers.forEach((cropper, index) => {
-                    const croppedDataUrl = cropper.getCroppedCanvas().toDataURL("image/png");
-                    const blob = dataURItoBlob(croppedDataUrl);
-              
-                    formData.append(`croppedImage`, blob, `cropped_image_${index}.png`);
-                  });
-              
-                  // Fetch API to submit the form data
-                  fetch("/admin/add-products", {
-                    method: "POST",
-                    body: formData,
-                  })
-                    .then((response) => {
-                      if (response.status === 200) {
-                        window.location.href = "/admin/add-products";
-                      }
-                    })
-                    .catch((error) => {
-                      window.location.reload();
+                    // Event listener for form submission
+                    myForm.addEventListener("submit", function (event) {
+                        console.log('on submit addevent listernre')//-----------------------------------------
+
+                        event.preventDefault();
+
+                        if (validateUpdateForm()) {
+                            console.log('validateUpdateForm() returned true')//-----------------------------------------
+                            // Create FormData object
+                            const formData = new FormData(this);
+                            console.log('formaDAsat', formData)//-----------------------------------
+
+                            // Iterate through croppers and append cropped images to FormData
+                            croppers.forEach((cropper, index) => {
+                                const croppedDataUrl = cropper.getCroppedCanvas().toDataURL("image/png");
+                                const blob = dataURItoBlob(croppedDataUrl);
+
+                                formData.append(`croppedImage`, blob, `cropped_image_${index}.png`);
+                            });
+
+                            // Fetch API to submit the form data
+                            fetch("/admin/add-products", {
+                                method: "POST",
+                                body: formData,
+                            })
+                                .then((response) => {
+                                    if (response.status === 200) {
+                                        window.location.href = "/admin/add-products";
+                                    }
+                                })
+                                .catch((error) => {
+                                    window.location.reload();
+                                });
+
+                        }
+
+
+
                     });
 
-                      }
-
-
-             
-                    });
-                  
                     // Function to convert Data URI to Blob
                     function dataURItoBlob(dataURI) {
-                      const byteString = atob(dataURI.split(",")[1]);
-                      const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-                      const ab = new ArrayBuffer(byteString.length);
-                      const ia = new Uint8Array(ab);
-                      for (let i = 0; i < byteString.length; i++) {
-                        ia[i] = byteString.charCodeAt(i);
-                      }
-                      return new Blob([ab], { type: mimeString });
+                        const byteString = atob(dataURI.split(",")[1]);
+                        const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+                        const ab = new ArrayBuffer(byteString.length);
+                        const ia = new Uint8Array(ab);
+                        for (let i = 0; i < byteString.length; i++) {
+                            ia[i] = byteString.charCodeAt(i);
+                        }
+                        return new Blob([ab], { type: mimeString });
                     }
-                  });
-                })
+                });
+            })
 
 
             function showErrorMessage(message, errorId) {
