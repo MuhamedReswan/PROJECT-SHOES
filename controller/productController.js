@@ -26,6 +26,7 @@ insertProduct = async (req, res) => {
     try {       
         console.log('im in insertProduct')//------------------------------------------------
 console.log(req.body,'body');//-----------------------------------------
+res.status(200).json({added:true});
 // const details = req.body;
 // const arrImages = [];
 // if (Array.isArray(req.files)){
@@ -71,7 +72,6 @@ console.log(req.body,'body');//-----------------------------------------
 // res.redirect('/admin/add-products');
 // console.log('product saved');
 // }
-
 
 } catch (error) {
         console.log(error);
