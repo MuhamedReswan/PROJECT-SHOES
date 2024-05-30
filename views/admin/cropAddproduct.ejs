@@ -32,7 +32,7 @@
                                             </div>
                                         </div>
                                         <%}%>
-
+<div id="alreadyExist" class="alert alert-danger d-flex align-items-center justify-content-center"></div>
                                             <div class="mb-4">
                                                 <label for="name" class="form-label">Product title</label>
                                                 <input type="text" placeholder="Type here" class="form-control"
@@ -220,15 +220,19 @@
                             const croppedDataUrl = cropper.getCroppedCanvas().toDataURL("image/png");
                             const blob = dataURItoBlob(croppedDataUrl);
 
-                            formData.append(`croppedImage`, blob, `cropped_image_${index}.png`);
+                            formData.append(`images`, blob, `cropped_image_${index}.png`);
+                            console.log("data fornt formData",formData)//---------------------
                         });
 
                         // Fetch API to submit the form data
                         fetch("/admin/add-products", {
                             method: "POST",
-                            body: formData,
+                            body: formData
                         })
                             .then((response) => {
+                                if(response.alreadyExist){
+document.getElementById('alreadyExist').innerText=`${alreadyExist}`
+                                }
                                 if (response.status === 200) {
                                     window.location.href = "/admin/add-products";
                                 }

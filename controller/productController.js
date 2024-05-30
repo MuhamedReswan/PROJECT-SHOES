@@ -26,52 +26,56 @@ insertProduct = async (req, res) => {
     try {       
         console.log('im in insertProduct')//------------------------------------------------
 console.log(req.body,'body');//-----------------------------------------
-res.status(200).json({added:true});
-// const details = req.body;
-// const arrImages = [];
-// if (Array.isArray(req.files)){
-//     for (let i=0; i<req.files.length; i++){
-//         arrImages[i]=req.files[i].filename;   
-//         console.log('req.file',req.files[i]);//------------------  
-//     }
-// }
-// console.log('arrimages',arrImages);//------------------
+console.log("files",req.files)//---------------------------
+// res.status(200).json({added:true});
+const details = req.body;
+const arrImages = [];
+if (Array.isArray(req.files)){
+    req.files.splice(0,4)
+    for (let i=0; i<req.files.length; i++){
+        arrImages[i]=req.files[i].filename;   
+        console.log('req.file',req.files[i]);//------------------  
+    }
+}
+console.log('arrimages',arrImages);//------------------
 
 
-// for (let i = 0; i <req.files.length; i++) {
-//     const inputPath = req.files[i].path;
-//     const outputPath = path.join(__dirname,'..', 'public', 'user', 'assets', 'images', 'product-images', 'sharpedImages', req.files[i].filename);
+for (let i = 0; i <req.files.length; i++) {
+    const inputPath = req.files[i].path;
+    const outputPath = path.join(__dirname,'..', 'public', 'user', 'assets', 'images', 'product-images', 'sharpedImages', req.files[i].filename);
 
-//     try {
-//         await sharp(inputPath)
-//             .resize(500,500,)
-//             .toFile(outputPath);
-
-//     } catch (error) {
-//         console.error('Error processing image:', error);
-//     }
-// }
-// const product = await new products({
-//         name:details.name,
-//         description:details.description,
-//         price:details.price,
-//         offerPrice:details.offerPrice,
-//         category:details.category,
-//         brand:details.brand,
-//         isListed:details.isListed,
-//         images:arrImages,
-//         totalStock:details.quantity,
-// });
-// const productAlready = await products.findOne({name:details.name})
-// if(productAlready){
-// console.log('Product alredy exist');
+    try {
+        await sharp(inputPath)
+            .resize(500,500,)
+            .toFile(outputPath);
+          
+    } catch (error) {
+        console.error('Error processing image:', error);
+    }
+}
+const product = await new products({
+        name:details.name,
+        description:details.description,
+        price:details.price,
+        offerPrice:details.offerPrice,
+        category:details.category,
+        brand:details.brand,
+        isListed:details.isListed,
+        images:arrImages,
+        totalStock:details.quantity,
+});
+const productAlready = await products.findOne({name:details.name})
+if(productAlready){
+console.log('Product alredy exist');
 // req.flash('already','Product name already exist !')
+res.json({alreadyExist:"Product name already exist !"});
 // res.redirect('/admin/add-products')
-// }else{
-//     await product.save();
+}else{
+    await product.save();
 // res.redirect('/admin/add-products');
-// console.log('product saved');
-// }
+console.log('product saved');
+res.status(200).json({added:true});
+}
 
 } catch (error) {
         console.log(error);
