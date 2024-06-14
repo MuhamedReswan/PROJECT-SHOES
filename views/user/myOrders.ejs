@@ -61,12 +61,12 @@
                                             <div class="d-flex">
                                                 <%order.products.forEach((product)=>{%>
                                                     <div class="d-flex flex-column align-items-center">
-                                                        <a href="/single-product?id=<%=product.productId._id%>"><img
+                                                        <a href="/single-product?id=<%=product?.productId?._id%>"><img
                                                                 style="width: 50px; height: 50px;"
-                                                                src="/user/assets/images/product-images/sharpedImages/<%=product.productId.images[0]%>"
+                                                                src="/user/assets/images/product-images/sharpedImages/<%=product?.productId?.images[0]%>"
                                                                 alt="product image"></a>
-                                                        <a href="/single-product?id=<%=product.productId._id%>"><small>
-                                                                <%=product.productId.name%>
+                                                        <a href="/single-product?id=<%=product?.productId?._id%>"><small>
+                                                                <%=product?.productId?.name%>
                                                             </small>
                                                         </a>
                                                     </div>
@@ -95,17 +95,20 @@
                                                                     <%}else if(order.orderStatus=='Pending' ){%>
                                                                         <span class=" px-4 py-2 rounded-pill"
                                                                             style="font-weight: 400; background-color: rgb(11, 116, 148); color: #e1d8d8;">
-                                                                            
-                                                                    <%}else if(order.orderStatus=='Placed' ){%>
-                                                                        <span class=" px-4 py-2 rounded-pill"
-                                                                            style="font-weight: 400; background-color: rgb(80, 99, 245); color: #e1d8d8;">
 
-                                                                            <%}else if(order.orderStatus=='Shipped' ){%>
+                                                                            <%}else if(order.orderStatus=='Placed' ){%>
                                                                                 <span class=" px-4 py-2 rounded-pill"
-                                                                                    style="font-weight: 400; background-color:  #007bff; color: #e1d8d8;">
-                                                                                    <%}%>
-                                                                                        <%= order.orderStatus%>
-                                                                                </span>
+                                                                                    style="font-weight: 400; background-color: rgb(80, 99, 245); color: #e1d8d8;">
+
+                                                                                    <%}else
+                                                                                        if(order.orderStatus=='Shipped'
+                                                                                        ){%>
+                                                                                        <span
+                                                                                            class=" px-4 py-2 rounded-pill"
+                                                                                            style="font-weight: 400; background-color:  #007bff; color: #e1d8d8;">
+                                                                                            <%}%>
+                                                                                                <%= order.orderStatus%>
+                                                                                        </span>
                                         </td>
                                         <td>
                                             <%=order.date.toDateString()%>
@@ -120,11 +123,12 @@
 
                                                 <%}else{%>
                                                     <div>
-                                                       <!-- Button to trigger the modal -->
-<button class="btn btn-danger rounded-pill cancel-order" id="cancel-button-<%=index%>"
-     data-orderId="<%=order._id%>"
-    data-toggle="modal" data-target="#customizedModal">Cancel Order</button>
-                                                            <br>
+                                                        <!-- Button to trigger the modal -->
+                                                        <button class="btn btn-danger rounded-pill cancel-order"
+                                                            id="cancel-button-<%=index%>" data-orderId="<%=order._id%>"
+                                                            data-toggle="modal" data-target="#customizedModal">Cancel
+                                                            Order</button>
+                                                        <br>
 
                                                         <a style="all: unset;"
                                                             href="/single-order-product?orderid=<%=order._id%>"><button
@@ -147,149 +151,147 @@
                                         </div>
                                     </div>
 
-                            <h3>No order has been made yet.</h3>
-                            <a href="shop" class="btn btn-outline-primary-2"><span>GO SHOP</span><i
-                                    class="icon-long-arrow-right"></i></a>
+                                    <h3>No order has been made yet.</h3>
+                                    <a href="shop" class="btn btn-outline-primary-2"><span>GO SHOP</span><i
+                                            class="icon-long-arrow-right"></i></a>
                                 </div>
-                            <%}%>
+                                <%}%>
+                            </div>
+                </div>
+
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="customizedModal" tabindex="-1" role="dialog"
+                aria-labelledby="customizedModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Order Cancel</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="cancelReason" class="form-label">Reason for cancel</label>
+                                <select class="form-select" id="cancelReason" name="reason" required>
+                                    <option value="ordered by mistake">ordered by mistake</option>
+                                    <option value="Damaged goods">Damaged goods</option>
+                                    <option value="Item does not match the description">orderd multiple time</option>
+                                    <option value="Product no longer required">Product no longer required</option>
+                                    <option value="more">more</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="additionalComments" class="form-label">Additional Comments</label>
+                                <textarea class="form-control" id="additionalComments" rows="4"
+                                    name="comment"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer" style="justify-content: space-around;">
+                            <button type="button" id="cancel-confirm" class="btn btn-primary ">Confirm</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-        </div>
-
-     <!-- Modal -->
-<div class="modal fade" id="customizedModal" tabindex="-1" role="dialog" aria-labelledby="customizedModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
-        <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Order Cancel</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="cancelReason" class="form-label">Reason for cancel</label>
-                        <select class="form-select" id="cancelReason" name="reason" required>
-                            <option value="ordered by mistake">ordered by mistake</option>
-                            <option value="Damaged goods">Damaged goods</option>
-                            <option value="Item does not match the description">orderd multiple time</option>
-                            <option value="Product no longer required">Product no longer required</option>
-                            <option value="more">more</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="additionalComments" class="form-label">Additional Comments</label>
-                        <textarea class="form-control" id="additionalComments" rows="4" name="comment"></textarea>
-                    </div>
-                </div>
-                
-                <div class="modal-footer" style="justify-content: space-around;">
-                    <button type="button" id="cancel-confirm"  class="btn btn-primary ">Confirm</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-        </div>
-    </div>
-</div>
 
 
 
 
+            <!--Scoll Top-->
+            <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
+            <!--End Scoll Top-->
 
-        <!--Scoll Top-->
-        <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
-        <!--End Scoll Top-->
+            <script>
 
-        <script>
-
-            let data = {}
-            let cancelButtons = document.querySelectorAll('.cancel-order');
-            cancelButtons.forEach((btn)=>{
-                btn.addEventListener('click', (e) => {
-                     data.orderId = btn.getAttribute('data-orderId')
-                    console.log('data.orderId',data.orderId)//----------------------
+                let data = {}
+                let cancelButtons = document.querySelectorAll('.cancel-order');
+                cancelButtons.forEach((btn) => {
+                    btn.addEventListener('click', (e) => {
+                        data.orderId = btn.getAttribute('data-orderId')
+                        console.log('data.orderId', data.orderId)//----------------------
+                    })
                 })
-            })
-           
 
-            function cancelOrders() {
-                data.comment = document.getElementById('additionalComments').value;
-                data.reason = document.getElementById('cancelReason').value;
 
-                console.log(' invoked cancelOrders', data)//----------------------
+                function cancelOrders() {
+                    data.comment = document.getElementById('additionalComments').value;
+                    data.reason = document.getElementById('cancelReason').value;
 
-                        fetch(`/cancel-order`, {
-                            method: 'post',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body:JSON.stringify(data)
+                    console.log(' invoked cancelOrders', data)//----------------------
 
-                        }).then((res) => {
-                            return res.json()
-                        }).then((response) => {
-                            if (response.orderCancel) {
-                                console.log('in orderCancel response')//----------------------
-// $('#reloadList').load('/my-orders #r/eloadList')
-// window.location.href="/my-orders"
-Swal.fire({
-    title: `Order Cancelled`,
-    icon: "success",
-    showConfirmationButton: true,
-}).then((result) => {
-    if (result.isConfirmed) {
-        setTimeout(()=>{
- location.reload();
-        },200)
-       
-        // $('#reloadList').load('/my-orders #r/eloadList')
-    }
-});
+                    fetch(`/cancel-order`, {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
 
-                            }
-                        })
-                    .catch((error) => {
-                        console.error('Error fetching data:', error);
-                    });
-            }
+                    }).then((res) => {
+                        return res.json()
+                    }).then((response) => {
+                        if (response.orderCancel) {
+                            console.log('in orderCancel response')//----------------------
+                            // $('#reloadList').load('/my-orders #r/eloadList')
+                            // window.location.href="/my-orders"
+                            Swal.fire({
+                                title: `Order Cancelled`,
+                                icon: "success",
+                                showConfirmationButton: true,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 200)
+
+                                    // $('#reloadList').load('/my-orders #r/eloadList')
+                                }
+                            });
+                        }
+                    })
+                        .catch((error) => {
+                            console.error('Error fetching data:', error);
+                        });
+                }
 
 
 
-            let cancelConfirm = document.getElementById('cancel-confirm')
+                let cancelConfirm = document.getElementById('cancel-confirm')
 
-            cancelConfirm.addEventListener('click',(e)=>{
-                console.log('eeeeeeeeeeeee',e)//--------------------
-                let cancelModal = document.getElementById('customizedModal')
-               cancelModal.setAttribute('style','diplay:none')
-            //    cancelModal.classList.remove('show')
-                cancelOrders()
-
-         
-            }
-            );
+                cancelConfirm.addEventListener('click', (e) => {
+                    console.log('eeeeeeeeeeeee', e)//--------------------
+                    let cancelModal = document.getElementById('customizedModal')
+                    cancelModal.setAttribute('style', 'diplay:none')
+                    //    cancelModal.classList.remove('show')
+                    cancelOrders()
+                });
 
 
 
-        </script>
+            </script>
 
-        <!-- Including Jquery -->
-        <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
-        <script src="user/assets/js/vendor/jquery.cookie.js"></script>
-        <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
-        <script src="user/assets/js/vendor/wow.min.js"></script>
-        <!-- Including Javascript -->
-        <script src="user/assets/js/bootstrap.min.js"></script>
-        <script src="user/assets/js/plugins.js"></script>
-        <script src="user/assets/js/popper.min.js"></script>
-        <script src="user/assets/js/lazysizes.js"></script>
-        <script src="user/assets/js/main.js"></script>
+            <!-- Including Jquery -->
+            <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
+            <script src="user/assets/js/vendor/jquery.cookie.js"></script>
+            <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+            <script src="user/assets/js/vendor/wow.min.js"></script>
+            <!-- Including Javascript -->
+            <script src="user/assets/js/bootstrap.min.js"></script>
+            <script src="user/assets/js/plugins.js"></script>
+            <script src="user/assets/js/popper.min.js"></script>
+            <script src="user/assets/js/lazysizes.js"></script>
+            <script src="user/assets/js/main.js"></script>
 
 
 
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    </div>
-    </body>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        </div>
+        </body>
 
-    <!-- belle/cart-variant1.html   11 Nov 2019 12:44:32 GMT -->
+        <!-- belle/cart-variant1.html   11 Nov 2019 12:44:32 GMT -->
 
-    </html>
+        </html>

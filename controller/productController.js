@@ -65,16 +65,19 @@ const product = await new products({
         totalStock:details.quantity,
 });
 const productAlready = await products.findOne({name:details.name})
+console.log(productAlready,'producttttttttttttttttttttttttttttt');
 if(productAlready){
-console.log('Product alredy exist');
+console.log('Product alredy exist');//--------------------
 // req.flash('already','Product name already exist !')
-res.json({alreadyExist:"Product name already exist !"});
+return res.json({success:false, message:"Product name already exist !"});
+console.log('Product alredy exist sended');//----------------------------
+
 // res.redirect('/admin/add-products')
 }else{
     await product.save();
 // res.redirect('/admin/add-products');
 console.log('product saved');
-res.status(200).json({added:true});
+return res.status(200).json({success: true, message:'Product added successfully'});
 }
 
 } catch (error) {
@@ -88,9 +91,11 @@ const updateProduct =async (req, res) => {
         console.log(req.body,'body update');//-----------------------------------------
         const updateData = req.body;
         const arrImages = [];
+        
 
         if (Array.isArray(req.files)){
             for (let i=0; i<req.files.length; i++){
+                console.log("mime type",req.files[i].mimetype)//----------------------------
                 arrImages[i]=req.files[i].filename;   
                 console.log('req.file update',req.files[i]);//------------------  
             }
@@ -148,8 +153,34 @@ const productUpdate = await products.updateOne({_id:updateData.id},{
 // list product
 const ProductsList = async (req, res) => {
     try {
-    const  productsData = await products.find({}).populate('category');
-        res.render('productsList',{productsData});
+        let page=1;
+        if(req.query.page){
+            page= req.query.page
+        }
+        let limit=8;
+        let next =page+1;
+        let previous = page >1 ? page-1 : 1;
+        let count =  await products.find({}).count();
+        
+        let totalPage = Math.ceil(count/limit);
+        if (next > totalPage){
+            next = totalPage
+        }
+
+    const  productsData = await products.find({})
+    .populate('category')
+    .limit(limit)
+    .skip((page-1)*limit)
+    .exec()
+
+console.log('productssssssssssssssssssssssssssssssssssss................................',products)//----------------------------
+        res.render('productsList',{
+            productsData:productsData,
+            totalPage:totalPage,
+            previous:previous,
+            next:next,
+            page:page
+         });
     } catch (error) {
         console.log(error);
     } 
@@ -205,7 +236,4 @@ module.exports = {
     loadEditProduct,
     updateProduct,
     productListAndUnlist
-    
-
-
 }

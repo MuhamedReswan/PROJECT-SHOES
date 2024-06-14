@@ -5,7 +5,7 @@ const isLogin = (req, res, next) => {
             next();
         } else {
             console.log('login islogin');
-            res.redirect('/');
+            res.redirect('/login');
         }
     } catch (error) {
         console.log(error);

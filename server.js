@@ -24,6 +24,7 @@ app.use(express.static(path.join(__dirname,'public')));
 
 
 
+
 // uer route 
 const user_route = require('./router/userRoute');
 app.use('/', user_route);

@@ -3,8 +3,35 @@ const category = require('../model/categoryModel');
 // load category
 const loadCategory = async (req, res) =>{ 
     try {
-        const categories = await category.find({});
-        res.render('category',{categories});
+
+        let page=1;
+        if(req.query.page){
+            page= req.query.page
+        }
+        let limit=8;
+        let next =page+1;
+        let previous = page >1 ? page-1 : 1;
+        let count =  await category.find({}).count();
+        
+        let totalPage = Math.ceil(count/limit);
+        if (next > totalPage){
+            next = totalPage
+        }
+
+        
+        const categories = await category.find({})
+        .limit(limit)
+        .skip((page-1)*limit)
+        .exec();
+
+        res.render('category',{
+            categories:categories,
+            totalPage:totalPage,
+            previous:previous,
+            next:next,
+            page:page
+        })
+        
     } catch (error) {
         console.log(error);
     }

@@ -97,8 +97,7 @@
                                                 <% })%>
                                                     <%}else{%>
                                                         <tr>
-                                                            <td colspan="8" class="text-center">No User Found in
-                                                                Database !</td>
+                                                            <td colspan="8" class="text-center">No Users Found !</td>
                                                         </tr>
                                                         <%}%>
                                     </tbody>
@@ -111,18 +110,16 @@
                     <!-- card end// -->
                     <div class="pagination-area mt-15 mb-50">
                         <nav aria-label="Page navigation example">
-                            <ul class="pagination justify-content-start">
-                                <li class="page-item"><a class="page-link" href="/admin/customers?id=<%=previous%>">< </a>
-                                        
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item"><a class="page-link d-flex align-items-center justify-content-center" href="/admin/customers?id=<%=previous%>">
+                                    <i class="material-icons md-chevron_left"></i></a>
                                 </li>
-                                <li class="page-item"><a class="page-link" href="/admin/customers?id=<%=page%>">
+                                <li class="page-item active"><a class="page-link " href="/admin/customers?id=<%=page%>">
                                         <%=page%>
                                     </a></li>
-                                <li class="page-item"><a class="page-link " href="/admin/customers?id=<%=next%>">></a>
+                                <li class="page-item"><a class="page-link d-flex align-items-center justify-content-center" href="/admin/customers?id=<%=next%>">
+                                    <i class="material-icons md-chevron_right"></i></a>
                                 </li>
-                                <!-- <li class="page-link"><a href="#"><i
-                                            class="material-icons md-chevron_right text-center"></i></a>
-                                </li> -->
                             </ul>
                         </nav>
                     </div>
@@ -130,8 +127,6 @@
                 <!-- content-main end// -->
 
         </main>
-
-
 
         <script>
             function block(id, event) {

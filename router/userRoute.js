@@ -42,7 +42,7 @@ user_route.use((req, res, next) => {
 })
 
 // load home
-user_route.get('/',userController.loadHome );
+user_route.get('/',userAuth.isLogin,userController.loadHome );
 
 // load sign up
 user_route.get('/signup',userAuth.isLogout,userController.loadRegister);
@@ -51,7 +51,7 @@ user_route.get('/signup',userAuth.isLogout,userController.loadRegister);
 user_route.post('/signup',userController.insertUser);
 
 // logout
-user_route.get('/logout',userController.userLogout);
+user_route.get('/logout',userAuth.isLogin,userController.userLogout);
 
 // load login
 user_route.get('/login',userAuth.isLogout,userController.loadLogin);
@@ -69,39 +69,39 @@ user_route.post('/otp',userController.verifyOtp);
 user_route.get('/resend/:email',userController.resendOtp);
 
 //forgot password
-user_route.get('/forgot-password', userController.loadForgotPassword);
+user_route.get('/forgot-password',userAuth.isLogout, userController.loadForgotPassword);
 
 //update password
-user_route.post('/forgot-password', userController.forgotPassword);
+user_route.post('/forgot-password',userAuth.isLogout, userController.forgotPassword);
 
 // reset Password 
-user_route.get('/reset-password/:id/:token', userController.loadResetPassword);
+user_route.get('/reset-password/:id/:token',userAuth.isLogin, userController.loadResetPassword);
 user_route.post('/reset-password', userController.resetPassword);
 
 //profile
-user_route.get('/profile', userProfileController.loadProfile)
+user_route.get('/profile',userAuth.isLogin, userProfileController.loadProfile)
 // update profile
-user_route.post('/update-profile', userProfileController.updateProfile)
+user_route.post('/update-profile',userAuth.isLogin, userProfileController.updateProfile)
 
 
 
 // load shop
-user_route.get('/shop',shopController.loadShop);
+user_route.get('/shop',userAuth.isLogin,shopController.loadShop);
 
 // load single Product
-user_route.get('/single-product',shopController.loadSingleProduct);
+user_route.get('/single-product',userAuth.isLogin,shopController.loadSingleProduct);
 
 //filter
-user_route.post('/filter-shop',shopController.filterShop);
+user_route.post('/filter-shop',userAuth.isLogin,shopController.filterShop);
 
 
 
 
 // load cart
-user_route.get('/cart',userAuth.checkLogin,cartController.loadCart);
+user_route.get('/cart',cartController.loadCart);
 
 // add to cart
-user_route.post('/addtocart',userAuth.isLogin,cartController.addToCart);//want to add middleware to login
+user_route.post('/addtocart',cartController.addToCart);//want to add middleware to login
 
 // remove single product from cart
 user_route.post('/remove-cart',cartController.removeFromCart);
@@ -117,7 +117,7 @@ user_route.post('/change-quantity',cartController.changeQuantity);
 
 
 //checkout 
-user_route.get('/checkout',cartController.loadCheckout);
+user_route.get('/checkout',userAuth.isLogin,cartController.loadCheckout);
  
 // place order
 user_route.post('/place-order',orderController.placeOrder);
@@ -125,10 +125,10 @@ user_route.post('/place-order',orderController.placeOrder);
 
 
 //wishlist 
-user_route.get('/wishlist',wishlistController.loadWishlist);
+user_route.get('/wishlist',userAuth.isLogin,wishlistController.loadWishlist);
 
 //add to wishlist
-user_route.post('/add-to-wishlist',userAuth.checkLogin,wishlistController.addToWishlist);
+user_route.post('/add-to-wishlist',wishlistController.addToWishlist);
 
 //remove from wishlist
 user_route.post('/remove-wishlist',userAuth.checkLogin,wishlistController.removeFromWishlist);
@@ -139,24 +139,24 @@ user_route.post('/remove-wishlist',userAuth.checkLogin,wishlistController.remove
 
 
 //add address
-user_route.post('/add-address',userAuth.checkLogin,userProfileController.addAddress);
-user_route.get('/edit-address',userAuth.checkLogin,userProfileController.editAddress);
-user_route.post('/edit-address',userAuth.checkLogin,userProfileController.updateAddress);
+user_route.post('/add-address',userProfileController.addAddress);
+user_route.get('/edit-address',userAuth.isLogin,userProfileController.editAddress);
+user_route.post('/edit-address',userProfileController.updateAddress);
 
 
 //order success
 user_route.get('/order-success/:orderId', orderController.loadOrderSuccess);
 
 //order details
-user_route.get('/order-details', orderController.loadOrderDetails);
+user_route.get('/order-details' ,userAuth.isLogin, orderController.loadOrderDetails);
 
 // my order
-user_route.get('/my-orders', orderController.loadMyOrder)
+user_route.get('/my-orders',userAuth.isLogin, orderController.loadMyOrder)
 
 //cancel order
 user_route.post('/cancel-order',orderController.orderCancel);
 
-user_route.get('/single-order-product',orderController.singleOrderProduct)
+user_route.get('/single-order-product',userAuth.isLogin,orderController.singleOrderProduct)
 
 user_route.post('/return-product',orderController.returnProduct)
 

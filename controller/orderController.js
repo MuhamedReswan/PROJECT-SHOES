@@ -140,43 +140,6 @@ const loadOrderDetails = async (req, res) => {
 }
 
 
-// // order single product user
-// const orderSingleProduct = async (req, res)=>{
-//     try {
-//         console.log('in  user orderSingleProduct')//--------------
-//         console.log('req',req)//--------------
-//        const orderId = req.query.orderid;
-//        console.log('orderId',orderId);///-------------------------
-//        const userId = req.session.user.id
-//        const orderData = await Orders.findOne({_id:orderId,user:userId}).populate('user').populate('products.productId');
-//        console.log('orderId',orderId)//---------------
-//        console.log('userId',userId)//---------------
-//        console.log('orderData',orderData)//---------------
-//        if(orderData){
-//         res.status(200).render('orderSingleProduct',{orderData}); 
-//        }else{
-//         res.status(404).json({ error: 'Order not found' });
-//        }
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// }
-
-
-
-// change product order status single
-// const updateSingleOrderStatus = async ()=>{
-//     try {
-//         console.log('im in updateSingleOrderStatus');//-------------
-//         console.log('req.body',req.body);//-------------------------
-//         const {orderId,productId,userId,index}=req.body
-//     } catch (error) {
-
-//     }
-//     console.log(error)
-//     res.status(500).json({ error: 'Internal Server Error' });
-// }
 
 // my orders
 const loadMyOrder = async (req, res) => {
@@ -372,9 +335,34 @@ const returnProduct = async (req, res) => {
 const adminOrders = async (req, res) => {
     try {
 
-        const ordersDetails = await Orders.find({}).populate('user').populate('products.productId');
+        let page=1;
+        if(req.query.page){
+            page= req.query.page
+        }
+        let limit=8;
+        let next =page+1;
+        let previous = page >1 ? page-1 : 1;
+        let count =  await Orders.find({}).count();
+        
+        let totalPage = Math.ceil(count/limit);
+        if (next > totalPage){
+            next = totalPage
+        }
+
+        const ordersDetails = await Orders.find({})
+        .populate('user').populate('products.productId')
+        .limit(limit)
+        .skip((page-1)*limit)
+        .exec();
+
         console.log('admin ordersDetails', ordersDetails);//------------------
-        res.render('orders', { ordersDetails })
+        res.render('orders', { 
+            ordersDetails:ordersDetails,
+            totalPage:totalPage,
+            previous:previous,
+            next:next,
+            page:page
+         })
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Internal Server Error' });

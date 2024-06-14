@@ -32,7 +32,6 @@
                                             </div>
                                         </div>
                                         <%}%>
-<div id="alreadyExist" class="alert alert-danger d-flex align-items-center justify-content-center"></div>
                                             <div class="mb-4">
                                                 <label for="name" class="form-label">Product title</label>
                                                 <input type="text" placeholder="Type here" class="form-control"
@@ -140,27 +139,18 @@
         </main>
 
         <script>
-            
+
             document.addEventListener('DOMContentLoaded', function () {
                 console.log(' DOMContentLoad')//-------------------------------------
-
                 let inputFile = document.getElementById('imageInput');
                 let previewContainer = document.getElementById('previewContainer');
                 let myForm = document.getElementById('FormData');
                 let croppers = [];
 
-
-
                 inputFile.addEventListener('change', function () {
                     console.log(' input file changed')//-------------------------------------
                     previewContainer.innerHTML = ""
                     let files = this.files
-
-                    // Check if more than 4 images are selected
-                    // if (files.length >= 4) {
-                    //     this.value = "";
-                    //     return;
-                    // }
 
                     // Iterate through selected files and create cropper instances
                     for (let i = 0; i < files.length; i++) {
@@ -171,7 +161,7 @@
                         reader.onload = function (e) {
                             console.log('reader.onload(e)', e);//---------------------------------------------------
                             const container = document.createElement('div')
-                            container.classList.add("img-container", "mr-2")
+                            container.classList.add("img-container", "m-2")
 
                             const img = document.createElement('img');
                             img.src = e.target.result;
@@ -221,7 +211,7 @@
                             const blob = dataURItoBlob(croppedDataUrl);
 
                             formData.append(`images`, blob, `cropped_image_${index}.png`);
-                            console.log("data fornt formData",formData)//---------------------
+                            console.log("data fornt formData", formData)//---------------------
                         });
 
                         // Fetch API to submit the form data
@@ -230,16 +220,43 @@
                             body: formData
                         })
                             .then((response) => {
-                                if(response.alreadyExist){
-document.getElementById('alreadyExist').innerText=`${alreadyExist}`
-                                }
-                                if (response.status === 200) {
-                                    window.location.href = "/admin/add-products";
+                                return response.json()
+                            })
+
+                            .then((data) => {
+                                console.log(data, '1234567899')//------------------------
+
+                                if (data.success === true) {
+                                    console.log("data.message", data.message)//------------------------
+                                    console.log("wihtin added true ")//------------------------
+
+                                    Swal.fire({
+                                            title: "Added!",
+                                            text: "Product successfully Added !",
+                                            icon: "success",
+                                            timer:2000
+                                        });
+                                        setTimeout(()=>{
+                                            window.location.href = "/admin/products-list";
+                                        },2100)
+                                   
+                                } else {
+                                    console.log("name already exist", data.message)//-----------------------------
+           
+                                    Swal.fire({
+                                        title: "oops!",
+                                        text: `${data.message}`,
+                                        icon: "error",
+                                        timer:3000,
+                                        width:500,
+                                        height:100
+                                    });
+
                                 }
                             })
                             .catch((error) => {
                                 console.error('Fetch failed:', error);
-                                window.location.reload();
+                                // window.location.reload();
                             });
 
 
@@ -260,13 +277,13 @@ document.getElementById('alreadyExist').innerText=`${alreadyExist}`
             })
 
 
-            function showErrorMessage(message, errorId) {
+            function showErrorMessage(message) {
                 console.log('show');//---------------------------
-                const errorMessageContainer = document.getElementById(errorId);
+                const errorMessageContainer = document.getElementById('errorMessages');
                 console.log('errorMessageContainer', errorMessageContainer, message);//---------------------------
 
-                errorMessageContainer.innerHTML += `<div class="alert alert-danger d-flex align-items-center text-danger>${message}</div>`;
-                console.log('hlewsdfs');//---------------------------
+                errorMessageContainer.innerHTML += `<div class="alert alert-danger d-flex align-items-center  justify-content-center " role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong>${message}</div></div>`; 
+                               console.log('hlewsdfs');//---------------------------
 
                 setTimeout(function () {
                     errorMessageContainer.innerHTML = '';
@@ -282,92 +299,51 @@ document.getElementById('alreadyExist').innerText=`${alreadyExist}`
                 let brand = document.getElementById('brand').value.trim();
                 let offerPrice = document.getElementById('offerPrice').value.trim();
                 let imageInput = document.getElementById('imageInput').files.length;
-
-                let lettersAndNumbersRegex = /^[a-zA-Z\s]*$/;
                 let errorMessageContainer = document.getElementById('errorMessages');
+                let lettersAndNumbersRegex = /^[a-zA-Z\s]*$/;
+
 
                 errorMessageContainer.innerHTML = '';
 
                 if (!name || !description || !price || !brand || !offerPrice || !quantity) {
-                    errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center  justify-content-center " role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Please fill all fields.</div></div>';
-                    setTimeout(function () {
-                        errorMessageContainer.innerHTML = '';
-                    }, 3000);
-
-                    // showErrorMessage('erro occuresd', 'nameError')
+                    showErrorMessage('Please fill all fields.')
                     return false;
 
                 } else if (name === "" || description === "" || price === "" || quantity === "") {
-                    errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Please fill properly, remove blank spaces.</div></div>';
-                    setTimeout(function () {
-                        errorMessageContainer.innerHTML = '';
-                    }, 3000);
+                    showErrorMessage('Please fill properly, remove blank spaces.')
                     return false;
 
                 } else if (!lettersAndNumbersRegex.test(name)) {
-                    errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Product name should only contain letters.</div></div>';
-                    setTimeout(function () {
-                        errorMessageContainer.innerHTML = '';
-                    }, 3000);
-                    return false;
-
-                } else if (!lettersAndNumbersRegex.test(name)) {
-                    errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Product name should only contain letters.</div></div>';
-                    setTimeout(function () {
-                        errorMessageContainer.innerHTML = '';
-                    }, 3000);
+                    showErrorMessage('Product name should only contain letters.');
                     return false;
 
                 } else if (description.length <= 20) {
-                    errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Description should contain at least 20 letters.</div></div>';
-                    setTimeout(function () {
-                        errorMessageContainer.innerHTML = '';
-                    }, 3000);
+                    showErrorMessage('Description should contain at least 20 letters.');
                     return false;
 
                 } else if (Number(quantity) <= 0) {
-                    errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Quantity must be a positive number.</div></div>';
-                    setTimeout(function () {
-                        errorMessageContainer.innerHTML = '';
-                    }, 3000);
+                    showErrorMessage('Quantity must be a positive number.');
                     return false;
 
                 } else if (Number(price) <= 0) {
-                    errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Price must be a positive number.</div></div>';
-                    setTimeout(function () {
-                        errorMessageContainer.innerHTML = '';
-                    }, 3000);
+                    showErrorMessage('Price must be a positive number.');
                     return false;
 
-
                 } else if (Number(offerPrice) <= 0) {
-                    errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Offer Price must be a positive number.</div></div>';
-                    setTimeout(function () {
-                        errorMessageContainer.innerHTML = '';
-                    }, 3000);
+                    showErrorMessage('Offer Price must be a positive number.');
                     return false;
 
                 } else if (Number(offerPrice) > Number(price)) {
-                    errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Offer Price should be less than Price.</div></div>';
-                    setTimeout(function () {
-                        errorMessageContainer.innerHTML = '';
-                    }, 3000);
+                    showErrorMessage('Offer Price should be less than Price.');
                     return false;
 
                 } else if (imageInput < 4) {
-                    errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Please add 4 images of the product.</div></div>';
-                    setTimeout(function () {
-                        errorMessageContainer.innerHTML = '';
-                    }, 3000);
+                    showErrorMessage('Please add 4 images of the product.');
                     return false;
 
                 } else if (imageInput > 4) {
-                    errorMessageContainer.innerHTML += '<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg><div><strong>Hey!</strong> Only 4 images are allowed.</div></div>';
-                    setTimeout(function () {
-                        errorMessageContainer.innerHTML = '';
-                    }, 3000);
+                    showErrorMessage('Only 4 images are allowed.');
                     return false;
-
                 } else {
                     return true;
                 }
@@ -388,4 +364,5 @@ document.getElementById('alreadyExist').innerText=`${alreadyExist}`
             crossorigin="anonymous"></script>
         <!-- crop -->
         <script src="/admin/assets/js/cropperJs/cropper.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <%- include('../layout/admin/adminFooter.ejs') -%>
