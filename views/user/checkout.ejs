@@ -267,38 +267,38 @@
                                     <h3>Choose a delivery address </h3>
                                     <%}else{%>
                                         <h3>Please add delivery address </h3>
-                                    <%}%>
+                                        <%}%>
                         </div>
                         <div id='addressError' class="text-danger"></div>
-                        
-                            <% userData.addresses.forEach((address, index)=>{%>
-                                <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-                                    <span> <input type="radio" id="address-<%= index %>" name="selectedAddress"
-                                            value="<%= index %>">
-                                        <label for="address-<%= index %>"></label></span>
-                                    <h3>
-                                        <%= address.name %>
-                                    </h3>
-                                    <p>
-                                        <%= address.address %>,<%= address.place %>
-                                                <br>
-                                                <%= address.city %>
-                                                    <%= address.district %>
-                                                        <br>
-                                                        <%= address.state %>
-                                                            <%= address.country %>
-                                                                <br>
-                                                                <%= address.mobile %> <br>
 
-                                    </p>
+                        <% userData.addresses.forEach((address, index)=>{%>
+                            <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                                <span> <input type="radio" id="address-<%= index %>" name="selectedAddress"
+                                        value="<%= index %>">
+                                    <label for="address-<%= index %>"></label></span>
+                                <h3>
+                                    <%= address.name %>
+                                </h3>
+                                <p>
+                                    <%= address.address %>,<%= address.place %>
+                                            <br>
+                                            <%= address.city %>
+                                                <%= address.district %>
+                                                    <br>
+                                                    <%= address.state %>
+                                                        <%= address.country %>
+                                                            <br>
+                                                            <%= address.mobile %> <br>
+
+                                </p>
 
 
-                                    <!-- Add radio button for each address -->
-                                </div>
-                                <%})%>
-                                    <%}%>
+                                <!-- Add radio button for each address -->
+                            </div>
+                            <%})%>
+                                <%}%>
 
-                                        <!-- <a href="/add-address" class="btn"></a> -->
+                                    <!-- <a href="/add-address" class="btn"></a> -->
 
                     </div>
                     <% if(cartData){%>
@@ -524,6 +524,7 @@
                         icon: 'warning',
                         text: " please Select Delivery Address !",
                         showConfirmButton: false,
+                        width: '300px',
                         showConfirmButton: '#d33'
                     })
                     return false;
@@ -533,6 +534,7 @@
                         icon: 'warning',
                         text: "Please Select Payment Method !",
                         showConfirmButton: false,
+                        width: '300px',
                         showConfirmButton: '#d33'
                     })
                     return false;
@@ -563,29 +565,166 @@
                                     body: JSON.stringify(data)
                                 })
                                     .then(Response => Response.json())
-                                    .then((data) => {
-                                        if (data.quant) {
+                                    .then((res) => {
+                                        console.log(res, 'res')//-----------------------------------
+                                        if (res.quant) {
                                             Swal.fire({
                                                 icon: 'warning',
-                                                text: `Sorry your product ${data.lessQuantity} is Out Of Stock'`,
-                                                showConfirmButton: false
+                                                text: `Sorry your product ${res.lessQuantity} is Out Of Stock'`,
+                                                width: '300px',
+                                                showConfirmButton: '#d33'
                                             });
                                         }
-                                        if (data.ok) {
-                                            location.href = `/order-success/${data.orderId}`
+                                        if (res.paymentMethod == 'COD') {
+                                            location.href = `/order-success/${res.orderId}`
+                                        }
+                                        if (res.paymentMethod == 'Online') {
+                                            if (res.success) {
+                                                console.log("ccontact", res);//----------
+
+
+                                                var options = {
+                                                    "key": "" + res.key_id + "", // Enter the Key ID generated from the Dashboard
+                                                    "amount": res.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                                                    "currency": "INR",
+                                                    "name": "SHOEZY", //your business name
+                                                    "description": "Test Transaction",
+                                                    "image": "https://dummyimage.com//600x400/000/fff",
+                                                    "order_id": res.order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                                                    handler: (response) => {
+
+                                                        alert("Payment Succeeded");
+                                                        console.log("payment success", response);//---------------------
+                                                        verifyRazorpayPayment(response, res);
+                                                    },
+                                                    "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+                                                        "name": "" + res.name + "", //your customer's name
+                                                        "email": "" + res.email + "",
+                                                        "contact": "" + res.contact + "" //Provide the customer's phone number for better conversion rates 
+                                                    },
+                                                    "notes": {
+                                                        "description": "" + "It is a test transaction"
+                                                    },
+                                                    "theme": {
+                                                        "color": "#4c5d50"
+                                                    }
+                                                };
+
+
+                                                var razorpayObject = new Razorpay(options);
+                                                razorpayObject.on('payment.failed', function (response) {
+
+                                                    console.log("annna");///-----------------------
+                                                    console.log("razor failed++++++", response)
+                                                    alert("Payment failed");
+                                                    handleRazorpayFailure(response, res)
+
+                                                });
+
+                                                razorpayObject.open();
+
+                                            }
+                                            else {
+                                                console.log('im in else alert')//---------------------------
+                                                alert(res.msg);
+                                            }
                                         }
                                     })
                                     .catch(error => console.log(error))
+
+
                             }
 
                         }
                     }
 
-                                                                
+
                 }
 
             }
+
+
+
+            function handleRazorpayFailure(response, data) {
+
+                console.log("response PaymentFailed orderId", response)//--------------------
+                console.log("res.PaymentFailed orderId", data)//--------------------------
+                let orderId = data.orderId
+                console.log("orderId", orderId)//------------------------------------------
+
+                fetch("/order/razorpay-failed", {
+                    method: 'put',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ orderId })
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log("data in razorpay failed resposnse", data)//----------------------------------
+
+                        Swal.fire({
+                            titleText: 'Something went wrong',
+                            width: '300px',
+                            padding: '10px',
+                            icon: 'error',
+
+                            showConfirmButton: false,
+                            timer: 1500,
+                        });
+                        setTimeout(() => {
+                            alert(` orderId=${data.orderDetails._id}`)
+
+                        }, 500);
+
+                        setTimeout(() => {
+                            location.href = `/order-details?id=${data.orderDetails._id}`
+
+                        }, 1600);
+                    })
+            }
+
+
+
+            function verifyRazorpayPayment(payment, order) {
+                console.log("response", payment)//--------------------
+                console.log("res.order_id", order)//--------------------------
+
+                let data = { payment, order }
+
+                fetch("/order/verify-payment", {
+                    method: 'Post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }).then((res) => res.json())
+                    .then((res) => {
+
+                        if (res.paymentSuccess) {
+                            location.href = `/order-details?id=${res.orderId}`
+                        } else {
+                            Swal.fire({
+                                positon: "center",
+                                icon: "error",
+                                title: "Payment failed",
+                                showConfirmButton: false,
+                                timer: 1500,
+                            });
+                        }
+                    })
+            }
+
+
+
+
         </script>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+
+
+
         <!-- Including Jquery -->
         <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
         <script src="user/assets/js/vendor/jquery.cookie.js"></script>

@@ -89,19 +89,35 @@
 
 <!-- Mobile Logo -->
 <div class="col-4 col-sm-3 col-md-3 col-lg-2 d-flex align-items-center justify-content-end">
-    <div class="site-cart mr-4">
-        <a href="/cart" class="site-header__cart site-cart mr-4" title="Cart" >
-            <i class="icon anm anm-bag-l"></i>
-            <span id="CartCount" class="site-header__cart-count" data-cart-render="item_count">2</span>
-        </a>
+    <div onclick="cart()">
+        <a href="/cart" class="site-header__cart site-cart" title="Cart" >
+            <div class="site-cart mr-3">
+           
+               <i class="icon anm anm-bag-l"></i>
+               <span id="CartCount" class="site-header__cart-count" data-cart-render="item_count">2</span>
+           </a>
     </div>
+    </div>
+
+    <div onclick="wishlist()">
+    <a href="/wishlist" class="site-header__cart site-cart" title="Wishlist" >
+         <div class="site-cart mr-3">
+        
+            <i class="icon fas fa-heart"></i>
+            <span id="wishlistCount" class="site-header__cart-count" data-cart-render="item_count">3</span>
+
+
+    </div>
+</a>
     
+    </div>
+
     <!-- End of Profile Logo Icon -->
-    <div class="site-header__search mr-2">
+    <div class="site-header__search">
         <button type="button" class="search-trigger"><i class="icon anm anm-search-l"></i></button>
     </div>
     <!-- Profile Logo Icon -->
-    <div class="site-header__profile profile-icon mr-5">
+    <div class="site-header__profile profile-icon mr-4">
         
         <a style="all: unset;" href="#" class="site-header__profile-link" title="Profile">
             <i class="icon anm anm-user py-4" style="font-size: 20px; color: #000;"></i>
@@ -154,4 +170,15 @@
   </ul>
 </div>
 <!-- End Mobile Menu -->
+
+<script>
+    function cart(){
+        window.location.href='/cart'
+    }
+
+    function wishlist(){
+        window.location.href='/wishlist'
+  
+    }
+</script>
 

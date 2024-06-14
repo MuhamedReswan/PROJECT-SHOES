@@ -10,13 +10,14 @@ const loadCart = async (req, res) => {
     try {
         console.log('im in caert');//-----------------------------
         if (!req.session.user || !req.session.user.id) {
+            console.log("within if load cart")//----------------------------------------
             req.flash('error', 'please Login then only service');
             res.redirect('/login')
         } else {
-            const userId = req.session.user.id;
+            const userId = req.session.user?.id;
             if (userId) {
                 const cartData = await Cart.findOne({ user: userId }).populate('products.productId').exec();
-                // console.log("cartData", cartData);//--------------------------------
+                console.log("cartData", cartData);//--------------------------------
                 res.render('cart', { cartData });
             } else {
                 res.render('cart');
@@ -67,9 +68,10 @@ console.log('body a cart',req.body)//--------------
                         }
                     })
                     console.log('product added to cart existing cart')//------------------
+                    return res.json({ added: true })
 
                 }else{
-                    res.json({ exist: true })
+                  return res.json({ exist: true })
                 }
             // }
             // else {
@@ -214,21 +216,18 @@ const changeQuantity = async (req, res) => {
             }
 
             if (cartQuantity == 5) {
-                console.log('max qty');
+                console.log('max qty');//---------------------------
                 return res.json({ maxQty: true })
             }
 
             if (buttonStatus == 1) {
                 if (cartQuantity < productQuantity) {
-                    // console.log('ffggggggggggggggggggggggggggg');//---------------------
-
                     await Cart.updateOne(
                         { user: userId, products: { $elemMatch: { _id: id } } },
                         { $inc: { "products.$.quantity": 1 } } 
                     )
                     return res.json({ update: true })
                 } else {
-                    // console.log('cart quantity equal');//--------------
                     return res.json({ max: true });
                 }
             }

@@ -4,6 +4,8 @@ const otpModel = require('../model/otpModel');
 const Token = require('../model/tokenModel');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const Cart = require('../model/cartModel');
+const Wishlist = require('../model/wishlistModel');
 
 
 
@@ -74,10 +76,19 @@ const
                         req.flash('blocked', 'You were blocked By admin')
                         res.redirect('/login');
                     } else {
+                        const cartCount = await Cart.findOne({ user:userData._id }).count();
+                        const wishlistCount = await Wishlist.findOne({ user:userData._id}).count()
+                        
+                        // console.log(" cart",cartCount)//-----------
+                        // console.log("wishlistCount ",wishlistCount)//-----------
+
                         req.session.user = {
                             id: userData._id,
                             name: userData.name,
-                            email: userData.email
+                            email: userData.email,
+                            cartCount:cartCount,
+                            wishlistCount:wishlistCount
+
                         }
                         console.log(req.session.user);
                         res.redirect("/");

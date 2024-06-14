@@ -3,104 +3,136 @@ const Users = require('../model/userModel');
 const Cart = require('../model/cartModel');
 const Orders = require('../model/orderModel');
 const Retruns = require('../model/orderModel')
+const { createOrderPayment } = require('../controller/paymentController');
+
 
 // place order
 const placeOrder = async (req, res) => {
     try {
         console.log('im in place order');//-----------
-        const userId = req.session.user.id;
+        const userId = req.session.user?.id;
         // console.log('req.body=' + req.body); //-----------
-        // console.log('userId=' + userId); //-----------
+        console.log('place order userId=' + userId); //-----------
         // console.log('req.body.index=' + req.body.index); //-----------
         // console.log('req.body.paymentMethod=', req.body.paymentMethod);//----------- 
         const {
             subtotal,
             paymentMethod,
+            index
         } = req.body;
-        const index = req.body.index;
+
         console.log('index from place order', index)//------------------------------------------------------------------------------------------------------------
 
 
         const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
         // console.log('car place order', cartData);//-----------
-        let products = cartData.products
-        console.log('prodductssssssssssssssssssss', products);
+        let products = cartData?.products
+        console.log('prodductssssssssssssssssssss', products);//------------------
         let lessQuantity = 0
         let size = 0
-        products.forEach((product) => {
-            if (product.quantity > product.productId.totalStock) {
-                // console.log('product.productId.stock',product.productId.stock)//------------------
-                // console.log('product.productId',product.productId)//------------------
-                lessQuantity = product.productId.name;
-            }
-        });
+        if (products.length == 0) {
+            console.log("no product in cart");
+
+        } else {
+            products.forEach((product) => {
+                if (product.quantity > product.productId.totalStock) {
+                    // console.log('product.productId.stock',product.productId.stock)//------------------
+                    // console.log('product.productId',product.productId)//------------------
+                    lessQuantity = product.productId.name;
+                }
+            });
+        }
+
 
         // console.log('lessQuantity', lessQuantity)//--------------
 
         if (lessQuantity && lessQuantity !== 0) {
-            res.json({ quant: true, lessQuantity });
             console.log('within if case');//--------------------------
+            return res.json({ quant: true, lessQuantity });
         } else {
             console.log('within else case');//--------------------------
 
             const user = await Users.findOne({ _id: userId });
-
             const status = paymentMethod == "COD" ? 'Placed' : 'Pending';
-            const address = user.addresses[index];
-            console.log('addresses', user.addresses[index]);//--------------
-            console.log('status', status);//------------------------
-            // console.log('order addres', address);//--------------
-            const date = Date.now();
-            const randomNumber = Math.floor(100000 + Math.random() * 900000);
-            const order = new Orders({
-                user: userId,
-                products: products,
-                totalAmount: subtotal,
-                orderStatus: status,
-                paymentMethod: paymentMethod,
-                deliveryAddress: address,
-                orderId: randomNumber
-            })
-            console.log('orderdddddddddddddddddddddddddddddddddddddddddddddd', order);//--------------------------
+            let order;
 
-            const orderDetails = await order.save();
-            const orderId = orderDetails._id;
-            console.log('orderd detailsnnnnnnnnnnnnnnnnn', orderDetails);//--------------------------
 
-            if (orderDetails.orderStatus == 'Placed') {
-                console.log('within orderDetails.status == Placed')//=----------------------------------------------------------
-                for (let i = 0; i < products.length; i++) {
-                    const productId = products[i].productId._id;
-                    const productTotalStock = products[i].productId.totalStock;
-                    const productCartQuantity = products[i].quantity;
-                    // const updatedQuantity = productTotalStock-productCartQuantity;
+            // console.log('orderd detailsnnnnnnnnnnnnnnnnn', orderDetails);//--------------------------
 
-                    // console.log('productTotalStock', productTotalStock);//------------
-                    // console.log('updatedQuantity',updatedQuantity);//------------
-                    // console.log('productId', productId);//------------
-                    console.log('productCartQuantity', productCartQuantity);//------------
-                    const updateProduct = await Products.findByIdAndUpdate({ _id: productId });
-                    console.log("updateProduct", updateProduct);//--------------------------
 
-                    //     updateProduct.totalStock -= productCartQuantity;
-                    //    await updateProduct.save()
-                    const updatedQuantity = await Products.findByIdAndUpdate(
-                        productId,
-                        { $inc: { totalStock: -productCartQuantity } },
-                        { new: true }
-                    )
-                    console.log('updatedQuantity', updatedQuantity)//----------------------------------
+            // console.log('within orderDetails.status == Placed')//=----------------------------------------------------------
+            for (let i = 0; i < products.length; i++) {
+                const productId = products[i].productId._id;
+                const productTotalStock = products[i].productId.totalStock;
+                const productCartQuantity = products[i].quantity;
+                // const updatedQuantity = productTotalStock-productCartQuantity;
 
-                    // console.log("updateProduct  111111111", updateProduct);//--------------------------
-                }
+                console.log('productTotalStock', productTotalStock);//------------
+                // console.log('updatedQuantity',updatedQuantity);//------------
+                console.log('productId', productId);//------------
+                console.log('productCartQuantity', productCartQuantity);//------------
+                // const updateProduct = await Products.findByIdAndUpdate({ _id: productId });
+                // console.log("updateProduct", updateProduct);//--------------------------
+
+                //     updateProduct.totalStock -= productCartQuantity;
+                //    await updateProduct.save()
+                const updatedQuantity = await Products.findByIdAndUpdate(
+                    productId,
+                    { $inc: { totalStock: -productCartQuantity } },
+                    { new: true }
+                )
+
+                // console.log("updateProduct  111111111", updateProduct);//--------------------------
+            }
+
+
+            await Cart.deleteOne({ user: userId });
+
+            if (paymentMethod == "COD") {
+
+                const address = user.addresses[index];
+                console.log('addresses', user.addresses[index]);//--------------
+                console.log('status', status);//------------------------
+                // console.log('order addres', address);//--------------
+                const date = Date.now();
+                const randomNumber = Math.floor(100000 + Math.random() * 900000);
+                order = new Orders({
+                    user: userId,
+                    products: products,
+                    totalAmount: subtotal,
+                    orderStatus: status,
+                    paymentMethod: paymentMethod,
+                    deliveryAddress: address,
+                    orderId: randomNumber
+                })
+                console.log('COD order in place order---------------', order);//--------------------------
+                const orderDetails = await order.save();
+                const orderId = orderDetails._id;
+                return res.json({ paymentMethod: "COD", orderId });
 
             } else {
-                console.log('within else of orderDetails.status == Placed')
-                console.log('want do something about online payment')
+                const address = user.addresses[index];
+                console.log('addresses', user.addresses[index]);//--------------
+                console.log('status', status);//------------------------
+                // console.log('order addres', address);//--------------
+                const date = Date.now();
+                const randomNumber = Math.floor(100000 + Math.random() * 900000);
+                order = new Orders({
+                    user: userId,
+                    products: products,
+                    totalAmount: subtotal,
+                    orderStatus: status,
+                    paymentMethod: paymentMethod,
+                    deliveryAddress: address,
+                    orderId: randomNumber
+                })
+                console.log('online order in place order-----------', order);//--------------------------
+                const orderDetails = await order.save();
 
+                console.log('place order orderDetails', orderDetails)//-------------------------
+
+                createOrderPayment(req, res, orderDetails)
             }
-            await Cart.deleteOne({ user: userId });
-            res.json({ ok: true, orderId });
         }
 
     } catch (error) {
@@ -146,7 +178,7 @@ const loadMyOrder = async (req, res) => {
     try {
 
         console.log('im in my orders')//--------------
-        const userId = req.session.user.id;
+        const userId = req.session.user?.id;
         if (userId) {
             const orders = await Orders.find({ user: userId }).populate('user').populate('products.productId');
             // console.log('my order orders', orders)//-----------------------
@@ -169,7 +201,7 @@ const orderCancel = async (req, res) => {
         const { reason, comment, orderId } = req.body;
         console.log('im in order cancel')//---------------
         console.log('req order cancel', req.body)//-----
-        const userId = req.session.user.id;
+        const userId = req.session.user?.id;
         const obj = { reason, comment }
         const orderDetails = await Orders.findOneAndUpdate(
             { _id: orderId, user: userId },
@@ -185,7 +217,6 @@ const orderCancel = async (req, res) => {
                 new: true
             }
         );
-
 
         if (orderDetails) {
             let productId;
@@ -223,6 +254,9 @@ const singleOrderProduct = async (req, res) => {
     try {
         const orderId = req.query.orderid;
         const userId = req.session.user.id;
+
+        console.log("orderId singlePRoduct", orderId);//--------------------------
+        console.log("userId singlePRoduct", userId);//------------------------------
 
 
         const singleOrder = await Orders.findOne({ _id: orderId, user: userId })
@@ -263,12 +297,56 @@ const returnProduct = async (req, res) => {
             },
             { new: true }
         );
-        // console.log('ReturnRequested',ReturnRequested)//---------------------------
 
         res.status(200).json({ returnRequested: true })
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
+
+
+// razor pay failed
+const razorPayFailed = async (req, res) => {
+    try {
+        const orderId = req.body.orderId
+
+        const orderDetails = await Orders.findOneAndUpdate({ _id: orderId },
+            {
+                $set:
+                {
+                    paymentStatus: "Failed",
+                    orderStatus: "Pending"
+
+                }
+            },
+            { new: true })
+
+        const singleOrderDetails = await Orders.findOne({ _id: orderId }).populate('products.productId');
+
+        if (singleOrderDetails.products.length > 0) {
+            let products = singleOrderDetails?.products;
+
+            for (let i = 0; i < products.length; i++) {
+
+                const productId = products[i].productId._id;
+                const productTotalStock = products[i].productId.totalStock;
+                const productCartQuantity = products[i].quantity;
+
+                const updatedQuantity = await Products.findByIdAndUpdate(
+                    productId,
+                    { $inc: { totalStock: productCartQuantity } },
+                    { new: true }
+                )
+            }
+        }
+
+        res.status(200).json({ orderDetails });
+
+    } catch (error) {
+        console.log(error)
     }
 }
 
@@ -335,34 +413,34 @@ const returnProduct = async (req, res) => {
 const adminOrders = async (req, res) => {
     try {
 
-        let page=1;
-        if(req.query.page){
-            page= req.query.page
+        let page = 1;
+        if (req.query.page) {
+            page = req.query.page
         }
-        let limit=8;
-        let next =page+1;
-        let previous = page >1 ? page-1 : 1;
-        let count =  await Orders.find({}).count();
-        
-        let totalPage = Math.ceil(count/limit);
-        if (next > totalPage){
+        let limit = 8;
+        let next = page + 1;
+        let previous = page > 1 ? page - 1 : 1;
+        let count = await Orders.find({}).count();
+
+        let totalPage = Math.ceil(count / limit);
+        if (next > totalPage) {
             next = totalPage
         }
 
         const ordersDetails = await Orders.find({})
-        .populate('user').populate('products.productId')
-        .limit(limit)
-        .skip((page-1)*limit)
-        .exec();
+            .populate('user').populate('products.productId')
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec();
 
         console.log('admin ordersDetails', ordersDetails);//------------------
-        res.render('orders', { 
-            ordersDetails:ordersDetails,
-            totalPage:totalPage,
-            previous:previous,
-            next:next,
-            page:page
-         })
+        res.render('orders', {
+            ordersDetails: ordersDetails,
+            totalPage: totalPage,
+            previous: previous,
+            next: next,
+            page: page
+        })
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -505,9 +583,13 @@ module.exports = {
     orderCancel,
     singleOrderProduct,
     returnProduct,
+    razorPayFailed,
     // changeStatusSingle,
     // orderSingleProduct,
     // updateSingleOrderStatus,
+
+
+
     adminOrders,
     loadReturnRequest,
     loadOrderDetails,
