@@ -13,6 +13,7 @@ const orderController = require('../controller/orderController');
 const paymentController = require('../controller/paymentController')
 const config = require('../config/config');
 const userAuth = require('../middlewares/userAuth');
+const userHelper = require('../middlewares/userHelper')
 const { verify } = require('crypto');
 
 
@@ -44,10 +45,10 @@ user_route.use((req, res, next) => {
 })
 
 // load home
-user_route.get('/', userAuth.isLogin, userController.loadHome);
+user_route.get('/', userAuth.isLogin, userHelper.countOfCartAndWishlist, userController.loadHome);
 
 // load sign up
-user_route.get('/signup', userAuth.isLogout, userController.loadRegister);
+user_route.get('/signup', userAuth.isLogout, userHelper.countOfCartAndWishlist, userController.loadRegister);
 
 // insert user
 user_route.post('/signup', userController.insertUser);
@@ -56,10 +57,10 @@ user_route.post('/signup', userController.insertUser);
 user_route.get('/logout', userAuth.isLogin, userController.userLogout);
 
 // load login
-user_route.get('/login', userAuth.isLogout, userController.loadLogin);
+user_route.get('/login', userAuth.isLogout, userHelper.countOfCartAndWishlist, userController.loadLogin);
 
 // verify login 
-user_route.post('/login', userController.verifyLogin);
+user_route.post('/login', userHelper.countOfCartAndWishlist, userController.verifyLogin);
 
 // load otp
 user_route.get('/otp', userAuth.isLogout, userController.loadOtp);
@@ -88,10 +89,10 @@ user_route.post('/update-profile', userAuth.isLogin, userProfileController.updat
 
 
 // load shop
-user_route.get('/shop', userAuth.isLogin, shopController.loadShop);
+user_route.get('/shop', userAuth.isLogin, userHelper.countOfCartAndWishlist, shopController.loadShop);
 
 // load single Product
-user_route.get('/single-product', userAuth.isLogin, shopController.loadSingleProduct);
+user_route.get('/single-product', userAuth.isLogin, userHelper.countOfCartAndWishlist, shopController.loadSingleProduct);
 
 //filter
 user_route.post('/filter-shop', userAuth.isLogin, shopController.filterShop);
@@ -149,7 +150,7 @@ user_route.post('/edit-address', userProfileController.updateAddress);
 
 
 //order success
-user_route.get('/order-success/:orderId', orderController.loadOrderSuccess);
+user_route.get('/order-success/:orderId', userHelper.countOfCartAndWishlist, orderController.loadOrderSuccess);
 
 //order details
 user_route.get('/order-details', userAuth.isLogin, orderController.loadOrderDetails);

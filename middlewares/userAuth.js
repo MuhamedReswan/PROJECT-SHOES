@@ -1,6 +1,6 @@
 const isLogin = (req, res, next) => {
     try {
-        if (req.session.user) {
+        if (req.session?.user) {
             console.log('next islogin');
             next();
         } else {
@@ -16,7 +16,7 @@ const isLogin = (req, res, next) => {
 
 const isLogout = (req, res, next) => {
     try {
-        if (req.session.user) {
+        if (req.session?.user) {
             console.log('home logout');
             res.redirect('/');
         } else { 
@@ -31,7 +31,7 @@ const isLogout = (req, res, next) => {
 
 const checkLogin = (req, res, next) => {
     try {
-        if (req.session.user) {
+        if (req.session?.user) {
             console.log('check login logged');
             next();
         } else {
@@ -42,6 +42,9 @@ const checkLogin = (req, res, next) => {
         console.log(error);
     }
 }
+
+
+
 
 
 

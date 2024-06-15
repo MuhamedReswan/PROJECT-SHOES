@@ -4,6 +4,9 @@ const Cart = require('../model/cartModel');
 const Orders = require('../model/orderModel');
 const Retruns = require('../model/orderModel')
 const { createOrderPayment } = require('../controller/paymentController');
+const Wallet = require('../model/walletModel');
+const mongoose = require('mongoose');
+
 
 
 // place order
@@ -11,17 +14,17 @@ const placeOrder = async (req, res) => {
     try {
         console.log('im in place order');//-----------
         const userId = req.session.user?.id;
-        // console.log('req.body=' + req.body); //-----------
+
+        console.log('req.subtotal=' + req.body.subtotal); //-----------
         console.log('place order userId=' + userId); //-----------
-        // console.log('req.body.index=' + req.body.index); //-----------
-        // console.log('req.body.paymentMethod=', req.body.paymentMethod);//----------- 
+        console.log('req.body.index=' + req.body.index); //-----------
+        console.log('req.body.paymentMethod=', req.body.paymentMethod);//-----------
+
         const {
             subtotal,
             paymentMethod,
             index
         } = req.body;
-
-        console.log('index from place order', index)//------------------------------------------------------------------------------------------------------------
 
 
         const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
@@ -56,8 +59,13 @@ const placeOrder = async (req, res) => {
             const status = paymentMethod == "COD" ? 'Placed' : 'Pending';
             let order;
 
+            const address = user.addresses[index];
 
-            // console.log('orderd detailsnnnnnnnnnnnnnnnnn', orderDetails);//--------------------------
+            const randomNumber = Math.floor(100000 + Math.random() * 900000);
+
+
+            console.log(' order status', status);//------------------------              
+            console.log('order addres', address);//--------------
 
 
             // console.log('within orderDetails.status == Placed')//=----------------------------------------------------------
@@ -88,14 +96,10 @@ const placeOrder = async (req, res) => {
 
             await Cart.deleteOne({ user: userId });
 
+
+
             if (paymentMethod == "COD") {
 
-                const address = user.addresses[index];
-                console.log('addresses', user.addresses[index]);//--------------
-                console.log('status', status);//------------------------
-                // console.log('order addres', address);//--------------
-                const date = Date.now();
-                const randomNumber = Math.floor(100000 + Math.random() * 900000);
                 order = new Orders({
                     user: userId,
                     products: products,
@@ -110,13 +114,8 @@ const placeOrder = async (req, res) => {
                 const orderId = orderDetails._id;
                 return res.json({ paymentMethod: "COD", orderId });
 
-            } else {
-                const address = user.addresses[index];
-                console.log('addresses', user.addresses[index]);//--------------
-                console.log('status', status);//------------------------
-                // console.log('order addres', address);//--------------
-                const date = Date.now();
-                const randomNumber = Math.floor(100000 + Math.random() * 900000);
+            } else if (paymentMethod == "Online") {
+
                 order = new Orders({
                     user: userId,
                     products: products,
@@ -132,6 +131,87 @@ const placeOrder = async (req, res) => {
                 console.log('place order orderDetails', orderDetails)//-------------------------
 
                 createOrderPayment(req, res, orderDetails)
+
+            } else if (paymentMethod == "Wallet") {
+
+                console.log('in wallet paymetnt in place order-------------')//---------------
+
+                const walletDetails = await Wallet.findOne({ user: userId });
+
+                console.log("walletDetails", walletDetails)//----------
+                if (walletDetails) {
+
+                    if (walletDetails.balance < subtotal) {
+                        return res.json({ paymentMethod: "Wallet", walletBalance: false, message: "Sorry! insufficent balance in wallet!" });
+                    } else {
+
+
+                        const tansactions ={
+                            amount:subtotal,
+                            mode:"Debit",
+                            description:"Order amount paid by wallet"
+                        } 
+
+                        const updation = {
+                            $inc:
+                                        { balance: -subtotal },
+                                        $push:{
+                                            tansactions  
+                                        }
+
+                        }
+
+                        const updatedWallet = await Wallet.updateOne({ user: userId },updation,{ new: true });
+
+                            console.log('updated wallet =======',updatedWallet)//-----------------------
+
+
+
+                        order = new Orders({
+                            user: userId,
+                            products: products,
+                            totalAmount: subtotal,
+                            orderStatus: status,
+                            paymentMethod: paymentMethod,
+                            deliveryAddress: address,
+                            orderId: randomNumber
+                        })
+                        console.log('wallet order in place order-----------', order);//--------------------------
+                        const orderDetails = await order.save();
+
+                        console.log('place order orderDetails', orderDetails)//-------------------------
+                        const orderId = orderDetails._id;
+
+                      const updatedOrder = await Orders.findByIdAndUpdate({_id:orderId},
+                            {
+                                $set:{
+                                    paymentStatus:"Paid",
+                                    orderStatus:"Placed"
+
+                                }
+                        }
+                        )
+
+                        console.log("updatedOrder",updatedOrder)//======================
+
+                    return res.json({ paymentMethod: "Wallet", walletBalance: true, orderId:orderId});
+
+                    }
+
+
+
+                } else {
+                    const userWallet = new Wallet({
+                        user: userId
+                    })
+
+                    const userWalletDetails = await userWallet.save();
+                    return res.json({ paymentMethod: "Wallet", walletBalance: false, message: "Sorry! insufficent balance in wallet!" });
+
+                }
+
+
+
             }
         }
 
@@ -544,10 +624,6 @@ const changeRetrunProductStatus = async (req, res) => {
         status === 'Accepted' ? status = 'Returned' : status = 'Return Denied'
         status === 'Accepted' ? isReturned = true : isReturned = false
 
-        console.log('statav isreturnd', isReturned)//-------------------------------
-        console.log('status', status)//--------------------
-        console.log('quantity', quantity)//--------------------
-
         const statusChanged = await Orders.updateOne(
             { _id: orderId, 'products.productId': productId },
             {
@@ -555,17 +631,59 @@ const changeRetrunProductStatus = async (req, res) => {
                 {
                     'products.$.status': status
                 }
-            }
-        )
+            },{
+                new :true
+            });
+
 
         if (status === 'Returned') {
-            console.log('within if(status===Accepted')//-----------------------------------------------
+
             const updateReturnedQuantity = await Products.findByIdAndUpdate(
-                productId,
+                {_id:productId},
                 { $inc: { totalStock: quantity } },
                 { new: true }
             )
+
+        const orderDetails = await Orders.findOne({_id:orderId});
+        const userId = orderDetails.user;       
+
+            const product = await Products.findOne({_id:productId})
+
+const amount = product.offerPrice*quantity;
+
+            const tansactions ={
+                amount:amount,
+                mode:"Credit",
+                description:"Refunded Amount of rerturn Product"
+            } 
+
+            const updation = {
+                $inc:
+                            { balance: amount },
+                            $push:{
+                                tansactions  
+                            }
+            }
+
+            let returnAmountToWallet = await Wallet.updateOne({ user: userId },updation,{ new: true });
+    
+            console.log("returnAmountToWallet--------------------",returnAmountToWallet)//--------------------
+            if(!returnAmountToWallet){
+
+                const userWallet = new Wallet({
+                    user: userId
+             })
+             const userWalletDetails = await userWallet.save();  
+
+             returnAmountToWallet = await Wallet.updateOne({ user: userId },updation,{ new: true });
+
+
+            }
+            console.log("---------------------------------------------------returnAmountToWallet",returnAmountToWallet)//------------------------
+         
         }
+
+  
         res.status(200).json({ statusChanged: true })
 
     } catch (error) {

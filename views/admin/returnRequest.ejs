@@ -55,55 +55,59 @@
                                         <% if(returnRequestedProducts && returnRequestedProducts.length>0){%>
                                             <% returnRequestedProducts.forEach((product,i)=>{%>
                                                 <%console.log('product return fornt admin',product)%>
-                                                <tr class="text-center">
-                                                    <td> 
-                                                    
-                                                        <%=i+1%>
-                                                    </td>
+                                                    <tr class="text-center">
+                                                        <td>
 
-                                                    <td>
-                                                        <%=product.orderId%>
-                                                    </td>
+                                                            <%=i+1%>
+                                                        </td>
 
-                                                    <td>
-                                                        <%=product.products.productId.name%>
-                                                    </td>
+                                                        <td>
+                                                            <%=product.orderId%>
+                                                        </td>
 
-                                                    <td>
-                                                        <%=product.products.quantity%>
-                                                    </td>
+                                                        <td>
+                                                            <%=product.products.productId.name%>
+                                                        </td>
 
-                                                    <td>
-                                                        <%=product.products.price%>
-                                                    </td>
+                                                        <td>
+                                                            <%=product.products.quantity%>
+                                                        </td>
 
-                                                    <% let totalAmount= product.products.quantity * product.products.price %>
-                                                    <td>
-                <%=totalAmount%>
-                                                    </td>
-                                                    <td>
-                                                        <%=product.products.returnReason%>
-                                                    </td>
-                                                    <td>
-                                                        <div class="" style="display: flex; justify-content: space-between;">
-                                                            
-                                                            <button class="btn-success" onclick="returnRequestStatus('<%=product._id%>','<%=product.products.productId._id%>','<%=product.products.quantity%>','Accepted')">Accept</button>
-                                                            <button class="btn-xs btn-danger" onclick="returnRequestStatus('<%=product._id%>','<%=product.products.productId._id%>','<%=product.products.quantity%>','Denied')" >Denied</button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <% })%>
-                                                    <%}else{%>
-                                                        <tr>
-                                                            <td colspan="8" class="text-center">
-                                                                <h6> No Return Request Found
-                                                                    Found in
-                                                                   Database !</h6>
-                                                               </td>
-                                                        </tr>
-                                                        <%}%>
+                                                        <td>
+                                                            <%=product.products.price%>
+                                                        </td>
+
+                                                        <% let totalAmount=product.products.quantity *
+                                                            product.products.price %>
+                                                            <td>
+                                                                <%=totalAmount%>
+                                                            </td>
+                                                            <td>
+                                                                <%=product.products.returnReason%>
+                                                            </td>
+                                                            <td>
+                                                                <div class=""
+                                                                    style="display: flex; justify-content: space-between;">
+
+                                                                    <button class="btn-success"
+                                                                        onclick="returnRequestStatus('<%=product._id%>','<%=product.products.productId._id%>','<%=product.products.quantity%>','Accepted')">Accept</button>
+                                                                    <button class="btn-xs btn-danger"
+                                                                        onclick="returnRequestStatus('<%=product._id%>','<%=product.products.productId._id%>','<%=product.products.quantity%>','Denied')">Denied</button>
+                                                                </div>
+                                                            </td>
+                                                    </tr>
+                                                    <% })%>
+                                                        <%}else{%>
+                                                            <tr>
+                                                                <td colspan="8" class="text-center">
+                                                                    <h6> No Return Request Found
+                                                                        Found in
+                                                                        Database !</h6>
+                                                                </td>
+                                                            </tr>
+                                                            <%}%>
                                     </tbody>
-                                   
+
                                 </table>
                             </div>
                             <!-- table-responsive //end -->
@@ -111,68 +115,46 @@
                         <!-- card-body end// -->
                     </div>
                     <!-- card end// -->
-                  
+
                 </section>
                 <!-- content-main end// -->
 
         </main>
 
 
-<script>
-   function returnRequestStatus(orderId,productId,quantity ,status){
-    let data = {orderId,productId,quantity ,status}
-    
-    console.log('invoked return stataus changed');//---------------------------------------------------------------------
-    console.log('data:',data);//---------------------------------------------------------------------
+        <script>
+            function returnRequestStatus(orderId, productId, quantity, status) {
+                console.log("orderId", orderId)//-----------------
+                console.log("productId", productId)//-----------------
+                let data = { orderId, productId, quantity, status }
 
-    fetch('/admin/return-product-status-change',{
-        method:'post',
-        body:JSON.stringify(data),
-        headers:{
-            'Content-Type':'application/json'
-        }
-    }).then((res)=>res.json())
-    .then((response)=>{
-        if(response.statusChanged){
-            console.log('Return statuschge work respose getting')//---------------------------------------
-            $(document).ready(function() {
-    $('#return-requests').load('/admin/return-request #return-requests', null, function() {
-        console.log('Reloaded successfully');
-    });
-});
+                console.log('invoked return stataus changed');//---------------------------------------------------------------------
+                console.log('data:', data);//---------------------------------------------------------------------
 
-        }
-    })
-    .catch((error)=>{
-        console.log(error)
-    })
+                fetch('/admin/return-product-status-change', {
+                    method: 'post',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then((res) => res.json())
+                    .then((response) => {
+                        if (response.statusChanged) {
+                            $(document).ready(function () {
+                                $('#return-requests').load('/admin/return-request #return-requests', null, function () {
+                                    console.log('Reloaded successfully');
+                                });
+                            });
 
-    }
-</script>
-  
-        <!-- <script>
-            document.addEventListener('DOMContentLoaded', () => {
-
-                let searchInput = document.getElementById('customersSearch');
-                searchInput.addEventListener('keyup', () => {
-
-                    let searchTerm = searchInput.value.toLowerCase();
-                    let tableRow = document.querySelectorAll('#customerTable tbody tr');
-
-                    tableRow.forEach(function (row) {
-                        let nameColoumn = row.querySelector('td:nth-child(3)');
-
-                        if (nameColoumn) {
-                            let nameText = nameColoumn.textContent.toLowerCase()
-                            row.style.display = nameText.includes(searchTerm) ? "" : "none";
                         }
                     })
+                    .catch((error) => {
+                        console.log(error)
+                    })
 
+            }
+        </script>
 
-                })
-            })
-
-        </script> -->
 
         <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
         <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>

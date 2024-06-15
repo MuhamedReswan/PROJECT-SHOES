@@ -366,6 +366,7 @@
                                             <div class="payment-accordion">
                                                 <div id="accordion" class="payment-section">
                                                     <div id='paymentError' class="text-danger"></div>
+
                                                     <div class="card mb-2">
                                                         <div class="card-header d-flex ">
                                                             <input class="mr-2" type="radio" name="paymentOption"
@@ -374,13 +375,23 @@
                                                                 Delivery</label>
                                                         </div>
                                                     </div>
+
                                                     <div class="card mb-2">
                                                         <div class="card-header d-flex ">
                                                             <input class="mr-2" type="radio" name="paymentOption"
-                                                                value="Online" id="debitCard">
+                                                                value="Online" id="Online_Payment">
                                                             <label class="card-link" for="Online">Online Payment</label>
                                                         </div>
                                                     </div>
+
+                                                    <div class="card mb-2">
+                                                        <div class="card-header d-flex ">
+                                                            <input class="mr-2" type="radio" name="paymentOption"
+                                                                value="Wallet" id="wallet">
+                                                            <label class="card-link" for="Wallet">Wallet</label>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                             <div class="order-button-payment">
@@ -566,7 +577,7 @@
                                 })
                                     .then(Response => Response.json())
                                     .then((res) => {
-                                        console.log(res, 'res')//-----------------------------------
+                                        console.log(res, 'res /place-order front')//-----------------------------------
                                         if (res.quant) {
                                             Swal.fire({
                                                 icon: 'warning',
@@ -577,8 +588,8 @@
                                         }
                                         if (res.paymentMethod == 'COD') {
                                             location.href = `/order-success/${res.orderId}`
-                                        }
-                                        if (res.paymentMethod == 'Online') {
+
+                                        } else if (res.paymentMethod == 'Online') {
                                             if (res.success) {
                                                 console.log("ccontact", res);//----------
 
@@ -628,6 +639,39 @@
                                                 console.log('im in else alert')//---------------------------
                                                 alert(res.msg);
                                             }
+
+                                        } else if (res.paymentMethod == 'Wallet') {
+
+                                            if (res.walletBalance) {
+
+                                                Swal.fire({
+                                                    icon: 'success',
+                                                    text: `Wallet payment succes`,
+                                                    width: '300px',
+                                                    showConfirmButton: '#d33'
+                                                });
+
+                                                setTimeout(() => {
+                                                    location.href = `/order-success/${res.orderId}`
+                                                }, 1500)
+
+
+
+                                            } else {
+                                                Swal.fire({
+                                                    icon: 'warning',
+                                                    text: `${res.message}`,
+                                                    width: '300px',
+                                                    showConfirmButton: '#d33'
+                                                });
+
+
+                                            }
+
+
+
+
+
                                         }
                                     })
                                     .catch(error => console.log(error))
