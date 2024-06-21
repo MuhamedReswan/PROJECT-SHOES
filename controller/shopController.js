@@ -7,8 +7,8 @@ const Wishlist = require('../model/wishlistModel');
 const loadShop = async (req, res) => {
     try {
         const userId = req.session.user.id;
-        console.log('req.body', req.body)//-------------
-        console.log('req.query.page', req.query.page)//-------------
+        // console.log('req.body', req.body)//-------------
+        // console.log('req.query.page', req.query.page)//-------------
         let count = await Products.find({ isListed: true }).count();
         let limit = 8
         let page = 1
@@ -29,11 +29,11 @@ const loadShop = async (req, res) => {
             .skip(start)
             .populate('category');
         const wishlistData = await Wishlist.find({ user: userId });
-        console.log('wishlistData', wishlistData)//----------------
-        console.log('count', count)//----------------
-        console.log('totalPage', totalPage)//----------------
-        console.log('previous', previous)//----------------
-        console.log('next', next)//----------------
+        // console.log('wishlistData', wishlistData)//----------------
+        // console.log('count', count)//----------------
+        // console.log('totalPage', totalPage)//----------------
+        // console.log('previous', previous)//----------------
+        // console.log('next', next)//----------------
 
         res.render('shop', {
             categoryData: categoryData,
@@ -123,28 +123,28 @@ const filterShop = async (req, res) => {
 
         if (buttonStatus !== undefined && buttonStatus === 'previous') {
             page = page - 1 > 1 ? page - 1 : 1
-            console.log('previous if')//------------
+            // console.log('previous if')//------------
         }
 
         if (buttonStatus !== undefined && buttonStatus === 'next') {
             page = page + 1 > totalPage ? totalPage : page + 1
-            console.log('next if')//-------------
+            // console.log('next if')//-------------
         }
 
         let start = (page - 1) * limit
-        console.log('start1', start)//-------------
+        // console.log('start1', start)//-------------
         start=Math.abs(start)
-        console.log('start2', start)//-------------
+        // console.log('start2', start)//-------------
 
 
-        console.log('price', price)//-------------
-        console.log('min', min)//-------------
-        console.log('max', max)//-------------
-        console.log('currentPage', currentPage)//-------------
-        console.log('filter', filterTerms)//-------------
-        console.log('count', count)//-------------
-        console.log('start', start)//-------------
-        console.log('buttonStatus', buttonStatus)//-------------
+        // console.log('price', price)//-------------
+        // console.log('min', min)//-------------
+        // console.log('max', max)//-------------
+        // console.log('currentPage', currentPage)//-------------
+        // console.log('filter', filterTerms)//-------------
+        // console.log('count', count)//-------------
+        // console.log('start', start)//-------------
+        // console.log('buttonStatus', buttonStatus)//-------------
 
 
 
@@ -165,8 +165,8 @@ const filterShop = async (req, res) => {
        
         let countOfProducts = filterdProduct.length;
 
-        console.log('filterdProductax', filterdProduct)//-------------
-        console.log('countOfProducts', countOfProducts)//-------------
+        // console.log('filterdProductax', filterdProduct)//-------------
+        // console.log('countOfProducts', countOfProducts)//-------------
 
         res.status(200)
             .json({

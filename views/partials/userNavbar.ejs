@@ -1,3 +1,30 @@
+
+
+<style>
+    /* eater than 992px. Also, ensure the mobile menu is hidden by default and becomes visible when triggered. */
+
+/* Hide mobile menu by default */
+.mobile-nav-wrapper {
+    display: none;
+}
+
+/* Show desktop menu by default */
+#AccessibleNav {
+    display: block;
+}
+
+/* Media query for devices larger than 992px */
+@media (min-width: 993px) {
+   .mobile-nav-wrapper {
+        display: none;
+    }
+
+    #AccessibleNav {
+        display: block;
+    }
+}
+</style>
+
 <!--Search Form Drawer-->
 <div class="search">
     <div class="search__form">

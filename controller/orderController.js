@@ -670,6 +670,8 @@ const amount = product.offerPrice*quantity;
             console.log("returnAmountToWallet--------------------",returnAmountToWallet)//--------------------
             if(!returnAmountToWallet){
 
+            console.log("---------------------------------------------------in new wallet")//------------------------
+
                 const userWallet = new Wallet({
                     user: userId
              })

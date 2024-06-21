@@ -1,204 +1,271 @@
 <%- include('../layout/user/header.ejs') -%>
 
     <div class="pageWrapper">
+        <%-include('.. /partials/userNavbar')-%>
 
-        <!--Page Title-->
-        <div class="page section-header text-center">
-            <div class="page-title">
-                <div class="wrapper">
-                    <h1 class="page-width">Account details</h1>
+            <style>
+                .error-text {
+                    font-size: 12px;
+                }
+            </style>
+
+            <!--Page Title-->
+            <div class="page section-header text-center">
+                <div class="page-title">
+                    <div class="wrapper">
+                        <h1 class="page-width">Account details</h1>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!--End Page Title-->
+            <!--End Page Title-->
 
-        <div class="page-content">
-            <div class="dashboard">
-                <div class="container">
-                    <div class="row">
-                        <aside class="col-md-4 col-lg-3">
-                            <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" id="tab-dashboard-link" data-toggle="tab"
-                                        href="#tab-dashboard" role="tab" aria-controls="tab-dashboard"
-                                        aria-selected="true">Dashboard</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="tab-orders-link"  href="/my-orders"
-                                         >Orders</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads"
-                                        role="tab" aria-controls="tab-downloads" aria-selected="false">Downloads</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address"
-                                        role="tab" aria-controls="tab-address" aria-selected="false">Adresses</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account"
-                                        role="tab" aria-controls="tab-account" aria-selected="false">Account Details</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/logout">Sign Out</a>
-                                </li>
-                            </ul>
-                        </aside><!-- End .col-lg-3 -->
+            <div class="page-content">
+                <div class="dashboard">
+                    <div class="container">
+                        <div class="row">
+                            <aside class="col-md-4 col-lg-3">
+                                <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="tab-dashboard-link" data-toggle="tab"
+                                            href="#tab-dashboard" role="tab" aria-controls="tab-dashboard"
+                                            aria-selected="true">Dashboard</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="tab-orders-link" href="/my-orders">Orders</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="tab-downloads-link" data-toggle="tab"
+                                            href="#tab-downloads" role="tab" aria-controls="tab-downloads"
+                                            aria-selected="false">Downloads</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#wallet"
+                                            role="tab" aria-controls="tab-downloads" aria-selected="false">Wallet</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address"
+                                            role="tab" aria-controls="tab-address" aria-selected="false">Adresses</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account"
+                                            role="tab" aria-controls="tab-account" aria-selected="false">Account
+                                            Details</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/logout">Sign Out</a>
+                                    </li>
+                                </ul>
+                            </aside><!-- End .col-lg-3 -->
 
-                        <div class="col-md-8 col-lg-9">
-                            <div class="tab-content">
-                                <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel"
-                                    aria-labelledby="tab-dashboard-link">
-                                    <p>Hello <span class="font-weight-normal text-dark">User</span> (not <span
-                                            class="font-weight-normal text-dark">User</span>? <a href="#">Log out</a>)
-                                        <br>
-                                        From your account dashboard you can view your <a href="#tab-orders"
-                                            class="tab-trigger-link link-underline">recent orders</a>, manage your <a
-                                            href="#tab-address" class="tab-trigger-link">shipping and billing
-                                            addresses</a>, and <a href="#tab-account" class="tab-trigger-link">edit your
-                                            password and account details</a>.
-                                    </p>
-                                </div><!-- .End .tab-pane -->
-<!-- ----------------------------------------------------------------------------------------------------------------------------- -->
-                                <!-- <div class="tab-pane fade" id="tab-orders" role="tabpanel"
-                                    aria-labelledby="tab-orders-link">
-                                    <%if(orders && orders.length>0){%>
-                                        <table class="table table-bordered">
-                                            <thead class="bg-dark text-light text-center">
-                                                <tr> 
-                                                    <th>order Id</th>
-                                                    <th>status</th>
-                                                    <th>payment method</th>
-                                                    <th>Amount</th>
-                                                    <th>date</th>
-                                                    <th>more details</th>
-                                                </tr>
-                                            </thead>
-                                            <%orders.forEach((order,index)=>{%>
+                            <div class="col-md-8 col-lg-9">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel"
+                                        aria-labelledby="tab-dashboard-link">
+                                        <p>Hello <span class="font-weight-normal text-dark">User</span> (not <span
+                                                class="font-weight-normal text-dark">User</span>? <a href="#">Log
+                                                out</a>)
+                                            <br>
+                                            From your account dashboard you can view your <a href="#tab-orders"
+                                                class="tab-trigger-link link-underline">recent orders</a>, manage your
+                                            <a href="#tab-address" class="tab-trigger-link">shipping and billing
+                                                addresses</a>, and <a href="#tab-account" class="tab-trigger-link">edit
+                                                your
+                                                password and account details</a>.
+                                        </p>
+                                    </div><!-- .End .tab-pane -->
 
-                                                <tbody class="text-center">
+                                    <div class="tab-pane fade" id="tab-downloads" role="tabpanel"
+                                        aria-labelledby="tab-downloads-link">
+                                        <p>No downloads available yet.</p>
+                                        <a href="shop" class="btn btn-outline-primary-2"><span>GO SHOP</span><i
+                                                class="icon-long-arrow-right"></i></a>
+                                    </div><!-- .End .tab-pane -->
+
+                                    <div class="tab-pane fade" id="tab-address" role="tabpanel"
+                                        aria-labelledby="tab-address-link">
+                                        <%if (user && user.addresses.length>0 ){%>
+                                            <p>The following addresses will be used on the checkout page by default.</p>
+                                            <div class="row">
+                                                <%user.addresses.forEach((address,index)=>{%>
+
+
+                                                    <div class="col-lg-6">
+                                                        <div class="card card-dashboard">
+                                                            <div class="card-body">
+                                                                <h3 class="card-title">Billing Address</h3>
+                                                                <!-- End .card-title -->
+
+                                                                <p>
+                                                                    <%= address.name %><br>
+                                                                        <%= address.address %><br>
+                                                                            <%= address.city %><br>
+                                                                                <%= address.district %><br>
+                                                                                    <%= address.mobile %><br>
+                                                                                        <%= address.pincode %><br>
+                                                                                            <%= address.state %><br>
+                                                                                                <%= address.country %>
+                                                                                                    <br>
+
+                                                                                                    <a class="btn"
+                                                                                                        href="edit-address?index=<%= index %>">Edit
+                                                                                                        <i
+                                                                                                            class="icon-edit"></i></a>
+                                                                </p>
+                                                            </div><!-- End .card-body -->
+                                                        </div><!-- End .card-dashboard -->
+                                                    </div><!-- End .col-lg-6 -->
+                                                    <% })%>
+                                                        <%}else{%>
+                                                            <p>No address available yet.</p>
+                                                            <a href="add-address"
+                                                                class="btn btn-outline-primary-2"><span>Add NEW</span><i
+                                                                    class="icon-long-arrow-right"></i></a>
+                                                            <%}%>
+
+                                            </div><!-- End .row -->
+                                    </div><!-- .End .tab-pane -->
+
+                                    <div class="tab-pane fade" id="tab-account" role="tabpanel"
+                                        aria-labelledby="tab-account-link">
+
+                                        <label>Name *</label>
+                                        <input type="text" class="form-control" value="<%= user.name %>" required
+                                            name="name">
+                                        <small class="form-text">This will be how your name will be displayed in the
+                                            account
+                                            section and in reviews</small>
+                                        <p class="text-danger" id="nameError"></p>
+
+                                        <label>Mobile Number *</label>
+                                        <input type="text" class="form-control" name="mobile" value="<%= user.mobile %>"
+                                            required>
+                                        <p class="text-danger" id="mobileError"></p>
+
+                                        <label>Email address *</label>
+                                        <input type="email" class="form-control mb-2" name="email" disabled
+                                            value="<%= user.email %>" required>
+
+                                        <button type="button" class="btn btn-outline-primary-2" data-toggle="modal"
+                                            data-target="#exampleModalCenter">
+                                            <span>CHANGE PASSWORD</span>
+                                            <i class="icon-long-arrow-right"></i>
+                                        </button>
+
+                                        <button type="submit" class="btn btn-outline-primary-2"
+                                            onclick="changeProfile()">
+                                            <span>SAVE CHANGES</span>
+                                            <i class="icon-long-arrow-right"></i>
+                                        </button>
+                                    </div><!-- .End .tab-pane -->
+
+                                    <div class="tab-pane fade" id="wallet" role="tabpanel"
+                                        aria-labelledby="tab-downloads-link">
+                                        <h5>Available Wallet Balance : ₹ <%=walletDetails?walletDetails?.balance : 0%>
+                                                .00</h5>
+
+                                        <button type="button" class="btn btn-outline-primary-2 mb-3 mt-4"
+                                            id="transaction-button" onclick="showHistory()">
+                                            <span id="button-text">Transaction History</span>
+                                        </button>
+
+                                        <div id="history-table" style="display: none;">
+                                            <% if(walletDetails && walletDetails.tansactions.length!=0){%>
+
+
+                                                <table class="table text-center">
                                                     <tr>
-                                                        <td>
-                                                           # <%=index+1001%>
-                                                        </td>
-                                                        <td>
-                                                            <%=order.status%>
-                                                        </td>
-                                                        <td>
-                                                            <%=order.paymentMethod%>
-                                                        </td>
-                                                        <td>
-                                                            <%=order.totalAmount%>
-                                                        </td>
-                                                        <td>
-                                                            <%=order.date.toDateString()%>
-                                                        </td>
-                                                        <td><a class="btn btn-sm more-button" href="/order-single-product?orderid=<%=order.id%>" data-id="<%=order.id%>">more</a></td>
+                                                        <thead class="table-dark">
+                                                            <th>Date</th>
+                                                            <th>Amount</th>
+                                                            <th>status</th>
+                                                            <th>Description</th>
+                                                        </thead>
                                                     </tr>
-                                                </tbody>
-                                                <% })%>
+                                                    <% walletDetails.tansactions.forEach((history)=>{%>
+                                                        <tr>
+                                                            <tbody>
+                                                                <td>
+                                                                    <%=history.date.toDateString()%>
+                                                                </td>
+                                                                <td>₹ <%=history.amount%>
+                                                                </td>
+                                                                <td>
+                                                                    <%=history.mode%>
+                                                                </td>
+                                                                <td>
+                                                                    <%=history.description%>
+                                                                </td>
+                                                            </tbody>
+                                                        </tr>
 
-                                        </table>
-                                        <%}else{%>
-                                            <p>No order has been made yet.</p>
-                                            <a href="shop" class="btn btn-outline-primary-2"><span>GO SHOP</span><i
-                                                    class="icon-long-arrow-right"></i></a>
-                                            <%}%>
+                                                        <%})%>
 
-                                </div>.End .tab-pane -->
+                                                </table>
+                                                <% }else{%>
+                                                    <h5>No available History</h5>
+                                                    <% } %>
 
+                                        </div>
+                                    </div><!-- .End .tab-pane -->
 
-
-                              
-
-<!-- ______________________________--------------------------------------------------------- -->
-                                <div class="tab-pane fade" id="tab-downloads" role="tabpanel"
-                                    aria-labelledby="tab-downloads-link">
-                                    <p>No downloads available yet.</p>
-                                    <a href="shop" class="btn btn-outline-primary-2"><span>GO SHOP</span><i
-                                            class="icon-long-arrow-right"></i></a>
-                                </div><!-- .End .tab-pane -->
-
-                                <div class="tab-pane fade" id="tab-address" role="tabpanel"
-                                    aria-labelledby="tab-address-link">
-                                    <%if (user && user.addresses.length>0 ){%>
-                                    <p>The following addresses will be used on the checkout page by default.</p>
-                                    <div class="row">
-                                           <%user.addresses.forEach((address,index)=>{%>
-
-                                         
-                                        <div class="col-lg-6">
-                                            <div class="card card-dashboard">
-                                                <div class="card-body">
-                                                    <h3 class="card-title">Billing Address</h3><!-- End .card-title -->
-
-                                                    <p><%= address.name %><br>
-                                                        <%= address.address %><br>
-                                                        <%= address.city %><br>
-                                                        <%= address.district %><br>
-                                                        <%= address.mobile %><br>
-                                                        <%= address.pincode %><br>
-                                                        <%= address.state %><br>
-                                                        <%= address.country %><br>
-                                                      
-                                                        <a  class="btn" href="edit-address?index=<%= index %>">Edit <i class="icon-edit"></i></a>
-                                                    </p>
-                                                </div><!-- End .card-body -->
-                                            </div><!-- End .card-dashboard -->
-                                        </div><!-- End .col-lg-6 -->
-                                        <% })%>
-                                        <%}else{%>
-                                            <p>No address available yet.</p>
-                                            <a href="add-address" class="btn btn-outline-primary-2"><span>Add NEW</span><i
-                                                    class="icon-long-arrow-right"></i></a>
-                                        <%}%>
-
-                                    </div><!-- End .row -->
-                                </div><!-- .End .tab-pane -->
-
-                                <div class="tab-pane fade" id="tab-account" role="tabpanel"
-                                    aria-labelledby="tab-account-link">
-
-                                    <label>Name *</label>
-                                    <input type="text" class="form-control" value="<%= user.name %>" required
-                                        name="name">
-                                    <small class="form-text">This will be how your name will be displayed in the account
-                                        section and in reviews</small>
-                                    <p class="text-danger" id="nameError"></p>
-
-                                    <label>Mobile Number *</label>
-                                    <input type="text" class="form-control" name="mobile" value="<%= user.mobile %>"
-                                        required>
-                                    <p class="text-danger" id="mobileError"></p>
-
-                                    <label>Email address *</label>
-                                    <input type="email" class="form-control mb-2" name="email" disabled
-                                        value="<%= user.email %>" required>
-
-                                    <!-- <label>Current password (leave blank to leave unchanged)</label>
-                                    <input type="password" class="form-control">
-
-                                    <label>New password (leave blank to leave unchanged)</label>
-                                    <input type="password" class="form-control">
-
-                                    <label>Confirm new password</label>
-                                    <input type="password" class="form-control mb-2"> -->
-
-                                    <button type="submit" class="btn btn-outline-primary-2" onclick="changeProfile()">
-                                        <span>SAVE CHANGES</span>
-                                        <i class="icon-long-arrow-right"></i>
-                                    </button>
-                                </div><!-- .End .tab-pane -->
-
-                            </div>
-                        </div><!-- End .col-lg-9 -->
-                    </div><!-- End .row -->
-                </div><!-- End .container -->
-            </div><!-- End .dashboard -->
-        </div><!-- End .page-content -->
-        </main><!-- End .main -->
+                                </div>
+                            </div><!-- End .col-lg-9 -->
+                        </div><!-- End .row -->
+                    </div><!-- End .container -->
+                </div><!-- End .dashboard -->
+            </div><!-- End .page-content -->
+            </main><!-- End .main -->
     </div><!-- End .page-wrapper -->
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
+    <!-- change password Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">change password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- <form action="" id="changePasswordForm"> -->
+
+                    <div>
+                        <label for="old-Password">Old password</label>
+                        <input type="text" id="old-Password" name="oldPassword" placeholder="Enter your old password"
+                            required>
+                        <div class="text-danger error-text mt-0 mb-1" id="old-Password-error"></div>
+                    </div>
+
+                    <div>
+                        <label for="new-Password">New password</label>
+                        <input type="text" id="new-Password" name="newPassword" placeholder="Enter your new password"
+                            required>
+                        <div class="text-danger error-text mt-0 mb-1" id="new-Password-error"></div>
+                    </div>
+
+                    <div>
+                        <label for="confirm-Password">Confirm password</label>
+                        <input type="text" id="confirm-Password" name="confirmPassword"
+                            placeholder="Enter your confirm password" required>
+                        <div class="text-danger error-text mt-0 mb-1" id="confirm-Password-error"></div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick=" validatePassword()">Save
+                            changes</button>
+                    </div>
+
+                    <!-- </form> -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 
     <!-- Sign in / Register Modal -->
     <div class="modal fade" id="signin-modal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -359,7 +426,7 @@
                     mobileError.textContent = 'Please enter a valid 10-digit mobile number.';
                 } else {
                     console.log('im here success')//----------------------
-                    let data = {name,mobile}
+                    let data = { name, mobile }
                     fetch('/update-profile', {
                         method: 'POST',
                         headers: {
@@ -369,7 +436,7 @@
                     })
                         .then(Response => Response.json())
                         .then((res) => {
-                            if(res.nameAlready){
+                            if (res.nameAlready) {
                                 swal.fire({
                                     title: `User name already exist`,
                                     icon: "warning",
@@ -387,10 +454,10 @@
 
                             }
                         })
-                
 
-                // if (nameError.textContent !== '' || mobileError.textContent !== '') {
-                //     event.preventDefault();
+
+                    // if (nameError.textContent !== '' || mobileError.textContent !== '') {
+                    //     event.preventDefault();
                 }
 
 
@@ -398,6 +465,132 @@
 
             // Attach the validation function to the form submit event
             // document.querySelector('form').addEventListener('submit', validateForm);
+
+            let table = document.getElementById('history-table');
+            let historyButton = document.getElementById('transaction-button');
+            let buttonText = document.getElementById('button-text');
+            function showHistory() {
+                console.log("showHistoy")//--------------------
+                table.style.display = "block"
+                historyButton.setAttribute('onClick', 'hideHistory()');
+                buttonText.innerText = "Hide history"
+
+            }
+
+            function hideHistory() {
+                console.log("hide Histoy")//--------------------
+
+
+                table.style.display = "none"
+                historyButton.setAttribute('onClick', 'showHistory()');
+                buttonText.innerText = "Show history"
+
+            }
+
+
+            function validatePassword() {
+
+
+                console.log("im in validatePassword")//--------------------------
+                // setError(oldPasswordError,"yes workign")//
+                // let serializedData = $('$changePasswordForm').serialize()
+                // console.log("serializedData",serializedData)//----------------
+                // console.log("event",event)//------------
+                let oldPasswordError = document.getElementById('old-Password-error')
+                let newPasswordError = document.getElementById('new-Password-error')
+                let confirmPasswordError = document.getElementById('confirm-Password-error');
+
+                let oldPassword = document.getElementById('old-Password')
+                let newPassword = document.getElementById('new-Password')
+                let confirmPassword = document.getElementById('confirm-Password')
+                console.log("old", oldPassword.value)//-----------------------
+                console.log("old", newPassword.value)//-----------------------
+
+                let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/
+
+                function setError(errorId, inputId, message) {
+                    errorId.innerText = `${message}`
+                    inputId.style.border = 'solid 1px red';
+
+                    setTimeout(() => {
+                        errorId.innerText = ""
+                        inputId.style.border = '';
+                    }, 3000)
+                }
+
+                let message;
+
+                if (!passwordRegex.test(oldPassword.value)) {
+                    message = "please enter a valid password !"
+                    setError(oldPasswordError, oldPassword, message)
+                    return
+                }
+
+                else if (!passwordRegex.test(newPassword.value)) {
+
+                    message = "Password must be atleast 6 charcaters !"
+                    setError(newPasswordError, newPassword, message)
+                    return
+                }
+
+                else if (newPassword.value != confirmPassword.value) {
+                    message = "confirm password should be same !"
+                    setError(confirmPasswordError, confirmPassword, message)
+                    return
+                }
+
+
+                let data = {
+                    oldPassword: oldPassword.value,
+                    newPassword: newPassword.value,
+                    confirmPassword: confirmPassword.value
+                }
+                console.log("data", data)//------------------
+
+                fetch('/profile/change-password', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then((res) => res.json())
+                    .then((response) => {
+                        console.log("response", response)//------------------
+                        if (response.success) {
+
+                            swal.fire({
+                                text: "password successfully updated",
+                                icon: "success",
+                                width: "300px",
+                                showConfirmationButton: false,
+                                timer: 1000
+                            })
+
+                            setTimeout(() => {
+                                window.location.href = '/logout'
+
+                            }, 1500)
+
+                        } else {
+
+                            message = "in correct password !"
+                            setError(oldPasswordError, oldPassword, message)
+                            swal.fire({
+                                text: "incorrect Password",
+                                icon: "error",
+                                width: "300px",
+                                showConfirmationButton: false,
+                                timer: 4000
+                            })
+                        }
+                    })
+
+
+
+
+            }
+
         </script>
 
         <!-- Including Jquery -->

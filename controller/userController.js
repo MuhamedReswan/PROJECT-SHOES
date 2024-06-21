@@ -460,6 +460,7 @@ module.exports = {
     forgotPassword,
     loadResetPassword,
     resetPassword,
+    securedPassword
     
 
 

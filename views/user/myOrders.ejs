@@ -1,6 +1,8 @@
 <%- include('../layout/user/header.ejs') -%>
 
     <div class="pageWrapper">
+        <%-include('../partials/userNavbar')-%>
+
 
 
         <style>
@@ -263,7 +265,6 @@
                 let cancelConfirm = document.getElementById('cancel-confirm')
 
                 cancelConfirm.addEventListener('click', (e) => {
-                    console.log('eeeeeeeeeeeee', e)//--------------------
                     let cancelModal = document.getElementById('customizedModal')
                     cancelModal.setAttribute('style', 'diplay:none')
                     //    cancelModal.classList.remove('show')
@@ -289,6 +290,8 @@
 
 
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <%-include('../partials/userBodyFooter.ejs')-%>
+
         </div>
         </body>
 

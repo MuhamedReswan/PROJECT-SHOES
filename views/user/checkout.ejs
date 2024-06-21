@@ -1,6 +1,8 @@
 <%- include('../layout/user/header.ejs') -%>
 
     <div class="pageWrapper">
+        <%-include('../partials/userNavbar')-%>
+
 
 
         <!--Body Content-->
@@ -273,7 +275,7 @@
 
                         <% userData.addresses.forEach((address, index)=>{%>
                             <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-                                <span> <input type="radio" id="address-<%= index %>" name="selectedAddress"
+                                <span> <input type="radio" <%= index==0?"checked":null%> id="address-<%= index %>" name="selectedAddress"
                                         value="<%= index %>">
                                     <label for="address-<%= index %>"></label></span>
                                 <h3>

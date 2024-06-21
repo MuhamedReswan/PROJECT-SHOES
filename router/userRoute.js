@@ -51,7 +51,7 @@ user_route.get('/', userAuth.isLogin, userHelper.countOfCartAndWishlist, userCon
 user_route.get('/signup', userAuth.isLogout, userHelper.countOfCartAndWishlist, userController.loadRegister);
 
 // insert user
-user_route.post('/signup', userController.insertUser);
+user_route.post('/signup', userHelper.countOfCartAndWishlist, userController.insertUser);
 
 // logout
 user_route.get('/logout', userAuth.isLogin, userController.userLogout);
@@ -63,7 +63,7 @@ user_route.get('/login', userAuth.isLogout, userHelper.countOfCartAndWishlist, u
 user_route.post('/login', userHelper.countOfCartAndWishlist, userController.verifyLogin);
 
 // load otp
-user_route.get('/otp', userAuth.isLogout, userController.loadOtp);
+user_route.get('/otp', userAuth.isLogout, userHelper.countOfCartAndWishlist, userController.loadOtp);
 
 // verify otp
 user_route.post('/otp', userController.verifyOtp);
@@ -72,19 +72,21 @@ user_route.post('/otp', userController.verifyOtp);
 user_route.get('/resend/:email', userController.resendOtp);
 
 //forgot password
-user_route.get('/forgot-password', userAuth.isLogout, userController.loadForgotPassword);
+user_route.get('/forgot-password', userAuth.isLogout, userHelper.countOfCartAndWishlist, userController.loadForgotPassword);
 
 //update password
 user_route.post('/forgot-password', userAuth.isLogout, userController.forgotPassword);
 
 // reset Password 
-user_route.get('/reset-password/:id/:token', userAuth.isLogin, userController.loadResetPassword);
+user_route.get('/reset-password/:id/:token', userAuth.isLogin, userHelper.countOfCartAndWishlist, userController.loadResetPassword);
 user_route.post('/reset-password', userController.resetPassword);
 
 //profile
-user_route.get('/profile', userAuth.isLogin, userProfileController.loadProfile)
+user_route.get('/profile', userAuth.isLogin, userHelper.countOfCartAndWishlist, userProfileController.loadProfile)
 // update profile
 user_route.post('/update-profile', userAuth.isLogin, userProfileController.updateProfile)
+// change password
+user_route.post('/profile/change-password',userAuth.isLogin,userProfileController.changePassword)
 
 
 
@@ -95,13 +97,13 @@ user_route.get('/shop', userAuth.isLogin, userHelper.countOfCartAndWishlist, sho
 user_route.get('/single-product', userAuth.isLogin, userHelper.countOfCartAndWishlist, shopController.loadSingleProduct);
 
 //filter
-user_route.post('/filter-shop', userAuth.isLogin, shopController.filterShop);
+user_route.post('/filter-shop', userAuth.isLogin, userHelper.countOfCartAndWishlist, shopController.filterShop);
 
 
 
 
 // load cart
-user_route.get('/cart', cartController.loadCart);
+user_route.get('/cart', userHelper.countOfCartAndWishlist, cartController.loadCart);
 
 // add to cart
 user_route.post('/addtocart', cartController.addToCart);//want to add middleware to login
@@ -120,9 +122,9 @@ user_route.post('/change-quantity', cartController.changeQuantity);
 
 
 //checkout 
-user_route.get('/checkout', userAuth.isLogin, cartController.loadCheckout);
+user_route.get('/checkout', userAuth.isLogin, userHelper.countOfCartAndWishlist, cartController.loadCheckout);
 // place order
-user_route.post('/place-order', orderController.placeOrder);
+user_route.post('/place-order', userHelper.countOfCartAndWishlist,orderController.placeOrder);
 
 // user_route.get('/online-payment',paymentController.paymentGateway)
 
@@ -130,7 +132,7 @@ user_route.post('/place-order', orderController.placeOrder);
 
 
 //wishlist 
-user_route.get('/wishlist', userAuth.isLogin, wishlistController.loadWishlist);
+user_route.get('/wishlist', userAuth.isLogin, userHelper.countOfCartAndWishlist, wishlistController.loadWishlist);
 
 //add to wishlist
 user_route.post('/add-to-wishlist', wishlistController.addToWishlist);
@@ -153,15 +155,16 @@ user_route.post('/edit-address', userProfileController.updateAddress);
 user_route.get('/order-success/:orderId', userHelper.countOfCartAndWishlist, orderController.loadOrderSuccess);
 
 //order details
-user_route.get('/order-details', userAuth.isLogin, orderController.loadOrderDetails);
+user_route.get('/order-details', userAuth.isLogin, userHelper.countOfCartAndWishlist, orderController.loadOrderDetails);
 
 // my order
-user_route.get('/my-orders', userAuth.isLogin, orderController.loadMyOrder)
+user_route.get('/my-orders', userAuth.isLogin, userHelper.countOfCartAndWishlist, orderController.loadMyOrder)
 
 //cancel order
 user_route.post('/cancel-order', orderController.orderCancel);
 
-user_route.get('/single-order-product', userAuth.isLogin, orderController.singleOrderProduct)
+//order-single-product
+user_route.get('/single-order-product', userAuth.isLogin, userHelper.countOfCartAndWishlist, orderController.singleOrderProduct)
 
 user_route.post('/return-product', orderController.returnProduct)
 
@@ -172,8 +175,7 @@ user_route.put('/order/razorpay-failed', orderController.razorPayFailed)
 // verify razorpay payment
 user_route.post('/order/verify-payment',paymentController.verifyPaymentRazorpay)
 
-//order-single-product
-// user_route.get('/order-single-product', orderController.orderSingleProduct);
+
 
 // user_route.post('/change-order-status-single', orderController.updateSingleOrderStatus);
 
