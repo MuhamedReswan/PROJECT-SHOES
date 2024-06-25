@@ -134,6 +134,8 @@ const insertUser = async (req, res) => {
             res.redirect('/signup');
 
         } else {
+
+            
             const user = new Users({
                 email: req.body.Email,
                 name: req.body.Name,

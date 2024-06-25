@@ -34,6 +34,8 @@ const loadProfile = async (req, res) => {
         const orders = await Orders.find({ user: userId }).populate('products.productId');
         const walletDetails = await Wallet.findOne({ user: userId })
         const user = await Users.findOne({ _id: userId });
+
+        console.log("wallet in controller",walletDetails)//----------------------------------
         res.render('addProfile', { orders, user, walletDetails });
     } catch (error) {
         console.log(error);

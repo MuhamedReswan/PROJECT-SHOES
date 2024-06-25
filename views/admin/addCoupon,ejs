@@ -5,42 +5,29 @@
         <main class="main-wrap ">
 
             <section class="content-main  mx-auto">
-                <form action="/admin/add-products" onsubmit="return validateUpdateForm()" enctype="multipart/form-data"
+                <form action="/admin/add-coupon" onsubmit="return validateUpdateForm()" 
                     method="post">
                     <div class="row my-3">
 
                         <div class="col-9 d-flex justify-content-center">
                             <div class="content-header ">
-                                <h2 class="content-title text-center">Add New Product</h2>
+                                <h2 class="content-title text-center">Add new coupon</h2>
                             </div>
                         </div>
                         <div class="col-lg-9">
                             <div class="card mb-4">
                                 <div class="card-body">
                                     <div id="errorMessages" class="text-center"></div>
-                                    <%if(messages.already){%>
-                                        <div class="alert alert-danger d-flex align-items-center justify-content-center"
-                                            role="alert"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                fill="currentColor"
-                                                class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"
-                                                viewBox="0 0 16 16" role="img" aria-label="Warning:">
-                                                <path
-                                                    d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-                                            </svg>
-                                            <div><strong>Hey!</strong>
-                                                <%=messages.already%>
-                                            </div>
-                                        </div>
-                                        <%}%>
+    
 
                                             <div class="mb-4">
-                                                <label for="name" class="form-label">Product title</label>
+                                                <label for="name" class="form-label">Name</label>
                                                 <input type="text" placeholder="Type here" class="form-control"
                                                     id="name" name="name" />
                                                 <div id="nameError" class="text-danger"></div>
 
                                             </div>
-                                            <div class="row gx-3">
+                                            <!-- <div class="row gx-3"> -->
 
                                                 <div class="col-md-6 mb-3">
                                                     <label for="product_color" class="form-label">Brand</label>
@@ -72,16 +59,6 @@
 
                                                 </div>
 
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="form-label">Categories</label>
-                                                    <select class="form-select" name="category">
-                                                        <% for (let i=0; i < categories.length; i++) { %>
-                                                            <option value="<%=categories[i]._id %>">
-                                                                <%= categories[i].name %>
-                                                            </option>
-                                                            <% } %>
-                                                    </select>
-                                                </div>
 
                                                 <div class="col-md-6 mb-3">
                                                     <label class="form-label">Is Listed</label>
@@ -109,22 +86,14 @@
 
                             <div class="card mb-4 p-4">
                                 <!-- <label for="">Product Images</label> -->
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-6 mb-3">
-                                        <label for="imageInput" class="image-label">Upload Images</label>
-                                        <input name="images" type="file" id="imageInput" class="imageInput"
-                                            accept="image/png, image/gif, image/jpeg" multiple
-                                            onchange="previewImages(this)">
-                                    </div>
-                                </div>
-                                <div id="previewContainer" class="row"></div>
+
 
                             </div>
                             <div class="col-6 mx-auto mb-3">
                                 <div class="d-flex justify-content-center align-items-center ">
 
                                     <button class="btn btn-md rounded font-sm hover-up mr-5 text-left">Upload</button>
-                                    <a href="/admin/category" class="btn btn-md rounded font-sm hover-up ml-5">Back</a>
+                                    <a href="/admin/coupon-management" class="btn btn-md rounded font-sm hover-up ml-5">Back</a>
                                 </div>
                             </div>
 
@@ -138,64 +107,7 @@
                 </form>
             </section>
         </main>
-
-        <script>
-
-            function previewImages(input) {
-                const previewContainer = document.getElementById('previewContainer');
-                previewContainer.innerHTML = ''; // Clear previous previews
-
-                const files = input.files;
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    const reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.alt = 'Preview';
-                        img.style.height = '150px';
-                        img.style.width = '150px';
-
-                        const fileName = document.createElement('p');
-                        fileName.textContent = file.name;
-                        fileName.style.whiteSpace = 'nowrap'; // Prevent line breaks
-                        fileName.style.overflow = 'hidden'; // Hide overflow text
-                        fileName.style.textOverflow = 'ellipsis'; // Show ellipsis (...) for overflow text
-                        fileName.style.width = '100%'; // Ensure the file name stays within its container
-
-                        const changeBtn = document.createElement('button');
-                        changeBtn.textContent = 'Change Image';
-                        changeBtn.onclick = function () {
-                            const newInput = document.createElement('input');
-                            newInput.type = 'file';
-                            newInput.accept = 'image/*';
-                            newInput.onchange = function (event) {
-                                const newFile = event.target.files[0];
-                                const newReader = new FileReader();
-                                newReader.onload = function (evt) {
-                                    img.src = evt.target.result;
-                                    fileName.textContent = newFile.name; // Update file name
-                                };
-                                newReader.readAsDataURL(newFile);
-                            };
-                            newInput.click();
-                        };
-
-                        const previewDiv = document.createElement('div');
-                        previewDiv.className = 'col-lg-3 col-md-4 mb-3';
-                        previewDiv.appendChild(img);
-                        previewDiv.appendChild(fileName);
-                        previewDiv.appendChild(changeBtn);
-                        previewContainer.appendChild(previewDiv);
-                    };
-
-                    reader.readAsDataURL(file);
-                }
-            }
-
-
-        </script>
+<!-- 
         <script>
 
             function showErrorMessage(message, errorId) {
@@ -311,7 +223,7 @@
 
             }
 
-        </script>
+        </script> -->
         <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
         <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
         <script src="assets/js/vendors/select2.min.js"></script>

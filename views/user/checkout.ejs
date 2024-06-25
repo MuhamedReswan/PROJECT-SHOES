@@ -1,169 +1,172 @@
 <%- include('../layout/user/header.ejs') -%>
 
     <div class="pageWrapper">
-        <%-include('../partials/userNavbar')-%>
+        <%-include('.. /partials/userNavbar')-%>
 
 
 
-        <!--Body Content-->
-        <div id="page-content">
-            <!--Page Title-->
-            <div class="page section-header text-center">
-                <div class="page-title">
-                    <div class="wrapper">
-                        <h1 class="page-width">Checkout</h1>
+            <!--Body Content-->
+            <div id="page-content">
+                <!--Page Title-->
+                <div class="page section-header text-center">
+                    <div class="page-title">
+                        <div class="wrapper">
+                            <h1 class="page-width">Checkout</h1>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!--End Page Title-->
+                <!--End Page Title-->
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
-                        <div class="customer-box returning-customer">
-                            <h3><i class="icon anm anm-user-al"></i> Do want add new address? <a href="#addAddress"
-                                    id="customer" class="text-white text-decoration-underline"
-                                    data-toggle="collapse">Add New address</a></h3>
-                            <!-- <h3><i class="icon anm anm-user-al"></i> Do want add new address? <a href="#customer-login" id="customer" class="text-white text-decoration-underline" data-toggle="collapse">Add New address</a></h3> -->
-                            <div id="addAddress" class="create-ac-content bg-light-gray padding-20px-all collapse ">
-                                <form action="/add-address" method="post" onsubmit="return addAddressValidation()">
-                                    <fieldset>
-                                        <h2 class="login-title mb-3">Delivery Address</h2>
-                                        <div id="error-container" class="text-center text-danger"></div>
-                                        <div class="row">
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <label for="input-firstname">Full Name <span
-                                                        class="required-f">*</span></label>
-                                                <input name="name" value="" id="input-firstname" type="text">
-                                            </div>
-                                            <!-- <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
+                            <div class="customer-box returning-customer">
+                                <h3><i class="icon anm anm-user-al"></i> Do want add new address? <a href="#addAddress"
+                                        id="customer" class="text-white text-decoration-underline"
+                                        data-toggle="collapse">Add New address</a></h3>
+                                <!-- <h3><i class="icon anm anm-user-al"></i> Do want add new address? <a href="#customer-login" id="customer" class="text-white text-decoration-underline" data-toggle="collapse">Add New address</a></h3> -->
+                                <div id="addAddress" class="create-ac-content bg-light-gray padding-20px-all collapse ">
+                                    <form action="/add-address" method="post" onsubmit="return addAddressValidation()">
+                                        <fieldset>
+                                            <h2 class="login-title mb-3">Delivery Address</h2>
+                                            <div id="error-container" class="text-center text-danger"></div>
+                                            <div class="row">
+                                                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                    <label for="input-firstname">Full Name <span
+                                                            class="required-f">*</span></label>
+                                                    <input name="name" value="" id="input-firstname" type="text">
+                                                </div>
+                                                <!-- <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
                                             <label for="input-lastname">Last Name <span class="required-f">*</span></label>
                                             <input name="lastname" value="" id="input-lastname" type="text">
                                         </div> -->
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <label for="input-telephone">Mobile <span
-                                                        class="required-f">*</span></label>
-                                                <input name="mobile" value="" id="input-telephone" type="text">
+                                                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                    <label for="input-telephone">Mobile <span
+                                                            class="required-f">*</span></label>
+                                                    <input name="mobile" value="" id="input-telephone" type="text">
+                                                </div>
                                             </div>
-                                        </div>
 
-                                    </fieldset>
+                                        </fieldset>
 
-                                    <fieldset>
-                                        <div class="row">
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <label for="input-address-1">Address <span
-                                                        class="required-f">*</span></label>
-                                                <input name="address" value="" id="input-address-1" type="text">
+                                        <fieldset>
+                                            <div class="row">
+                                                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                    <label for="input-address-1">Address <span
+                                                            class="required-f">*</span></label>
+                                                    <input name="address" value="" id="input-address-1" type="text">
+                                                </div>
+                                                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                    <label for="input-city">City <span
+                                                            class="required-f">*</span></label>
+                                                    <input name="city" value="" id="input-city" type="text">
+                                                </div>
                                             </div>
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <label for="input-city">City <span class="required-f">*</span></label>
-                                                <input name="city" value="" id="input-city" type="text">
+                                            <div class="row">
+                                                <div class="form-group col-md-6 col-lg-6 col-xl-6">
+                                                    <label for="input-district">District <span
+                                                            class="required-f">*</span></label>
+                                                    <input name="district" value="" id="input-district" type="text">
+                                                </div>
+                                                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                    <label for="input-zone">State <span
+                                                            class="required-f">*</span></label>
+                                                    <select name="state" id="input-zone">
+                                                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                                        <option value="Assam">Assam</option>
+                                                        <option value="Bihar">Bihar</option>
+                                                        <option value="Chhattisgarh">Chhattisgarh</option>
+                                                        <option value="Goa">Goa</option>
+                                                        <option value="Gujarat">Gujarat</option>
+                                                        <option value="Haryana">Haryana</option>
+                                                        <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                                        <option value="Jharkhand">Jharkhand</option>
+                                                        <option value="Karnataka">Karnataka</option>
+                                                        <option value="Kerala" selected>Kerala</option>
+                                                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                                        <option value="Maharashtra">Maharashtra</option>
+                                                        <option value="Manipur">Manipur</option>
+                                                        <option value="Meghalaya">Meghalaya</option>
+                                                        <option value="Mizoram">Mizoram</option>
+                                                        <option value="Nagaland">Nagaland</option>
+                                                        <option value="Odisha">Odisha</option>
+                                                        <option value="Punjab">Punjab</option>
+                                                        <option value="Rajasthan">Rajasthan</option>
+                                                        <option value="Sikkim">Sikkim</option>
+                                                        <option value="Tamil Nadu">Tamil Nadu</option>
+                                                        <option value="Telangana">Telangana</option>
+                                                        <option value="Tripura">Tripura</option>
+                                                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                                        <option value="Uttarakhand">Uttarakhand</option>
+                                                        <option value="West Bengal">West Bengal</option>
+                                                        <option value="Andaman and Nicobar Islands">Andaman and Nicobar
+                                                            Islands</option>
+                                                        <option value="Chandigarh">Chandigarh</option>
+                                                        <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli
+                                                        </option>
+                                                        <option value="Daman and Diu">Daman and Diu</option>
+                                                        <option value="Lakshadweep">Lakshadweep</option>
+                                                        <option value="Delhi">Delhi</option>
+                                                        <option value="Puducherry">Puducherry</option>
+                                                    </select>
+
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6">
-                                                <label for="input-district">District <span
-                                                        class="required-f">*</span></label>
-                                                <input name="district" value="" id="input-district" type="text">
+                                            <div class="row">
+                                                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                    <label for="input-postcode">Post Code <span
+                                                            class="required-f">*</span></label>
+                                                    <input name="pincode" value="" id="input-postcode" type="text">
+                                                </div>
+                                                <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
+                                                    <label for="input-country">Country <span
+                                                            class="required-f">*</span></label>
+                                                    <select name="country" id="input-country">
+                                                        <option value="India" selected>India</option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <label for="input-zone">State <span class="required-f">*</span></label>
-                                                <select name="state" id="input-zone">
-                                                    <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                                                    <option value="Assam">Assam</option>
-                                                    <option value="Bihar">Bihar</option>
-                                                    <option value="Chhattisgarh">Chhattisgarh</option>
-                                                    <option value="Goa">Goa</option>
-                                                    <option value="Gujarat">Gujarat</option>
-                                                    <option value="Haryana">Haryana</option>
-                                                    <option value="Himachal Pradesh">Himachal Pradesh</option>
-                                                    <option value="Jharkhand">Jharkhand</option>
-                                                    <option value="Karnataka">Karnataka</option>
-                                                    <option value="Kerala" selected>Kerala</option>
-                                                    <option value="Madhya Pradesh">Madhya Pradesh</option>
-                                                    <option value="Maharashtra">Maharashtra</option>
-                                                    <option value="Manipur">Manipur</option>
-                                                    <option value="Meghalaya">Meghalaya</option>
-                                                    <option value="Mizoram">Mizoram</option>
-                                                    <option value="Nagaland">Nagaland</option>
-                                                    <option value="Odisha">Odisha</option>
-                                                    <option value="Punjab">Punjab</option>
-                                                    <option value="Rajasthan">Rajasthan</option>
-                                                    <option value="Sikkim">Sikkim</option>
-                                                    <option value="Tamil Nadu">Tamil Nadu</option>
-                                                    <option value="Telangana">Telangana</option>
-                                                    <option value="Tripura">Tripura</option>
-                                                    <option value="Uttar Pradesh">Uttar Pradesh</option>
-                                                    <option value="Uttarakhand">Uttarakhand</option>
-                                                    <option value="West Bengal">West Bengal</option>
-                                                    <option value="Andaman and Nicobar Islands">Andaman and Nicobar
-                                                        Islands</option>
-                                                    <option value="Chandigarh">Chandigarh</option>
-                                                    <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli
-                                                    </option>
-                                                    <option value="Daman and Diu">Daman and Diu</option>
-                                                    <option value="Lakshadweep">Lakshadweep</option>
-                                                    <option value="Delhi">Delhi</option>
-                                                    <option value="Puducherry">Puducherry</option>
-                                                </select>
+                                            <div class="row">
 
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <label for="input-postcode">Post Code <span
-                                                        class="required-f">*</span></label>
-                                                <input name="pincode" value="" id="input-postcode" type="text">
+                                        </fieldset>
+
+
+                                        <fieldset>
+                                            <div class="row d-flex justify-content-center">
+                                                <button type="submit" class="btn">submit</button>
                                             </div>
-                                            <div class="form-group col-md-6 col-lg-6 col-xl-6 required">
-                                                <label for="input-country">Country <span
-                                                        class="required-f">*</span></label>
-                                                <select name="country" id="input-country">
-                                                    <option value="India" selected>India</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="row">
+                                        </fieldset>
+                                    </form>
+                                </div>
 
-                                        </div>
-                                    </fieldset>
-
-
-                                    <fieldset>
-                                        <div class="row d-flex justify-content-center">
-                                            <button type="submit" class="btn">submit</button>
-                                        </div>
-                                    </fieldset>
-                                </form>
                             </div>
-
                         </div>
-                    </div>
 
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
-                        <div class="customer-box customer-coupon">
-                            <h3 class="font-15 xs-font-13"><i class="icon anm anm-gift-l"></i> Have a coupon? <a
-                                    href="#have-coupon" class="text-white text-decoration-underline"
-                                    data-toggle="collapse">Click here to enter your code</a></h3>
-                            <div id="have-coupon" class="collapse coupon-checkout-content">
-                                <div class="discount-coupon">
-                                    <div id="coupon" class="coupon-dec tab-pane active">
-                                        <p class="margin-10px-bottom">Enter your coupon code if you have one.</p>
-                                        <label class="required get" for="coupon-code"><span class="required-f">*</span>
-                                            Coupon</label>
-                                        <input id="coupon-code" required="" type="text" class="mb-3">
-                                        <button class="coupon-btn btn" type="submit">Apply Coupon</button>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
+                            <div class="customer-box customer-coupon">
+                                <h3 class="font-15 xs-font-13"><i class="icon anm anm-gift-l"></i> Have a coupon? <a
+                                        href="#have-coupon" class="text-white text-decoration-underline"
+                                        data-toggle="collapse">Click here to enter your code</a></h3>
+                                <div id="have-coupon" class="collapse coupon-checkout-content">
+                                    <div class="discount-coupon">
+                                        <div id="coupon" class="coupon-dec tab-pane active">
+                                            <p class="margin-10px-bottom">Enter your coupon code if you have one.</p>
+                                            <label class="required get" for="coupon-code"><span
+                                                    class="required-f">*</span>
+                                                Coupon</label>
+                                            <input id="coupon-code" required="" type="text" class="mb-3">
+                                            <button class="coupon-btn btn" type="submit">Apply Coupon</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row billing-fields">
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 sm-margin-30px-bottom">
-                        <!-- <div class="create-ac-content bg-light-gray padding-20px-all">
+                    <div class="row billing-fields">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 sm-margin-30px-bottom">
+                            <!-- <div class="create-ac-content bg-light-gray padding-20px-all">
                         <form>
                             <fieldset>
                                 <h2 class="login-title mb-3">Billing details</h2>
@@ -263,529 +266,546 @@
                             </fieldset>
                         </form>
                     </div> -->
-                        <div class="text-left pl-2">
-                            <% if (userData){%>
-                                <%if(userData.addresses.length>0){%>
-                                    <h3>Choose a delivery address </h3>
-                                    <%}else{%>
-                                        <h3>Please add delivery address </h3>
-                                        <%}%>
-                        </div>
-                        <div id='addressError' class="text-danger"></div>
-
-                        <% userData.addresses.forEach((address, index)=>{%>
-                            <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-                                <span> <input type="radio" <%= index==0?"checked":null%> id="address-<%= index %>" name="selectedAddress"
-                                        value="<%= index %>">
-                                    <label for="address-<%= index %>"></label></span>
-                                <h3>
-                                    <%= address.name %>
-                                </h3>
-                                <p>
-                                    <%= address.address %>,<%= address.place %>
-                                            <br>
-                                            <%= address.city %>
-                                                <%= address.district %>
-                                                    <br>
-                                                    <%= address.state %>
-                                                        <%= address.country %>
-                                                            <br>
-                                                            <%= address.mobile %> <br>
-
-                                </p>
-
-
-                                <!-- Add radio button for each address -->
+                            <div class="text-left pl-2">
+                                <% if (userData){%>
+                                    <%if(userData.addresses.length>0){%>
+                                        <h3>Choose a delivery address </h3>
+                                        <%}else{%>
+                                            <h3>Please add delivery address </h3>
+                                            <%}%>
                             </div>
-                            <%})%>
-                                <%}%>
+                            <div id='addressError' class="text-danger"></div>
 
-                                    <!-- <a href="/add-address" class="btn"></a> -->
+                            <% userData.addresses.forEach((address, index)=>{%>
+                                <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                                    <span> <input type="radio" <%=index==0?"checked":null%> id="address-<%= index %>"
+                                            name="selectedAddress"
+                                            value="<%= index %>">
+                                                <label for="address-<%= index %>"></label></span>
+                                    <h3>
+                                        <%= address.name %>
+                                    </h3>
+                                    <p>
+                                        <%= address.address %>,<%= address.place %>
+                                                <br>
+                                                <%= address.city %>
+                                                    <%= address.district %>
+                                                        <br>
+                                                        <%= address.state %>
+                                                            <%= address.country %>
+                                                                <br>
+                                                                <%= address.mobile %> <br>
 
-                    </div>
-                    <% if(cartData){%>
-                        <% console.log('cart',cartData)%>
+                                    </p>
 
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                                <div class="your-order-payment">
-                                    <div class="your-order">
-                                        <h2 class="order-title mb-4">Your Order</h2>
 
-                                        <div class="table-responsive-sm order-table">
+                                    <!-- Add radio button for each address -->
+                                </div>
+                                <%})%>
+                                    <%}%>
 
-                                            <table class="bg-white table table-bordered table-hover text-center">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-left">Product Name</th>
-                                                        <th>Price</th>
-                                                        <!-- <th>Size</th> -->
-                                                        <th>Qty</th>
-                                                        <th>Subtotal</th>
-                                                    </tr>
-                                                </thead>
-                                                <% let subtotal=0 %>
-                                                    <% cartData.products.forEach((product,index)=>{%>
-                                                        <tbody>
+                                        <!-- <a href="/add-address" class="btn"></a> -->
 
-                                                            <tr>
-                                                                <td class="text-left">
-                                                                    <%= product.productId.name %>
-                                                                </td>
-                                                                <td>₹<%= product.offerPrice%>.00</td>
+                        </div>
+                        <% if(cartData){%>
+                            <% console.log('cart',cartData)%>
 
-                                                                <td>
-                                                                    <%= product.quantity %>
-                                                                </td>
-                                                                <td>₹<%= product.offerPrice * product.quantity %>.00
-                                                                </td>
-                                                            </tr>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="your-order-payment">
+                                        <div class="your-order">
+                                            <h2 class="order-title mb-4">Your Order</h2>
 
-                                                            <% subtotal+=product.offerPrice * product.quantity %>
-                                                        </tbody>
-                                                        <% })%>
-                                                            <tfoot class="font-weight-600">
+                                            <div class="table-responsive-sm order-table">
+
+                                                <table class="bg-white table table-bordered table-hover text-center">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-left">Product Name</th>
+                                                            <th>Price</th>
+                                                            <!-- <th>Size</th> -->
+                                                            <th>Qty</th>
+                                                            <th>Subtotal</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <% let subtotal=0 %>
+                                                        <% cartData.products.forEach((product,index)=>{%>
+                                                            <tbody>
+
                                                                 <tr>
-                                                                    <td colspan="3" class="text-right">Shipping </td>
-                                                                    <td>₹0.00</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td colspan="3" class="text-right">Total</td>
-                                                                    <td id="sub-total" data-subtotal="<%= subtotal%>">₹
-                                                                        <%= subtotal%>.00
+                                                                    <td class="text-left">
+                                                                        <%= product.productId.name %>
+                                                                    </td>
+                                                                    <td>₹<%= product.offerPrice%>.00</td>
+
+                                                                    <td>
+                                                                        <%= product.quantity %>
+                                                                    </td>
+                                                                    <td>₹<%= product.offerPrice * product.quantity %>.00
                                                                     </td>
                                                                 </tr>
-                                                            </tfoot>
-                                            </table>
 
-                                        </div>
-                                    </div>
+                                                                <% subtotal+=product.offerPrice * product.quantity %>
+                                                            </tbody>
+                                                            <% })%>
+                                                                <tfoot class="font-weight-600">
+                                                                    <tr>
+                                                                        <td colspan="3" class="text-right">Shipping
+                                                                        </td>
+                                                                        <td>₹0.00</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="3" class="text-right">Total</td>
+                                                                        <td id="sub-total"
+                                                                            data-subtotal="<%= subtotal%>">₹
+                                                                            <%= subtotal%>.00
+                                                                        </td>
+                                                                    </tr>
+                                                                </tfoot>
+                                                </table>
 
-                                    <hr />
-
-                                    <div class="your-payment">
-                                        <h2 class="payment-title mb-3">payment method</h2>
-                                        <div class="payment-method">
-                                            <div class="payment-accordion">
-                                                <div id="accordion" class="payment-section">
-                                                    <div id='paymentError' class="text-danger"></div>
-
-                                                    <div class="card mb-2">
-                                                        <div class="card-header d-flex ">
-                                                            <input class="mr-2" type="radio" name="paymentOption"
-                                                                id="cashOnDelivery" value="COD">
-                                                            <label class="card-link" for="cashOnDelivery">Cash on
-                                                                Delivery</label>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="card mb-2">
-                                                        <div class="card-header d-flex ">
-                                                            <input class="mr-2" type="radio" name="paymentOption"
-                                                                value="Online" id="Online_Payment">
-                                                            <label class="card-link" for="Online">Online Payment</label>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="card mb-2">
-                                                        <div class="card-header d-flex ">
-                                                            <input class="mr-2" type="radio" name="paymentOption"
-                                                                value="Wallet" id="wallet">
-                                                            <label class="card-link" for="Wallet">Wallet</label>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
                                             </div>
-                                            <div class="order-button-payment">
-                                                <button class="btn" value="Place order" type="submit"
-                                                    onclick="checkoutValidation()">Place order</button>
+                                        </div>
+
+                                        <hr />
+
+                                        <div class="your-payment">
+                                            <h2 class="payment-title mb-3">payment method</h2>
+                                            <div class="payment-method">
+                                                <div class="payment-accordion">
+                                                    <div id="accordion" class="payment-section">
+                                                        <div id='paymentError' class="text-danger"></div>
+
+                                                        <div class="card mb-2">
+                                                            <div class="card-header d-flex ">
+                                                                <input class="mr-2" type="radio" name="paymentOption"
+                                                                    id="cashOnDelivery" value="COD">
+                                                                <label class="card-link" for="cashOnDelivery">Cash on
+                                                                    Delivery</label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="card mb-2">
+                                                            <div class="card-header d-flex ">
+                                                                <input class="mr-2" type="radio" name="paymentOption"
+                                                                    value="Online" id="Online_Payment">
+                                                                <label class="card-link" for="Online">Online
+                                                                    Payment</label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="card mb-2">
+                                                            <div class="card-header d-flex ">
+                                                                <input class="mr-2" type="radio" name="paymentOption"
+                                                                    value="Wallet" id="wallet">
+                                                                <label class="card-link" for="Wallet">Wallet</label>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="order-button-payment">
+                                                    <button class="btn" value="Place order" type="submit"
+                                                        onclick="checkoutValidation()">Place order</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <%}%>
+                                <%}%>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!--End Body Content-->
+            <!--End Body Content-->
 
 
 
-        <!--Footer-->
+            <!--Footer-->
 
-        <!--End Footer-->
-        <!--Scoll Top-->
-        <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
-        <!--End Scoll Top-->
+            <!--End Footer-->
+            <!--Scoll Top-->
+            <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
+            <!--End Scoll Top-->
 
-        <script>
-            function addAddressValidation() {
-                // event.preventDefault(); // Prevent form submission if validation fails
-                console.log('im add-address validation');
-                // Get form fields
-                const name = document.getElementById('input-firstname').value.trim();
-                const mobile = document.getElementById('input-telephone').value.trim();
-                const address = document.getElementById('input-address-1').value.trim();
-                const district = document.getElementById('input-district').value.trim();
-                const city = document.getElementById('input-city').value.trim();
-                const pincode = document.getElementById('input-postcode').value.trim();
+            <script>
+                function addAddressValidation() {
+                    // event.preventDefault(); // Prevent form submission if validation fails
+                    console.log('im add-address validation');
+                    // Get form fields
+                    const name = document.getElementById('input-firstname').value.trim();
+                    const mobile = document.getElementById('input-telephone').value.trim();
+                    const address = document.getElementById('input-address-1').value.trim();
+                    const district = document.getElementById('input-district').value.trim();
+                    const city = document.getElementById('input-city').value.trim();
+                    const pincode = document.getElementById('input-postcode').value.trim();
 
-                // Regular expressions for validation
-                const nameRegex = /^[^\s].+/;
-                const mobileRegex = /^\d{10}$/;
-                const textRegex = /^[^\d]+$/;
-                const pincodeRegex = /^\d{6}$/;
+                    // Regular expressions for validation
+                    const nameRegex = /^[^\s].+/;
+                    const mobileRegex = /^\d{10}$/;
+                    const textRegex = /^[^\d]+$/;
+                    const pincodeRegex = /^\d{6}$/;
 
-                // Error messages
-                const errors = [];
+                    // Error messages
+                    const errors = [];
 
-                // Validate each field
-                if (!nameRegex.test(name) || name == '') {
-                    errors.push('Please enter a proper name');
-                    document.getElementById('input-firstname').classList.add('error');
-                    displayErrors(errors);
-                    return false;
+                    // Validate each field
+                    if (!nameRegex.test(name) || name == '') {
+                        errors.push('Please enter a proper name');
+                        document.getElementById('input-firstname').classList.add('error');
+                        displayErrors(errors);
+                        return false;
+                    }
+
+                    if (!mobileRegex.test(mobile) || mobile.length > 10 || mobile.length < 10) {
+                        errors.push('Mobile number should be 10 digits.');
+                        document.getElementById('input-telephone').classList.add('error');
+                        displayErrors(errors);
+                        return false;
+                    }
+
+                    if (!textRegex.test(address) || address == '') {
+                        errors.push('Please enter a valid address');
+                        document.getElementById('input-address-1').classList.add('error');
+                        displayErrors(errors);
+                        return false;
+                    }
+
+                    if (!textRegex.test(district) || district == '') {
+                        errors.push('Please enter a valid distric name.');
+                        document.getElementById('input-district').classList.add('error');
+                        displayErrors(errors);
+                        return false;
+                    }
+
+                    if (!textRegex.test(city) || city == '') {
+                        errors.push('Please enter a valid city name.');
+                        document.getElementById('input-city').classList.add('error');
+                        displayErrors(errors);
+                        return false;
+                    }
+
+                    if (!pincodeRegex.test(pincode) || pincode == '') {
+                        errors.push('Pincode should be 6 digits.');
+                        document.getElementById('input-postcode').classList.add('error');
+                        displayErrors(errors);
+                        return false;
+                    }
+
+                    // If all validations pass, return true
+                    console.log('return true');
+                    return true;
                 }
 
-                if (!mobileRegex.test(mobile) || mobile.length > 10 || mobile.length < 10) {
-                    errors.push('Mobile number should be 10 digits.');
-                    document.getElementById('input-telephone').classList.add('error');
-                    displayErrors(errors);
-                    return false;
+                function displayErrors(errors) {
+                    // Display error messages
+                    const errorContainer = document.getElementById('error-container');
+                    errorContainer.innerHTML = errors.map(error => `<strong><p class="text-danger">${error}</p></strong>`).join('');
+                    errorContainer.style.display = 'block';
+                    setTimeout(() => {
+                        errorContainer.innerHTML = ""
+                    }, 3000)
                 }
 
-                if (!textRegex.test(address) || address == '') {
-                    errors.push('Please enter a valid address');
-                    document.getElementById('input-address-1').classList.add('error');
-                    displayErrors(errors);
-                    return false;
-                }
-
-                if (!textRegex.test(district) || district == '') {
-                    errors.push('Please enter a valid distric name.');
-                    document.getElementById('input-district').classList.add('error');
-                    displayErrors(errors);
-                    return false;
-                }
-
-                if (!textRegex.test(city) || city == '') {
-                    errors.push('Please enter a valid city name.');
-                    document.getElementById('input-city').classList.add('error');
-                    displayErrors(errors);
-                    return false;
-                }
-
-                if (!pincodeRegex.test(pincode) || pincode == '') {
-                    errors.push('Pincode should be 6 digits.');
-                    document.getElementById('input-postcode').classList.add('error');
-                    displayErrors(errors);
-                    return false;
-                }
-
-                // If all validations pass, return true
-                console.log('return true');
-                return true;
-            }
-
-            function displayErrors(errors) {
-                // Display error messages
-                const errorContainer = document.getElementById('error-container');
-                errorContainer.innerHTML = errors.map(error => `<strong><p class="text-danger">${error}</p></strong>`).join('');
-                errorContainer.style.display = 'block';
-                setTimeout(() => {
-                    errorContainer.innerHTML = ""
-                }, 3000)
-            }
-
-            // Remove error class on input focus
-            document.querySelectorAll('input').forEach(input => {
-                input.addEventListener('focus', () => {
-                    input.classList.remove('error');
-                    document.getElementById('error-container').style.display = '';
+                // Remove error class on input focus
+                document.querySelectorAll('input').forEach(input => {
+                    input.addEventListener('focus', () => {
+                        input.classList.remove('error');
+                        document.getElementById('error-container').style.display = '';
+                    });
                 });
-            });
-        </script>
+            </script>
 
 
-        <script>
-            function checkoutValidation() {
-                console.log('im addres payment validation');//-----------------
-                const addressRadios = document.getElementsByName('selectedAddress');
-                const paymentError = document.getElementById('paymentError');
-                const addressError = document.getElementById('addressError');
-                const paymentOption = document.getElementsByName('paymentOption');
+            <script>
+                function checkoutValidation() {
+                    console.log('im addres payment validation');//-----------------
+                    const addressRadios = document.getElementsByName('selectedAddress');
+                    const paymentError = document.getElementById('paymentError');
+                    const addressError = document.getElementById('addressError');
+                    const paymentOption = document.getElementsByName('paymentOption');
 
 
-                let addressSelected = false;
-                for (let i = 0; i < addressRadios.length; i++) {
-                    if (addressRadios[i].checked) {
-                        addressSelected = true;
-                        break;
-                    }
-                }
-
-                let paymentSelected = false;
-                for (let i = 0; i < paymentOption.length; i++) {
-                    if (paymentOption[i].checked) {
-                        paymentSelected = true;
-                    }
-                }
-
-                if (!addressSelected) {
-                    Swal.fire({
-                        icon: 'warning',
-                        text: " please Select Delivery Address !",
-                        showConfirmButton: false,
-                        width: '300px',
-                        showConfirmButton: '#d33'
-                    })
-                    return false;
-
-                } else if (!paymentSelected) {
-                    Swal.fire({
-                        icon: 'warning',
-                        text: "Please Select Payment Method !",
-                        showConfirmButton: false,
-                        width: '300px',
-                        showConfirmButton: '#d33'
-                    })
-                    return false;
-
-                } else {
-                    console.log('true is working')//----------
-                    const radioButtonAddress = document.querySelector('input[name="selectedAddress"]:checked');
-                    const index = radioButtonAddress ? radioButtonAddress.value : null
-                    console.log('index', index)//----------
-                    if (index) {
-                        console.log('index1', index)//----------
-                        const radioButtonPayment = document.querySelector('input[name="paymentOption"]:checked');
-                        const paymentMethod = radioButtonPayment ? radioButtonPayment.value : null;
-                        console.log('paymentMethod', paymentMethod)//----------
-                        if (paymentMethod) {
-                            console.log('paymentMethod1', paymentMethod)//----------
-                            const subtotal = document.getElementById('sub-total').getAttribute('data-subtotal');
-                            console.log('data-sudtotal' + subtotal)//-------------------
-                            if (subtotal) {
-                                console.log('subtotal', subtotal)//----------
-                                let data = { index: index, subtotal: subtotal, paymentMethod: paymentMethod }
-
-                                fetch('/place-order', {
-                                    method: 'Post',
-                                    headers: {
-                                        'content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify(data)
-                                })
-                                    .then(Response => Response.json())
-                                    .then((res) => {
-                                        console.log(res, 'res /place-order front')//-----------------------------------
-                                        if (res.quant) {
-                                            Swal.fire({
-                                                icon: 'warning',
-                                                text: `Sorry your product ${res.lessQuantity} is Out Of Stock'`,
-                                                width: '300px',
-                                                showConfirmButton: '#d33'
-                                            });
-                                        }
-                                        if (res.paymentMethod == 'COD') {
-                                            location.href = `/order-success/${res.orderId}`
-
-                                        } else if (res.paymentMethod == 'Online') {
-                                            if (res.success) {
-                                                console.log("ccontact", res);//----------
-
-
-                                                var options = {
-                                                    "key": "" + res.key_id + "", // Enter the Key ID generated from the Dashboard
-                                                    "amount": res.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-                                                    "currency": "INR",
-                                                    "name": "SHOEZY", //your business name
-                                                    "description": "Test Transaction",
-                                                    "image": "https://dummyimage.com//600x400/000/fff",
-                                                    "order_id": res.order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-                                                    handler: (response) => {
-
-                                                        alert("Payment Succeeded");
-                                                        console.log("payment success", response);//---------------------
-                                                        verifyRazorpayPayment(response, res);
-                                                    },
-                                                    "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
-                                                        "name": "" + res.name + "", //your customer's name
-                                                        "email": "" + res.email + "",
-                                                        "contact": "" + res.contact + "" //Provide the customer's phone number for better conversion rates 
-                                                    },
-                                                    "notes": {
-                                                        "description": "" + "It is a test transaction"
-                                                    },
-                                                    "theme": {
-                                                        "color": "#4c5d50"
-                                                    }
-                                                };
-
-
-                                                var razorpayObject = new Razorpay(options);
-                                                razorpayObject.on('payment.failed', function (response) {
-
-                                                    console.log("annna");///-----------------------
-                                                    console.log("razor failed++++++", response)
-                                                    alert("Payment failed");
-                                                    handleRazorpayFailure(response, res)
-
-                                                });
-
-                                                razorpayObject.open();
-
-                                            }
-                                            else {
-                                                console.log('im in else alert')//---------------------------
-                                                alert(res.msg);
-                                            }
-
-                                        } else if (res.paymentMethod == 'Wallet') {
-
-                                            if (res.walletBalance) {
-
-                                                Swal.fire({
-                                                    icon: 'success',
-                                                    text: `Wallet payment succes`,
-                                                    width: '300px',
-                                                    showConfirmButton: '#d33'
-                                                });
-
-                                                setTimeout(() => {
-                                                    location.href = `/order-success/${res.orderId}`
-                                                }, 1500)
-
-
-
-                                            } else {
-                                                Swal.fire({
-                                                    icon: 'warning',
-                                                    text: `${res.message}`,
-                                                    width: '300px',
-                                                    showConfirmButton: '#d33'
-                                                });
-
-
-                                            }
-
-
-
-
-
-                                        }
-                                    })
-                                    .catch(error => console.log(error))
-
-
-                            }
-
+                    let addressSelected = false;
+                    for (let i = 0; i < addressRadios.length; i++) {
+                        if (addressRadios[i].checked) {
+                            addressSelected = true;
+                            break;
                         }
                     }
 
+                    let paymentSelected = false;
+                    for (let i = 0; i < paymentOption.length; i++) {
+                        if (paymentOption[i].checked) {
+                            paymentSelected = true;
+                        }
+                    }
+
+                    if (!addressSelected) {
+                        Swal.fire({
+                            icon: 'warning',
+                            text: " please Select Delivery Address !",
+                            showConfirmButton: false,
+                            width: '300px',
+                            showConfirmButton: '#d33'
+                        })
+                        return false;
+
+                    } else if (!paymentSelected) {
+                        Swal.fire({
+                            icon: 'warning',
+                            text: "Please Select Payment Method !",
+                            showConfirmButton: false,
+                            width: '300px',
+                            showConfirmButton: '#d33'
+                        })
+                        return false;
+
+                    } else {
+                        console.log('true is working')//----------
+                        const radioButtonAddress = document.querySelector('input[name="selectedAddress"]:checked');
+                        const index = radioButtonAddress ? radioButtonAddress.value : null
+                        console.log('index', index)//----------
+                        if (index) {
+                            console.log('index1', index)//----------
+                            const radioButtonPayment = document.querySelector('input[name="paymentOption"]:checked');
+                            const paymentMethod = radioButtonPayment ? radioButtonPayment.value : null;
+                            console.log('paymentMethod', paymentMethod)//----------
+                            if (paymentMethod) {
+                                console.log('paymentMethod1', paymentMethod)//----------
+                                const subtotal = document.getElementById('sub-total').getAttribute('data-subtotal');
+                                console.log('data-sudtotal' + subtotal)//-------------------
+                                if (subtotal) {
+                                    console.log('subtotal', subtotal)//----------
+                                    let data = { index: index, subtotal: subtotal, paymentMethod: paymentMethod }
+
+                                    fetch('/place-order', {
+                                        method: 'Post',
+                                        headers: {
+                                            'content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(data)
+                                    })
+                                        .then(Response => Response.json())
+                                        .then((res) => {
+                                            console.log(res, 'res /place-order front')//-----------------------------------
+                                            if (res.cartProduct == false) {
+
+                                                Swal.fire({
+                                                    icon: 'warning !',
+                                                    text: `Sorry your cart is empty.`,
+                                                    width: '300px',
+                                                    showConfirmButton: '#d33'
+                                                });
+                                                setTimeout(() => {
+                                                    window.location.href = "/cart"
+                                                }, 1500)
+
+                                            }
+                                            if (res.quant) {
+                                                Swal.fire({
+                                                    icon: 'warning',
+                                                    text: `Sorry your product ${res.lessQuantity} is Out Of Stock'`,
+                                                    width: '300px',
+                                                    showConfirmButton: '#d33'
+                                                });
+                                            }
+                                            if (res.paymentMethod == 'COD') {
+                                                location.href = `/order-success/${res.orderId}`
+
+                                            } else if (res.paymentMethod == 'Online') {
+                                                if (res.success) {
+                                                    console.log("ccontact", res);//----------
+
+
+                                                    var options = {
+                                                        "key": "" + res.key_id + "", // Enter the Key ID generated from the Dashboard
+                                                        "amount": res.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                                                        "currency": "INR",
+                                                        "name": "SHOEZY", //your business name
+                                                        "description": "Test Transaction",
+                                                        "image": "https://dummyimage.com//600x400/000/fff",
+                                                        "order_id": res.order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                                                        handler: (response) => {
+
+                                                            alert("Payment Succeeded");
+                                                            console.log("payment success", response);//---------------------
+                                                            verifyRazorpayPayment(response, res);
+                                                        },
+                                                        "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+                                                            "name": "" + res.name + "", //your customer's name
+                                                            "email": "" + res.email + "",
+                                                            "contact": "" + res.contact + "" //Provide the customer's phone number for better conversion rates 
+                                                        },
+                                                        "notes": {
+                                                            "description": "" + "It is a test transaction"
+                                                        },
+                                                        "theme": {
+                                                            "color": "#4c5d50"
+                                                        }
+                                                    };
+
+
+                                                    var razorpayObject = new Razorpay(options);
+                                                    razorpayObject.on('payment.failed', function (response) {
+
+                                                        console.log("annna");///-----------------------
+                                                        console.log("razor failed++++++", response)
+                                                        alert("Payment failed");
+                                                        handleRazorpayFailure(response, res)
+
+                                                    });
+
+                                                    razorpayObject.open();
+
+                                                }
+                                                else {
+                                                    console.log('im in else alert')//---------------------------
+                                                    alert(res.msg);
+                                                }
+
+                                            } else if (res.paymentMethod == 'Wallet') {
+
+                                                if (res.walletBalance) {
+
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        text: `Wallet payment succes`,
+                                                        width: '300px',
+                                                        showConfirmButton: '#d33'
+                                                    });
+
+                                                    setTimeout(() => {
+                                                        location.href = `/order-success/${res.orderId}`
+                                                    }, 1500)
+
+
+
+                                                } else {
+                                                    Swal.fire({
+                                                        icon: 'warning',
+                                                        text: `${res.message}`,
+                                                        width: '300px',
+                                                        showConfirmButton: '#d33'
+                                                    });
+
+
+                                                }
+
+
+
+
+
+                                            }
+                                        })
+                                        .catch(error => console.log(error))
+
+
+                                }
+
+                            }
+                        }
+
+
+                    }
 
                 }
 
-            }
 
 
+                function handleRazorpayFailure(response, data) {
 
-            function handleRazorpayFailure(response, data) {
+                    console.log("response PaymentFailed orderId", response)//--------------------
+                    console.log("res.PaymentFailed orderId", data)//--------------------------
+                    let orderId = data.orderId
+                    console.log("orderId", orderId)//------------------------------------------
 
-                console.log("response PaymentFailed orderId", response)//--------------------
-                console.log("res.PaymentFailed orderId", data)//--------------------------
-                let orderId = data.orderId
-                console.log("orderId", orderId)//------------------------------------------
-
-                fetch("/order/razorpay-failed", {
-                    method: 'put',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ orderId })
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        console.log("data in razorpay failed resposnse", data)//----------------------------------
-
-                        Swal.fire({
-                            titleText: 'Something went wrong',
-                            width: '300px',
-                            padding: '10px',
-                            icon: 'error',
-
-                            showConfirmButton: false,
-                            timer: 1500,
-                        });
-                        setTimeout(() => {
-                            alert(` orderId=${data.orderDetails._id}`)
-
-                        }, 500);
-
-                        setTimeout(() => {
-                            location.href = `/order-details?id=${data.orderDetails._id}`
-
-                        }, 1600);
+                    fetch("/order/razorpay-failed", {
+                        method: 'put',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ orderId })
                     })
-            }
+                        .then((response) => response.json())
+                        .then((data) => {
+                            console.log("data in razorpay failed resposnse", data)//----------------------------------
 
-
-
-            function verifyRazorpayPayment(payment, order) {
-                console.log("response", payment)//--------------------
-                console.log("res.order_id", order)//--------------------------
-
-                let data = { payment, order }
-
-                fetch("/order/verify-payment", {
-                    method: 'Post',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                }).then((res) => res.json())
-                    .then((res) => {
-
-                        if (res.paymentSuccess) {
-                            location.href = `/order-details?id=${res.orderId}`
-                        } else {
                             Swal.fire({
-                                positon: "center",
-                                icon: "error",
-                                title: "Payment failed",
+                                titleText: 'Something went wrong',
+                                width: '300px',
+                                padding: '10px',
+                                icon: 'error',
+
                                 showConfirmButton: false,
                                 timer: 1500,
                             });
-                        }
-                    })
-            }
+                            setTimeout(() => {
+                                alert(` orderId=${data.orderDetails._id}`)
+
+                            }, 500);
+
+                            setTimeout(() => {
+                                location.href = `/order-details?id=${data.orderDetails._id}`
+
+                            }, 1600);
+                        })
+                }
+
+
+
+                function verifyRazorpayPayment(payment, order) {
+                    console.log("response", payment)//--------------------
+                    console.log("res.order_id", order)//--------------------------
+
+                    let data = { payment, order }
+
+                    fetch("/order/verify-payment", {
+                        method: 'Post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    }).then((res) => res.json())
+                        .then((res) => {
+
+                            if (res.paymentSuccess) {
+                                location.href = `/order-details?id=${res.orderId}`
+                            } else {
+                                Swal.fire({
+                                    positon: "center",
+                                    icon: "error",
+                                    title: "Payment failed",
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                });
+                            }
+                        })
+                }
 
 
 
 
-        </script>
-        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+            </script>
+            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 
 
 
 
-        <!-- Including Jquery -->
-        <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
-        <script src="user/assets/js/vendor/jquery.cookie.js"></script>
-        <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
-        <script src="user/assets/js/vendor/wow.min.js"></script>
-        <!-- Including Javascript -->
-        <script src="user/assets/js/bootstrap.min.js"></script>
-        <script src="user/assets/js/plugins.js"></script>
-        <script src="user/assets/js/popper.min.js"></script>
-        <script src="user/assets/js/lazysizes.js"></script>
-        <script src="user/assets/js/main.js"></script>
+            <!-- Including Jquery -->
+            <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
+            <script src="user/assets/js/vendor/jquery.cookie.js"></script>
+            <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+            <script src="user/assets/js/vendor/wow.min.js"></script>
+            <!-- Including Javascript -->
+            <script src="user/assets/js/bootstrap.min.js"></script>
+            <script src="user/assets/js/plugins.js"></script>
+            <script src="user/assets/js/popper.min.js"></script>
+            <script src="user/assets/js/lazysizes.js"></script>
+            <script src="user/assets/js/main.js"></script>
 
 
 
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </div>
     </body>
 

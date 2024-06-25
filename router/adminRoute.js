@@ -12,7 +12,8 @@ const adminController = require('../controller/adminController');
 const productController =require('../controller/productController');
 const categoryController =require('../controller/categoryController');
 const adminAuth = require('../middlewares/adminAuth');
-const orderController = require('../controller/orderController')
+const orderController = require('../controller/orderController');
+const couponController = require('../controller/couponController')
 
 
 // admin_route.use(express.static(path.join(__dirname,'public')));
@@ -104,11 +105,23 @@ admin_route.get('/return-request',adminAuth.isLogin,orderController.loadReturnRe
 admin_route.post('/return-product-status-change',orderController.changeRetrunProductStatus)
 
 
+//coupon Management 
+admin_route.get('/coupons',adminAuth.isLogin, couponController.loadcouponManagement)
+
+//add coupon 
+ admin_route.post('/coupons/add-coupon', adminAuth.isLogin, couponController.addCoupon)
+
+ //edit coupon 
+  admin_route.post('/coupons/edit-coupon',adminAuth.isLogin, couponController.updateCoupon)
+
+//  /admin/coupons/add-coupon
 
 
 
 
 // admin_route.post('admin/login', adminController.LoginVerify);
+// admin_route.get('/*', adminController.adminLoginLoad);
+
 
 module.exports=admin_route;
 

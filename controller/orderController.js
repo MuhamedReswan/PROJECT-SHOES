@@ -29,16 +29,19 @@ const placeOrder = async (req, res) => {
 
         const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
         // console.log('car place order', cartData);//-----------
+        if(cartData){
+
         let products = cartData?.products
         console.log('prodductssssssssssssssssssss', products);//------------------
         let lessQuantity = 0
         let size = 0
         if (products.length == 0) {
             console.log("no product in cart");
+            return res.json({cartProduct:false})
 
         } else {
             products.forEach((product) => {
-                if (product.quantity > product.productId.totalStock) {
+                if (product.quantity > product?.productId?.totalStock) {
                     // console.log('product.productId.stock',product.productId.stock)//------------------
                     // console.log('product.productId',product.productId)//------------------
                     lessQuantity = product.productId.name;
@@ -214,7 +217,19 @@ const placeOrder = async (req, res) => {
 
             }
         }
+    }else{
 
+        const cart= new Cart({
+            user: userId,
+        })
+
+        await cart.save;
+
+       console.log("no cart for this user2---") //-----------------
+       return res.json({cartProduct:false})
+
+
+    }
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Internal Server Error' });

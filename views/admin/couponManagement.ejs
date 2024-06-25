@@ -1,0 +1,509 @@
+<%- include('../layout/admin/adminHeader.ejs') -%>
+
+    <%- include('../partials/adminSideNav.ejs') -%>
+        <main class="main-wrap">
+            <%- include('../partials/adminHeaderBody') -%>
+
+                <section class="content-main">
+                    <div class="content-header">
+                        <div>
+                            <h2 class="content-title card-title">Coupons</h2>
+                        </div>
+                        <button class="btn btn-dark btn-sm rounded" id="add-coupon" data-toggle="modal"
+                            data-target="#add-coupon-modal">Add Coupon</button>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="bg-dark text-white bg-opacity-50">
+                                    <tr>
+                                        <th class="text-center">SI</th>
+                                        <th scope="col" class="text-center">Name</th>
+                                        <th scope="col" class="text-center">Coupon Code</th>
+                                        <th scope="col" class="text-center">Description</th>
+                                        <th scope="col" class="text-center">Minimum Amount</th>
+                                        <th scope="col" class="text-center">Offer Percentage</th>
+                                        <th scope="col" class="text-center">User limit</th>
+                                        <th scope="col" class="text-center">status</th>
+                                        <th scope="col" class="text-center">Expire Date</th>
+                                        <th scope="col" class="text-center " colspan="2">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if(coupons){%>
+                                        <% coupons.forEach((coupon,index)=>{%>
+
+                                            <tr class="text-center">
+                                                <td class="text-center">
+                                                    <%=index+1%>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <%=coupon.title%>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <%=coupon.couponCode%>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <%=coupon.description%>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <%=coupon.minCost%>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <%=coupon.discount%> %
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <%=coupon.limit%>
+                                                </td>
+
+                                                <td>
+                                                    <button id="status-button"
+                                                        class="btn text-center btn-sm btn-dark btn-disabled">
+                                                        <%= coupon.isListed==true ? 'Listed' : 'Unlisted' %>
+                                                    </button>
+                                                    <!-- <span style="width: 30px; height: 15px; background-color: black; color: white;"><%= coupon.isListed==true ? 'Listed' : 'Unlisted' %></span> -->
+                                                </td>
+                                                <% let date = new Date(coupon.expiryDate).toLocaleDateString('en-GB') %> 
+
+                                                <td class="text-center">
+                                                     <%=date%>                                                      
+                                                </td>
+
+                                                <td>
+
+                                                    <!-- <button class="btn btn-primary" id="edit-coupon" data-toggle="modal"
+                                                            data-target="#edit-coupon-modal">Edit Coupon</button> -->
+
+                                                    <button
+                                                        class="btn btn-sm  rounded font-sm text-center btn-outline-dark"
+                                                         data-toggle="modal"
+                                                        data-target="#edit-coupon-modal-<%=index%>"><svg
+                                                            xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            fill="blue" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                            <path fill-rule="evenodd"
+                                                                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                                        </svg> <span>Edit</span></button>
+
+                                                    <!-- edit-coupon modal -->
+                                                    <div class="modal fade" id="edit-coupon-modal-<%=index%>" tabindex="-1"
+                                                        role="dialog" aria-labelledby="addCouponModalLabel"
+                                                        aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered"
+                                                            style="max-width: 450px;">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Edit Coupon</h5>
+                                                                    <button type="button" class="close close-modal"
+                                                                        data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <form action="/admin/coupons/edit-coupon"
+                                                                    onsubmit="return editCouponValidation()"
+                                                                    method="Post">
+                                                                    <div class="modal-body">
+                                                                        <div class="form-group">
+                                                                            <div id="e-common-error"
+                                                                                class="text-center"></div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="name" class=""> Coupon
+                                                                                Name:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                id="e-name" name="name"
+                                                                                placeholder="Enter your name"
+                                                                                value="<%=coupon.title%>">
+                                                                            <div id="e-name-error"></div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="discount-amount">Discount
+                                                                                Percentage:</label>
+                                                                            <input type="number" class="form-control"
+                                                                                id="e-discount-amount"
+                                                                                name="discountPercentage"
+                                                                                placeholder="Enter discount in %"
+                                                                                value="<%=coupon.discount%>">
+                                                                            <div id="e-discount-amount-error"></div>
+                                                                        </div>
+
+                                                                        <div class="form-group">
+                                                                            <label for="discount-amount">Minimun
+                                                                                Amount:</label>
+                                                                            <input type="number" class="form-control"
+                                                                                id="e-minimum-amount"
+                                                                                name="minimumAmount"
+                                                                                placeholder="Enter amount greaterthan 0"
+                                                                                value="<%=coupon.minCost%>">
+                                                                            <div id="e-minimum-amount-error"></div>
+                                                                        </div>
+
+                                                                        <div class="form-group">
+                                                                            <label
+                                                                                for="coupon-code">Description:</label>
+                                                                            <input type="text" class="form-control"
+                                                                                id="e-description" name="description"
+                                                                                placeholder="Enter coupon description"
+                                                                                value="<%=coupon.description%>">
+                                                                            <div id="e-description-error"></div>
+
+                                                                        </div>
+
+                                                                        <div class="form-group">
+                                                                            <label for="user-limit">User Limit:</label>
+                                                                            <input type="number" class="form-control"
+                                                                                id="e-user-limit" name="userLimit"
+                                                                                placeholder="Enter user limit"
+                                                                                value="<%=coupon.limit%>">
+                                                                            <div id="e-user-limit-error"></div>
+                                                                        </div>
+
+                                                                        <div class="form-group">
+                                                                            <label for="end-date">End Date:</label>
+                                                                            <input type="date" class="form-control"
+                                                                                id="e-end-date" name="endDate"
+                                                                                value="<%=date%>">
+                                                                            <div id="e-date-error"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="submit" id="e-confirm-coupon"
+                                                                            class="btn btn-primary">Confirm</button>
+                                                                        <button type="button"
+                                                                            class="btn btn-secondary close-modal"
+                                                                            data-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- edit-coupon modal end-->
+                                                </td>
+                                                <td id="reload-action">
+                                                    <button class="btn btn-danger btn-sm"
+                                                        data-status="<%=coupon.islisted%>"
+                                                        onclick="clicked('<%=coupon._id%>')">
+                                                        <%=coupon.isListed ? 'Unlist' : 'List' %>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <% })%>
+                                                <%}else{%>
+                                                    <tr>
+                                                        <td colspan="4" class="text-center">No Coupon Found !</td>
+                                                    </tr>
+                                                    <%}%>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Add Coupon Modal -->
+                <div class="modal fade" id="add-coupon-modal" tabindex="-1" role="dialog"
+                    aria-labelledby="addCouponModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add Coupon</h5>
+                                <button type="button" class="close close-modal" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form action="/admin/coupons/add-coupon" onsubmit="return addCouponValidation()"
+                                method="Post">
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <div id="common-error" class="text-center"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name"> Coupon Name:</label>
+                                        <input type="text" class="form-control" id="name" name="name"
+                                            placeholder="Enter your name">
+                                        <div id="name-error"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="discount-amount">Discount Percentage:</label>
+                                        <input type="number" class="form-control" id="discount-amount"
+                                            name="discountPercentage" placeholder="Enter discount in %">
+                                        <div id="discount-amount-error"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="discount-amount">Minimun Amount:</label>
+                                        <input type="number" class="form-control" id="minimum-amount"
+                                            name="minimumAmount" placeholder="Enter amount greaterthan 0">
+                                        <div id="minimum-amount-error"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="coupon-code">Description:</label>
+                                        <input type="text" class="form-control" id="description" name="description"
+                                            placeholder="Enter coupon description">
+                                        <div id="description-error"></div>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="user-limit">User Limit:</label>
+                                        <input type="number" class="form-control" id="user-limit" name="userLimit"
+                                            placeholder="Enter user limit">
+                                        <div id="user-limit-error"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="end-date">End Date:</label>
+                                        <input type="date" class="form-control" id="end-date" name="endDate">
+                                        <div id="date-error"></div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" id="confirm-coupon" class="btn btn-primary">Confirm</button>
+                                    <button type="button" class="btn btn-secondary close-modal"
+                                        data-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- add coupon modal end -->
+
+
+
+                <footer class="main-footer font-xs">
+                    <div class="row pb-30 pt-15">
+                        <div class="col-sm-6">
+                            <script>document.write(new Date().getFullYear());</script>
+                            &copy; Nest - HTML Ecommerce Template.
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-sm-end">All rights reserved</div>
+                        </div>
+                    </div>
+                </footer>
+        </main>
+
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/vendors/select2.min.js"></script>
+        <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+        <script src="assets/js/main.js" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        <script>
+            $(document).ready(function () {
+                $('#add-coupon').on('click', function () {
+                    $('#add-coupon-modal').modal('show');
+                });
+            });
+
+            $(document).ready(function () {
+                $('.close-modal').on('click', function () {
+                    $('#add-coupon-modal').modal('hide');
+                });
+            });
+
+            $(document).ready(function () {
+                $('#edit-coupon').on('click', function () {
+                    $('#edit-coupon-modal').modal('show');
+                });
+            });
+
+            $(document).ready(function () {
+                $('.close-modal').on('click', function () {
+                    $('#edit-coupon-modal').modal('hide');
+                });
+            });
+
+
+            let couponName = document.getElementById('name');
+            let expireDate = document.getElementById('end-date');
+            let discountAmount = document.getElementById('discount-amount');
+            let userLimit = document.getElementById('user-limit');
+            const nameRegex = /^[a-zA-Z0-9\s]{4,30}$/
+            const descriptionRegex = /^[a-zA-Z\s]{15,}$/
+            let dateError = document.getElementById('date-error');
+            let nameError = document.getElementById('name-error');
+            let descriptionError = document.getElementById('description-error');
+            let discountAmountError = document.getElementById('discount-amount-error');
+            let minimumAmountError = document.getElementById('minimum-amount-error');
+            let userLimitError = document.getElementById('user-limit-error');
+            let commonError = document.getElementById('common-error');
+            let description = document.getElementById('description')
+            let minimumAmount = document.getElementById('minimum-amount')
+            let message;
+
+            function addCouponValidation() {
+                let isValid = true;
+
+                // Validate end date
+                let today = new Date();
+                today.setHours(0, 0, 0, 0); // Set time to 00:00:00
+
+                let endDateObj = new Date(expireDate.value);
+                endDateObj.setHours(0, 0, 0, 0); // Normalize time to 00:00:00
+
+                if (couponName.value.trim() === '' || expireDate.value.trim() === '' || discountAmount.value.trim() === '' || description.value.trim() === '' || userLimit.value.trim() === '') {
+                    message = "Please fill all fields."
+                    showError(null, commonError, message);
+                    isValid = false;
+                }
+
+                else if (!nameRegex.test(couponName.value) || couponName.value.trim() === '') {
+                    message = "'Invalid coupon name. Please use only alphanumeric characters, hyphens (-), underscores (_), and keep the name between 4- 30 characters.'";
+                    showError(couponName, nameError, message);
+                    isValid = false;
+                }
+
+                // Validate discount amount
+                else if (discountAmount.value <= 0 || discountAmount.value >= 90 || discountAmount.value.trim() == "") {
+                    message = "'Discount percentage must be greater between 0-90 %.'";
+                    showError(discountAmount, discountAmountError, message);
+                    isValid = false;
+                }
+
+                // Validate minimum amount
+                else if (minimumAmount.value <= 0 || minimumAmount.value.trim() == "") {
+                    message = "Minimum amount should be greater than 0";
+                    showError(minimumAmount, minimumAmountError, message);
+                    isValid = false;
+                }
+
+                // Validate user limit
+                else if (userLimit.value < 0) {
+                    message = "'User limit must be a non-negative number.'";
+                    showError(userLimit, userLimitError, message);
+                    isValid = false;
+                }
+
+                else if (!descriptionRegex.test(description.value) || description.value.trim() == "") {
+                    message = "Descritption should be atleast 15 character, dont include symbols or numbers !";
+                    showError(description, descriptionError, message);
+                    isValid = false;
+                }
+
+
+                else if (isNaN(endDateObj.getTime()) || endDateObj <= today) {
+                    message = "'Please enter a valid future date.'";
+                    showError(expireDate, dateError, message);
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            function showError(inputId, errorId, message) {
+                if (inputId != null) {
+                    inputId.style.border = "1px solid red";
+                    errorId.style.fontSize = "14px";
+                }
+                errorId.style.fontSize = "14px";
+                errorId.style.color = "red";
+                errorId.innerText = `${message}`;
+
+
+
+                setTimeout(() => {
+                    if (inputId != null) {
+                        inputId.style.border = "";
+                    } errorId.innerText = "";
+
+                }, 3000);
+            }
+
+
+            let ecouponName = document.getElementById('e-name');
+            let eexpireDate = document.getElementById('e-end-date');
+            let ediscountAmount = document.getElementById('e-discount-amount');
+            let euserLimit = document.getElementById('e-user-limit');
+            const enameRegex = /^[a-zA-Z0-9\s]{4,30}$/
+            const edescriptionRegex = /^[a-zA-Z\s]{15,}$/
+            let edateError = document.getElementById('e-date-error');
+            let enameError = document.getElementById('e-name-error');
+            let edescriptionError = document.getElementById('e-description-error');
+            let ediscountAmountError = document.getElementById('e-discount-amount-error');
+            let eminimumAmountError = document.getElementById('e-minimum-amount-error');
+            let euserLimitError = document.getElementById('e-user-limit-error');
+            let ecommonError = document.getElementById('e-common-error');
+            let edescription = document.getElementById('e-description')
+            let eminimumAmount = document.getElementById('e-minimum-amount')
+            let emessage = "";
+
+            function editCouponValidation() {
+                let isValid = true;
+
+                // Validate end date
+                let today = new Date();
+                today.setHours(0, 0, 0, 0); // Set time to 00:00:00
+
+                let endDateObj = new Date(eexpireDate.value);
+                endDateObj.setHours(0, 0, 0, 0); // Normalize time to 00:00:00
+
+                if (ecouponName.value.trim() === '' || eexpireDate.value.trim() === '' || ediscountAmount.value.trim() === '' || edescription.value.trim() === '' || euserLimit.value.trim() === '') {
+                    emessage = "Please fill all fields."
+                    showError(null, ecommonError, emessage);
+                    isValid = false;
+                }
+
+                else if (!enameRegex.test(ecouponName.value) || ecouponName.value.trim() === '') {
+                    emessage = "'Invalid coupon name. Please use only alphanumeric characters, hyphens (-), underscores (_), and keep the name between 4- 30 characters.'";
+                    showError(ecouponName, enameError, emessage);
+                    isValid = false;
+                }
+
+                // Validate discount amount
+                else if (ediscountAmount.value <= 0 || ediscountAmount.value >= 90 || ediscountAmount.value.trim() == "") {
+                    emessage = "'Discount percentage must be greater between 0-90 %.'";
+                    showError(ediscountAmount, ediscountAmountError, emessage);
+                    isValid = false;
+                }
+
+                // Validate minimum amount
+                else if (eminimumAmount.value <= 0 || eminimumAmount.value.trim() == "") {
+                    emessage = "Minimum amount should be greater than 0";
+                    showError(eminimumAmount, eminimumAmountError, emessage);
+                    isValid = false;
+                }
+
+                // Validate user limit
+                else if (euserLimit.value < 0) {
+                    emessage = "'User limit must be a non-negative number.'";
+                    showError(euserLimit, euserLimitError, emessage);
+                    isValid = false;
+                }
+
+                else if (!edescriptionRegex.test(edescription.value) || edescription.value.trim() == "") {
+                    emessage = "Descritption should be atleast 15 character, dont include symbols or numbers !";
+                    showError(edescription, edescriptionError, emessage);
+                    isValid = false;
+                }
+
+
+                else if (isNaN(endDateObj.getTime()) || endDateObj <= today) {
+                    emessage = "'Please enter a valid future date.'";
+                    showError(eexpireDate, edateError, emessage);
+                    isValid = false;
+                }
+
+                fe
+                return isValid;
+            }
+
+
+        </script>
+
+        <%- include('../layout/admin/adminFooter.ejs') -%>

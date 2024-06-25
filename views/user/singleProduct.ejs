@@ -681,6 +681,12 @@
                                             container.innerHTML = '';
 
                                             container.appendChild(anchor);
+                                            
+                                            setTimeout(()=>{
+window.location.href=`/single-product?id=${id}`
+                                            },1500)
+
+                                            // $('#nav-icons').onload(`/single-product?id=${id} #nav-icons`)
                                         }
                                     },
                                     error: function (error) {
