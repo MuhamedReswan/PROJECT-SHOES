@@ -3,6 +3,9 @@ const app = express();
 const path = require('path');
 const flash = require('express-flash');
 require('dotenv').config();
+const { MONGO_CONNECTION } = process.env;
+
+
 
 
 
@@ -10,7 +13,7 @@ require('dotenv').config();
 
 // data base connected
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://127.0.0.1:27017/Ecommerce-Sheos')
+mongoose.connect(MONGO_CONNECTION)
 .then(() => {
     console.log("Mongo Db Connected");
 }).catch((error) => {

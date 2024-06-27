@@ -1,0 +1,236 @@
+<%- include('../layout/admin/adminHeader.ejs') -%>
+
+    <%- include('../partials/adminSideNav.ejs') -%>
+        <main class="main-wrap">
+            <%- include('../partials/adminHeaderBody') -%>
+
+                <section class="content-main">
+                    <div class="content-header">
+                        <div>
+                            <h2 class="content-title card-title">Edit Coupon</h2>
+                        </div>
+                       
+                    </div>
+
+                      <!-- Add Coupon Modal -->
+                <div class="fade" id="add-coupon-modal" tabindex="" role="dialog"
+                aria-labelledby="addCouponModalLabel" aria-hidden="">
+                <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add Coupon</h5>
+                            <button type="button" class="close close-modal" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="/admin/coupons/add-coupon" onsubmit="return addCouponValidation()"
+                            method="Post">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <div id="common-error" class="text-center"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name"> Coupon Name:</label>
+                                    <input type="text" class="form-control" id="name" name="name"
+                                        placeholder="Enter your name">
+                                    <div id="name-error"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="discount-amount">Discount Percentage:</label>
+                                    <input type="number" class="form-control" id="discount-amount"
+                                        name="discountPercentage" placeholder="Enter discount in %">
+                                    <div id="discount-amount-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="discount-amount">Minimun Amount:</label>
+                                    <input type="number" class="form-control" id="minimum-amount"
+                                        name="minimumAmount" placeholder="Enter amount greaterthan 0">
+                                    <div id="minimum-amount-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="coupon-code">Description:</label>
+                                    <input type="text" class="form-control" id="description" name="description"
+                                        placeholder="Enter coupon description">
+                                    <div id="description-error"></div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="user-limit">User Limit:</label>
+                                    <input type="number" class="form-control" id="user-limit" name="userLimit"
+                                        placeholder="Enter user limit">
+                                    <div id="user-limit-error"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="end-date">End Date:</label>
+                                    <input type="date" class="form-control" id="end-date" name="endDate">
+                                    <div id="date-error"></div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" id="confirm-coupon" class="btn btn-primary">Confirm</button>
+                                <button type="button" class="btn btn-secondary close-modal"
+                                    data-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- add coupon modal end -->
+
+                </section>
+
+            
+
+
+              
+
+
+
+                <footer class="main-footer font-xs">
+                    <div class="row pb-30 pt-15">
+                        <div class="col-sm-6">
+                            <script>document.write(new Date().getFullYear());</script>
+                            &copy; Nest - HTML Ecommerce Template.
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-sm-end">All rights reserved</div>
+                        </div>
+                    </div>
+                </footer>
+        </main>
+
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/vendors/select2.min.js"></script>
+        <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+        <script src="assets/js/main.js" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        <script>
+            $(document).ready(function () {
+                $('#add-coupon').on('click', function () {
+                    $('#add-coupon-modal').modal('show');
+                });
+            });
+
+            $(document).ready(function () {
+                $('.close-modal').on('click', function () {
+                    $('#add-coupon-modal').modal('hide');
+                });
+            });
+
+
+            let couponName = document.getElementById('name');
+            let expireDate = document.getElementById('end-date');
+            let discountAmount = document.getElementById('discount-amount');
+            let userLimit = document.getElementById('user-limit');
+            const nameRegex = /^[a-zA-Z0-9\s]{4,30}$/
+            const descriptionRegex = /^[a-zA-Z\s]{15,}$/
+            let dateError = document.getElementById('date-error');
+            let nameError = document.getElementById('name-error');
+            let descriptionError = document.getElementById('description-error');
+            let discountAmountError = document.getElementById('discount-amount-error');
+            let minimumAmountError = document.getElementById('minimum-amount-error');
+            let userLimitError = document.getElementById('user-limit-error');
+            let commonError = document.getElementById('common-error');
+            let description = document.getElementById('description')
+            let minimumAmount = document.getElementById('minimum-amount')
+            let message;
+
+            function addCouponValidation() {
+                let isValid = true;
+
+                // Validate end date
+                let today = new Date();
+                today.setHours(0, 0, 0, 0); // Set time to 00:00:00
+
+                let endDateObj = new Date(expireDate.value);
+                endDateObj.setHours(0, 0, 0, 0); // Normalize time to 00:00:00
+
+                if (couponName.value.trim() === '' || expireDate.value.trim() === '' || discountAmount.value.trim() === '' || description.value.trim() === '' || userLimit.value.trim() === '') {
+                    message = "Please fill all fields."
+                    showError(null, commonError, message);
+                    isValid = false;
+                }
+
+                else if (!nameRegex.test(couponName.value) || couponName.value.trim() === '') {
+                    message = "'Invalid coupon name. Please use only alphanumeric characters, hyphens (-), underscores (_), and keep the name between 4- 30 characters.'";
+                    showError(couponName, nameError, message);
+                    isValid = false;
+                }
+
+                // Validate discount amount
+                else if (discountAmount.value <= 0 || discountAmount.value >= 90 || discountAmount.value.trim() == "") {
+                    message = "'Discount percentage must be greater between 0-90 %.'";
+                    showError(discountAmount, discountAmountError, message);
+                    isValid = false;
+                }
+
+                // Validate minimum amount
+                else if (minimumAmount.value <= 0 || minimumAmount.value.trim() == "") {
+                    message = "Minimum amount should be greater than 0";
+                    showError(minimumAmount, minimumAmountError, message);
+                    isValid = false;
+                }
+
+                // Validate user limit
+                else if (userLimit.value < 0) {
+                    message = "'User limit must be a non-negative number.'";
+                    showError(userLimit, userLimitError, message);
+                    isValid = false;
+                }
+
+                else if (!descriptionRegex.test(description.value) || description.value.trim() == "") {
+                    message = "Descritption should be atleast 15 character, dont include symbols or numbers !";
+                    showError(description, descriptionError, message);
+                    isValid = false;
+                }
+
+
+                else if (isNaN(endDateObj.getTime()) || endDateObj <= today) {
+                    message = "'Please enter a valid future date.'";
+                    showError(expireDate, dateError, message);
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            function showError(inputId, errorId, message) {
+                if (inputId != null) {
+                    inputId.style.border = "1px solid red";
+                    errorId.style.fontSize = "14px";
+                }
+                errorId.style.fontSize = "14px";
+                errorId.style.color = "red";
+                errorId.innerText = `${message}`;
+
+
+
+                setTimeout(() => {
+                    if (inputId != null) {
+                        inputId.style.border = "";
+                    } errorId.innerText = "";
+
+                }, 3000);
+            }
+
+
+
+
+
+
+      
+
+        </script>
+
+        <%- include('../layout/admin/adminFooter.ejs') -%>

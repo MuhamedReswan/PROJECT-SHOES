@@ -275,7 +275,7 @@ const loadMyOrder = async (req, res) => {
         console.log('im in my orders')//--------------
         const userId = req.session.user?.id;
         if (userId) {
-            const orders = await Orders.find({ user: userId }).populate('user').populate('products.productId');
+            const orders = await Orders.find({ user: userId }).populate('user').populate('products.productId').sort({date:-1});
             // console.log('my order orders', orders)//-----------------------
             res.render('myOrders', { orders })
         } else {

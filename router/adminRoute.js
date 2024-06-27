@@ -114,7 +114,10 @@ admin_route.get('/coupons',adminAuth.isLogin, couponController.loadcouponManagem
  //edit coupon 
   admin_route.post('/coupons/edit-coupon',adminAuth.isLogin, couponController.updateCoupon)
 
-//  /admin/coupons/add-coupon
+  // change coupon status
+  admin_route.post('/coupons/change-status', adminAuth.isLogin,couponController.changeStatus)
+
+
 
 
 

@@ -32,8 +32,9 @@
                                 </thead>
                                 <tbody>
                                     <% if(coupons){%>
+                                        <!-- <%let currentCoupon%> -->
                                         <% coupons.forEach((coupon,index)=>{%>
-
+                                            <!-- <% currentCoupon = coupon%> -->
                                             <tr class="text-center">
                                                 <td class="text-center">
                                                     <%=index+1%>
@@ -56,7 +57,7 @@
                                                 </td>
 
                                                 <td class="text-center">
-                                                    <%=coupon.discount%> %
+                                                    <%=coupon.discount%>%
                                                 </td>
 
                                                 <td class="text-center">
@@ -70,131 +71,59 @@
                                                     </button>
                                                     <!-- <span style="width: 30px; height: 15px; background-color: black; color: white;"><%= coupon.isListed==true ? 'Listed' : 'Unlisted' %></span> -->
                                                 </td>
-                                                <% let date = new Date(coupon.expiryDate).toLocaleDateString('en-GB') %> 
+                                                <% let date=new Date(coupon.expiryDate).toLocaleDateString('en-GB') %>
 
-                                                <td class="text-center">
-                                                     <%=date%>                                                      
-                                                </td>
+                                                    <td class="text-center">
+                                                        <%=date%>
+                                                    </td>
 
-                                                <td>
+                                                    <td>
 
-                                                    <!-- <button class="btn btn-primary" id="edit-coupon" data-toggle="modal"
+                                                        <!-- <button class="btn btn-primary" id="edit-coupon" data-toggle="modal"
                                                             data-target="#edit-coupon-modal">Edit Coupon</button> -->
 
-                                                    <button
+                                                        <!-- <button
                                                         class="btn btn-sm  rounded font-sm text-center btn-outline-dark"
                                                          data-toggle="modal"
-                                                        data-target="#edit-coupon-modal-<%=index%>"><svg
+                                                        data-target="#edit-coupon-modal"><svg
                                                             xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                             fill="blue" class="bi bi-pencil-square" viewBox="0 0 16 16">
                                                             <path
                                                                 d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
                                                             <path fill-rule="evenodd"
                                                                 d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                                                        </svg> <span>Edit</span></button>
+                                                        </svg> <span>Edit</span></button> -->
 
-                                                    <!-- edit-coupon modal -->
-                                                    <div class="modal fade" id="edit-coupon-modal-<%=index%>" tabindex="-1"
-                                                        role="dialog" aria-labelledby="addCouponModalLabel"
-                                                        aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered"
-                                                            style="max-width: 450px;">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title">Edit Coupon</h5>
-                                                                    <button type="button" class="close close-modal"
-                                                                        data-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
-                                                                </div>
-                                                                <form action="/admin/coupons/edit-coupon"
-                                                                    onsubmit="return editCouponValidation()"
-                                                                    method="Post">
-                                                                    <div class="modal-body">
-                                                                        <div class="form-group">
-                                                                            <div id="e-common-error"
-                                                                                class="text-center"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label for="name" class=""> Coupon
-                                                                                Name:</label>
-                                                                            <input type="text" class="form-control"
-                                                                                id="e-name" name="name"
-                                                                                placeholder="Enter your name"
-                                                                                value="<%=coupon.title%>">
-                                                                            <div id="e-name-error"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label for="discount-amount">Discount
-                                                                                Percentage:</label>
-                                                                            <input type="number" class="form-control"
-                                                                                id="e-discount-amount"
-                                                                                name="discountPercentage"
-                                                                                placeholder="Enter discount in %"
-                                                                                value="<%=coupon.discount%>">
-                                                                            <div id="e-discount-amount-error"></div>
-                                                                        </div>
 
-                                                                        <div class="form-group">
-                                                                            <label for="discount-amount">Minimun
-                                                                                Amount:</label>
-                                                                            <input type="number" class="form-control"
-                                                                                id="e-minimum-amount"
-                                                                                name="minimumAmount"
-                                                                                placeholder="Enter amount greaterthan 0"
-                                                                                value="<%=coupon.minCost%>">
-                                                                            <div id="e-minimum-amount-error"></div>
-                                                                        </div>
+                                                        <button
+                                                            class="btn btn-sm rounded font-sm text-center btn-outline-dark d-flex"
+                                                            data-toggle="modal" data-target="#edit-coupon-modal"
+                                                            data-title="<%=coupon.title%>"
+                                                            data-couponcode="<%=coupon.couponCode%>"
+                                                            data-description="<%=coupon.description%>"
+                                                            data-mincost="<%=coupon.minCost%>"
+                                                            data-discount="<%=coupon.discount%>"
+                                                            data-limit="<%=coupon.limit%>"
+                                                            data-islisted="<%=coupon.isListed%>"
+                                                            data-id="<%=coupon._id%>"
+                                                            data-expirydate="<%=coupon.expiryDate%>">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                height="16" fill="blue" class="bi bi-pencil-square"
+                                                                viewBox="0 0 16 16">
+                                                                <path
+                                                                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                                <path fill-rule="evenodd"
+                                                                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                                            </svg> <span>Edit</span>
+                                                        </button>
 
-                                                                        <div class="form-group">
-                                                                            <label
-                                                                                for="coupon-code">Description:</label>
-                                                                            <input type="text" class="form-control"
-                                                                                id="e-description" name="description"
-                                                                                placeholder="Enter coupon description"
-                                                                                value="<%=coupon.description%>">
-                                                                            <div id="e-description-error"></div>
-
-                                                                        </div>
-
-                                                                        <div class="form-group">
-                                                                            <label for="user-limit">User Limit:</label>
-                                                                            <input type="number" class="form-control"
-                                                                                id="e-user-limit" name="userLimit"
-                                                                                placeholder="Enter user limit"
-                                                                                value="<%=coupon.limit%>">
-                                                                            <div id="e-user-limit-error"></div>
-                                                                        </div>
-
-                                                                        <div class="form-group">
-                                                                            <label for="end-date">End Date:</label>
-                                                                            <input type="date" class="form-control"
-                                                                                id="e-end-date" name="endDate"
-                                                                                value="<%=date%>">
-                                                                            <div id="e-date-error"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="submit" id="e-confirm-coupon"
-                                                                            class="btn btn-primary">Confirm</button>
-                                                                        <button type="button"
-                                                                            class="btn btn-secondary close-modal"
-                                                                            data-dismiss="modal">Close</button>
-                                                                    </div>
-
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- edit-coupon modal end-->
-                                                </td>
-                                                <td id="reload-action">
-                                                    <button class="btn btn-danger btn-sm"
-                                                        data-status="<%=coupon.islisted%>"
-                                                        onclick="clicked('<%=coupon._id%>')">
-                                                        <%=coupon.isListed ? 'Unlist' : 'List' %>
-                                                    </button>
-                                                </td>
+                                                    </td>
+                                                    <td id="reload-action">
+                                                        <button class="btn btn-danger btn-sm"
+                                                            onclick="changeStatus('<%=coupon._id%>','<%=coupon.isListed%>')">
+                                                            <%=coupon.isListed ? 'Unlist' : 'List' %>
+                                                        </button>
+                                                    </td>
                                             </tr>
                                             <% })%>
                                                 <%}else{%>
@@ -219,8 +148,7 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <form action="/admin/coupons/add-coupon" onsubmit="return addCouponValidation()"
-                                method="Post">
+                            <form onsubmit="return addCouponValidation()" id="add-coupon-form">
                                 <div class="modal-body">
                                     <div class="form-group">
                                         <div id="common-error" class="text-center"></div>
@@ -261,6 +189,14 @@
                                     </div>
 
                                     <div class="form-group">
+                                        <label for="user-limit">isListed:</label>
+                                        <select class="form-select" name="isListed" required id="islisted">
+                                            <option value="true" selected>Yes!</option>
+                                            <option value="false">No!</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
                                         <label for="end-date">End Date:</label>
                                         <input type="date" class="form-control" id="end-date" name="endDate">
                                         <div id="date-error"></div>
@@ -277,6 +213,98 @@
                 </div>
                 <!-- add coupon modal end -->
 
+
+                <!-- edit-coupon modal -->
+                <div class="modal fade" id="edit-coupon-modal" tabindex="-1" role="dialog"
+                    aria-labelledby="addCouponModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Coupon</h5>
+                                <button type="button" class="close close-modal" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form id="edit-coupon-form">
+
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <div id="e-common-error" class="text-center"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name" class=""> Coupon
+                                            Name:</label>
+                                        <input type="text" class="form-control" id="e-name" name="name"
+                                            placeholder="Enter your name" value="">
+                                        <div id="e-name-error"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="discount-amount">Discount
+                                            Percentage:</label>
+                                        <input type="number" class="form-control" id="e-discount-amount"
+                                            name="discountPercentage" placeholder="Enter discount in %" value="">
+                                        <div id="e-discount-amount-error"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="discount-amount">Minimun
+                                            Amount:</label>
+                                        <input type="number" class="form-control" id="e-minimum-amount"
+                                            name="minimumAmount" placeholder="Enter amount greaterthan 0" value="">
+                                        <div id="e-minimum-amount-error"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="coupon-code">Description:</label>
+                                        <input type="text" class="form-control" id="e-description" name="description"
+                                            placeholder="Enter coupon description" value="">
+                                        <div id="e-description-error"></div>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="user-limit">User Limit:</label>
+                                        <input type="number" class="form-control" id="e-user-limit" name="userLimit"
+                                            placeholder="Enter user limit" value="">
+                                        <div id="e-user-limit-error"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="end-date">End Date:</label>
+                                        <input type="date" class="form-control" id="e-end-date" name="endDate" value="">
+                                        <div id="e-date-error"></div>
+                                        <input type="hidden" name="couponId" id="e-coupon-id">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" id="e-confirm-coupon" class="btn btn-primary">Confirm</button>
+                                    <button type="button" class="btn btn-secondary close-modal"
+                                        data-dismiss="modal">Close</button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- edit-coupon modal end-->
+
+                <div class="pagination-area mt-15 mb-50">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item"><a class="page-link d-flex align-items-center justify-content-center"
+                                    href="/admin/coupons?id=<%=page%>">
+                                    <i class="material-icons md-chevron_left"></i></a>
+                            </li>
+                            <li class="page-item active"><a class="page-link " href="/admin/coupons?id=<%=previous%>">
+                                    <%=page%>
+                                </a></li>
+                            <li class="page-item"><a class="page-link d-flex align-items-center justify-content-center"
+                                    href="/admin/coupons?id=<%=next%>">
+                                    <i class="material-icons md-chevron_right"></i></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
 
 
                 <footer class="main-footer font-xs">
@@ -443,7 +471,10 @@
             let eminimumAmount = document.getElementById('e-minimum-amount')
             let emessage = "";
 
-            function editCouponValidation() {
+            function editCouponValidation(e) {
+                e.preventDefault()
+                console.log("within edit validation");
+
                 let isValid = true;
 
                 // Validate end date
@@ -493,14 +524,226 @@
                 }
 
 
-                else if (isNaN(endDateObj.getTime()) || endDateObj <= today) {
+                else if (isNaN(endDateObj.getTime()) || endDateObj < today) {
                     emessage = "'Please enter a valid future date.'";
                     showError(eexpireDate, edateError, emessage);
                     isValid = false;
                 }
 
-                fe
+                console.log('EDIT VALIDATION TRUE');
                 return isValid;
+            }
+
+
+
+
+            $(document).ready(function () {
+                $('#edit-coupon-form').on('submit', function (e) {
+                    console.log("within edit submission");
+                    e.preventDefault();
+                    let isValid = editCouponValidation(e);
+                    if (isValid) {
+
+
+                        let formData = $(this).serialize()
+
+                        console.log("Formdata", formData)//---------------
+
+                        $.ajax({
+                            url: '/admin/coupons/edit-coupon',
+                            type: 'POST',
+                            data: formData,
+                            success: function (response) {
+
+                                console.log('response', response)
+                                if (response.success) {
+
+                                    Swal.fire({
+                                        title: "updated!",
+                                        text: "coupon successfully updated !",
+                                        icon: "success",
+                                        width: "300px",
+                                        // timer: 1000
+                                    });
+
+                                    setTimeout(() => {
+                                        window.location.href = "/admin/coupons"
+                                    }, 1600)
+                                }
+                                if (response.already) {
+                                    Swal.fire({
+                                        title: "already exist !",
+                                        text: "coupon name already exist!",
+                                        icon: "error",
+                                        width: "300px",
+                                        // timer: 1000
+                                    });
+                                }
+                            },
+                            error: ((error) => {
+                                console.log(error)
+                            })
+                        });
+                    }
+                })
+            })
+
+
+            $(document).ready(function () {
+                $('#add-coupon-form').on('submit', function (e) {
+                    console.log("within edit submission");
+                    e.preventDefault();
+                    let isValid = addCouponValidation(e);
+                    if (isValid) {
+                        let formData = $(this).serialize()
+
+                        console.log("Formdata", formData)//---------------
+
+                        $.ajax({
+                            url: '/admin/coupons/add-coupon',
+                            type: 'POST',
+                            data: formData,
+                            success: function (response) {
+
+                                console.log('response', response)
+
+                                if (response.already) {
+                                    let errorMessage = "coupon name already exists !"
+
+                                    Swal.fire({
+                                        title: "already exist !",
+                                        text: "coupon name already exist!",
+                                        icon: "error",
+                                        width: "300px",
+                                        timer: 1000
+                                    });
+
+                                }
+                                if (response.success) {
+
+                                    Swal.fire({
+                                        title: "Created!",
+                                        text: "coupon successfully Creted !",
+                                        icon: "success",
+                                        width: "300px",
+                                        timer: 1000
+                                    });
+
+
+                                    setTimeout(() => {
+                                        window.location.href = "/admin/coupons"
+                                    }, 1600)
+                                }
+
+
+
+                            },
+                            error: ((error) => {
+                                console.log(error)
+                            })
+                        });
+                    }
+                })
+            })
+
+
+            $(document).ready(function () {
+                $('body').on('click', '.btn-outline-dark', function () {
+                    var $this = $(this);
+                    console.log("$this", $this)//----------------
+                    var title = $this.data('title');
+                    var couponCode = $this.data('couponcode');
+                    var description = $this.data('description');
+                    var minCost = $this.data('mincost');
+                    var discount = $this.data('discount');
+                    var limit = $this.data('limit');
+                    var isListed = $this.data('islisted');
+                    var expiryDate = $this.data('expirydate');
+                    let couponId = $this.data('id')
+                    console.log("$couponId", couponId)//----------------
+                    console.log("$expiryDate", expiryDate)//----------------
+
+
+
+                    // Populate the modal form fields
+                    $('#e-name').val(title);
+                    $('#e-couponcode').val(couponCode);
+                    $('#e-description').val(description);
+                    $('#e-minimum-amount').val(minCost);
+                    $('#e-discount-amount').val(discount);
+                    $('#e-user-limit').val(limit);
+                    $('#e-coupon-id').val(couponId);
+
+
+                    let date = new Date(expiryDate);
+                    let month = (date.getMonth() + 1).toString().padStart(2, '0'); // getMonth() returns 0-11
+                    let day = date.getDate().toString().padStart(2, '0'); // getDay() returns the day of the week
+                    let year = date.getFullYear();
+                    let formattedDate = `${year}-${month}-${day}`;
+                    console.log(formattedDate, 'formattedDate');
+                    $('#e-end-date').val(formattedDate);
+
+                    // Show the modal
+                    $('#edit-coupon-modal').modal('show');
+                });
+            });
+
+            function changeStatus(couponId, status) {
+                console.log("coupon id --", couponId)//------------
+                console.log("status id --", status)//------------
+
+                swal.fire({
+                    title: "Are you sure?",
+                    text: `Do you want List / Unlist  this user !`,
+                    icon: "question",
+                    width: "300px",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes!"
+
+                }).then((result) => {
+console.log("is result",result)//---------------
+                    if (result.isConfirmed) {
+                        console.log("is confirmed")//---------------
+let data ={ couponId, status }
+
+                        fetch('/admin/coupons/change-status', {
+                            method: 'post',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        })
+                            .then((res) => res.json())
+                            .then((response) => {
+                                if (response.changed) {
+                                    console.log("withis response chanfed");//--------------
+                                    Swal.fire({
+                                        title: "Changed",
+                                        text: "status successfully changed !",
+                                        icon: "success",
+                                        width: "300px",
+                                        timer:1000
+                                    });
+                                }
+                                if (!response.changed) {
+                                    Swal.fire({
+                                        title: "failed !",
+                                        text: "some error occured",
+                                        icon: "error",
+                                        width: "300px",
+                                        timer:1000
+                                    });
+                                }
+
+                                setTimeout(() => {
+                                        window.location.href = "/admin/coupons"
+                                    }, 1600)
+                            })
+                    }
+                })
+
             }
 
 

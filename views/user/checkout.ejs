@@ -1,7 +1,7 @@
 <%- include('../layout/user/header.ejs') -%>
 
     <div class="pageWrapper">
-        <%-include('.. /partials/userNavbar')-%>
+        <%-include('../partials/userNavbar')-%>
 
 
 
@@ -126,9 +126,6 @@
                                                         <option value="India" selected>India</option>
                                                     </select>
                                                 </div>
-                                            </div>
-                                            <div class="row">
-
                                             </div>
                                         </fieldset>
 
@@ -266,6 +263,7 @@
                             </fieldset>
                         </form>
                     </div> -->
+                    <div class="d-flex">
                             <div class="text-left pl-2">
                                 <% if (userData){%>
                                     <%if(userData.addresses.length>0){%>
@@ -274,6 +272,11 @@
                                             <h3>Please add delivery address </h3>
                                             <%}%>
                             </div>
+                            <div class="text-right mr-5-2">
+                                <h3>view coupons</h3>
+
+                            </div>
+                        </div>
                             <div id='addressError' class="text-danger"></div>
 
                             <% userData.addresses.forEach((address, index)=>{%>
