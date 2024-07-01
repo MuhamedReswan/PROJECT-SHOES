@@ -6,6 +6,18 @@ const cartSchema = mongoose.Schema({
         required: true,
         ref: 'Users'
     },
+    couponApplied: {
+        type:Boolean,
+        default:false
+    },
+    cartTotalAmount: {
+        type: Number,
+        default:0
+    },
+    couponDiscountAmount:{
+        type:Number,
+        default:0
+    },
     products: [{
         productId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -31,8 +43,7 @@ const cartSchema = mongoose.Schema({
         createdAt:{
             type:Date,
             default:Date.now()
-        }
-        
+        }  
 
     }]
 })

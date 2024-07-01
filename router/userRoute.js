@@ -10,7 +10,8 @@ const cartController = require('../controller/cartController');
 const wishlistController = require('../controller/wishlistController');
 const userProfileController = require('../controller/userProfileController');
 const orderController = require('../controller/orderController');
-const paymentController = require('../controller/paymentController')
+const paymentController = require('../controller/paymentController');
+const couponController = require('../controller/couponController');
 const config = require('../config/config');
 const userAuth = require('../middlewares/userAuth');
 const userHelper = require('../middlewares/userHelper')
@@ -164,16 +165,24 @@ user_route.get('/my-orders', userAuth.isLogin, userHelper.countOfCartAndWishlist
 user_route.post('/cancel-order', orderController.orderCancel);
 
 //order-single-product
-user_route.get('/single-order-product', userAuth.isLogin, userHelper.countOfCartAndWishlist, orderController.singleOrderProduct)
+user_route.get('/single-order-product', userAuth.isLogin, userHelper.countOfCartAndWishlist, orderController.singleOrderProduct);
 
-user_route.post('/return-product', orderController.returnProduct)
+user_route.post('/return-product', orderController.returnProduct);
 
 
 // razor pay failed
-user_route.put('/order/razorpay-failed', orderController.razorPayFailed)
+user_route.put('/order/razorpay-failed', orderController.razorPayFailed);
 
 // verify razorpay payment
-user_route.post('/order/verify-payment',paymentController.verifyPaymentRazorpay)
+user_route.post('/order/verify-payment',paymentController.verifyPaymentRazorpay);
+
+
+// coupon validate and apply
+user_route.post('/check-coupon',couponController.validateCoupon);
+
+// remove coupon
+user_route.post('/remove-coupon',couponController.removeAppliedCoupon);
+
 
 
 

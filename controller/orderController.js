@@ -96,6 +96,15 @@ const placeOrder = async (req, res) => {
                 // console.log("updateProduct  111111111", updateProduct);//--------------------------
             }
 
+            // const updateCoupon = await Coupons.findByIdAndUpdate({ _id: coupon._id },
+            //     {
+            //         $inc: { limit: -1 },
+            //         $push: { appliedUsers: userId }
+            //     },
+            //     { new: true }
+            // );
+
+            // chnaged this abovecode from applycoupon
 
             await Cart.deleteOne({ user: userId });
 

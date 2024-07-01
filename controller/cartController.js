@@ -3,6 +3,7 @@ const Cart = require('../model/cartModel');
 const { json } = require('express');
 const mongoose = require('mongoose');
 const Users = require('../model/userModel');
+const Coupons = require('../model/couponModel');
 
 
 //load Cart
@@ -17,7 +18,6 @@ const loadCart = async (req, res) => {
             const userId = req.session.user?.id;
             if (userId) {
                 const cartData = await Cart.findOne({ user: userId }).populate('products.productId').exec();
-                console.log("cartData", cartData);//--------------------------------
                 res.render('cart', { cartData });
             } else {
                 res.render('cart');
@@ -36,7 +36,6 @@ const addToCart = async (req, res) => {
         console.log('userId', req.session.user.id);//---------------
         console.log(">>>>>>");//----------------------
         const userId = req.session.user.id;
-console.log('body a cart',req.body)//--------------
         const  productId = req.body.productId;
         const quantity = req.body?.quantity ? req.body.quantity : 1;
 
@@ -46,7 +45,7 @@ console.log('body a cart',req.body)//--------------
         // console.log('userId', userId)//--------------------
         // console.log('q', quantity)//--------------------
         const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
-        console.log('cartData',cartData);//-------------------
+        // console.log('cartData',cartData);//-------------------
         if (cartData) {
             let product = {
                 productId: productId,
@@ -126,11 +125,11 @@ console.log('body a cart',req.body)//--------------
 // remove product from Cart
 const removeFromCart = async (req, res) => {
     try {
-        console.log('removeFromCart', req.body);//------------------
+        // console.log('removeFromCart', req.body);//------------------
         const id = req.session.user.id;
         let { productId} = req.body;
         productId=productId.trim()
-        console.log('productId', productId)//-----------------------------
+        // console.log('productId', productId)//-----------------------------
 if (!mongoose.Types.ObjectId.isValid(productId)){
     return res.status(400).json({ error: 'Invalid productId' });
 }
@@ -186,8 +185,8 @@ const changeQuantity = async (req, res) => {
         const { productId, id, buttonStatus } = req.body;
         const userId = req.session.user.id;
         // console.log('req.body=', req.body);//------------
-        console.log('type.stauts=', typeof req.body.buttonStatus);//------------
-        console.log('id', id)//------
+        // console.log('type.stauts=', typeof req.body.buttonStatus);//------------
+        // console.log('id', id)//------
         const cart = await Cart.findOne({ user: userId });
         // console.log('cart =', cart);//--------
         const product = await products.findOne({ _id: productId });
@@ -242,13 +241,22 @@ const changeQuantity = async (req, res) => {
 const loadCheckout = async (req, res) => {
     try {
         console.log('im in checkout');//-----------
+        const subtotal = req.query?.subtotal;
         const userId =req.session.user.id;
+        let couponApplied =false;
+        couponApplied =req?.query?.coupon;
+        console.log('subtotal chsckout',subtotal);//------------
         console.log('userId chsckout',userId);//------------
         const userData = await Users.findOne({_id:userId});
        const cartData= await Cart.findOne({user:userId}).populate('products.productId');
-       console.log('userData',userData);//-----------------
+    let date = new Date()
+    console.log("date&&&&",date)//--------------------
+       const viewCoupons = await Coupons.find({expiryDate:{$gte:date}, isListed:true, limit:{$gt:0}})
+       console.log('viewCoupons',viewCoupons);//-----------------
+    //    console.log('userData',userData);//-----------------
        console.log('cartData',cartData);//-----------------
-        res.render('checkout',{userData,cartData});
+      
+        res.status(200).render('checkout',{userData,cartData,viewCoupons,couponApplied,});
     } catch (error) {
         console.log(error);
     }

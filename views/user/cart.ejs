@@ -141,7 +141,7 @@
                                                 class="money">₹ <%= totalOfferPrice %>.00</span></span>
                                     </div>
 
-                                    <a href="/checkout" type="button" name="checkout" id="cartCheckout"
+                                    <a href="/checkout?subtotal=<%= totalOfferPrice %>" type="button" name="checkout" id="cartCheckout"
                                         class="btn btn--small-wide checkout" disabled="disabled">Proceed to checkout</a>
 
                                 </div>
