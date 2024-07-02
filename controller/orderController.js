@@ -2,7 +2,8 @@ const Products = require('../model/productsModel');
 const Users = require('../model/userModel');
 const Cart = require('../model/cartModel');
 const Orders = require('../model/orderModel');
-const Retruns = require('../model/orderModel')
+const Coupons = require('../model/couponModel');
+const Retruns = require('../model/orderModel');
 const { createOrderPayment } = require('../controller/paymentController');
 const Wallet = require('../model/walletModel');
 const mongoose = require('mongoose');
@@ -28,7 +29,7 @@ const placeOrder = async (req, res) => {
 
 
         const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
-        // console.log('car place order', cartData);//-----------
+        console.log('car place order', cartData);//-----------
         if(cartData){
 
         let products = cartData?.products
@@ -41,16 +42,12 @@ const placeOrder = async (req, res) => {
 
         } else {
             products.forEach((product) => {
-                if (product.quantity > product?.productId?.totalStock) {
-                    // console.log('product.productId.stock',product.productId.stock)//------------------
-                    // console.log('product.productId',product.productId)//------------------
+                if (product?.quantity > product?.productId?.totalStock) {
                     lessQuantity = product.productId.name;
                 }
             });
         }
 
-
-        // console.log('lessQuantity', lessQuantity)//--------------
 
         if (lessQuantity && lessQuantity !== 0) {
             console.log('within if case');//--------------------------
@@ -76,17 +73,12 @@ const placeOrder = async (req, res) => {
                 const productId = products[i].productId._id;
                 const productTotalStock = products[i].productId.totalStock;
                 const productCartQuantity = products[i].quantity;
-                // const updatedQuantity = productTotalStock-productCartQuantity;
 
                 console.log('productTotalStock', productTotalStock);//------------
-                // console.log('updatedQuantity',updatedQuantity);//------------
                 console.log('productId', productId);//------------
                 console.log('productCartQuantity', productCartQuantity);//------------
-                // const updateProduct = await Products.findByIdAndUpdate({ _id: productId });
-                // console.log("updateProduct", updateProduct);//--------------------------
 
-                //     updateProduct.totalStock -= productCartQuantity;
-                //    await updateProduct.save()
+
                 const updatedQuantity = await Products.findByIdAndUpdate(
                     productId,
                     { $inc: { totalStock: -productCartQuantity } },
@@ -96,17 +88,26 @@ const placeOrder = async (req, res) => {
                 // console.log("updateProduct  111111111", updateProduct);//--------------------------
             }
 
-            // const updateCoupon = await Coupons.findByIdAndUpdate({ _id: coupon._id },
-            //     {
-            //         $inc: { limit: -1 },
-            //         $push: { appliedUsers: userId }
-            //     },
-            //     { new: true }
-            // );
+            const couponId= cartData?.coupon?.couponId;
+            console.log("coupon id from placeOrder",couponId)//-------------------------
+
+            if(couponId){
+                const updateCoupon = await Coupons.findByIdAndUpdate({ _id:couponId},
+                    {
+                        $inc: { limit: -1 },
+                        $push: { appliedUsers: userId }
+                    },
+                    { new: true }
+                );
+            }
+const couponDetails = {
+    couponId:couponId,
+    discount:cartData?.coupon?.couponDiscount
+}           
 
             // chnaged this abovecode from applycoupon
 
-            await Cart.deleteOne({ user: userId });
+            // await Cart.deleteOne({ user: userId });
 
 
 
@@ -119,11 +120,14 @@ const placeOrder = async (req, res) => {
                     orderStatus: status,
                     paymentMethod: paymentMethod,
                     deliveryAddress: address,
-                    orderId: randomNumber
+                    orderId: randomNumber,
+                    coupon:couponDetails
                 })
                 console.log('COD order in place order---------------', order);//--------------------------
                 const orderDetails = await order.save();
                 const orderId = orderDetails._id;
+                await Cart.deleteOne({ user: userId });
+
                 return res.json({ paymentMethod: "COD", orderId });
 
             } else if (paymentMethod == "Online") {
@@ -135,12 +139,15 @@ const placeOrder = async (req, res) => {
                     orderStatus: status,
                     paymentMethod: paymentMethod,
                     deliveryAddress: address,
-                    orderId: randomNumber
+                    orderId: randomNumber,
+                    coupon:couponDetails
                 })
                 console.log('online order in place order-----------', order);//--------------------------
                 const orderDetails = await order.save();
 
-                console.log('place order orderDetails', orderDetails)//-------------------------
+                // console.log('place order orderDetails', orderDetails)//-------------------------
+
+                await Cart.deleteOne({ user: userId });
 
                 createOrderPayment(req, res, orderDetails)
 
@@ -173,6 +180,9 @@ const placeOrder = async (req, res) => {
 
                         }
 
+                        await Cart.deleteOne({ user: userId });
+
+
                         const updatedWallet = await Wallet.updateOne({ user: userId },updation,{ new: true });
 
                             console.log('updated wallet =======',updatedWallet)//-----------------------
@@ -186,7 +196,8 @@ const placeOrder = async (req, res) => {
                             orderStatus: status,
                             paymentMethod: paymentMethod,
                             deliveryAddress: address,
-                            orderId: randomNumber
+                            orderId: randomNumber,
+                            coupon:couponDetails
                         })
                         console.log('wallet order in place order-----------', order);//--------------------------
                         const orderDetails = await order.save();
@@ -330,17 +341,42 @@ const orderCancel = async (req, res) => {
 
                 productId = product.productId;
                 quantity = product.quantity;
-                console.log('quantity ', quantity);
-                console.log('productId ', productId);
+                console.log('quantity ', quantity);//--------------------
+                console.log('productId ', productId);//-----------------
 
                 const updateCancelledQuantity = await Products.updateOne(
                     { _id: productId },
                     { $inc: { totalStock: quantity } },
                     { new: true }
                 );
-                console.log('updateCancelledQuantity', updateCancelledQuantity);
+                console.log('updateCancelledQuantity', updateCancelledQuantity);//----------------------
             }
         }
+
+        const order = await Orders.findOne({_id:orderId,user:userId})
+
+const orderAmount =order.totalAmount;
+        const tansactions ={
+            amount:orderAmount,
+            mode:"Credit",
+            description:"Returned amount of canceled order"
+        } 
+
+        const updation = {
+            $inc:
+                        { balance: orderAmount },
+                        $push:{
+                            tansactions  
+                        }
+
+        }
+
+
+
+        const updatedWallet = await Wallet.updateOne({ user: userId },updation,{ new: true });
+
+        console.log("updatedwaalert in cancelorder",updatedWallet)//----------------------
+
 
         res.status(200).json({ orderCancel: true });
 
@@ -532,10 +568,12 @@ const adminOrders = async (req, res) => {
         }
 
         const ordersDetails = await Orders.find({})
-            .populate('user').populate('products.productId')
-            .limit(limit)
-            .skip((page - 1) * limit)
-            .exec();
+        .populate('user')
+        .populate('products.productId')
+        .sort({ date: -1 }) 
+        .limit(limit)
+        .skip((page - 1) * limit)
+        .exec();
 
         console.log('admin ordersDetails', ordersDetails);//------------------
         res.render('orders', {

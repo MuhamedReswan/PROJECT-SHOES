@@ -82,8 +82,17 @@ const orderSchema = mongoose.Schema({
     couponApplied: {
         type: Number
     },
-    discountedPrice: {
-        type: Number
+    coupon: {
+        type: {
+            couponId: {
+                type: mongoose.Schema.Types.ObjectId,
+        
+            },
+            discount:{
+                type: Number,
+                default:0
+            }
+        },
     },
     deliveryCharge: {
         type: Number,

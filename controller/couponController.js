@@ -29,6 +29,7 @@ const loadcouponManagement = async (req, res) => {
 
         const couponData = await Coupons.find({})
             .limit(limit)
+            .sort({createdAt:-1})
             .skip((page - 1) * limit)
             .exec()
 
@@ -184,7 +185,7 @@ const validateCoupon = async (req, res) => {
         const { subTotal, cartId, couponCode } = req.body;
         const userId = req.session?.user?.id;
         console.log(" userId==", userId)//----------------------
-        
+
 
 
 
@@ -198,9 +199,9 @@ const validateCoupon = async (req, res) => {
             } else if (coupon?.limit == 0) {
                 res.json({ valid: false, message: "coupon limit exceeded !" });
 
-            } else if(coupon?.appliedUsers.includes(userId)){
+            } else if (coupon?.appliedUsers.includes(userId)) {
                 res.json({ valid: false, message: "this coupon already redeemed !" });
-            }else {
+            } else {
 
                 console.log("within the upadaate coupon ", req.session?.user)//----------------------
 
@@ -212,24 +213,31 @@ const validateCoupon = async (req, res) => {
                 //     { new: true }
                 // );                                   // this moved to place order
 
-                const changeStatusAppliedCoupon = await Cart.updateOne({user:userId},
-                    {
-                        $set:{
-                    couponApplied:true
-                }
-            },
-        {new:true})
+                //         const changeStatusAppliedCoupon = await Cart.updateOne({user:userId},
+                //             {
+                //                 $set:{
+                //             couponApplied:true
+                //         }
+                //     },
+                // {new:true})
 
-              console.log(" updateCoupon==", updateCoupon)//----------------------
-              console.log(" changeStatusAppliedCoupon==", changeStatusAppliedCoupon)//----------------------
+                //   console.log(" updateCoupon==", updateCoupon)//----------------------
+                //   console.log(" changeStatusAppliedCoupon==", changeStatusAppliedCoupon)//----------------------
+
+
 
                 let couponDiscount = Math.round((coupon.discount / 100) * subTotal);
                 console.log("couponDiscount", couponDiscount)//--------------
 
-                await Cart.updateOne({user:userId},
-                    {$set:{couponDiscountAmount:couponDiscount}},
-                    {new:true});
-                    
+                let detailsOfCoupon = {
+                    couponDiscount: couponDiscount,
+                    couponId: coupon._id,
+                    code: couponCode
+                }
+                await Cart.updateOne({ user: userId },
+                    { $set: { coupon: detailsOfCoupon, couponApplied: true } },
+                    { new: true });
+
                 res.json({ valid: true, message: "Coupon added success !", couponDiscount, subTotal });
 
             }
@@ -245,17 +253,32 @@ const validateCoupon = async (req, res) => {
 
 
 // remove applied coupon
- const removeAppliedCoupon = async ()=>{
+const removeAppliedCoupon = async (req, res) => {
     try {
         console.log("within remove applied couopon")//--------------
-        const {cartId,subTotal}=req.body
+        const { cartId, subTotal } = req.body
 
-        const updateCouponDisCart= await Cart.findByIdAndUpdate({_id:cartId})
-        
+        const updateCouponDisCart = await Cart.findByIdAndUpdate({
+            _id: cartId
+        }, {
+            $set: {
+                couponApplied: false
+            },
+            $unset: {
+                coupon: null
+            }
+        }, {
+            new: true
+        })
+
+        console.log("updateCouponDisCart", updateCouponDisCart);//-------------------------
+
+        res.status(200).json({ removed: true, message: 'coupon successfully removed !' })
+
     } catch (error) {
         console.log(error)
     }
- }
+}
 
 module.exports = {
     loadcouponManagement,
@@ -264,5 +287,6 @@ module.exports = {
     changeStatus,
 
 
-    validateCoupon
+    validateCoupon,
+    removeAppliedCoupon
 }

@@ -170,6 +170,7 @@ const ProductsList = async (req, res) => {
     const  productsData = await products.find({})
     .populate('category')
     .limit(limit)
+    .sort({created:-1})
     .skip((page-1)*limit)
     .exec()
 

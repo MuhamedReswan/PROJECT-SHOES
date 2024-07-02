@@ -178,7 +178,7 @@ user_route.post('/order/verify-payment',paymentController.verifyPaymentRazorpay)
 
 
 // coupon validate and apply
-user_route.post('/check-coupon',couponController.validateCoupon);
+user_route.post('/apply-coupon',couponController.validateCoupon);
 
 // remove coupon
 user_route.post('/remove-coupon',couponController.removeAppliedCoupon);

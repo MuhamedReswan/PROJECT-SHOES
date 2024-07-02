@@ -30,6 +30,8 @@ type:Number,
         type: String,
         requied: false
     }
+},{
+    timestamps: true
 })
 
 

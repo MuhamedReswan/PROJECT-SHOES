@@ -386,7 +386,7 @@
                                                                     <tr>
                                                                         <td colspan="3" class="text-right">Shipping
                                                                         </td>
-                                                                        <td>₹0.00</td>
+                                                                        <td>₹ 0.00</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td colspan="3" class="text-right">Subtotal
@@ -396,13 +396,20 @@
                                                                     <tr>
                                                                         <td colspan="3" class="text-right">Coupon Discount
                                                                         </td>
-                                                                        <td id="discountId">₹ <%= cartData?.couponDiscountAmount%>.00</td>
+                                                                        <td id="discountId">₹ <%= cartData?.coupon?.couponDiscount%>.00</td>
                                                                     </tr>
                                                                     <tr>
+                                                                        <%let totalAmount%>
+                                                                        <%if(cartData?.coupon?.couponDiscount){%>
+                                                                            <% totalAmount = subtotal-cartData?.coupon?.couponDiscount%>
+                                                                            <%}else{%>
+                                                                                ₹ <% totalAmount = subtotal%>
+                                                                            <%}%>
+
                                                                         <td colspan="3" class="text-right font-weight-bold fs-5">Total</td>
                                                                         <td id="sub-total" class="font-weight-bold fs-5"
-                                                                            data-subtotal="<%= subtotal%>">₹
-                                                                            <%= subtotal-cartData?.couponDiscountAmount%>.00
+                                                                            data-subtotal="<%= totalAmount%>">₹
+                                                                            <%= totalAmount %>.00
                                                                         </td>
                                                                     </tr>
                                                                 </tfoot>
@@ -447,7 +454,7 @@
                 </div>
             </div>
             <div class="order-button-payment">
-                <button class="btn" value="Place order" type="submit" onclick="checkoutValidation()">Place
+                <button class="btn" value="Place order" id="place-order"   type="submit" onclick="checkoutValidation()">Place
                     order</button>
             </div>
     </div>
@@ -664,7 +671,12 @@
 
 
         <script>
-            function checkoutValidation() {
+            function checkoutValidation(event) {
+
+// let placeOrderButton =event.target;
+// couponCode= placeOrderButton.getAttribute('coupon-code')
+// console.log("coupon-code",couponCode)//------------------------------------
+
                 console.log('im addres payment validation');//-----------------
                 const addressRadios = document.getElementsByName('selectedAddress');
                 const paymentError = document.getElementById('paymentError');
@@ -919,7 +931,7 @@
                             location.href = `/order-details?id=${res.orderId}`
                         } else {
                             Swal.fire({
-                                positon: "center",
+                                position: "center",
                                 icon: "error",
                                 title: "Payment failed",
                                 showConfirmButton: false,
@@ -951,7 +963,7 @@
 
                 if (!regex.test(couponCode)) {
                     Swal.fire({
-                        positon: "center",
+                        position: "center",
                         icon: "error",
                         title: "Please enter a valid coupon code",
                         showConfirmButton: false,
@@ -965,7 +977,7 @@
                         subTotal: subTotalValue
                     }
 
-                    fetch('/check-coupon', {
+                    fetch('/apply-coupon', {
                         method: 'post',
                         headers: {
                             'Content-Type': 'application/json'
@@ -977,6 +989,9 @@
 
                             if (response.valid) {
 
+                                let placeOrderButton = document.getElementById('place-order').setAttribute('coupon-code',couponCode);
+
+
                                 // removeCouponButton.classList.replace("d-none", "d-block");
                                 $('#page-content').load(`/checkout?subtotal=${subTotalValue} #page-content`, null, function () {
                                     
@@ -986,7 +1001,7 @@
                                     // document.getElementById('sub-total').innerText = `₹${response.subTotal - response.couponDiscount}.00`;
                                     // console.log("withi success apply coupon")//-------------------------------------
                                     Swal.fire({
-                                        positon: "center",
+                                        position: "center",
                                         icon: "success",
                                         title: `${response.message}`,
                                         showConfirmButton: false,
@@ -998,7 +1013,7 @@
                             }
                             if (!response.valid) {
                                 Swal.fire({
-                                    positon: "center",
+                                    position: "center",
                                     icon: "error",
                                     title: `${response.message}`,
                                     showConfirmButton: false,
@@ -1032,9 +1047,26 @@
                   headers:{
                    'Content-Type':'application/json'
                   },
-                  body:JSON.stringify({data:true})  
+                  body:JSON.stringify(data)  
                 }) .then((res) => res.json())
-                .then((response) => {})
+                .then((response) => {
+                    if(response.removed){
+
+                        let placeOrderButton = document.getElementById('place-order').setAttribute('coupon-code',"");
+                        
+                        $('#page-content').load(`/checkout?subtotal=${subTotalValue} #page-content`, null, function () {
+                                    
+                                    Swal.fire({
+                                    position: "center",
+                                    icon: "success",
+                                    title: `${response.message}`,
+                                    showConfirmButton: false,
+                                    width: "300px",
+                                    timer: 1500,
+                                });
+                                })    
+                    }
+                })
             }
 
         </script>

@@ -24,7 +24,7 @@ const loadShop = async (req, res) => {
 
         const categoryData = await Category.find({ isListed: true });
         const productData = await Products.find({ isListed: true })
-            .sort({ createdAt: 1 })
+            .sort({ createdAt: -1 })
             .limit(limit)
             .skip(start)
             .populate('category');

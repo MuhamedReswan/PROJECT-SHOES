@@ -99,6 +99,7 @@ if(next>totalPage){
 
     const userData = await Users.find({})
     .limit(limit)
+    .sort({date:-1})
     .skip((page-1)*limit)
     .exec()
     // console.log(`userData = ${userData}`)//--------------------------------------------------------------------------------
