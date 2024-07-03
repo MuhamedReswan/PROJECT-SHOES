@@ -1,7 +1,7 @@
 <%- include('../layout/user/header.ejs') -%>
 
     <div class="pageWrapper">
-        <%-include('../partials/userNavbar')-%>
+        <%-include('.. /partials/userNavbar')-%>
 
             <style>
                 .error-text {
@@ -128,6 +128,14 @@
                                     <div class="tab-pane fade" id="tab-account" role="tabpanel"
                                         aria-labelledby="tab-account-link">
 
+                                        <div class="" style="display: flex; justify-content: end; align-items: end;">
+                                            <h3 class="bg-dark text-white">referel code:</h3>
+                                            <input type="text" class="form-control"
+                                                value="localhost:3000/signup?referel=<%= user.referelCode%>" required
+                                                id="referralLink" readonly>
+                                            <button class="btn btn-dark" id="referel-copy-button" style="height: 40px; "
+                                                onclick="copyToClipboard()">copy</button>
+                                        </div>
                                         <label>Name *</label>
                                         <input type="text" class="form-control" value="<%= user.name %>" required
                                             name="name">
@@ -581,14 +589,28 @@
                                 icon: "error",
                                 width: "300px",
                                 showConfirmationButton: false,
-                                timer: 4000
+                                timer: 2000
                             })
                         }
                     })
+            }
 
 
+            function copyToClipboard() {
+                var inputField = document.getElementById('referralLink');
+                navigator.clipboard.writeText(inputField.value).then(function () {
+                    swal.fire({
+                        text: "Referel code copied !",
+                        icon: "success",
+                        width: "300px",
+                        showConfirmationButton: false,
+                        timer: 2000
+                    })
 
 
+                }).catch(function (err) {
+                    alert('Failed to copy text: ', err);
+                });
             }
 
         </script>

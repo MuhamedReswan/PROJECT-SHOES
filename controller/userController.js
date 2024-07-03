@@ -5,6 +5,7 @@ const Token = require('../model/tokenModel');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const Wallet= require('../model/walletModel');
+const otpGenerator = require('otp-generator');
 
 
 
@@ -106,7 +107,8 @@ const
 // load registration 
 const loadRegister = (req, res) => {
     try {
-        res.render('signup');
+const referel = req.query.referel
+        res.render('signup',{referel});
     } catch (error) {
         console.log(error);
     }
@@ -121,6 +123,8 @@ const insertUser = async (req, res) => {
 
         const Name = req.body.Name;
         const Email = req.body.Email;
+        const refCode= req.body.referel;
+
 
         const username = await Users.findOne({ name: Name });
         const useremail = await Users.findOne({ email: Email });
@@ -135,6 +139,7 @@ const insertUser = async (req, res) => {
 
         } else {
 
+            const referelCode = await otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
             
             const user = new Users({
                 email: req.body.Email,
@@ -144,6 +149,7 @@ const insertUser = async (req, res) => {
                 isAdmin: false,
                 isBlocked: false,
                 verified: false,
+                referelCode:referelCode
             })
 
             const userData = await user.save();
@@ -159,8 +165,9 @@ const userWallet = new Wallet({
  const userWalletDetails =  await userWallet.save();
 
                 sendOtp(user.email);
-                res.redirect(`/otp?email=${user.email}`);
 
+                    res.redirect(`/otp?email=${user.email}&referel=${refCode}`);
+     
             } else {
                 console.log('not saved userData....');
             }
@@ -177,7 +184,14 @@ const userWallet = new Wallet({
 const loadOtp = (req, res) => {
     try {
         const email = req.query.email;
-        res.render(`otp`, { email: email });
+        const refCode= req.query.referel;
+
+        // if(refCode){
+            res.render(`otp`, { email: email, referelCode:refCode });
+        // }else{
+        //     res.render(`otp`, { email: email });
+        // }
+       
     } catch (error) {
         console.log(error);
     }
@@ -230,6 +244,8 @@ const sendOtp = async (email) => {
 const verifyOtp = async (req, res) => {
     try {
         const email = req.body.email;
+        const referelCode = req.body.referel;
+
         const otp = req.body.otp1 + req.body.otp2 + req.body.otp3 + req.body.otp4;
 
         const otpUser = await otpModel.findOne({ email: email });
@@ -239,7 +255,7 @@ const verifyOtp = async (req, res) => {
 
             if (otpVerification) {
                 const userData = await Users.findOne({ email: email });
-                // console.log('userData2 = ', userData); //------------------------------------------
+                const userId = userData._id;
 
                 if (userData) {
                     const verifiedTrue = await Users.findByIdAndUpdate({ _id: userData._id }, { $set: { verified: true } });
@@ -248,6 +264,38 @@ const verifyOtp = async (req, res) => {
                     if (verifiedTrue) {
                         await otpModel.deleteOne({ email: otpUser.email });
 
+                        if(referelCode){
+                            const referelOwner = await Users.findOne({referelCode:referelCode});
+
+                            if(referelOwner){
+                                console.log("within valid areferl code  with owner in userCOntroller0")//------------------------------------
+
+const transaction = {
+    amount:200,
+    mode:"Credit",
+    description:"your freind joined thorugh your referel"
+}
+
+                                const updateWalleOwner= await Wallet.updateOne({
+                                    user:referelOwner._id
+                                },{
+                                    $inc:{balance:200},
+                                    $push:{tansactions:transaction}
+                            })
+
+                            const userTransaction = {
+                                amount:200,
+                                mode:"Credit",
+                                description:"you got bonous by applied referel code !"
+                            }
+                            
+                       const referlUserWalletUpdation = await Wallet.updateOne({user:userId},{
+                                $inc:{balance:100},
+                                $push:{tansactions:userTransaction}
+                            })
+                            }
+                        }
+                        
                         req.flash('success', 'Verification Success...')
                         res.redirect('/login');
 
@@ -261,12 +309,12 @@ const verifyOtp = async (req, res) => {
             } else {
                 console.log('otp verification failed !');
                 req.flash('incorrect', 'Please Enter Valid OTP !');
-                res.redirect(`/otp?email=${email}`);
+                res.redirect(`/otp?email=${email}&referel=${referelCode}`);
             }
         } else {
             console.log('user not found');
             req.flash('expired', 'OTP Expired  Please Resend');
-            res.redirect(`/otp?email=${email}`);
+            res.redirect(`/otp?email=${email}&referel=${referelCode}`);
         }
     } catch (error) {
         console.log(error);
@@ -278,12 +326,13 @@ const verifyOtp = async (req, res) => {
 const resendOtp = async (req, res) => {
     try {
         const email = req.params.email;
+        const referel = req.query.referel;
 
         if (email) {
             await otpModel.deleteMany({ email: email });
             sendOtp(email);
             req.flash('resend', 'OTP Resended ');
-            res.redirect(`/otp?email=${email}`);
+            res.redirect(`/otp?email=${email}&referel=${referel}`);
             console.log('otp resended');//--------------------------
 
         } else {

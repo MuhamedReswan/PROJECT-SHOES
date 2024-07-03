@@ -63,6 +63,9 @@ const userSchema = mongoose.Schema({
             required: true
         }
     }],
+    referelCode:{
+        type:String
+    },
     date:{
         type:Date,
         default:Date.now
