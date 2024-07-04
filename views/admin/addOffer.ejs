@@ -1,0 +1,212 @@
+<%- include('../layout/admin/adminHeader.ejs') -%>
+  <%- include('../partials/adminSideNav.ejs') -%>
+
+
+    <div class="container">
+      <section class="d-flex justify-content-center align-items-center p-3">
+        <div class="col col-md-8 col-lg-6 col-xxl-5 border">
+          <div class="shadow-xl p-4 p-lg-5 bg-white ">
+            <h1 class="text-center fw-bold mb-3 fs-2">Add Offer</h1>
+            <!-- Your category addition form here -->
+            <!-- <form action="/admin/add-offer" method="post" onsubmit="return validateOffer()"> -->
+
+            <% if (messages.nameExist) { %>
+              <div class="alert alert-danger d-flex align-items-center  " role="alert" id="error-alert">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                  class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 " viewBox="0 0 16 16" role="img"
+                  aria-label="Warning:">
+                  <path
+                    d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                </svg>
+                <div>
+                  <strong>Hey !</strong>
+                  <%= messages.nameExist %>
+                </div>
+              </div>
+              <% } %>
+
+                <div class="form-group">
+                  <div id="common-error" class="text-center"></div>
+                  <label for="name" class="ms-2">Name:</label>
+                  <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name">
+                  <div id="name-error"></div>
+                </div>
+
+                <div class="form-group">
+                  <label for="discount" class="ms-2">Discount:</label>
+                  <input class="form-control" type="text" name="discount" id="discount"
+                    placeholder="Enter Discount in %">
+                  <div id="discount-error"></div>
+                </div>
+
+                <div class="form-group">
+                  <label for="date" class="ms-2">Expire Date:</label>
+                  <input class="form-control" type="date" name="expireDate" id="expire-date">
+                  <div id="expire-date-error"></div>
+                </div>
+
+                <div class="form-group">
+                  <label for="description" class="ms-2">Is Listed</label>
+                  <select class="form-select" name="isListed" id="is-listed" required>
+                    <option value="true">Yes!</option>
+                    <option value="false">No!</option>
+                  </select>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-evenly align-items-center">
+                  <button type="button" class="btn btn-primary" id="submit-button">Submit</button>
+                  <a href="/admin/category" class="btn btn-primary">
+                    <span class="text">Back</span>
+                  </a>
+                </div>
+                <!-- </form> -->
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', (event) => {
+        console.log('DOM fully loaded and parsed');
+
+        let submitButton = document.getElementById('submit-button');
+        submitButton.addEventListener('click', validateOffer)
+
+      })
+
+
+      function validateOffer() {
+        console.log('validateOffer function invoked')//----------------------
+
+        let commonError = document.getElementById('common-error');
+        let nameError = document.getElementById('name-error');
+        let dateError = document.getElementById('expire-date-error');
+        let discountError = document.getElementById('discount-error');
+
+        let name = document.getElementById('name');
+        let endDate = document.getElementById('expire-date');
+        let discount = document.getElementById('discount');
+        let isListed = document.getElementById('is-listed');
+
+
+
+        let lettersRegex = /^[A-Za-z ]+$/;
+        let message;
+
+
+        function showError(inputId, errorId, message) {
+
+          if(errorId == commonError){
+            errorId.style.fontSize = "14px";
+          }else{
+            errorId.style.fontSize = "12px";
+          }
+
+          errorId.style.color = "red";
+          errorId.innerText = `${message}`;
+
+          if (inputId != null) {
+            inputId.style.border = "1px solid red";
+          }
+
+
+          setTimeout(() => {
+            if (inputId != null) {
+              inputId.style.border = "";
+            } errorId.innerText = "";
+
+          }, 3000);
+        }
+
+
+
+
+        if (name.value.trim() === '' || discount.value.trim() === '' || endDate.value.trim() === '') {
+          message = 'Please fill all fields !'
+
+          showError(null, commonError, message);
+          return false
+        }
+        else if (name.value.trim() === '' || name.value.trim().length < 3 || name.value.trim().length > 20 || !lettersRegex.test(name.value)) {
+          message = "Please fill proper offer name ! (name only contain letters 4-20 letters)"
+          showError(name, nameError, message);
+          return false;
+
+        } else if (discount.value > 95 || discount.value <= 0) {
+          message = "Please enter a valid offer percentage (1-95)"
+          showError(discount, discountError, message);
+          return false;
+
+        } else if (new Date(endDate.value) <= new Date()) {
+          message = "Please enter a valid future date !"
+          showError(endDate, dateError, message);
+          return false;
+
+        } else {
+          // let categories =JSON.stringify(categories);     
+          // for (let category of categories) {
+          //     if (category.name.toLowerCase() === name.toLowerCase()) {
+          //         alert('Category name already exists.');
+          //         return false;
+          //     }
+          // }
+          let data = {
+            name: name.value,
+            discount: discount.value,
+            endDate: endDate.value,
+            isListed:isListed.value
+          }
+          console.log("data", data)//-------------------------
+
+          fetch('/admin/offers/add-offer', {
+            method: 'post',
+            headers: {
+              'Content-Type':'application/json'
+            },
+            body: JSON.stringify(data)
+          }).then((res) => res.json())
+            .then((response) => {
+              if(response.already){
+                console.log('response already ');//----------------------
+                showError(name, commonError,response.already);
+              }
+              if (response.success) {
+                console.log(" response =trueeeee")//---------------
+
+                Swal.fire({
+                  title: "Added!",
+                  text: "Offer added successful !",
+                  width: "300px",
+                  icon: "success",
+                  timer: 1000
+                });
+
+                setTimeout(() => {
+                  window.location.href = "/offers"
+                }, 2000)
+              }
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+
+          return true;
+        }
+      }
+
+
+
+    </script>
+
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-b3saGYTJ6Aaz75Sm+89YUMtX7P5S9STQCUlQ9v3hICLJo9EmY5+4GvIlb5wfpz0"
+      crossorigin="anonymous"></script>
+    <%- include('../layout/admin/adminFooter.ejs') -%>

@@ -96,26 +96,39 @@ admin_route.get('/orders',adminAuth.isLogin, orderController.adminOrders);
 admin_route.get('/order-single',adminAuth.isLogin, orderController.singleOrderDetails);
 
 //single order status change
-admin_route.post('/change-order-status',orderController.changeOrderStatus)
+admin_route.post('/change-order-status',orderController.changeOrderStatus);
 
 // return request
-admin_route.get('/return-request',adminAuth.isLogin,orderController.loadReturnRequest)
+admin_route.get('/return-request',adminAuth.isLogin,orderController.loadReturnRequest);
 
 // return product status change
-admin_route.post('/return-product-status-change',orderController.changeRetrunProductStatus)
+admin_route.post('/return-product-status-change',orderController.changeRetrunProductStatus);
 
 
 //coupon Management 
-admin_route.get('/coupons',adminAuth.isLogin, couponController.loadcouponManagement)
+admin_route.get('/coupons',adminAuth.isLogin, couponController.loadcouponManagement);
 
 //add coupon 
- admin_route.post('/coupons/add-coupon', adminAuth.isLogin, couponController.addCoupon)
+ admin_route.post('/coupons/add-coupon', adminAuth.isLogin, couponController.addCoupon);
 
  //edit coupon 
-  admin_route.post('/coupons/edit-coupon',adminAuth.isLogin, couponController.updateCoupon)
+  admin_route.post('/coupons/edit-coupon',adminAuth.isLogin, couponController.updateCoupon);
 
   // change coupon status
-  admin_route.post('/coupons/change-status', adminAuth.isLogin,couponController.changeStatus)
+  admin_route.post('/coupons/change-status', adminAuth.isLogin,couponController.changeStatus);
+
+
+  // offers
+  admin_route.get('/offers',adminAuth.isLogin,adminController.loadOffers);
+
+  // add offer 
+   admin_route.get('/offers/add-offer',adminAuth.isLogin,adminController.addOffer);
+
+   // insert offer
+   admin_route.post('/offers/add-offer',adminAuth.isLogin,adminController.insertOffer);
+
+   // edit offer
+admin_route.get('/offers/edit-offer',adminAuth.isLogin,adminController.editOffer)   
 
 
 
