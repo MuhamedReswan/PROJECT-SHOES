@@ -128,7 +128,13 @@ admin_route.get('/coupons',adminAuth.isLogin, couponController.loadcouponManagem
    admin_route.post('/offers/add-offer',adminAuth.isLogin,adminController.insertOffer);
 
    // edit offer
-admin_route.get('/offers/edit-offer',adminAuth.isLogin,adminController.editOffer)   
+admin_route.get('/offers/edit-offer',adminAuth.isLogin,adminController.editOffer);   
+
+//update offer
+admin_route.post('/offers/edit-offer',adminAuth.isLogin,adminController.updateOffer);
+
+// change offer status
+admin_route.post('/offers/change-status',adminAuth.isLogin,adminController.changeOfferStatus);
 
 
 

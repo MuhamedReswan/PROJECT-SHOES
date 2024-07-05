@@ -1,56 +1,46 @@
 <%- include('../layout/admin/adminHeader.ejs') -%>
   <%- include('../partials/adminSideNav.ejs') -%>
 
-
     <div class="container">
       <section class="d-flex justify-content-center align-items-center p-3">
         <div class="col col-md-8 col-lg-6 col-xxl-5 border">
           <div class="shadow-xl p-4 p-lg-5 bg-white ">
-            <h1 class="text-center fw-bold mb-3 fs-2">Add Offer</h1>
-            <!-- Your category addition form here -->
-            <!-- <form action="/admin/add-offer" method="post" onsubmit="return validateOffer()"> -->
-
+            <h1 class="text-center fw-bold mb-3 fs-2">Edit Offer</h1>
+            
                 <div class="form-group">
                   <div id="common-error" class="text-center"></div>
                   <label for="name" class="ms-2">Name:</label>
-                  <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" value="<%offerDetails.name%>">
+                  <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" value="<%=offerDetails.name%>">
                   <div id="name-error"></div>
+                <input type="hidden" name="offerId" id="offer-id" value="<%=offerDetails._id%>">
                 </div>
 
                 <div class="form-group">
                   <label for="discount" class="ms-2">Discount:</label>
                   <input class="form-control" type="text" name="discount" id="discount"
-                    placeholder="Enter Discount in %" <%offerDetails.discount%>>
+                    placeholder="Enter Discount in %" value="<%=offerDetails.discount%>">
                   <div id="discount-error"></div>
                 </div>
 
                 <div class="form-group">
                   <label for="date" class="ms-2">Expire Date:</label>
-                  <input class="form-control" type="date" name="expireDate" id="expire-date" <%offerDetails.endDate%>>
+                 <% let formattedDate = offerDetails.endDate.toISOString().split('T')[0]; %>
+                  <input class="form-control" type="date" name="expireDate" id="expire-date" value="<%=formattedDate%>">
                   <div id="expire-date-error"></div>
                 </div>
 
-                <div class="form-group">
-                  <label for="description" class="ms-2">Is Listed</label>
-                  <select class="form-select" name="isListed" id="is-listed" required>
-                    <option value="true">Yes!</option>
-                    <option value="false">No!</option>
-                  </select>
-                </div>
-
                 <div class="mt-4 d-flex justify-content-evenly align-items-center">
-                  <button type="button" class="btn btn-primary" id="submit-button">Submit</button>
-                  <a href="/admin/category" class="btn btn-primary">
+                  <button type="button" class="btn btn-primary" id="submit-button" onclick="editValidation()">Submit</button>
+                  <a href="/admin/offers" class="btn btn-primary">
                     <span class="text">Back</span>
                   </a>
                 </div>
-                <!-- </form> -->
           </div>
         </div>
       </section>
     </div>
 
-    <!-- <script>
+    <script>
       document.addEventListener('DOMContentLoaded', (event) => {
         console.log('DOM fully loaded and parsed');
 
@@ -60,8 +50,8 @@
       })
 
 
-      function validateOffer() {
-        console.log('validateOffer function invoked')//----------------------
+      function editValidation() {
+        console.log('editValidation function invoked')//----------------------
 
         let commonError = document.getElementById('common-error');
         let nameError = document.getElementById('name-error');
@@ -72,6 +62,7 @@
         let endDate = document.getElementById('expire-date');
         let discount = document.getElementById('discount');
         let isListed = document.getElementById('is-listed');
+        let offerId = document.getElementById('offer-id');
 
 
 
@@ -128,22 +119,15 @@
           return false;
 
         } else {
-          // let categories =JSON.stringify(categories);     
-          // for (let category of categories) {
-          //     if (category.name.toLowerCase() === name.toLowerCase()) {
-          //         alert('Category name already exists.');
-          //         return false;
-          //     }
-          // }
+
           let data = {
             name: name.value,
             discount: discount.value,
             endDate: endDate.value,
-            isListed:isListed.value
+            offerId:offerId.value
           }
-          console.log("data", data)//-------------------------
 
-          fetch('/admin/offers/add-offer', {
+          fetch('/admin/offers/edit-offer', {
             method: 'post',
             headers: {
               'Content-Type':'application/json'
@@ -151,23 +135,23 @@
             body: JSON.stringify(data)
           }).then((res) => res.json())
             .then((response) => {
+
               if(response.already){
-                console.log('response already ');//----------------------
+
                 showError(name, commonError,response.already);
               }
+
               if (response.success) {
-                console.log(" response =trueeeee")//---------------
 
                 Swal.fire({
-                  title: "Added!",
-                  text: "Offer added successful !",
+                  text: "Offer updated successful !",
                   width: "300px",
                   icon: "success",
-                  timer: 1000
+                  timer: 1500
                 });
 
                 setTimeout(() => {
-                  window.location.href = "/offers"
+                  window.location.href = "/admin/offers"
                 }, 2000)
               }
             })
@@ -181,7 +165,7 @@
 
 
 
-    </script> -->
+    </script>
 
     <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
@@ -190,6 +174,8 @@
     <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
     <script src="assets/js/main.js?v=1.1" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-b3saGYTJ6Aaz75Sm+89YUMtX7P5S9STQCUlQ9v3hICLJo9EmY5+4GvIlb5wfpz0"

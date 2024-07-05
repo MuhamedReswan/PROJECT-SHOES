@@ -10,6 +10,7 @@ const loadDashboard = (req, res) => {
         res.render('dashboard');
     } catch (error) {
         console.log(error);
+        res.status(500).send("Internal Server Error");
     }
 
 }
@@ -23,6 +24,7 @@ const adminLoginLoad = (req, res) => {
         res.render('aaadmin-login');
     } catch (error) {
         console.log(error);
+        res.status(500).send("Internal Server Error");
     }
 
 }
@@ -60,6 +62,7 @@ const verifyAdminLogin = (req, res) => {
         }
     } catch (error) {
         console.log(error);
+        res.status(500).send("Internal Server Error");
     }
 }
 
@@ -74,6 +77,7 @@ const loadLogout = (req, res) => {
         res.redirect('/admin')
     } catch (error) {
         console.log(error);
+        res.status(500).send("Internal Server Error");
     }
 
 }
@@ -114,6 +118,7 @@ const customersLoad = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
+        res.status(500).send("Internal Server Error");
     }
 }
 
@@ -156,9 +161,7 @@ const blockUser = async (req, res) => {
 const loadOffers = async (req, res) => {
     try {
 
-        const offers = await Offers.find({});
-        console.log("offers", offers)//---------------------------------------
-
+        const totalOffer = await Offers.find({})
         let page = 1;
         if (req.query.page) {
             page = req.query.page;
@@ -166,12 +169,15 @@ const loadOffers = async (req, res) => {
         let limit = 8;
         let next = page + 1;
         let previous = page > 1 ? page - 1 : 1;
-        let count = offers.length;
+        let count = totalOffer.length;
 
         let totalPage = Math.ceil(count / limit);
         if (next > totalPage) {
             next = totalPage
         }
+
+        const offers = await Offers.find({}).limit(limit).sort({createdAt:-1});
+
 
         res.status(200).render('offers', {
             offers,
@@ -183,6 +189,7 @@ const loadOffers = async (req, res) => {
 
     } catch (error) {
         console.log(error);
+        res.status(500).send("Internal Server Error");
     }
 }
 
@@ -196,6 +203,7 @@ const addOffer = (req, res) => {
 
     } catch (error) {
         console.log(error);
+        res.status(500).send("Internal Server Error");
     }
 }
 
@@ -204,55 +212,144 @@ const addOffer = (req, res) => {
 const insertOffer = async (req, res) => {
     try {
         console.log('within inset offer')//-------------------
-        console.log("insert Offer", req.body);//----------------
-        let { name, endDate, discount,isListed } = req.body;
+        let { name, endDate, discount, isListed } = req.body;
         name = name.charAt(0).toUpperCase() + name.slice(1);
         console.log("name", name);//--------------
 
-        const nameAlready = await Offers.findOne({name:name});
-        if(nameAlready){
-            res.json({already:"This name already exists !"})
-        }else{
+        const nameAlready = await Offers.findOne({ name: name });
+        if (nameAlready) {
+            res.json({ already: "This name already exists !" })
+        } else {
             const offer = new Offers({
                 name: name,
                 discount: discount,
                 endDate: endDate,
                 isListed: isListed
             });
-    
+
             await offer.save();
-    
+
             console.log("offer saved");//----------------------
             res.status(200).json({ success: true });
         }
 
-       
+
 
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.status(500).send("Internal Server Error");
     }
 }
 
 
 
 // edit offer
-const editOffer = (req,res)=>{
+const editOffer = async (req, res) => {
     try {
-const offerId = req.query.id;
-console.log("offerId",offerId)//---------------------
+        const offerId = req.query.id;
+        console.log("offerId", offerId)//---------------------
 
-const offerDetails = Offers.findOne({_id:offerId});
+        const offerDetails = await Offers.findOne({ _id: offerId });
 
-if(offerDetails){
-    res.status(200).render('editOffer',{offerDetails});
-}
-        
+        if (offerDetails) {
+            console.log("within offerDEtail if")//-----------------------------
+            res.status(200).render('editOffer', { offerDetails });
+        } else {
+            console.log("within offerDEtail else")//-----------------------------
+
+            throw new Error("offer not found this offerId")
+        }
+
     } catch (error) {
-        
+        console.log(error);
+        res.status(500).send("Internal Server Error");
+
     }
 }
 
 
+
+//update offer
+const updateOffer = async (req, res) => {
+    try {
+        console.log("within updatre offer");//------------------
+        console.log("within updatre body", req.body);//------------------
+        let { name, endDate, discount, offerId } = req.body;
+        name = name.charAt(0).toUpperCase() + name.slice(1);
+
+        const nameAlready = await Offers.findOne({ name: name });
+
+        if (nameAlready) {
+
+            res.json({ already: "This name already exists !" }); 
+
+        } else {
+
+            const updatedOffer = await Offers.findByIdAndUpdate({
+                _id: offerId
+            }, {
+                $set: {
+                    offerId: name,
+                    endDate: endDate,
+                    discount: discount
+                }
+            }, {
+                new: true
+            })
+
+            console.log("updatedOffer", updatedOffer)//-----------------
+            res.status(200).json({ success: true });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error");
+    }
+}
+
+
+
+
+function parseBoolean(value){
+    return Boolean(value === 'true')
+}
+
+// change offer status
+const changeOfferStatus = async (req, res) => {
+    console.log("changeOfferStatus invoked"); //-----------
+    try {
+        const { offerId, status } = req.body;
+        
+
+        // Convert status to boolean
+        const currentStatus = parseBoolean(status)
+        console.log('iam curr',currentStatus)//---------------------
+        const toStatus = !currentStatus;
+        
+        console.log('changeOfferStatus'); //--------------------
+        console.log('req.body', req.body); //--------------------
+        console.log('status', currentStatus); //--------------------
+        console.log('toStatus', toStatus); //--------------------
+
+        const updatedOffer = await Offers.findByIdAndUpdate(
+            { _id: offerId },
+            { $set: { isListed: toStatus } },
+            { new: true }
+        );
+
+        console.log("updatedOffer", updatedOffer); //-------------------
+
+        if (updatedOffer) {
+            console.log('ooooooooooooooooooooooooo',updatedOffer);//---------------
+            res.json({ statusChanged: true });
+        } else {
+            res.json({ message: "Offer not found", statusChanged: false });
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error", statusChanged: false });
+    }
+}
 
 
 
@@ -273,7 +370,9 @@ module.exports = {
     loadOffers,
     addOffer,
     insertOffer,
-    editOffer
+    editOffer,
+    updateOffer,
+    changeOfferStatus
 
 
 
