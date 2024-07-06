@@ -136,6 +136,17 @@ admin_route.post('/offers/edit-offer',adminAuth.isLogin,adminController.updateOf
 // change offer status
 admin_route.post('/offers/change-status',adminAuth.isLogin,adminController.changeOfferStatus);
 
+// apply offer for product
+admin_route.get('/product/offer',adminAuth.isLogin, adminController.applyOffer);
+
+// apply offers for product
+admin_route.post('/product/apply-offer',adminAuth.isLogin,adminController.applyPoductOffer);
+
+// load offer for categories
+// admin_route.get('/category/offer',adminAuth.isLogin, adminController.applyOffer);
+
+
+
 
 
 

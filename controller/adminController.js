@@ -277,7 +277,7 @@ const updateOffer = async (req, res) => {
         let { name, endDate, discount, offerId } = req.body;
         name = name.charAt(0).toUpperCase() + name.slice(1);
 
-        const nameAlready = await Offers.findOne({ name: name });
+        const nameAlready = await Offers.findOne({ name: name,_id:{$ne:offerId} });
 
         if (nameAlready) {
 
@@ -289,7 +289,7 @@ const updateOffer = async (req, res) => {
                 _id: offerId
             }, {
                 $set: {
-                    offerId: name,
+                    name: name,
                     endDate: endDate,
                     discount: discount
                 }
@@ -353,6 +353,118 @@ const changeOfferStatus = async (req, res) => {
 
 
 
+// apply offer
+const applyOffer = async (req, res)=>{
+try {
+    console.log('within apply offer')//------------
+
+    const productId = req.query.id;
+let currentdate = Date.now()
+//     const offers = await Offers.find({isListed:true,endDate:{$gte:currentdate} });
+//     console.log("offers",offers)//---------------------
+
+//  res.status(200).render("applyOffers",{offers});
+
+
+
+
+
+ const totalOffer = await Offers.find({isListed:true,endDate:{$gte:currentdate} });
+ let page = 1;
+ if (req.query.page) {
+     page = req.query.page;
+ }
+ let limit = 8;
+ let next = page + 1;
+ let previous = page > 1 ? page - 1 : 1;
+ let count = totalOffer.length;
+
+ let totalPage = Math.ceil(count / limit);
+ if (next > totalPage) {
+     next = totalPage
+ }
+
+ const offers = await Offers.find({isListed:true,endDate:{$gte:currentdate} }).limit(limit).sort({createdAt:-1});
+
+
+ res.status(200).render('applyOffers', {
+     offers,
+     productId,
+     totalPage,
+     previous,
+     next,
+     page
+ })
+
+
+
+    
+} catch (error) {
+    console.log(error)
+}
+}
+
+
+
+// apply offer on product
+const applyPoductOffer = async (req,res)=>{
+try {
+console.log("with product apply offer");//---------
+console.log("req.bpdu",req.body)//-----------------
+    const {productId,offerId}=req.body;
+
+
+
+    const addOfferProduct = await Products.findByIdAndUpdate({
+        _id:productId
+    },{
+        $set:{
+            appliedOffer:offerId
+        }
+    },{
+        new:true
+    });
+
+    const updateAppliedProduct = await Offers.findByIdAndUpdate({
+        _id:offerId
+    },{
+        $addToSet:{
+            productId:productId
+        }
+    },{
+        new:true
+    })
+
+    console.log("addOfferProduct",addOfferProduct)//--------------
+console.log("updateAppliedProduct",updateAppliedProduct)//---------------------
+
+if(addOfferProduct){
+    console.log(" if addOfferProduct")//--------------
+
+    if(updateAppliedProduct){
+console.log(" if updateAppliedProduct")//--------------
+
+        res.status(200).json({success:true, message:"offer added successful!"});
+    }else{
+        console.log(" else updateAppliedProduct")//--------------
+
+        res.status(400).json({success:false, message:"offer Product Id not updated!" });
+    }
+   
+}else{
+    console.log(" else addOfferProduct")//--------------
+
+    res.status(400).json({success:false, message:"product not found!" });
+}
+    
+} catch (error) {
+    console.log(error);
+    
+}
+}
+
+
+
 
 
 
@@ -372,7 +484,11 @@ module.exports = {
     insertOffer,
     editOffer,
     updateOffer,
-    changeOfferStatus
+    changeOfferStatus,
+
+
+    applyOffer,
+    applyPoductOffer
 
 
 

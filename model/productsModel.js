@@ -49,6 +49,11 @@ const productsSchema = mongoose.Schema({
     totalStock:{
 type:Number
     },
+    appliedOffer:{
+        type:ObjectId,
+        ref:'Offers',
+        required:false
+    },
 
     // stock: {
     //     type: Object,

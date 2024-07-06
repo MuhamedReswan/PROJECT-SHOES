@@ -1,0 +1,186 @@
+<%- include('../layout/admin/adminHeader.ejs') -%>
+
+    <%- include('../partials/adminSideNav.ejs') -%>
+        <main class="main-wrap">
+            <%- include('../partials/adminHeaderBody') -%>
+
+                <section class="content-main">
+                    <div class="content-header ">
+                        <div>
+                            <h2 class="content-title card-title ">offers</h2>
+
+                        </div>
+                    
+                    </div>
+
+
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="bg-dark text-white bg-opacity-50">
+                                    <tr>
+                                        <th class="text-center">ID</th>
+                                        <th scope="col" class="text-center">Name</th>
+                                        <th scope="col" class="text-center">Discount</th>
+                                        <th scope="col" class="text-center">Expire Date</th>
+                                        <th scope="col" colspan="2" class="text-center ">action</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% let offerId %>
+                                    <% if(offers){%>
+
+                                        <% offers.forEach((offer,i)=>{%>
+
+                                            <% offerId = offer._id%>
+
+                                            <tr class="text-center">
+                                                <td class="text-center">
+                                                    <%let index =(i+1)+((page-1)*8) %>
+                                                    <%=index%>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <%=offer.name%>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <%=offer.discount%>%
+                                                </td>
+
+
+                                                <% let date=new Date(offer.endDate).toLocaleDateString('en-GB') %>
+
+                                                    <td class="text-center">
+                                                        <%=date%>
+                                                    </td>
+
+                                                    <td>
+                                                        <% console.log('from top ejs ----------------------------------------')%>
+                                                        <% console.log('offer._id ----------------------------------------',offer._id)%>
+                                                        <% console.log('productId----------------------------------------',productId)%>
+                                                        <button class="btn-success font-sm btn-rounded" onclick="applyOffer('<%=offer._id%>','<%=productId%>')">Apply</button>
+                                                    </td>
+
+                                                  
+
+
+                                       
+                                            <% })%>
+                                                <%}else{%>
+                                                    <tr>
+                                                        <td colspan="4" class="text-center">No Offer Found !</td>
+                                                    </tr>
+                                                    <%}%>
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <!-- table-responsive //end -->
+                    </div>
+
+                    <div class="pagination-area mt-20 mb-30">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item "><a
+                                        class="page-link d-flex align-items-center justify-content-center"
+                                        href="/admin/offers/edit-offer?id=<%=offerId%>&page=<%=previous%>"><i
+                                            class="material-icons md-chevron_left"></i></a></li>
+                                <li class="page-item active"><a
+                                        class="page-link d-flex align-items-center justify-content-center"
+                                        href="/admin/offers/edit-offer?id=<%=offerId%>&page=<%=page%>">
+                                        <%=page%>
+                                    </a></li>
+                                <li class="page-item"><a
+                                        class="page-link d-flex align-items-center justify-content-center"
+                                        href="/admin/offers/edit-offer?id=<%=offerId%>&page=<%=next%>"><i
+                                            class="material-icons md-chevron_right"></i></a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </section>
+                <!-- content-main end// -->
+                <footer class="main-footer font-xs">
+                    <div class="row pb-30 pt-15">
+                        <div class="col-sm-6">
+                            <script>
+                                document.write(new Date().getFullYear());
+                            </script>
+                            &copy; Nest - HTML Ecommerce Template .
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-sm-end">All rights reserved</div>
+                        </div>
+                    </div>
+                </footer>
+        </main>
+   
+        <script>
+
+            document.addEventListener('DOMContentLoaded', (event) => {
+                // Your code here
+            });
+
+
+            function applyOffer(offerId,productId){
+                console.log('apply of ere inbokesdfsdds');//-------------
+
+            console.log("productId===",productId    ,"====offerId",offerId)//-----------------
+
+                axios.post('/admin/product/apply-offer',{
+                    offerId:offerId,
+                    productId:productId
+                }).then((response)=>{
+console.log("resposnse---",response);//-------------
+if(response.data.success){
+    console.log("within axiox succdss")//----------
+    Swal.fire({
+                                        text: `${response.data.message}`,
+                                        icon: "success",
+                                        width: "300px",
+                                        timer: 1000
+                                    });
+}
+
+if(!response.data.success){
+    console.log("within axiox failed")//----------
+
+    Swal.fire({
+                                        text: `${response.data.message}`,
+                                        icon: "error",
+                                        width: "300px",
+                                        timer: 1000
+                                    });
+}
+
+setTimeout(()=>{
+window.location.href="/admin/products-list"
+},2500)
+                }).catch((err)=>{
+                    console.log(err)
+                })
+
+            }
+
+
+        
+        </script>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+        <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/vendors/select2.min.js"></script>
+        <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+        <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+        <!-- Main Script -->
+        <script src="assets/js/main.js" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+            integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        <%- include('../layout/admin/adminFooter.ejs') -%>

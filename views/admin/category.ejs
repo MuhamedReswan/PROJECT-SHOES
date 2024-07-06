@@ -26,6 +26,7 @@
                                     <th scope="col" class="text-center">Name</th>
                                     <th scope="col" class="text-center">Description</th>
                                     <th scope="col" class="text-center">Status</th>
+                                    <th scope="col" class="text-center">Offers</th>
                                     <th scope="col" class="text-center">Edit</th>
                                     <th scope="col" class="text-center ">Action</th>
 
@@ -51,6 +52,10 @@
                                                     <%= value.isListed==true ? 'Listed' : 'Unlisted' %>
                                                 </button>
                                             </td>
+   <td>
+                                                <a href="/admin/category/offer?id=<%=value._id%>"button class="btn btn-sm btn-info rounded font-sm text-center">Apply</button></a> 
+                                            </td>
+
                                             <td>
                                                 <a href="/admin/edit-category?id=<%= value._id %>"
                                                     class="btn btn-sm  rounded font-sm text-center btn-outline-dark"><span>
