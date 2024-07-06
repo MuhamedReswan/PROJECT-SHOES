@@ -59,18 +59,20 @@
                                     <tr class="text-center ">
                                         <td># <%=index+1001%>
                                         </td>
-                                        <td class="">
-                                            <div class="d-flex">
+                                        <td class="d-flex flex-column align-items-center justify-content-center">
+                                            <div class="text-start">
                                                 <%order.products.forEach((product)=>{%>
-                                                    <div class="d-flex flex-column align-items-center">
-                                                        <a href="/single-product?id=<%=product?.productId?._id%>"><img
+                                                    <div class="d-flex flex-column align-items-center justify-content-center">
+                                                        <!-- <a href="/single-product?id=<%=product?.productId?._id%>"><img
                                                                 style="width: 50px; height: 50px;"
                                                                 src="/user/assets/images/product-images/sharpedImages/<%=product?.productId?.images[0]%>"
-                                                                alt="product image"></a>
-                                                        <a href="/single-product?id=<%=product?.productId?._id%>"><small>
+                                                                alt="product image"></a> -->
+                                                      
+                                                      <li class="">         <a href="/single-product?id=<%=product?.productId?._id%>"><small>
                                                                 <%=product?.productId?.name%>
                                                             </small>
                                                         </a>
+                                                    </li> 
                                                     </div>
                                             </div>
                                             <%})%>

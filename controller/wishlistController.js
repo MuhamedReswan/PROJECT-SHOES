@@ -9,7 +9,8 @@ const loadWishlist = async (req,res)=>{
         const userId = req.session.user.id;       
          console.log('userId',userId);//-------------
         // res.render('addAddress');
-        // res.render('account');
+        // res.render('invoice');
+        // res.render('invoiceNew');
 const wishlistData = await Wishlist.find({user:userId}).populate('product');
 console.log('wishlistData.......',wishlistData);//-----------------------
         res.render('wishlist',{wishlistData});

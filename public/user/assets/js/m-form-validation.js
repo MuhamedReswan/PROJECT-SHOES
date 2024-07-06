@@ -8,6 +8,7 @@ function validate(){
     const password = document.getElementById('password');
     const conform = document.getElementById('conform');    
 
+
     if (!/^\w+$/.test(username.value)){
         console.log("im in function")
 // lname.style.display=''
@@ -48,7 +49,8 @@ function validate(){
 
 return false;
 
-    }else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/.test(password.value)){
+
+    }else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{6,}$/.test(password.value)){
         console.log("im in password")
 
         password.style.border = 'solid 1px red';

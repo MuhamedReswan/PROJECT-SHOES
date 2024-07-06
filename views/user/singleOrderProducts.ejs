@@ -18,6 +18,30 @@
 
 
 <div class=" conatiner card-body">
+    <div class="d-flex justify-content-around">
+        <div>
+            <h3><strong> Payment Details</strong></h3>
+        <h4>Order Id : <%=singleOrder.orderId%> </h4>
+    <h4>Payment Status : <%=singleOrder.paymentStatus%> </h4>
+    <h4>Payment Method : <%=singleOrder.paymentMethod%></h4>
+    <h4>Order Status : <%=singleOrder.orderStatus%> </h4>
+    
+        </div>
+        <div>
+            <h3><strong>Delivery Address</strong></h3>
+            <h4>Name : <%=singleOrder.deliveryAddress.name%></h4>
+            <h4>Address :  <%=singleOrder.deliveryAddress.address%></h4>
+            <h4>Place :  <%=singleOrder.deliveryAddress.city%></h4>
+            <h4>Mobile :  <%=singleOrder.deliveryAddress.mobile%></h4>
+            <h4>District :  <%=singleOrder.deliveryAddress.district%></h4>
+            <h4>Pin code :  <%=singleOrder.deliveryAddress.state%></h4>
+            <h4>State :  <%=singleOrder.deliveryAddress.state%></h4>
+            <h4>Country :  <%=singleOrder.deliveryAddress.country%></h4>
+        </div>
+    </div>
+    <div class="mr-1 text-end p-1">
+        <a href="/my-orders/single-order-product/invoice?id=<%=singleOrder._id%>"><button class="btn btn-dark rounded p-2">invoice</button></a>
+    </div>
     <div class="table-responsive" id="reloadList">
             
             <table class="table table-hover">
@@ -58,13 +82,13 @@
                                 </div>
                             </td>
                             <td>
-                                ₹ <%=product.price%>
+                                ₹ <%=product.offerPrice %>
                             </td>
                             <td>
                                  <%=product.quantity%>
                             </td>
                             <td>
-                                ₹ <%=product.price * product.quantity%>
+                                ₹ <%=product.offerPrice * product.quantity%>
                             </td>
                             <td>
                              
@@ -131,6 +155,20 @@
                 <%}%>
 
     </div>
+
+
+<div class="d-flex justify-content-around mt-2">
+    <div>
+    <h4> SubTotal : ₹ <%=singleOrder.totalAmount + singleOrder?.coupon?.discount%>.00</h4>
+    <h4> Delivery Charge : ₹ 0.00</h4>
+    <h4> Discount : ₹ <%=singleOrder?.coupon?.discount%>.00
+    </h4>
+<h3>Total : ₹ <%=singleOrder.totalAmount%>.00</h3>
+</div>
+
+
+   </div>
+
 </div>
 
         </div>

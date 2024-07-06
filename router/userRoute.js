@@ -186,6 +186,12 @@ user_route.post('/remove-coupon',couponController.removeAppliedCoupon);
 
 
 
+// load invoice 
+ user_route.get('/my-orders/single-order-product/invoice',userAuth.isLogin,orderController.loadInvoice)
+
+
+
+
 // user_route.post('/change-order-status-single', orderController.updateSingleOrderStatus);
 
 

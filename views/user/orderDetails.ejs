@@ -95,10 +95,10 @@
                                                                 <%=product.quantity%>
                                                             </td>
                                                             <td class="center-text">
-                                                                <%=product.productId.offerPrice%>
+                                                                ₹ <%=product.productId.offerPrice%>
                                                             </td>
                                                             <td class="center-text">
-                                                                <%=product.productId.offerPrice*product.quantity%>
+                                                                ₹ <%=product.productId.offerPrice*product.quantity%>
                                                             </td>
                                                         </tr>
                                                         <% total +=product.productId.offerPrice*product.quantity %>
@@ -109,12 +109,16 @@
                                         </table>
                                     </div>
                                 </section>
-                                <section class="order-total">
+                                <div>
+                                <section class="order-total d-flex">
                                     <h2>Order Total</h2>
-                                    <p><strong>Total:</strong>
-                                        <%=total%>
-                                    </p>
+                                    <h4>Subtotal : ₹ <%=orderDetails.totalAmount + orderDetails.coupon.discount%></h4>
+                                    <h4>Delivery Charge : ₹ <%=orderDetails.totalAmount%>.00</h4>
+                                    <h4>Discount : ₹ <%=orderDetails.coupon.discount%></h4>
+                                    <h3><strong>Total : ₹ <%=orderDetails.totalAmount%></strong></h3>
+                               
                                 </section>
+                            </div>
             </main>
             <%}%>
                 <footer>

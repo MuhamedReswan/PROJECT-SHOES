@@ -493,6 +493,26 @@ const razorPayFailed = async (req, res) => {
 
 
 
+// load invoice
+const loadInvoice = async (req, res)=>{
+    try {
+        console.log("within load invoice")///-------------------------
+        console.log("req.body",req.quer)///-------------------------
+        
+        const orderId = req.query.id;
+        console.log("orderId",orderId)//----------
+        const order = await Orders.findOne({_id:orderId}).populate('products.productId').populate('user');
+        console.log("order",order)//-------------------------
+
+        res.status(200).render('invoiceNew',{order});
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+
 
 
 
@@ -769,6 +789,8 @@ module.exports = {
     // changeStatusSingle,
     // orderSingleProduct,
     // updateSingleOrderStatus,
+
+    loadInvoice,
 
 
 
