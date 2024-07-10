@@ -2,6 +2,8 @@ require('dotenv').config();
 const Users = require('../model/userModel');
 const Products = require('../model/productsModel');
 const Offers = require('../model/offerModel');
+const Orders = require('../model/orderModel');
+
 
 
 //load dashboard
@@ -213,6 +215,7 @@ const insertOffer = async (req, res) => {
     try {
         console.log('within inset offer')//-------------------
         let { name, endDate, discount, isListed } = req.body;
+        name=name.toLowerCase();
         name = name.charAt(0).toUpperCase() + name.slice(1);
         console.log("name", name);//--------------
 
@@ -275,6 +278,7 @@ const updateOffer = async (req, res) => {
         console.log("within updatre offer");//------------------
         console.log("within updatre body", req.body);//------------------
         let { name, endDate, discount, offerId } = req.body;
+name=name.toLowerCase();
         name = name.charAt(0).toUpperCase() + name.slice(1);
 
         const nameAlready = await Offers.findOne({ name: name,_id:{$ne:offerId} });
@@ -466,6 +470,24 @@ console.log(" if updateAppliedProduct")//--------------
 
 
 
+// load sales report
+
+const loadSalesreport =async (req,res)=>{
+    try {
+        console.log("within controller sales report")//--------------------
+const startDate =req.query?.start;
+const endDate = req.query?.end
+
+        const salesData = await Orders.find({date:{$gte:startDate,$lte:endDate}});
+        console.log("salesData",salesData)//---------------
+        res.status(200).render("salesReport");
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
 
 
 module.exports = {
@@ -488,7 +510,10 @@ module.exports = {
 
 
     applyOffer,
-    applyPoductOffer
+    applyPoductOffer,
+
+
+    loadSalesreport
 
 
 

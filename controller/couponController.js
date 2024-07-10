@@ -182,11 +182,14 @@ const validateCoupon = async (req, res) => {
     try {
         console.log("in validate coupon");//-------------
         console.log("req.body=", req.body);//-----------
-        const { subTotal, cartId, couponCode } = req.body;
+        let { subTotal, cartId, couponCode } = req.body;
+        console.log("couopon code 1-----------",couponCode)//-----------------------
+
+        couponCode=couponCode.toLowerCase();
         const userId = req.session?.user?.id;
         console.log(" userId==", userId)//----------------------
 
-
+console.log("couopon code 2-----------",couponCode)//-----------------------
 
 
         const coupon = await Coupons.findOne({ couponCode: couponCode });
@@ -273,7 +276,7 @@ const removeAppliedCoupon = async (req, res) => {
 
         console.log("updateCouponDisCart", updateCouponDisCart);//-------------------------
 
-        res.status(200).json({ removed: true, message: 'coupon successfully removed !' })
+        res.status(200).json({ removed: true, message: 'coupon successfully removed !' });
 
     } catch (error) {
         console.log(error)

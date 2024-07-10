@@ -97,16 +97,36 @@ font-size: 14px;
                     </div>
                 </div>
             </div>
+
+          
            
             <%}else{%>
                 <div class="container">
                     <div class="row">
-                        <div class="col-12 col-sm-12 col-md-12 col-lg-12">	
+                        <!-- <div class="col-12 col-sm-12 col-md-12 col-lg-12  text-center text-uppercase"">	
                             <div class="empty-page-content text-center">
-                                <h1> Your wishlist s empty</h1>
+                                <h1> Your wishlist is empty</h1>
                                 <p><a href="/shop" class="btn btn--has-icon-after">Continue shopping<i class="fa fa-caret-right" aria-hidden="true"></i></a></p>
                               </div>
+                        </div> -->
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center text-uppercase">
+                            <div class="d-flex justify-content-center">
+                                <div style="height: 160px; width: 200px;">
+                                    <img src="user/assets/images/mine/empty cart.jpg" alt="">
+                                </div>
+                            </div>
+                            <div>
+                                <h1>
+                                    Your wishlist is empty
+                                </h1>
+                            </div>
+                        
+                            <div>
+                                <a href="/shop" class="btn btn--has-icon-after">Continue shopping <i class="fa fa-caret-right" aria-hidden="true"></i></a>
+                            </div>
+            
                         </div>
+
                     </div>
                 </div>
             <%}%>
@@ -116,8 +136,8 @@ font-size: 14px;
 
         <!--Footer-->
         <%-include('../partials/userBodyFooter.ejs')-%>
-
             <!--End Footer-->
+            
             <!--Scoll Top-->
             <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
             <!--End Scoll Top-->
@@ -135,12 +155,16 @@ font-size: 14px;
                         data: JSON.stringify(data),
                         success: (res) => {
                             if (res.added) {
-$('#wishlist-div').load( location.href +' #wishlist-div')
+// $('#wishlist-div').load( location.href +' #wishlist-div')
+// $('#page-content').load( location.href +' #page-content')
+setTimeout(()=>{
+    window.location.reload()
+},1500)
                                 swal.fire({
                                     title: `Added to cart`,
                                     icon: "success",
                                     showConfirmationButton: false,
-                                    timer: 1000
+                                    timer: 1500
                                 })
                             }
 
@@ -148,7 +172,7 @@ $('#wishlist-div').load( location.href +' #wishlist-div')
                                 swal.fire({
                                     icon: 'warning',
                                     title: 'Already exist',
-                                    text: 'Product already exist in the cart',
+                                    // text: 'Product already exist in the cart',
                                     timer: 1000
                                 })
                             }
@@ -172,7 +196,7 @@ $('#wishlist-div').load( location.href +' #wishlist-div')
                         data: JSON.stringify(data),
                         success: (res) => {
                             if (res.removed) {
-                                $('#wishlist-div').load('/wishlist #wishlist-div',null,()=>{
+                                $('.pageWrapper').load('/wishlist .pageWrapper',null,()=>{
                                     swal.fire({
                                     title: `succesfully removed`,
                                     icon: "success",

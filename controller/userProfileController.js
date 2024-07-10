@@ -32,8 +32,10 @@ const loadProfile = async (req, res) => {
     try {
         const userId = req.session.user.id;
         const orders = await Orders.find({ user: userId }).populate('products.productId').sort({createdAt:-1});
-        const walletDetails = await Wallet.findOne({ user: userId }).sort({createdAt:-1})
+        const walletDetails = await Wallet.findOne({ user: userId });
         const user = await Users.findOne({ _id: userId });
+        
+        walletDetails.transactions.sort((a,b)=>b.date-a.date);
 
         console.log("wallet in controller",walletDetails)//----------------------------------
         res.render('addProfile', { orders, user, walletDetails });

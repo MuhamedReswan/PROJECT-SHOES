@@ -251,10 +251,11 @@ const loadCheckout = async (req, res) => {
        const cartData= await Cart.findOne({user:userId}).populate('products.productId');
     let date = new Date()
     console.log("date&&&&",date)//--------------------
-       const viewCoupons = await Coupons.find({expiryDate:{$gte:date}, isListed:true, limit:{$gt:0}})
+       const viewCoupons = await Coupons.find({expiryDate:{$gte:date}, isListed:true, limit:{$gt:0}});
+       console.log("coupon form load checkout")//-----------------------
        console.log('viewCoupons',viewCoupons);//-----------------
     //    console.log('userData',userData);//-----------------
-       console.log('cartData',cartData);//-----------------
+    //    console.log('cartData',cartData);//-----------------
       
         res.status(200).render('checkout',{userData,cartData,viewCoupons,couponApplied,});
     } catch (error) {

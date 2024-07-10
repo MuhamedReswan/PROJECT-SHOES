@@ -123,7 +123,7 @@ const insertUser = async (req, res) => {
 
         const Name = req.body.Name;
         const Email = req.body.Email;
-        const refCode= req.body.referel;
+        const refCode= req.body?.referel;
 
 
         const username = await Users.findOne({ name: Name });
@@ -209,7 +209,8 @@ const sendOtp = async (email) => {
             secure: true,
             auth: {
                 user: 'muhamedreswan9917@gmail.com',
-                pass: 'rpwg jlhk dnoa qkcj'
+                // pass: 'rpwg jlhk dnoa qkcj'
+                pass: 'neek jdze decd qtoa'
             }
         })
 
@@ -244,9 +245,10 @@ const sendOtp = async (email) => {
 const verifyOtp = async (req, res) => {
     try {
         const email = req.body.email;
-        const referelCode = req.body.referel;
+        const referelCode = req.body?.referel;
 
         const otp = req.body.otp1 + req.body.otp2 + req.body.otp3 + req.body.otp4;
+        console.log("otp from the verify",otp)//----------------
 
         const otpUser = await otpModel.findOne({ email: email });
 
@@ -272,11 +274,11 @@ const verifyOtp = async (req, res) => {
 
 const transaction = {
     amount:200,
-    mode:"Credit",
-    description:"your freind joined thorugh your referel"
+    mode:"Credited",
+    description:"your friend joined thorugh your referel link"
 }
 
-                                const updateWalleOwner= await Wallet.updateOne({
+                                const updateWalletOwner= await Wallet.updateOne({
                                     user:referelOwner._id
                                 },{
                                     $inc:{balance:200},
@@ -284,9 +286,9 @@ const transaction = {
                             })
 
                             const userTransaction = {
-                                amount:200,
-                                mode:"Credit",
-                                description:"you got bonous by applied referel code !"
+                                amount:100,
+                                mode:"Credited",
+                                description:"you got 100 rupees by applied referel code !"
                             }
                             
                        const referlUserWalletUpdation = await Wallet.updateOne({user:userId},{

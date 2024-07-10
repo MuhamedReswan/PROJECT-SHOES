@@ -256,7 +256,7 @@
                             <td><%=ord.productId.name%></td>
                             <td><%=ord.quantity%></td>
                             <td class="text-95">₹<%=ord.price%></td>
-                            <td class="text-secondary-d2"><%=ord.price*ord.quantity%></td>
+                            <td class="text-secondary-d2">₹<%=ord.price*ord.quantity%></td>
                         </tr>
                         <%})%>
 
@@ -281,7 +281,7 @@
                         <div class="col-12 col-sm-5 text-grey text-90 order-first order-sm-last">
                             <div class="row my-2">
                                 <div class="col-7 text-right">
-                                    SubTotal
+                                    SubTotal :
                                 </div>
                                 <div class="col-5">
                                     <span class="text-120 text-secondary-d1"><%=order.totalAmount+order.coupon.discount%>.00</span>
@@ -290,7 +290,7 @@
 
                             <div class="row my-2">
                                 <div class="col-7 text-right">
-                                    Discount Amount (10%)
+                                    Discount Amount :
                                 </div>
                                 <div class="col-5">
                                     <span class="text-110 text-secondary-d1">₹<%=order.coupon.discount%>.00</span>
@@ -299,7 +299,7 @@
 
                             <div class="row my-2">
                                 <div class="col-7 text-right">
-                                    Delivery Charge
+                                    Delivery Charge :
                                 </div>
                                 <div class="col-5">
                                     <span class="text-110 text-secondary-d1">₹0.00</span>
@@ -308,7 +308,7 @@
 
                             <div class="row my-2 align-items-center bgc-primary-l3 p-2">
                                 <div class="col-7 text-right">
-                                    Total Amount
+                                    Total Amount :
                                 </div>
                                 <div class="col-5">
                                     <span class="text-150 text-success-d3 opacity-2">₹<%=order.totalAmount%>.00</span>
@@ -319,10 +319,10 @@
 
                     <hr />
 
-                    <div>
+                    <!-- <div>
                         <span class="text-secondary-d1 text-105">Thank you for your business</span>
                         <a href="#" class="btn btn-info btn-bold px-4 float-right mt-3 mt-lg-0 no-print">Pay Now</a>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

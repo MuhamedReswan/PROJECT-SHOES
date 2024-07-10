@@ -127,9 +127,9 @@ user_route.get('/checkout', userAuth.isLogin, userHelper.countOfCartAndWishlist,
 // place order
 user_route.post('/place-order', userHelper.countOfCartAndWishlist,orderController.placeOrder);
 
-// user_route.get('/online-payment',paymentController.paymentGateway)
+// user_route.get('/online-payment',paymentController.paymentGateway);
 
-// user_route.post('/create-online-order',paymentController.createOrderPayment)
+// user_route.post('/create-online-order',paymentController.createOrderPayment);
 
 
 //wishlist 

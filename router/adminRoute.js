@@ -142,6 +142,12 @@ admin_route.get('/product/offer',adminAuth.isLogin, adminController.applyOffer);
 // apply offers for product
 admin_route.post('/product/apply-offer',adminAuth.isLogin,adminController.applyPoductOffer);
 
+
+// sales report 
+admin_route.get('/sales-report', adminAuth.isLogin,adminController.loadSalesreport);
+
+// admin_route.post('/sales-report', adminAuth.isLogin,adminController.);
+
 // load offer for categories
 // admin_route.get('/category/offer',adminAuth.isLogin, adminController.applyOffer);
 

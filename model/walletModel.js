@@ -11,7 +11,7 @@ let walletSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    tansactions: [{
+    transactions: [{
         amount: {
             type: Number,
             required: true

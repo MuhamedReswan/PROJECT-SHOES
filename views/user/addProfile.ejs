@@ -131,7 +131,7 @@
                                         <div class="" style="display: flex; justify-content: end; align-items: end;">
                                             <h3 class="bg-dark text-white">referel code:</h3>
                                             <input type="text" class="form-control"
-                                                value="localhost:3000/signup?referel=<%= user.referelCode%>" required
+                                                value="localhost:3001/signup?referel=<%= user.referelCode%>" required
                                                 id="referralLink" readonly>
                                             <button class="btn btn-dark" id="referel-copy-button" style="height: 40px; "
                                                 onclick="copyToClipboard()">copy</button>
@@ -177,7 +177,7 @@
                                         </button>
 
                                         <div id="history-table" style="display: none;">
-                                            <% if(walletDetails && walletDetails.tansactions.length!=0){%>
+                                            <% if(walletDetails && walletDetails.transactions.length!=0){%>
 
 
                                                 <table class="table text-center">
@@ -189,7 +189,7 @@
                                                             <th>Description</th>
                                                         </thead>
                                                     </tr>
-                                                    <% walletDetails.tansactions.forEach((history)=>{%>
+                                                    <% walletDetails.transactions.forEach((history)=>{%>
                                                         <tr>
                                                             <tbody>
                                                                 <td>
@@ -249,14 +249,14 @@
 
                     <div>
                         <label for="new-Password">New password</label>
-                        <input type="text" id="new-Password" name="newPassword" placeholder="Enter your new password"
+                        <input type="password" id="new-Password" name="newPassword" placeholder="Enter your new password"
                             required>
                         <div class="text-danger error-text mt-0 mb-1" id="new-Password-error"></div>
                     </div>
 
                     <div>
                         <label for="confirm-Password">Confirm password</label>
-                        <input type="text" id="confirm-Password" name="confirmPassword"
+                        <input type="password" id="confirm-Password" name="confirmPassword"
                             placeholder="Enter your confirm password" required>
                         <div class="text-danger error-text mt-0 mb-1" id="confirm-Password-error"></div>
                     </div>
@@ -512,7 +512,7 @@
                 let newPassword = document.getElementById('new-Password')
                 let confirmPassword = document.getElementById('confirm-Password')
                 console.log("old", oldPassword.value)//-----------------------
-                console.log("old", newPassword.value)//-----------------------
+                console.log("new", newPassword.value)//-----------------------
 
                 let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{6,}$/
                 // /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/
@@ -529,7 +529,7 @@
 
                 let message;
 
-                if (!passwordRegex.test(oldPassword.value)) {
+                if (oldPassword.value.trim()=="" || oldPassword.value.length<4) {
                     message = "please enter a valid password !"
                     setError(oldPasswordError, oldPassword, message)
                     return

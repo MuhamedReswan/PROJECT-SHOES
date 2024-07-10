@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <!--End Page Title-->
-
+<%console.log("viewCoupons-------------------------",viewCoupons)%>
                 <div class="container">
                     <div class="row">
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 mb-3">
@@ -479,7 +479,7 @@
                     </div>
                     <div class="modal-body" style="height: 350px; overflow: auto;">
                         <div class="form-group">
-                            <table class="table">
+                            <table class="table" id="myTable">
                                 <thead>
                                     <tr>
                                         <th class="mx-2 text-dark font-weight-bold fs-5">Name</th>
@@ -496,6 +496,8 @@
                                 <tbody>
                                     <%if(Array.isArray(viewCoupons) && viewCoupons.length> 0){%>
                                         <%viewCoupons.forEach( coupon=> { %>
+<%console.log("coupon-------------------------------",coupon)%>
+
                                             <tr>
                                                 <td class="text-center m-2">
                                                     <%=coupon.title%>
@@ -516,16 +518,16 @@
                                                         <div class="coupon-container">
                                                             <span style="font-size: 12px;">click to
                                                                 copy</span>
-                                                            <div class="p-1 rounded-pill "
-                                                                style="background-color: rgb(87, 60, 6);">
+                                                            <div class="p-1 rounded-pill btn "
+                                                                style="background-color: rgb(117, 117, 117);">
                                                                 <div class="coupon-code  fs-5"
                                                                     style="color: rgb(255, 255, 255); font-weight: 400; cursor: pointer;">
                                                                     <%=coupon.couponCode%>
                                                                 </div>
                                                             </div>
-                                                            <div class="copy-message text-primary " id="copyMessage">
+                                                            <!-- <div class="copy-message text-primary " id="copyMessage">
                                                                 Coupon code copied!
-                                                            </div>
+                                                            </div> -->
                                                         </div>
 
                                                     </td>
@@ -564,7 +566,7 @@
                     </div>
 
                     <div class="modal-footer" style="justify-content: space-around;">
-                        <button type="button" id="cancel-confirm" class="btn btn-primary ">Confirm</button>
+                        <!-- <button type="button" id="cancel-confirm" class="btn btn-primary ">Confirm</button> -->
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -1070,6 +1072,42 @@
             }
 
         </script>
+
+
+
+<script>
+
+        // Assuming the table has an ID or a class for easy selection
+        var table = document.querySelector('#myTable'); // Change '#myTable' to the actual ID or class of your table
+    
+        table.addEventListener('click', function(event) {
+            // Check if the clicked target is a coupon code button
+            var target = event.target;
+            if (target.classList.contains('coupon-code')) {
+                // Prevent the default action to avoid any unwanted behavior
+                event.preventDefault();
+                // Get the coupon code text
+                var couponCode = target.innerText.trim();
+                // Copy the coupon code to the clipboard
+                navigator.clipboard.writeText(couponCode)
+                    .then(() => {
+                        // alert('Coupon code copied to clipboard!');
+                        Swal.fire({
+                                    icon: "success",
+                                    text:"Code copied.",
+                                    width: "300px",
+                                    timer: 1000,
+                                });
+                    })
+                    .catch(err => {
+                        console.error('Could not copy text: ', err);
+                        alert('Failed to copy coupon code. Please try again.');
+                    });
+            }
+        });
+
+    </script>
+
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         <!-- Including Jquery -->
         <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>

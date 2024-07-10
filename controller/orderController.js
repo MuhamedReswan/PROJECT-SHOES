@@ -358,7 +358,7 @@ const orderCancel = async (req, res) => {
 const orderAmount =order.totalAmount;
         const tansactions ={
             amount:orderAmount,
-            mode:"Credit",
+            mode:"Credited",
             description:"Returned amount of canceled order"
         } 
 
@@ -733,9 +733,9 @@ const changeRetrunProductStatus = async (req, res) => {
 
 const amount = product.offerPrice*quantity;
 
-            const tansactions ={
+            const transactions ={
                 amount:amount,
-                mode:"Credit",
+                mode:"Credited",
                 description:"Refunded Amount of rerturn Product"
             } 
 
@@ -743,7 +743,7 @@ const amount = product.offerPrice*quantity;
                 $inc:
                             { balance: amount },
                             $push:{
-                                tansactions  
+                                transactions  
                             }
             }
 

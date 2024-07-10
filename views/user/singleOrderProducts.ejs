@@ -39,7 +39,7 @@
             <h4>Country :  <%=singleOrder.deliveryAddress.country%></h4>
         </div>
     </div>
-    <div class="mr-1 text-end p-1">
+    <div class="mr-1 text-end p-1 d-flex justify-content-end">
         <a href="/my-orders/single-order-product/invoice?id=<%=singleOrder._id%>"><button class="btn btn-dark rounded p-2">invoice</button></a>
     </div>
     <div class="table-responsive" id="reloadList">
@@ -82,13 +82,13 @@
                                 </div>
                             </td>
                             <td>
-                                ₹ <%=product.offerPrice %>
+                                ₹ <%=product.price %>
                             </td>
                             <td>
                                  <%=product.quantity%>
                             </td>
                             <td>
-                                ₹ <%=product.offerPrice * product.quantity%>
+                                ₹ <%=product.price * product.quantity%>
                             </td>
                             <td>
                              
