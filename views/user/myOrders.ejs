@@ -145,6 +145,27 @@
                                 </tbody>
                                 <%})%>
                         </table>
+
+
+               
+                            <div class="infinitpaginOuter" id="pagination-shop">
+                                <div class="infinitpagin">
+                             
+                                    <ul>
+                                        <a href="/my-orders?page=<%=previous%>"><li class="btn" id="previous-button"
+                                            data-status="previous">
+                                            < </li></a>
+
+                                        <li class="btn text-white" id="current-page"  data-value="">
+                                    <%=page%>
+                                        </li>
+                                        
+                                        <a href="/my-orders?page=<%=next%>"><li class="btn" id="next-button">></li></a>
+                                    </ul>
+                                </div>
+                                </div>
+                               
+
                         <%}else{%>
                             <div class="text-center">
 

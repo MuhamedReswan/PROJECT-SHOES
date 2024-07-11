@@ -1,155 +1,151 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Report</title>
-   <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f7f7f7;
-            color: #333;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #ddd;
-            
-        }
-
-        .logo {
-            width: 80px;
-           
-        }
 
 
-        .section {
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-        }
+<%- include('../layout/admin/adminHeader.ejs') -%>
 
-        h1, h2, h3 {
-            color: #000000;
-            margin-top: 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-
-        footer {
-            margin-top: 40px;
-            text-align: center;
-            color: #888;
-            font-size: 14px;
+    <style>
+        @media print {
+            .no-print {
+                display: none !important;
+            }
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-          <div class="header-text" style="margin-top: 0;">
-                <h1>Sales Report</h1> 
+
+
+    <div class="screen-overlay"></div>
+
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Sales List</h2>
+                <p>Lorem ipsum dolor sit amet.</p>
             </div>
-        </header>
-        <div id="time-period" class="section">
-            <div class="time-period-content">
-                <div class="time-period-item">
-                    <label for="start-date">Start Date:</label>
-                    <p>01/01/2023</p>
-                </div>
-                <div class="time-period-item">
-                    <label for="end-date">End Date:</label>
-                    <p>31/01/2023</p>
+            <div class="no-print">
+                <a href="/admin/salesreport" class="btn btn-secondary">BACK</a><br>
+                <a style="margin-top: 1rem;" fcx class="btn btn-primary" onclick="downloadPdf()">Download PDF</a>
+                <a style="margin-top: 1rem;" class="btn btn-success" onclick="downloadExcel()">Download Excel</a>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="table-responsive" id="Reload">
+                    <table class="table table-hover text-center">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Order ID</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Price & Quantity</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                                <th>Payment Method</th>
+                                <th class="text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <% let count=0 %>
+                            <% orders.forEach((order)=>{ %>
+                                <% order.products.forEach((product)=>{ %>
+                                    <% count++ %>
+                                        <tbody>
+                                            <td>
+                                                <%= count %>
+                                            </td>
+                                            <td>
+                                                <%= order.orderId %>
+                                            </td>
+                                            <td>
+                                                <div class="itemside">
+                                                     <div class="left">
+                                                        <img src="/user/assets/images/product-images/sharpedImages/<%=product.productId.images[0]%>"
+                                                            class="img-sm img-thumbnail" alt="Item" />
+                                                    </div>
+                                                   
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <%= order.user.name %>
+                                            </td>
+                                            <td>
+                                                <%= product.price %> x <%= product.quantity %>
+                                            </td>
+                                            <td>
+                                                <%= product.price * product.quantity %>
+                                            </td>
+                                            <td>
+                                                <%= order.date.toLocaleString('en-US', { day: 'numeric' , month: 'short'
+                                                    ,year: 'numeric' }) %>
+                                            </td>
+                                            <td>
+                                                <%= order.paymentMethod %>
+                                            </td>
+                                            <td>
+                                                <%= product.status %>
+                                            </td>
+                                        </tbody>
+                                        <% }) %>
+                                            <% }) %>
+                    </table>
+                    <!-- table-responsive.// -->
                 </div>
             </div>
         </div>
-        
+        <!-- card end// -->
+    </section>
 
-        <section id="summary" class="section">
-            <h2>Summary</h2>
-            <div class="summary-content">
-                <div class="summary-item">
-                    <h3>Total Orders</h3>
-                    <p>150</p>
-                </div>
-                <div class="summary-item">
-                    <h3>Total Revenue</h3>
-                    <p>₹300,000</p>
-                </div>
-            </div>
-        </section>
+    <script>
+        function downloadPdf() {
+            window.print();
+        }
 
-        <section id="detailed-data" class="section">
-            <h2>Detailed Sales Data</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Product Name</th>
-                        <th>Quantity Sold</th>
-                        <th>Unit Price</th>
-                        <th>Total Revenue</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Product A</td>
-                        <td>50</td>
-                        <td>₹1000</td>
-                        <td>₹50,000</td>
-                    </tr>
-                    <tr>
-                        <td>Product B</td>
-                        <td>30</td>
-                        <td>₹1500</td>
-                        <td>₹45,000</td>
-                    </tr>
-                    <tr>
-                        <td>Product C</td>
-                        <td>70</td>
-                        <td>₹2000</td>
-                        <td>₹140,000</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+        function triggerExcelDownload(tableData) {
+            const data = tableData;
+            fetch('/admin/downloadExcel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then((data) => {
+                if (data.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Downloaded check downlods',
+                        showConfirmButton: false
+                    })
+                    setTimeout(() => {
+                        location.reload()
 
-        <footer>
-            <p>For any inquiries, contact: SAcollective@example.com</p>
-        </footer>
-    </div>
-</body>
-</html>
+                    }, 1000);
+                }
+            })
+        }
+
+        function gatherTableData() {
+            const tableRows = document.querySelectorAll('.table tbody tr');
+            const tableData = [];
+
+            tableRows.forEach(row => {
+                const rowData = [];
+                const cells = row.querySelectorAll('td');
+                cells.forEach(cell => {
+                    rowData.push(cell.textContent.trim()); // Extracting cell text content
+                });
+                tableData.push(rowData); // Pushing row data to the array
+            });
+
+            return tableData;
+        }
+
+        function downloadExcel() {
+            const tableData = gatherTableData();
+            triggerExcelDownload(tableData);
+        }
+
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+    <%- include('../layout/admin/adminFooter.ejs') -%>

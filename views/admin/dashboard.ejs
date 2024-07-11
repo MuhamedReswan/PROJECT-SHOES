@@ -85,29 +85,31 @@
   <!-- Modal -->
   <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-
-            <div class="form-group">
-                <label for="start-date" class="form-label">Start Date</label>
-                <input type="date" class="form-control" id="start-date" name="startDate">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="form-group">
-                <label for="end-date" class="form-label">End Date</label>
-                <input type="date" class="form-control" id="end-date" name="endDate">
+            <div class="modal-body">
+                <div class="text-center text-danger" id="error-div"></div>
+                <div class="form-group">
+                    <label for="start-date" class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="start-date" name="startDate">
+                    <div id="start-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="end-date" class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="end-date" name="endDate">
+                    <div id="end-error"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="validateBtn">Submit</button>
             </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="validateBtn">Submit</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
             <section class="content-main">
                 <div class="content-header">
                     <div>
@@ -537,26 +539,135 @@
             </footer>
         </main>
 
-        <script>
-            document.getElementById('validateBtn').addEventListener('click', function () {
-                const startDate = document.getElementById('start-date').value;
-                const endDate = document.getElementById('end-date').value;
-                const currentDate = new Date().toISOString().split('T')[0]; // current date in YYYY-MM-DD format
-    
-                if (!startDate || !endDate) {
-                    alert('Please select both start date and end date.');
-                    return;
-                }
-                else if (startDate > endDate) {
-                    alert('Start date cannot be greater than end date.');
-                    return;
-                } else if(startDate > currentDate || endDate > currentDate) {
-                    alert('Start date and end date must be less than or equal to the current date.');
-                    return;
-                }else{
-                alert('Validation passed! Proceeding with report generation.');
 
-                window.location.href=`/admin/sales-report?start=${startDate}$end=${endDate}`
+        <script>
+            function showError(inputId, errorId, message) {
+                if (inputId != null) {
+                    inputId.style.border = "1px solid red";
+                    errorId.style.fontSize = "6px";
+                }
+                errorId.style.fontSize = "14px";
+                errorId.style.color = "red";
+                errorId.innerText = `${message}`;
+    
+                setTimeout(() => {
+                    if (inputId != null) {
+                        inputId.style.border = "";
+                    } 
+                    errorId.innerText = "";
+                }, 3000);
+            }
+    
+            document.getElementById('validateBtn').addEventListener('click', function () {
+                const startDate = document.getElementById('start-date');
+                const endDate = document.getElementById('end-date');
+                const currentDate = new Date().toISOString().split('T')[0]; // current date in YYYY-MM-DD format
+                const errorId = document.getElementById('error-div');
+                const startError = document.getElementById('start-error');
+                const endError = document.getElementById('end-error');
+                let message;
+                let flag = true;
+    
+                if (!startDate.value || !endDate.value) {
+                    message = 'Please select both start date and end date.';
+                    showError(null, errorId, message);
+                    flag = false;
+                }
+    
+                if (startDate.value > endDate.value) {
+                    message = 'Start date cannot be greater than end date.';
+                    showError(startDate, startError, message);
+                    flag = false;
+                }
+    
+                if (startDate.value > currentDate) {
+                    message = "Start date must be less than or equal to the current date.";
+                    showError(startDate, startError, message);
+                    flag = false;
+                }
+    
+                // if (endDate.value > currentDate) {
+                //     message = "End date must be less than or equal to the current date.";
+                //     showError(endDate, endError, message);
+                //     flag = false;
+                // }
+    
+                if (flag) {
+                    alert('Validation passed! Proceeding with report generation.');
+                    window.location.href = `/admin/sales-report?start=${startDate.value}&end=${endDate.value}`;
+                } else {
+                    return flag;
+                }
+            });
+        </script>
+
+        
+        <!-- <script>
+    function showError(inputId, errorId, message) {
+                if (inputId != null) {
+                    inputId.style.border = "1px solid red";
+                    errorId.style.fontSize = "14px";
+                }
+                errorId.style.fontSize = "14px";
+                errorId.style.color = "red";
+                errorId.innerText = `${message}`;
+           
+                setTimeout(() => {
+                    if (inputId != null) {
+                        inputId.style.border = "";
+                    } errorId.innerText = "";
+
+                }, 3000);
+            }
+
+            document.getElementById('validateBtn').addEventListener('click', function () {
+                const startDate = document.getElementById('start-date');
+                const endDate = document.getElementById('end-date');
+                const currentDate = new Date().toISOString().split('T')[0]; // current date in YYYY-MM-DD format
+                const errorId = document.getElementById('error-div');
+                const startError = document.getElementById('start-error');
+                const endError = document.getElementById('end-error');
+                let message;
+                let flag=true
+                
+
+    
+
+
+            
+
+                if (!startDate.value || !endDate.value) {
+                    message='Please select both start date and end date.'
+                    showError(null,errorId,message)
+                    flag=false
+                }
+
+               if (startDate.value > endDate.value) {
+                    message='Start date cannot be greater than end date.'
+                    showError(startDate,startError,message)
+                    flag=false;
+                }
+
+                 if(startDate.value > currentDate ) {
+                    message="start date  must be less than or equal to the current date.";
+                    showError(startDate,startError,message)
+                    flag=false
+                }
+
+                 if(endDate.value > currentDate) {
+                    message="end date  must be less than or equal to the current date.";
+                    showError(endDate,endError,message)
+                    flag=false
+                }
+                
+                if(flag){
+                    alert('Validation passed! Proceeding with report generation.');
+window.location.href=`/admin/sales-report?start=${startDate.value}$end=${endDate.value}`
+                }else{
+                    return flag
+                }
+                 });
+                
 // let data ={
 //     startDate:startDate,
 //     endDate:endDate
@@ -577,8 +688,59 @@
                 // // If validation passes, you can proceed with form submission or further processing
                 // alert('Validation passed! Proceeding with report generation.');
                 // $('#staticBackdrop').modal('hide');
-            });
-        </script>
+           
+        </script> -->
+
+        <!-- <script>
+            document.getElementById('validateBtn').addEventListener('click', function () {
+    const startDateInput = document.getElementById('start-date');
+    const endDateInput = document.getElementById('end-date');
+    const errorDiv = document.getElementById('error-div');
+
+    const startDate = startDateInput.value;
+    const endDate = endDateInput.value;
+    const currentDate = new Date().toISOString().split('T')[0]; // current date in YYYY-MM-DD format
+
+    let errorMessage = '';
+
+    if (!startDate || !endDate) {
+        errorMessage = 'Please select both start date and end date.';
+        highlightInputField();
+    } else if (startDate > endDate) {
+        errorMessage = 'Start date cannot be greater than end date.';
+        highlightInputField(endDateInput);
+    } else if (startDate > currentDate || endDate > currentDate) {
+        errorMessage = 'Start date and end date must be less than or equal to the current date.';
+        highlightInputField(startDateInput, endDateInput);
+    }
+
+    if (errorMessage) {
+        errorDiv.textContent = errorMessage; // Show the error message
+        setTimeout(() => {
+            errorDiv.textContent = ''; // Clear the error message after 3 seconds
+        }, 3000);
+    } else {
+        window.location.href = `/admin/sales-report?start=${startDate}&end=${endDate}`;
+    }
+});
+
+function highlightInputField(inputField, additionalField = null) {
+    inputField.style.borderColor = 'red';
+    inputField.focus();
+
+    if (additionalField) {
+        additionalField.style.borderColor = 'red';
+    }
+
+    setTimeout(() => {
+        inputField.style.borderColor = '';
+        if (additionalField) {
+            additionalField.style.borderColor = '';
+        }
+    }, 3000); // Reset border color after 3 seconds
+}
+
+        </script> -->
         
         <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
         <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>

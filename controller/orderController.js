@@ -33,6 +33,12 @@ const placeOrder = async (req, res) => {
         if(cartData){
 
         let products = cartData?.products
+// // ------------------------------------------------------------------------------------------------------------------------
+//         console.log("cart products. from place order")//--------------
+//         cartData.products.price=cartData.products.offerPrice;
+
+//         console.log("cart products 2. from place order")//--------------
+//         // -------------------------------------------------------
         console.log('prodductssssssssssssssssssss', products);//------------------
         let lessQuantity = 0
         let size = 0
@@ -294,10 +300,47 @@ const loadMyOrder = async (req, res) => {
 
         console.log('im in my orders')//--------------
         const userId = req.session.user?.id;
+
+        let page=1;
+        if(req.query.page){
+            page= req.query.page;
+        }
+        let limit=8;
+        let next =page+1;
+        let previous = page >1 ? page-1 : 1;
+        let count =  await Orders.find({ user: userId })
+        console.log("count",count.length)//------------
+        
+        let totalPage = Math.ceil(count.length/limit);
+        if (next > totalPage){
+            next = totalPage
+        }
+
         if (userId) {
-            const orders = await Orders.find({ user: userId }).populate('user').populate('products.productId').sort({date:-1});
-            // console.log('my order orders', orders)//-----------------------
-            res.render('myOrders', { orders })
+            const orders = await Orders.find({ user: userId })
+            .populate('user')
+            .populate('products.productId')
+            .sort({ date: -1 }) 
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec();     
+
+                  // console.log('my order orders', orders)//-----------------------
+
+// console.log("totalPage",totalPage)//-------------------------------
+// console.log("next",next)//-------------------------------
+// console.log("previous",previous)//-------------------------------
+// console.log("page",page)//-------------------------------
+
+            
+            res.render('myOrders', { 
+                orders:orders,
+                totalPage:totalPage,
+                previous:previous,
+                next:next,
+                page:page
+             })
+
         } else {
             res.status(401).json({ error: 'User id not getting' });
         }

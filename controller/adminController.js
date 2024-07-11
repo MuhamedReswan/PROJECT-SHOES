@@ -478,9 +478,13 @@ const loadSalesreport =async (req,res)=>{
 const startDate =req.query?.start;
 const endDate = req.query?.end
 
-        const salesData = await Orders.find({date:{$gte:startDate,$lte:endDate}});
-        console.log("salesData",salesData)//---------------
-        res.status(200).render("salesReport");
+console.log("startDAte",startDate)//-----------------
+console.log("endDate",endDate)//-----------------
+
+
+        const orders = await Orders.find({date:{$gte:startDate,$lte:endDate}}).populate('user').populate('products.productId');
+        console.log("salesData",orders)//---------------
+        res.status(200).render("salesReport",{orders});
     } catch (error) {
         console.log(error)
     }
