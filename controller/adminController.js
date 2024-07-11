@@ -3,12 +3,82 @@ const Users = require('../model/userModel');
 const Products = require('../model/productsModel');
 const Offers = require('../model/offerModel');
 const Orders = require('../model/orderModel');
+const Category = require('../model/categoryModel');
 
 
 
 //load dashboard
-const loadDashboard = (req, res) => {
+const loadDashboard = async (req, res) => {
     try {
+        console.log("within dashboard controller")//-----------
+
+        let page = 1;
+        if (req.query.id) {
+            page = req.query.id
+        }
+        const limit = 6;
+        const previous = page > 1 ? page - 1 : 1;
+        let next = page + 1
+
+        const count = await Orders.find({}).count()
+
+        const totalPages = Math.ceil(count / limit)
+        if (next > totalPages) {
+            next = totalPages
+        }
+
+        const orders = await Orders.find({})
+        let delivered = 0;
+        let cancelled = 0;
+        let placed = 0;
+        let returned = 0;
+        let returnRequested = 0;
+        let returnDenied = 0;
+        let pending = 0;
+        orders.map((order) => {
+            order.products.map((product) => {
+                if (product.status == 'Delivered') {
+                    delivered++
+                } else if (product.status == 'Placed') {
+                    placed++
+                } else if (product.status == 'Cancelled') {
+                    cancelled++
+                } else if (product.status == 'returned') {
+                    returned++
+                }
+                else if (product.status == 'Return Requested') {
+                    returnRequested++
+
+                } else if (product.status == 'Pending') {
+                    pending++
+
+                } else if (product.status == 'Return Denied') {
+                    returnDenied++
+                }
+            })
+        });
+
+
+        const latestOrders = await Orders.find({}).sort({ date: -1 }).populate('user').limit(limit).skip((page - 1) * limit).exec();
+        const total = await Orders.aggregate([{ $match: { 'products.status': 'Delivered' } }, { $group: { _id: null, totalRevenue: { $sum: '$totalAmount' } } }]);
+        const totalRevenue = total.map((value) => value.totalRevenue)[0] || 0
+        const orderCount = await Orders.find({}).count();
+        const productCount = await Products.find({}).count();
+        const categoryCount = await Category.find({}).count();
+        const currentMonth = new Date();
+          const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+    const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
+
+
+        console.log('toatal-----',total)//---------------
+        console.log('totalRevenue-----',totalRevenue)//---------------
+        console.log('orderCount-----',orderCount)//---------------
+        console.log('productCount-----',productCount)//---------------
+        console.log('categoryCount-----',categoryCount)//---------------
+        console.log('currentMonth-----',currentMonth)//---------------
+        console.log('startOfMonth-----',startOfMonth)//---------------
+        console.log('endOfMonth-----',endOfMonth)//---------------
+
         res.render('dashboard');
     } catch (error) {
         console.log(error);
@@ -178,7 +248,7 @@ const loadOffers = async (req, res) => {
             next = totalPage
         }
 
-        const offers = await Offers.find({}).limit(limit).sort({createdAt:-1});
+        const offers = await Offers.find({}).limit(limit).sort({ createdAt: -1 });
 
 
         res.status(200).render('offers', {
@@ -215,7 +285,7 @@ const insertOffer = async (req, res) => {
     try {
         console.log('within inset offer')//-------------------
         let { name, endDate, discount, isListed } = req.body;
-        name=name.toLowerCase();
+        name = name.toLowerCase();
         name = name.charAt(0).toUpperCase() + name.slice(1);
         console.log("name", name);//--------------
 
@@ -278,14 +348,14 @@ const updateOffer = async (req, res) => {
         console.log("within updatre offer");//------------------
         console.log("within updatre body", req.body);//------------------
         let { name, endDate, discount, offerId } = req.body;
-name=name.toLowerCase();
+        name = name.toLowerCase();
         name = name.charAt(0).toUpperCase() + name.slice(1);
 
-        const nameAlready = await Offers.findOne({ name: name,_id:{$ne:offerId} });
+        const nameAlready = await Offers.findOne({ name: name, _id: { $ne: offerId } });
 
         if (nameAlready) {
 
-            res.json({ already: "This name already exists !" }); 
+            res.json({ already: "This name already exists !" });
 
         } else {
 
@@ -313,7 +383,7 @@ name=name.toLowerCase();
 
 
 
-function parseBoolean(value){
+function parseBoolean(value) {
     return Boolean(value === 'true')
 }
 
@@ -322,13 +392,13 @@ const changeOfferStatus = async (req, res) => {
     console.log("changeOfferStatus invoked"); //-----------
     try {
         const { offerId, status } = req.body;
-        
+
 
         // Convert status to boolean
         const currentStatus = parseBoolean(status)
-        console.log('iam curr',currentStatus)//---------------------
+        console.log('iam curr', currentStatus)//---------------------
         const toStatus = !currentStatus;
-        
+
         console.log('changeOfferStatus'); //--------------------
         console.log('req.body', req.body); //--------------------
         console.log('status', currentStatus); //--------------------
@@ -343,7 +413,7 @@ const changeOfferStatus = async (req, res) => {
         console.log("updatedOffer", updatedOffer); //-------------------
 
         if (updatedOffer) {
-            console.log('ooooooooooooooooooooooooo',updatedOffer);//---------------
+            console.log('ooooooooooooooooooooooooo', updatedOffer);//---------------
             res.json({ statusChanged: true });
         } else {
             res.json({ message: "Offer not found", statusChanged: false });
@@ -358,113 +428,113 @@ const changeOfferStatus = async (req, res) => {
 
 
 // apply offer
-const applyOffer = async (req, res)=>{
-try {
-    console.log('within apply offer')//------------
+const applyOffer = async (req, res) => {
+    try {
+        console.log('within apply offer')//------------
 
-    const productId = req.query.id;
-let currentdate = Date.now()
-//     const offers = await Offers.find({isListed:true,endDate:{$gte:currentdate} });
-//     console.log("offers",offers)//---------------------
+        const productId = req.query.id;
+        let currentdate = Date.now()
+        //     const offers = await Offers.find({isListed:true,endDate:{$gte:currentdate} });
+        //     console.log("offers",offers)//---------------------
 
-//  res.status(200).render("applyOffers",{offers});
-
-
+        //  res.status(200).render("applyOffers",{offers});
 
 
 
- const totalOffer = await Offers.find({isListed:true,endDate:{$gte:currentdate} });
- let page = 1;
- if (req.query.page) {
-     page = req.query.page;
- }
- let limit = 8;
- let next = page + 1;
- let previous = page > 1 ? page - 1 : 1;
- let count = totalOffer.length;
-
- let totalPage = Math.ceil(count / limit);
- if (next > totalPage) {
-     next = totalPage
- }
-
- const offers = await Offers.find({isListed:true,endDate:{$gte:currentdate} }).limit(limit).sort({createdAt:-1});
 
 
- res.status(200).render('applyOffers', {
-     offers,
-     productId,
-     totalPage,
-     previous,
-     next,
-     page
- })
+        const totalOffer = await Offers.find({ isListed: true, endDate: { $gte: currentdate } });
+        let page = 1;
+        if (req.query.page) {
+            page = req.query.page;
+        }
+        let limit = 8;
+        let next = page + 1;
+        let previous = page > 1 ? page - 1 : 1;
+        let count = totalOffer.length;
+
+        let totalPage = Math.ceil(count / limit);
+        if (next > totalPage) {
+            next = totalPage
+        }
+
+        const offers = await Offers.find({ isListed: true, endDate: { $gte: currentdate } }).limit(limit).sort({ createdAt: -1 });
+
+
+        res.status(200).render('applyOffers', {
+            offers,
+            productId,
+            totalPage,
+            previous,
+            next,
+            page
+        })
 
 
 
-    
-} catch (error) {
-    console.log(error)
-}
+
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 
 
 // apply offer on product
-const applyPoductOffer = async (req,res)=>{
-try {
-console.log("with product apply offer");//---------
-console.log("req.bpdu",req.body)//-----------------
-    const {productId,offerId}=req.body;
+const applyPoductOffer = async (req, res) => {
+    try {
+        console.log("with product apply offer");//---------
+        console.log("req.bpdu", req.body)//-----------------
+        const { productId, offerId } = req.body;
 
 
 
-    const addOfferProduct = await Products.findByIdAndUpdate({
-        _id:productId
-    },{
-        $set:{
-            appliedOffer:offerId
+        const addOfferProduct = await Products.findByIdAndUpdate({
+            _id: productId
+        }, {
+            $set: {
+                appliedOffer: offerId
+            }
+        }, {
+            new: true
+        });
+
+        const updateAppliedProduct = await Offers.findByIdAndUpdate({
+            _id: offerId
+        }, {
+            $addToSet: {
+                productId: productId
+            }
+        }, {
+            new: true
+        })
+
+        console.log("addOfferProduct", addOfferProduct)//--------------
+        console.log("updateAppliedProduct", updateAppliedProduct)//---------------------
+
+        if (addOfferProduct) {
+            console.log(" if addOfferProduct")//--------------
+
+            if (updateAppliedProduct) {
+                console.log(" if updateAppliedProduct")//--------------
+
+                res.status(200).json({ success: true, message: "offer added successful!" });
+            } else {
+                console.log(" else updateAppliedProduct")//--------------
+
+                res.status(400).json({ success: false, message: "offer Product Id not updated!" });
+            }
+
+        } else {
+            console.log(" else addOfferProduct")//--------------
+
+            res.status(400).json({ success: false, message: "product not found!" });
         }
-    },{
-        new:true
-    });
 
-    const updateAppliedProduct = await Offers.findByIdAndUpdate({
-        _id:offerId
-    },{
-        $addToSet:{
-            productId:productId
-        }
-    },{
-        new:true
-    })
+    } catch (error) {
+        console.log(error);
 
-    console.log("addOfferProduct",addOfferProduct)//--------------
-console.log("updateAppliedProduct",updateAppliedProduct)//---------------------
-
-if(addOfferProduct){
-    console.log(" if addOfferProduct")//--------------
-
-    if(updateAppliedProduct){
-console.log(" if updateAppliedProduct")//--------------
-
-        res.status(200).json({success:true, message:"offer added successful!"});
-    }else{
-        console.log(" else updateAppliedProduct")//--------------
-
-        res.status(400).json({success:false, message:"offer Product Id not updated!" });
     }
-   
-}else{
-    console.log(" else addOfferProduct")//--------------
-
-    res.status(400).json({success:false, message:"product not found!" });
-}
-    
-} catch (error) {
-    console.log(error);
-    
-}
 }
 
 
@@ -472,19 +542,23 @@ console.log(" if updateAppliedProduct")//--------------
 
 // load sales report
 
-const loadSalesreport =async (req,res)=>{
+const loadSalesreport = async (req, res) => {
     try {
         console.log("within controller sales report")//--------------------
-const startDate =req.query?.start;
-const endDate = req.query?.end
+        const startDate = new Date(req.query?.start);
+        const endDate = new Date(req.query?.end);
 
-console.log("startDAte",startDate)//-----------------
-console.log("endDate",endDate)//-----------------
+        console.log("startDAte", startDate)//-----------------
+        console.log("endDate", endDate)//-----------------
 
+        // Adjust endDate to include the entire end day by setting the time to the end of the day
+        endDate.setHours(23, 59, 59, 999);
 
-        const orders = await Orders.find({date:{$gte:startDate,$lte:endDate}}).populate('user').populate('products.productId');
-        console.log("salesData",orders)//---------------
-        res.status(200).render("salesReport",{orders});
+        console.log("endDate2222", endDate)//-----------------
+
+        const orders = await Orders.find({ date: { $gte: startDate, $lte: endDate }, "products.status": "Delivered" }).populate('user').populate('products.productId');
+        console.log("salesData", orders)//---------------
+        res.status(200).render("salesReport", { orders });
     } catch (error) {
         console.log(error)
     }

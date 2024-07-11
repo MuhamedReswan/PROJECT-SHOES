@@ -586,11 +586,11 @@
                     flag = false;
                 }
     
-                // if (endDate.value > currentDate) {
-                //     message = "End date must be less than or equal to the current date.";
-                //     showError(endDate, endError, message);
-                //     flag = false;
-                // }
+                if (endDate.value > currentDate) {
+                    message = "End date must be less than or equal to the current date.";
+                    showError(endDate, endError, message);
+                    flag = false;
+                }
     
                 if (flag) {
                     alert('Validation passed! Proceeding with report generation.');
