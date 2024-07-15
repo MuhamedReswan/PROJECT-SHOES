@@ -18,7 +18,25 @@
                 <p>Lorem ipsum dolor sit amet.</p>
             </div>
             <div class="no-print">
+                <div class="d-flex">
                 <a href="/admin" class="btn btn-secondary">BACK</a><br>
+
+                    <select class="form-select mx-3 bg-secondary text-light" id="orderStatusFilter">
+                        <%if(dateRange){%>
+                            <option value="<%= dateRange%>"><%=dateRange%></option selected> 
+                            <%}%>
+                            
+                        <!-- <option value="all">All</option> -->
+                        <!-- <option value="Delivered">Delivered</option> -->
+                        <!-- <option value="Returned">Returned</option> -->
+                        <!-- <option value="Return Requested">Return Requested</option> -->
+                        <!-- <option value="Return Denied">Return Denied</option> -->
+                        <option value="Day">Day</option>
+                        <option value="Week">Week</option>
+                        <option value="Month">Month</option>
+                        <option value="Year">Year</option>
+                    </select>
+                </div>
                 <a style="margin-top: 1rem;" fcx class="btn btn-primary" onclick="downloadPdf()">Download PDF</a>
                 <!-- <a style="margin-top: 1rem;" class="btn btn-success" onclick="downloadExcel()">Download Excel</a> -->
                 <a style="margin-top: 1rem;" class="btn btn-success" onclick="downloadExcel()">Download Excel</a>
@@ -41,9 +59,18 @@
                                 <th>Payment Method</th>
                                 <th class="text-center">Status</th>
                             </tr>
-                        </thead>
+                        </thead> 
+                        <% if(orders.length==0){%>
+                            <tbody>
+<td colspan="9" class="text-center">
+                                     <h6 >No data Found !</h6>
+                                    </td>
+                            </tbody>
+                            <%}else{%>
+                            
                         <% let count=0 %>
                             <% orders.forEach((order)=>{ %>
+                            
                                 <% order.products.forEach((product)=>{ %>
                                     <% count++ %>
                                         <tbody>
@@ -92,7 +119,9 @@
                                             </td>
                                         </tbody>
                                         <% }) %>
+                                       
                                             <% }) %>
+                                           <%}%>
                     </table>
                     <!-- table-responsive.// -->
                 </div>
@@ -153,6 +182,8 @@
 
 
     <script>
+docume
+
 function downloadPdf() {
             window.print();
         }
@@ -226,6 +257,17 @@ function downloadPdf() {
             link.click();
             document.body.removeChild(link);
         }
+    </script>
+
+    <script>
+        let orderStatusFilter = document.getElementById('orderStatusFilter');
+
+        orderStatusFilter.addEventListener('change',(event)=>{
+            console.log("within orderstatus filter")//------------------
+            let date = event.target.value;
+            console.log("status+++",date)//---------------
+            window.location.href=`/admin/sales-report?date=${date}`
+        })
     </script>
     
     

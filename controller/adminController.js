@@ -43,7 +43,7 @@ const loadDashboard = async (req, res) => {
                     placed++
                 } else if (product.status == 'Cancelled') {
                     cancelled++
-                } else if (product.status == 'returned') {
+                } else if (product.status == 'Returned') {
                     returned++
                 }
                 else if (product.status == 'Return Requested') {
@@ -65,19 +65,64 @@ const loadDashboard = async (req, res) => {
         const orderCount = await Orders.find({}).count();
         const productCount = await Products.find({}).count();
         const categoryCount = await Category.find({}).count();
-        const currentMonth = new Date();
-          const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
-    const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
+        const currentDate = new Date();
+          const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+const monthly = await Orders.aggregate([{$match:{'products.status':'Delivered',date:{$gt:startOfMonth,$lt:endOfMonth}}},{$group:{_id:null,monthlyRevenue:{$sum:'$totalRevenue'}}}]);
+const monthlyRevenue = monthly.map((value)=>value)[0]||0;
+const users = await Users.find({verified:true}).count();
 
+
+const currentMonthh = new Date().getMonth() + 1;
+const currentYear = new Date().getFullYear();
+
+const defaultMonthly = Array.from({ length: 12 }, (_, i) => ({
+    month: i + 1,
+    total: 0,
+    count: 0
+  }));
+
+  monthlySalesData  = await Orders.aggregate([
+    {$unwind:"$products"},
+    {$match:{'products.status':"Delivered",
+        status:{$ne:'Cancelled'},
+        date:{$gte:new Date(currentYear,0,1)}
+    }
+},
+{
+    $group:{
+        _id:{$month:'$date'},
+        total:{$sum:"$totalAmount"},
+        countt:{$sum:1}
+    }
+},
+{
+    $project:{
+        _id:0,
+        month:'$_id',
+        total:'$total',
+        count:'$countt'
+    }
+}
+]);
+
+const updatedMonthValue = defaultMonthly .map((defaultMonthly)=>{
+    const foundMonth = monthlySalesData.find((monthData)=>{
+return monthData == defaultMonthly
+    })
+})
 
         console.log('toatal-----',total)//---------------
         console.log('totalRevenue-----',totalRevenue)//---------------
         console.log('orderCount-----',orderCount)//---------------
         console.log('productCount-----',productCount)//---------------
         console.log('categoryCount-----',categoryCount)//---------------
-        console.log('currentMonth-----',currentMonth)//---------------
+        console.log('currentDate-----',currentDate)//---------------
         console.log('startOfMonth-----',startOfMonth)//---------------
         console.log('endOfMonth-----',endOfMonth)//---------------
+        console.log('monthly-----',monthly)//---------------
+        console.log('monthlyRevenue-----',monthlyRevenue)//---------------
+        console.log('users-----',users)//---------------
 
         res.render('dashboard');
     } catch (error) {
@@ -545,20 +590,96 @@ const applyPoductOffer = async (req, res) => {
 const loadSalesreport = async (req, res) => {
     try {
         console.log("within controller sales report")//--------------------
-        const startDate = new Date(req.query?.start);
-        const endDate = new Date(req.query?.end);
+        let startDate = new Date(req.query?.start);
+        let endDate = new Date(req.query?.end);
+        // let status = "all"
+    //    status = req?.query?.status;
+    let dateRange = req.query?.date
+
+    let currentDate= new Date();
 
         console.log("startDAte", startDate)//-----------------
         console.log("endDate", endDate)//-----------------
+        // console.log("status", status)//-----------------
+        console.log("currentDate", currentDate)//-----------------
 
         // Adjust endDate to include the entire end day by setting the time to the end of the day
         endDate.setHours(23, 59, 59, 999);
 
         console.log("endDate2222", endDate)//-----------------
 
-        const orders = await Orders.find({ date: { $gte: startDate, $lte: endDate }, "products.status": "Delivered" }).populate('user').populate('products.productId');
-        console.log("salesData", orders)//---------------
-        res.status(200).render("salesReport", { orders });
+
+        let filterConditons ={
+          
+                orderStatus: { $nin: ['Cancelled', 'Pending'] },   
+        }
+
+        if(startDate & startDate){
+            filterConditons.date =  { $gte: startDate, $lte: endDate }
+        }        
+
+if(dateRange){
+
+    let year = currentDate.getFullYear();
+    let month = currentDate.getMonth();
+    let day = currentDate.getDay();
+
+    if(dateRange=="All"){
+        const orders = await Orders.find(filterConditons).populate('user').populate('products.productId');
+        console.log("orders.length",orders.length)//-------------------------
+       return res.status(200).render("salesReport", { orders ,dateRange});
+    }
+
+    if(dateRange=="Day"){
+        startDate= new Date(currentDate.setHours(0,0,0,0));
+        endDate= new Date(currentDate.setHours(23, 59, 59, 999));
+
+        console.log(`Day:${startDate}---------------------${endDate}`)//----------------------------
+        filterConditons.date =  { $gte: startDate, $lte: endDate }
+    }
+ 
+    if(dateRange=="Week"){
+        // startDate = new Date(year,month,day-(day+6)).setHours(0, 0, 0, 0);
+        // endDate = new Date(year,month,day).setHours(23, 59, 59, 999);
+startDate= new Date(year, month, currentDate.getDate() - day - 7);
+
+endDate=currentDate.setDate(currentDate.getDate() - day - 1);
+
+
+        console.log(`Week:${startDate}---------------------${endDate}`)//----------------------------
+        filterConditons.date =  { $gte: startDate, $lte: endDate }
+    }
+
+    if(dateRange=="Month"){
+        startDate=new Date(year,month,1).setHours(0,0,0,0);
+        endDate=new Date(year,month,31).setHours(23, 59, 59, 999);   
+          console.log(`Month:${startDate}---------------------${endDate}`)//----------------------------
+          filterConditons.date =  { $gte: startDate, $lte: endDate }
+    }
+
+    if(dateRange=="Year"){
+        startDate=new Date(year,0,1).setHours(0,0,0,0);
+        endDate=new Date(year,11,31).setHours(23, 59, 59, 999);
+
+        console.log(`Year:${startDate}---------------------${endDate}`)//----------------------------
+        filterConditons.date =  { $gte: startDate, $lte: endDate }
+    }
+
+}
+
+
+console.log("filterConditons=============",filterConditons)//--------------------
+       
+
+        // if(status && status!="all"){
+        //     filterConditons["products.status"]=status;
+        // }
+
+        // const orders = await Orders.find({ date: { $gte: startDate, $lte: endDate }, "products.status": "Delivered" }).populate('user').populate('products.productId');
+        const orders = await Orders.find(filterConditons).populate('user').populate('products.productId');
+        // console.log("salesData", orders)//---------------
+        console.log("orders.length",orders.length)//-------------------------
+        res.status(200).render("salesReport", { orders ,dateRange});
     } catch (error) {
         console.log(error)
     }
