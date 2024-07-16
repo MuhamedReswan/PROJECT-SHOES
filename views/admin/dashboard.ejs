@@ -575,7 +575,7 @@
                     flag = false;
                 }
     
-                if (startDate.value > endDate.value) {
+                if (startDate.value > endDate.value && endDate.value!=="") {
                     message = 'Start date cannot be greater than end date.';
                     showError(startDate, startError, message);
                     flag = false;

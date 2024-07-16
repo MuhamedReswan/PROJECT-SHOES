@@ -7,6 +7,7 @@ const Category = require('../model/categoryModel');
 
 
 
+
 //load dashboard
 const loadDashboard = async (req, res) => {
     try {
@@ -273,6 +274,8 @@ const blockUser = async (req, res) => {
 }
 
 
+// ========================================================================== OFFER ========================================================
+
 
 // load offers
 const loadOffers = async (req, res) => {
@@ -472,58 +475,6 @@ const changeOfferStatus = async (req, res) => {
 
 
 
-// apply offer
-const applyOffer = async (req, res) => {
-    try {
-        console.log('within apply offer')//------------
-
-        const productId = req.query.id;
-        let currentdate = Date.now()
-        //     const offers = await Offers.find({isListed:true,endDate:{$gte:currentdate} });
-        //     console.log("offers",offers)//---------------------
-
-        //  res.status(200).render("applyOffers",{offers});
-
-
-
-
-
-        const totalOffer = await Offers.find({ isListed: true, endDate: { $gte: currentdate } });
-        let page = 1;
-        if (req.query.page) {
-            page = req.query.page;
-        }
-        let limit = 8;
-        let next = page + 1;
-        let previous = page > 1 ? page - 1 : 1;
-        let count = totalOffer.length;
-
-        let totalPage = Math.ceil(count / limit);
-        if (next > totalPage) {
-            next = totalPage
-        }
-
-        const offers = await Offers.find({ isListed: true, endDate: { $gte: currentdate } }).limit(limit).sort({ createdAt: -1 });
-
-
-        res.status(200).render('applyOffers', {
-            offers,
-            productId,
-            totalPage,
-            previous,
-            next,
-            page
-        })
-
-
-
-
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-
 
 // apply offer on product
 const applyPoductOffer = async (req, res) => {
@@ -532,7 +483,8 @@ const applyPoductOffer = async (req, res) => {
         console.log("req.bpdu", req.body)//-----------------
         const { productId, offerId } = req.body;
 
-
+        console.log("productId",productId)//---------------------------
+        console.log("offerId",offerId)//---------------------------
 
         const addOfferProduct = await Products.findByIdAndUpdate({
             _id: productId
@@ -583,6 +535,199 @@ const applyPoductOffer = async (req, res) => {
 }
 
 
+
+// remove product offer
+const removePoductOffer = async (req, res)=>{
+    try {
+
+        console.log("remove prodcut offer backend-----------------------,",req.body)//-----------------------
+    const {productId,offerId}=req.body;
+    console.log("producuctId",productId)//----------------------------
+    console.log("offerId",offerId)//----------------------------
+
+    console.log("typeOf(ProductId)",typeof(productId))//---------------------
+
+    const removeProductOffer = await Products.findByIdAndUpdate(
+        {_id:productId},
+        {$unset:{appliedOffer:""}},
+        {new:true}
+    );
+
+console.log('removeProductOffer',removeProductOffer)//--------------------------
+
+const updatedOffer = await Offers.findByIdAndUpdate(
+    {_id:offerId},
+    {$pull:{productId:productId}}, 
+    { new:true}
+);
+
+    console.log("updatedOffer1")//----------------------
+    console.log("updatedOffer",updatedOffer)//----------------------
+    console.log("updatedOffer2")//----------------------
+
+    if(removeProductOffer){
+        if(updatedOffer){
+            res.status(200).json({removed:true,message:"Category offer succesfully removed"});
+
+        }else{
+            res.status(404).json({ removed: false, message: "Offer not found or failed to update" });
+        }
+    }else{
+        res.status(404).json({ removed: false, message: "Product not found or failed to update" });
+    }
+
+  
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+// load category, product offers
+const loadOfferForApply = async (req, res) => {
+    try {
+        console.log('within apply offer')//------------
+let categoryId = null;
+let productId=null
+         categoryId= req.query.category;
+         productId= req.query.product;
+
+        let currentdate = Date.now();
+
+        const totalOffer = await Offers.find({ isListed: true, endDate: { $gte: currentdate } });
+        let page = 1;
+        if (req.query.page) {
+            page = req.query.page;
+        }
+        let limit = 8;
+        let next = page + 1;
+        let previous = page > 1 ? page - 1 : 1;
+        let count = totalOffer.length;
+
+        let totalPage = Math.ceil(count / limit);
+        if (next > totalPage) {
+            next = totalPage
+        }
+
+        const offers = await Offers.find({ isListed: true, endDate: { $gte: currentdate } }).limit(limit).sort({ createdAt: -1 });
+
+        res.status(200).render('applyOffers', {
+            offers,
+            categoryId,
+            productId,
+            totalPage,
+            previous,
+            next,
+            page
+        })
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+
+
+// apply offer on product
+const applyCategoryOffer = async (req, res) => {
+    try {
+        console.log("with product apply offer");//---------
+        console.log("req.bpdu", req.body)//-----------------
+        const { categoryId, offerId } = req.body;
+
+
+
+        const addOfferCategory = await Category.findByIdAndUpdate({
+            _id: categoryId
+        }, {
+            $set: {
+                appliedOffer: offerId
+            }
+        }, {
+            new: true
+        });
+
+        const updateAppliedCategory = await Offers.findByIdAndUpdate({
+            _id: offerId
+        }, {
+            $addToSet: {
+                appliedCategory: categoryId
+            }
+        }, {
+            new: true
+        })
+
+        console.log("addOfferCategory", addOfferCategory)//--------------
+        console.log("updateAppliedCategory", updateAppliedCategory)//---------------------
+
+        if (addOfferCategory) {
+            console.log(" if addOfferCategory")//--------------
+
+            if (updateAppliedCategory) {
+                console.log(" if updateAppliedCategory")//--------------
+
+                res.status(200).json({ success: true, message: "offer added successful!" });
+            } else {
+                console.log(" else updateAppliedCategory")//--------------
+
+                res.status(400).json({ success: false, message: "offer category id not updated!" });
+            }
+
+        } else {
+            console.log(" else addOfferCategory")//--------------
+
+            res.status(400).json({ success: false, message: "product not found!" });
+        }
+
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
+
+
+// remove offer on category
+ const removecategoryOffer = async (req, res)=>{
+    try {
+        const {categoryId, offerId}=req.body;
+        console.log("categoryId",categoryId)//--------------------------
+        console.log("offerId",offerId)//--------------------------
+
+        const offerRemovedCategory = await Category.findByIdAndUpdate(
+            {_id:categoryId},
+            {$unset:{appliedOffer:offerId}},
+            {new:true}
+        );
+        
+const updateOffer = await Offers.findByIdAndUpdate(
+    {_id:offerId},
+    {$pull:{appliedCategory:categoryId}},
+    {new:true}
+)
+
+console.log("updateOffer",updateOffer)//--------------------------
+console.log("offerRemovedCategory",offerRemovedCategory)//--------------------------
+
+if(offerRemovedCategory){
+    if(updateOffer){
+        res.status(200).json({removed:true,message:"Offer successfully Removed"})
+    }else{
+        res.json({removed:false,message:"Offer not found or failed to update" });
+    }
+}else{
+    res.json({removed:false,message:"Category not found or failed to update"});
+}
+
+    } catch (error) {
+        console.log(error)
+    }
+ }
+
+// ====================================================================  saleReport    =================================================
 
 
 // load sales report
@@ -708,8 +853,14 @@ module.exports = {
     changeOfferStatus,
 
 
-    applyOffer,
+    // loadProductOffer,
     applyPoductOffer,
+    removePoductOffer,
+
+
+    loadOfferForApply,
+    applyCategoryOffer,
+    removecategoryOffer,
 
 
     loadSalesreport

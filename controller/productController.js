@@ -174,7 +174,7 @@ const ProductsList = async (req, res) => {
     .skip((page-1)*limit)
     .exec()
 
-console.log('productssssssssssssssssssssssssssssssssssss................................',products)//----------------------------
+console.log('productssssssssssssssssssssssssssssssssssss................................',productsData)//----------------------------
         res.render('productsList',{
             productsData:productsData,
             totalPage:totalPage,

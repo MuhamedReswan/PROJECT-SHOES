@@ -13,6 +13,11 @@ required:true
         type:Boolean,
         required:true,
         default:true
+    },
+    appliedOffer:{
+        type:mongoose.Types.ObjectId,
+        ref:'Offers',
+        required:false
     }
 })
 

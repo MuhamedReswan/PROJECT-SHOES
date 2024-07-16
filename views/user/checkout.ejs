@@ -370,12 +370,12 @@
                                                                     <td class="text-left">
                                                                         <%= product.productId.name %>
                                                                     </td>
-                                                                    <td>₹<%= product.offerPrice%>.00</td>
+                                                                    <td>₹ <%= product.offerPrice%>.00</td>
 
                                                                     <td>
                                                                         <%= product.quantity %>
                                                                     </td>
-                                                                    <td>₹<%= product.offerPrice * product.quantity %>.00
+                                                                    <td>₹ <%= product.offerPrice * product.quantity %>.00
                                                                     </td>
                                                                 </tr>
 
@@ -391,12 +391,12 @@
                                                                     <tr>
                                                                         <td colspan="3" class="text-right">Subtotal
                                                                         </td>
-                                                                        <td><%= subtotal%>.00</td>
+                                                                        <td>₹ <%= subtotal%>.00</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td colspan="3" class="text-right">Coupon Discount
                                                                         </td>
-                                                                        <td id="discountId">₹ <%= cartData?.coupon?.couponDiscount%>.00</td>
+                                                                        <td id="discountId">₹ <%= cartData?.coupon?.couponDiscount ? cartData?.coupon?.couponDiscount :0 %>.00</td>
                                                                     </tr>
                                                                     <tr>
                                                                         <%let totalAmount%>
@@ -930,7 +930,8 @@
                     .then((res) => {
 
                         if (res.paymentSuccess) {
-                            location.href = `/order-details?id=${res.orderId}`
+                             location.href = `/order-success/${res.orderId}`
+                            // location.href = `/order-details?id=${res.orderId}`
                         } else {
                             Swal.fire({
                                 position: "center",

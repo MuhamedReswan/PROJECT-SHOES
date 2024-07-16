@@ -136,11 +136,28 @@ admin_route.post('/offers/edit-offer',adminAuth.isLogin,adminController.updateOf
 // change offer status
 admin_route.post('/offers/change-status',adminAuth.isLogin,adminController.changeOfferStatus);
 
-// apply offer for product
-admin_route.get('/product/offer',adminAuth.isLogin, adminController.applyOffer);
+// load offer for product
+// admin_route.get('/product/offer',adminAuth.isLogin, adminController.loadOfferForApply);
+
+
+// load offers for category and product
+admin_route.get('/apply-offer/offer',adminAuth.isLogin, adminController.loadOfferForApply);
 
 // apply offers for product
 admin_route.post('/product/apply-offer',adminAuth.isLogin,adminController.applyPoductOffer);
+
+// remove offers from product 
+admin_route.post('/product/remove-offer',adminAuth.isLogin,adminController.removePoductOffer);
+
+
+// apply offer on category
+admin_route.post('/category/apply-offer',adminAuth.isLogin,adminController.applyCategoryOffer);
+
+// remove offer on category
+admin_route.post('/category/remove-offer',adminAuth.isLogin,adminController.removecategoryOffer)
+
+
+
 
 
 // sales report 

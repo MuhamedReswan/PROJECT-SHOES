@@ -19,7 +19,7 @@
 
                 <div class="card-body"  >
                     <div class="table-responsive" >
-                        <table class="table table-hover">
+                        <table class="table table-hover" id="category-table">
                             <thead class="bg-dark text-white bg-opacity-50">
                                 <tr>
                                     <th class="text-center">ID</th>
@@ -52,8 +52,14 @@
                                                     <%= value.isListed==true ? 'Listed' : 'Unlisted' %>
                                                 </button>
                                             </td>
-   <td>
-                                                <a href="/admin/category/offer?id=<%=value._id%>"button class="btn btn-sm btn-info rounded font-sm text-center">Apply</button></a> 
+   <td>   
+      <% if(value.appliedOffer){%>
+    <button class="btn btn-sm btn-warning rounded font-sm text-center" onclick="removeCatogoryAppliedOffer('<%=value._id%>','<%=value.appliedOffer%>')">Remove</button></a> 
+
+<%}else{%>
+    <a href="/admin/apply-offer/offer?category=<%=value._id%>"button class="btn btn-sm btn-info rounded font-sm text-center">Apply</button></a> 
+
+<%}%>
                                             </td>
 
                                             <td>
@@ -235,6 +241,45 @@
     //         }
     //     });
     // }
+
+    function removeCatogoryAppliedOffer(categoryId, offerId){
+        console.log("removeAppliedOffer invoked")//-------------------
+    console.log("**categoryId",categoryId)//--------------------------
+    console.log("**",offerId)//--------------------------
+    console.log("within rempve appliedoffer")//------------------------
+    let data ={ categoryId,offerId}
+
+    axios.post('/admin/category/remove-offer',
+        data
+    ).then((response)=>{
+        console.log("response of axios remove offer",response)//------------------
+        if(response.data.removed){
+
+            Swal.fire({
+      icon: "success",
+      text:`${response.data.message}`,
+      width:"300px",
+      timer: 1000
+    });
+            setTimeout(()=>{
+                $('#category-table').load('/admin/category #category-table');
+            },1000)
+           
+        }
+if(!response.data.removed){
+    Swal.fire({
+      icon: "error",
+      text:`${response.data.message}`,
+      width:"300px",
+      timer: 1500
+    }); 
+}
+
+    }).then((error)=>{
+        console.log(error)
+    })
+}
+   
         </script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>

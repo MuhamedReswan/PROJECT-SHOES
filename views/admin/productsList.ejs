@@ -63,8 +63,16 @@
                                             <td><%=product.category.name%></td>
                                             <td><%=product.totalStock%></td>
                                             <td>
+
+                                                <%console.log("product detatail from procustlist ejs",product)//-----------------------------%>
                                                 <!-- <div class="btn btn-sm btn-dark rounded font-sm text-center list-unlist"  onclick="applyOfferProduct('<%= product._id%>')">Apply</div> -->
-                                                <a href="/admin/product/offer?id=<%=product._id%>"button class="btn btn-sm btn-info rounded font-sm text-center">Apply</button></a> 
+                                                 <% if(product.appliedOffer){%>
+                                                     <button class="btn btn-sm btn-warning rounded font-sm text-center" onclick="removeAppliedOffer('<%=product._id%>','<%=product.appliedOffer%>')">Remove</button></a> 
+
+                                                <%}else{%>
+                                                    <a href="/admin/apply-offer/offer?product=<%=product._id%>" button class="btn btn-sm btn-info rounded font-sm text-center">Apply</button></a> 
+
+                                                <%}%>
                                             </td>
                                             <td>
                                                 <a href="/admin/edit-products/<%= product._id%>" class="btn btn-sm  rounded font-sm text-center btn-outline-dark"><span> Edit </span> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -133,7 +141,6 @@
 
 
 
-
   function listAndUnlist(id){
 let data = {productId:id}
 
@@ -173,6 +180,47 @@ if (res.result){
     })
   }
 });
+}
+
+
+
+
+function removeAppliedOffer(productId, offerId){
+    console.log("**",productId)//--------------------------
+    console.log("**",offerId)//--------------------------
+    console.log("within rempve appliedoffer")//------------------------
+    let data ={ productId,offerId}
+
+    axios.post('/admin/product/remove-offer',
+        data
+    ).then((response)=>{
+        console.log("response of axios remove coupon",response)//------------------
+        if(response.data.removed){
+
+            Swal.fire({
+      icon: "success",
+      text:`${response.data.message}`,
+      width:"300px",
+      timer: 1000
+    });
+            setTimeout(()=>{
+                $('#reloadList').load('/admin/products-list #reloadList');
+            },1000)
+  
+        }
+
+        if(!response.data.removed){
+    Swal.fire({
+      icon: "error",
+      text:`${response.data.message}`,
+      width:"300px",
+      timer: 1000
+    }); 
+}
+
+    }).then((error)=>{
+        console.log(error)
+    })
 }
    
 
