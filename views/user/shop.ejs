@@ -154,7 +154,7 @@
                                                             <% if(product.totalStock>0){%>
                                                                 <!-- product label -->
                                                                 <div class="product-labels"><span class="lbl on-sale">
-                                                                        <%= Math.floor(((product.price-product.offerPrice)/product.price)*100)
+                                                                        <%= Math.round(((product.price-product.offerPrice)/product.price)*100)
                                                                             %>% OFF
                                                                     </span></div>
                                                                 <!-- End product label -->

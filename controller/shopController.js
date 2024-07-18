@@ -28,7 +28,9 @@ const loadShop = async (req, res) => {
             .limit(limit)
             .skip(start)
             .populate('category');
+            // const offers = await Offers.find({isListed:true});
         const wishlistData = await Wishlist.find({ user: userId });
+        // console.log('offers', offers)//----------------
         // console.log('wishlistData', wishlistData)//----------------
         // console.log('count', count)//----------------
         // console.log('totalPage', totalPage)//----------------
@@ -43,7 +45,8 @@ const loadShop = async (req, res) => {
             previous: previous,
             totalPage: totalPage,
             start: start,
-            page: page
+            page: page,
+            // offers:offers
         });
     } catch (error) {
         console.log(error);

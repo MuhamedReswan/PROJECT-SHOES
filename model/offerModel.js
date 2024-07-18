@@ -32,6 +32,6 @@ const offerSchema = mongoose.Schema({
 }
 );
 
-const Offers = mongoose.model('Offer', offerSchema);
+const Offers = mongoose.model('Offers', offerSchema);
 
 module.exports = Offers;
