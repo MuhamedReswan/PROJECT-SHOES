@@ -1,3 +1,5 @@
+shop after changing something
+
 <%- include('../layout/user/header.ejs') -%>
 
     <div class="pageWrapper">
@@ -130,12 +132,39 @@
                                 <!--End Toolbar-->
                                 <div class="grid-products grid--view-items" id="product-div">
                                     <% if(productData){ %>
-
+<%let offerDiscountedPrice%>
                                         <div class="row product-details">
                                             <% productData.forEach((product,index )=>{ %>
+                                            <!-- ================================================================================  start =============================================================================================== -->
+                                            <%let offerPercentege %>
+
+                                            <% console.log("product?.category?.appliedOffer?.discount -----------------------",product?.category?.appliedOffer?.discount) %>
+
+                                            <% console.log(",product?.appliedOffer?.discount -----------------------",product?.appliedOffer?.discount) %>
+
+
+                                            <%if(product?.category?.appliedOffer?.discount){
+                                                offerPercentege = product?.category?.appliedOffer?.discount
+                                                }%>
+
+                                            <%if(product?.appliedOffer?.discount){
+                                                                offerPercentege =  product?.appliedOffer?.discount}%>
+
+<%if(product?.category?.appliedOffer?.discount && product?.appliedOffer?.discount){
+    
+    offerPercentege =Math.max(product?.category?.appliedOffer?.discount, product?.appliedOffer?.discount)
+    console.log("offerPercentege123----------------------------",offerPercentege);
+    }%>
+
+<% console.log("offerPercentege---------------------",offerPercentege)%>
+    
+
+
+                                             <!-- ============================================================================== end ============================================================================== -->
                                                 <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
                                                     <!-- start product image -->
                                                     <div class="product-image">
+                                                        <%console.log("shop ejs produt category,offf---------------------------------------------",product?.category?.appliedOffer)%>
                                                         <!-- start product image -->
                                                         <a href="/single-product?id=<%= product.id %>">
                                                             <!-- image -->
@@ -152,12 +181,24 @@
                                                             <!-- End hover image -->
 
                                                             <% if(product.totalStock>0){%>
-                                                                <!-- product label -->
-                                                                <div class="product-labels"><span class="lbl on-sale">
-                                                                        <%= Math.round(((product.price-product.offerPrice)/product.price)*100)
-                                                                            %>% OFF
-                                                                    </span></div>
-                                                                <!-- End product label -->
+                                                               
+                                                                    <!-- ==============================================  start ================================= -->
+<%if(offerPercentege){%>
+ <%  offerDiscountedPrice = (product.offerPrice/100)*offerPercentege%>
+ <% console.log("offerDiscountedPrice---------------------------",offerDiscountedPrice)%>
+  <!-- product label -->
+  <div class="product-labels"><span class="lbl on-sale">
+  <%= Math.round(((product.offerPrice-offerDiscountedPrice)/product.offerPrice)*100)
+  %>% OFF
+   </span></div>
+       <!-- End product label -->
+<%}else{}%> 
+
+                                                                     <!-- ===================================================  end   ============================================ -->
+
+                                                                       
+                                                                   
+                                                            
                                                                 <%}else{%>
                                                                     <div class="product-labels "><span
                                                                             class="lbl on-sale">out of stock</span>
@@ -203,9 +244,9 @@
                                                             </a>
                                                         </div>
                                                         <!-- End product name -->
-                                                        
-                                                        <%if(product.price != product.offerPrice){%>
-                                                            <!-- product price -->
+                                    <!-- -------------------------------------------------------------------------------remove start-------------------------------------------                    -->
+                                                        <!-- <%if(product.price != product.offerPrice){%>
+                                                            product price
                                                         <div class="product-price">
                                                             <span class="old-price">
                                                                 <%= product.price %>
@@ -214,14 +255,38 @@
                                                                 <%= product.offerPrice %>
                                                             </span>
                                                         </div>
-                                                        <!-- End product price -->
+                                                        End product price
 <%}else{%>
 <div class="product-price">
                                                             <span class="price">
                                                                 <%= product.offerPrice %>
                                                             </span>
                                                         </div>
+<%}%> -->
+                                    <!-- -------------------------------------------------------------------------------remove end-------------------------------------------                    -->
+
+<!-- =================================================================================  Start ====================================== -->
+                                                        <%if(offerDiscountedPrice){%>
+                                                            <!-- product price -->
+                                                        <div class="product-price">
+                                                            <span class="old-price">
+                                                                ₹ <%= product.offerPrice %>
+                                                            </span>
+                                                            <span class="price">
+                                                                ₹ <%= Math.round(product.offerPrice-offerDiscountedPrice) %>
+                                                            </span>
+                                                        </div>
+                                                        <!-- End product price -->
+<%}else{%>
+<div class="product-price">
+                                                            <span class="price">
+                                                                ₹ <%= product.offerPrice %>
+                                                            </span>
+                                                        </div>
 <%}%>
+
+<!-- ========================================================================================      end    ======================== -->
+
                                                         <div class="product-review">
                                                             <i class="font-13 fa fa-star"></i>
                                                             <i class="font-13 fa fa-star"></i>
@@ -421,10 +486,18 @@
                                     let showCount = data.countOfProducts;
                                     if (data.filterdProduct.length > 0) {
 
+let offerPercentege ,offerDiscountedPrice
+
                                         productContainer.innerHTML = ""; 
                                         let productHtml = "";
                                         data.filterdProduct.forEach((product, index) => {
+
+                                            offerPercentege = product?.category?.appliedOffer?.discount || undefined;
+                                            offerDiscountedPrice = (product.offerPrice / 100) * offerPercentege;
+
                                             productHtml += `<div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+
+
                 <!-- start product image -->
                 <div class="product-image">
                     <a href="/single-product?id=${product._id}">
@@ -437,9 +510,14 @@
                             src="user/assets/images/product-images/sharpedImages/${product.images[1]}"
                             alt="image" title="product" />
                         ${product.totalStock > 0 ?
+                        offerPercentege? 
                                                     `<div class="product-labels"><span class="lbl on-sale">
-                                ${Math.floor(((product.price - product.offerPrice) / product.price) * 100)}% OFF
-                            </span></div>` :
+                                ${Math.round(((product.price - offerDiscountedPrice) / product.price) * 100)}% OFF
+                            </span></div>` 
+                            
+                            :       `<div></div>` 
+                            :
+
                                                     `<div class="product-labels "><span class="lbl on-sale">out of stock</span></div>`
                                                 }
                     </a>
@@ -469,8 +547,16 @@
                         <a href="#">${product.brand}</a>
                     </div>
                     <div class="product-price">
-                        <span class="old-price">${product.price}</span>
-                        <span class="price">${product.offerPrice}</span>
+                        ${offerDiscountedPrice ?
+                    `<span class="old-price">₹ ${product.offerPrice}</span>
+                        <span class="price">₹ ${Math.round(product.offerPrice-offerDiscountedPrice)}</span>`
+                        :`<span class="price">₹ ${product.offerPrice}</span>`
+                    }
+
+
+
+
+                        
                     </div>
                     <div class="product-review">
                         <i class="font-13 fa fa-star"></i>

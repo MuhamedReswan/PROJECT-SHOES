@@ -217,13 +217,13 @@
                                 Invoice
                             </div>
                       
-                            <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">ID:</span> #111-222</div>
+                            <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">ID:</span> #<%=order.orderId%></div>
 
-                            <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Issue Date:</span> <%=order.date.toString().split("T")[0]%></div>
+                            <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Issue Date:</span> <%=order.date.toDateString()%></div>
 
                             <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Payment Method:</span> <%=order.paymentMethod%></div>
 
-                            <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Payment Status:</span> <span class="badge badge-warning badge-pill px-25"><%order.paymentStatus == "Paid" ? "Paid" : "Un Paid"%></span></div>
+                            <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90">Payment Status:</span> <span class="badge badge-warning badge-pill px-25"><%=order.paymentStatus == "Paid" ? "Paid" : "Un Paid"%></span></div>
                         </div>
                     </div>
                     <!-- /.col -->

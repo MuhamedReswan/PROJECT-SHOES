@@ -1,6 +1,8 @@
 const Products = require('../model/productsModel');
 const Category = require('../model/categoryModel');
 const Wishlist = require('../model/wishlistModel');
+const { populate } = require('dotenv');
+const Offers = require('../model/offerModel');
 
 
 // load shop
@@ -27,15 +29,21 @@ const loadShop = async (req, res) => {
             .sort({ createdAt: -1 })
             .limit(limit)
             .skip(start)
-            .populate('category');
-            // const offers = await Offers.find({isListed:true});
+            .populate('appliedOffer').populate({path:'category',populate:{path:'appliedOffer',model: 'Offers' }});
+
+            // .populate('category')
+            // .populate('appliedOffer');
+
+
+            const offers = await Offers.find({isListed:true});
         const wishlistData = await Wishlist.find({ user: userId });
-        // console.log('offers', offers)//----------------
+        console.log('offers', offers)//----------------
         // console.log('wishlistData', wishlistData)//----------------
         // console.log('count', count)//----------------
         // console.log('totalPage', totalPage)//----------------
         // console.log('previous', previous)//----------------
         // console.log('next', next)//----------------
+        console.log('productData', productData)//----------------
 
         res.render('shop', {
             categoryData: categoryData,
@@ -46,7 +54,7 @@ const loadShop = async (req, res) => {
             totalPage: totalPage,
             start: start,
             page: page,
-            // offers:offers
+            offers:offers
         });
     } catch (error) {
         console.log(error);
@@ -58,9 +66,9 @@ const loadShop = async (req, res) => {
 const loadSingleProduct = async (req, res) => {
     try {
         const id = req.query.id;
-        console.log('id', id);//----------
+        // console.log('id', id);//----------
         const userId = req.session.user.id;
-        const product = await Products.findOne({ _id: id });
+        const product = await Products.findOne({ _id: id }).populate('appliedOffer').populate({path:'category',populate:{path:'appliedOffer',model: 'Offers' }});
         const sDate = new Date();
         const dDate = new Date(sDate.getTime() + 7 * 24 * 60 * 60 * 1000);
         const startDate = sDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit' }).replaceAll(',', "-");
@@ -83,7 +91,7 @@ const loadSingleProduct = async (req, res) => {
 const filterShop = async (req, res) => {
     try {
         console.log('imi filter-shop')//---------------
-        console.log('req.body filterShop', req.body)//--------------
+        // console.log('req.body filterShop', req.body)//--------------
         const { selectedCategory, sortBy, priceRange, currentPage, buttonStatus, searchInputText } = req.body
         let filterTerms = { isListed: true }
         if (selectedCategory && selectedCategory.length > 0) {
@@ -162,7 +170,8 @@ const filterShop = async (req, res) => {
             .sort(sortOption)
             .limit(limit)
             .skip(start)
-            .populate('category');
+            // .populate('category')
+            .populate('appliedOffer').populate({path:'category',populate:{path:'appliedOffer',model: 'Offers' }})
 
             }
        

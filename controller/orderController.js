@@ -771,10 +771,28 @@ const changeRetrunProductStatus = async (req, res) => {
 
         const orderDetails = await Orders.findOne({_id:orderId});
         const userId = orderDetails.user;       
+        console.log("orderDetails admin return status change",orderDetails)//----------------------------------
 
-            const product = await Products.findOne({_id:productId})
+            const product =  orderDetails.products.forEach((val)=>val.productId==productId);
+            console.log("product",product);//--------------------------------
 
-const amount = product.offerPrice*quantity;
+            const discountedPrice = orderDetails?.coupon?.discount;console.log("discountedPrice",discountedPrice);//--------------------------------
+
+            let productsCount=orderDetails.products.length;
+            console.log("productsCount",productsCount);//--------------------------------
+
+let eachProductDiscount=0
+            if(discountedPrice!=0){
+                eachProductDiscount=Math.round(discountedPrice/productsCount);
+            }
+
+const amount = product.price*quantity-eachProductDiscount;
+
+
+
+
+console.log("eachProductDiscount",eachProductDiscount);//--------------------------------
+console.log("amount",amount);//--------------------------------
 
             const transactions ={
                 amount:amount,

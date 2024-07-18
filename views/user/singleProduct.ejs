@@ -21,6 +21,27 @@
                             <div class="row">
                                 <% if(product){%>
 
+                                    <%let offerDiscountedPrice  %>
+                                    <%let offerPercentege  %>
+
+
+                                    <%if(product?.category?.appliedOffer?.discount){
+                                        offerPercentege = product?.category?.appliedOffer?.discount
+                                        console.log("single 1----------------------------",offerPercentege);
+
+                                        }%>
+
+                                         <%if(product?.appliedOffer?.discount){
+                                                                offerPercentege =  product?.appliedOffer?.discount
+                                                                console.log("single 2----------------------------",offerPercentege);
+                                                                }%>
+
+                                    <%if(product?.category?.appliedOffer?.discount && product?.appliedOffer?.discount){
+                                        offerPercentege =Math.max(product?.category?.appliedOffer?.discount, product?.appliedOffer?.discount)
+                                        console.log("offerPercentege123 single----------------------------",offerPercentege);
+                                        }%>
+
+<% offerDiscountedPrice= Math.round((product.offerPrice/100)*offerPercentege) %>
 
                                     <div class="col-lg-6 col-md-6 col-sm-12 col-12">
                                         <div class="product-details-img">
@@ -95,16 +116,16 @@
                                                                 class="font-13 fa fa-star-o"></i><span
                                                                 class="spr-badge-caption">6 reviews</span></a></div>
                                             </div>
-                                            <% if( product.price != product.offerPrice) {%>
+                                            <% if(offerPercentege) {%>
                                             <p class="product-single__price product-single__price-product-template">
                                                 <span class="visually-hidden">Regular price</span>
                                                 <s id="ComparePrice-product-template">
-                                                    <span class="money">₹<%= product.price %></span>
+                                                    <span class="money">₹<%= product.offerPrice %></span>
                                                 </s>
                                                 <span
                                                     class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
                                                     <span id="ProductPrice-product-template">
-                                                        <span class="money">₹<%= product.offerPrice %></span>
+                                                        <span class="money">₹<%= product.offerPrice-offerDiscountedPrice %></span>
                                                     </span>
                                                 </span>
                                                 <span class="discount-badge">
@@ -112,12 +133,11 @@
                                                     <span>You Save</span>
                                                     <span id="SaveAmount-product-template"
                                                         class="product-single__save-amount">
-                                                        <span class="money">₹<%= product.price - product.offerPrice %>
+                                                        <span class="money">₹<%= offerDiscountedPrice %>
                                                         </span>
                                                     </span>
                                                     <span class="off">(<span>
-                                                            <%= Math.round((product.price - product.offerPrice) /
-                                                                product.price * 100) %>
+                                                        <%= offerPercentege  %>
                                                         </span>%)</span>
                                                 </span>
                                             </p>
