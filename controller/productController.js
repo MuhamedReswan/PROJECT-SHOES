@@ -56,7 +56,7 @@ for (let i = 0; i <req.files.length; i++) {
 const product = await new products({
         name:details.name,
         description:details.description,
-        price:details.price,
+        // price:details.price,
         offerPrice:details.offerPrice,
         category:details.category,
         brand:details.brand,
@@ -129,7 +129,7 @@ const productUpdate = await products.updateOne({_id:updateData.id},{
     $set:{
         name:updateData.name,
         description:updateData.description,
-        price:updateData.price,
+        // price:updateData.price,
         offerPrice:updateData.offerPrice,
         category:updateData.category,
         brand:updateData.brand,

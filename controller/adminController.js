@@ -113,17 +113,17 @@ return monthData == defaultMonthly
     })
 })
 
-        console.log('toatal-----',total)//---------------
-        console.log('totalRevenue-----',totalRevenue)//---------------
-        console.log('orderCount-----',orderCount)//---------------
-        console.log('productCount-----',productCount)//---------------
-        console.log('categoryCount-----',categoryCount)//---------------
-        console.log('currentDate-----',currentDate)//---------------
-        console.log('startOfMonth-----',startOfMonth)//---------------
-        console.log('endOfMonth-----',endOfMonth)//---------------
-        console.log('monthly-----',monthly)//---------------
-        console.log('monthlyRevenue-----',monthlyRevenue)//---------------
-        console.log('users-----',users)//---------------
+        // console.log('toatal-----',total)//---------------
+        // console.log('totalRevenue-----',totalRevenue)//---------------
+        // console.log('orderCount-----',orderCount)//---------------
+        // console.log('productCount-----',productCount)//---------------
+        // console.log('categoryCount-----',categoryCount)//---------------
+        // console.log('currentDate-----',currentDate)//---------------
+        // console.log('startOfMonth-----',startOfMonth)//---------------
+        // console.log('endOfMonth-----',endOfMonth)//---------------
+        // console.log('monthly-----',monthly)//---------------
+        // console.log('monthlyRevenue-----',monthlyRevenue)//---------------
+        // console.log('users-----',users)//---------------
 
         res.render('dashboard');
     } catch (error) {

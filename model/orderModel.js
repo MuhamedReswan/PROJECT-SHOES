@@ -16,7 +16,7 @@ const orderSchema = mongoose.Schema({
                 requied:true
                 
             },
-            price: {
+            offerPrice: {
                 type: Number
             },
             quantity: {

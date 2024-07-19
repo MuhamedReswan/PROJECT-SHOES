@@ -104,7 +104,7 @@ const filterShop = async (req, res) => {
         let price = priceRange.split('-');
         let min = parseInt(price[0].substring(1).trim());
         let max = parseInt(price[1].substring(1).replace('₹', ""));
-        filterTerms.price = { $gte: min, $lte: max }
+        filterTerms.offerPrice = { $gte: min, $lte: max }
 
         let sortOption = {}
         if (sortBy === 'all') {

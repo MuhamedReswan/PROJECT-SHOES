@@ -57,7 +57,6 @@
                     </tr>
                 </thead>
                 <%if(singleOrder && singleOrder.products.length>0){%>
-                    <% console.log('within the single od ejs----------------------------------')%>
                     
                 <%singleOrder.products.forEach((product,index)=>{%>
                     <% console.log('within the single od ejs froessss--------------------------------',product)%>
@@ -82,13 +81,13 @@
                                 </div>
                             </td>
                             <td>
-                                ₹ <%=product.price %>
+                                ₹ <%=product.offerPrice %>
                             </td>
                             <td>
                                  <%=product.quantity%>
                             </td>
                             <td>
-                                ₹ <%=product.price * product.quantity%>
+                                ₹ <%=product.offerPrice * product.quantity%>
                             </td>
                             <td>
                              

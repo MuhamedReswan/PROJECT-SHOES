@@ -99,13 +99,13 @@
                                                                 <%=product.quantity%>
                                                             </td>
                                                             <td class="center-text">
-                                                                ₹ <%=product.productId.offerPrice%>
+                                                                ₹ <%=product.offerPrice%>
                                                             </td>
                                                             <td class="center-text">
-                                                                ₹ <%=product.productId.offerPrice*product.quantity%>
+                                                                ₹ <%=product.offerPrice*product.quantity%>
                                                             </td>
                                                         </tr>
-                                                        <% total +=product.productId.offerPrice*product.quantity %>
+                                                        <% total +=product.offerPrice*product.quantity %>
                                                             <%console.log('total',total)%>
                                                     </tbody>
                                                     <%});%>

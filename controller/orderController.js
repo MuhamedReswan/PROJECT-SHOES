@@ -769,30 +769,27 @@ const changeRetrunProductStatus = async (req, res) => {
                 { new: true }
             )
 
+            
         const orderDetails = await Orders.findOne({_id:orderId});
         const userId = orderDetails.user;       
-        console.log("orderDetails admin return status change",orderDetails)//----------------------------------
+        // console.log("orderDetails",orderDetails)//-------------------------
 
-            const product =  orderDetails.products.forEach((val)=>val.productId==productId);
-            console.log("product",product);//--------------------------------
+         let product = orderDetails.products.find(product => product.productId.toString() === productId);
 
-            const discountedPrice = orderDetails?.coupon?.discount;console.log("discountedPrice",discountedPrice);//--------------------------------
+            console.log("product from loop",product)//-------------------------
 
-            let productsCount=orderDetails.products.length;
-            console.log("productsCount",productsCount);//--------------------------------
+let DiscountedPrice=orderDetails?.coupon.discount;
+let DiscountedPriceEachProduct = DiscountedPrice/orderDetails?.products.length
+ ? DiscountedPrice/orderDetails?.products.length : 0
 
-let eachProductDiscount=0
-            if(discountedPrice!=0){
-                eachProductDiscount=Math.round(discountedPrice/productsCount);
-            }
-
-const amount = product.price*quantity-eachProductDiscount;
+console.log("DiscountedPrice",DiscountedPrice)//-------------------------
+console.log("DiscountedPriceEachProduct",DiscountedPriceEachProduct)//-------------------------
 
 
-
-
-console.log("eachProductDiscount",eachProductDiscount);//--------------------------------
+const amount =Math.round((product.offerPrice*quantity)-DiscountedPriceEachProduct);
+console.log("product",product);//--------------------------------
 console.log("amount",amount);//--------------------------------
+
 
             const transactions ={
                 amount:amount,
@@ -837,7 +834,6 @@ console.log("amount",amount);//--------------------------------
 
     }
 }
-
 
 module.exports = {
     placeOrder,
