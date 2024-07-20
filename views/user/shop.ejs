@@ -135,36 +135,24 @@
 <% let offerDiscountedPrice %>
                                         <div class="row product-details">
                                             <% productData.forEach((product,index )=>{ %>
-                                            <!-- ================================================================================  start =============================================================================================== -->
+                                               
                                             <%let offerPercentege %>
+<%let categoryDiscount=product?.category?.appliedOffer?.discount %>
+<%let productDiscount=product?.appliedOffer?.discount %>
 
-                                            <% console.log("product?.category?.appliedOffer?.discount -----------------------",product?.category?.appliedOffer?.discount) %>
-
-                                            <% console.log(",product?.appliedOffer?.discount -----------------------",product?.appliedOffer?.discount) %>
-
-
-                                            <%if(product?.category?.appliedOffer?.discount){
-                                                offerPercentege = product?.category?.appliedOffer?.discount
+                                            <%if(categoryDiscount){
+                                                offerPercentege = categoryDiscount
                                                 }%>
 
-                                            <%if(product?.appliedOffer?.discount){
-                                                                offerPercentege =  product?.appliedOffer?.discount}%>
+                                            <%if(productDiscount &&  productDiscount !== undefined ){
+                                                                offerPercentege =  productDiscount}%>
 
-<%if(product?.category?.appliedOffer?.discount && product?.appliedOffer?.discount){
-    
-    offerPercentege =Math.max(product?.category?.appliedOffer?.discount, product?.appliedOffer?.discount)
-    // console.log("offerPercentege123----------------------------",offerPercentege);
+<%if(categoryDiscount && productDiscount){
+    offerPercentege =Math.max(categoryDiscount, productDiscount)
     }%>
-
-<!-- <% console.log("offerPercentege---------------------",offerPercentege)%> -->
-    
-
-
-                                             <!-- ============================================================================== end ============================================================================== -->
                                                 <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
                                                     <!-- start product image -->
                                                     <div class="product-image">
-                                                        <%console.log("shop ejs produt category,offf---------------------------------------------",product?.category?.appliedOffer)%>
                                                         <!-- start product image -->
                                                         <a href="/single-product?id=<%= product.id %>">
                                                             <!-- image -->
@@ -180,25 +168,19 @@
                                                                 alt="image" title="product" />
                                                             <!-- End hover image -->
 
+                                                            <%if(offerPercentege){%>
+                                                                <%  offerDiscountedPrice = Math.round((product.offerPrice/100)*offerPercentege)%>
+                                                                <%}%> 
+                                                                
                                                             <% if(product.totalStock>0){%>
                                                                
-                                                                    <!-- ==============================================  start ================================= -->
 <%if(offerPercentege){%>
- <%  offerDiscountedPrice = (product.offerPrice/100)*offerPercentege%>
- <% console.log("offerDiscountedPrice---------------------------",offerDiscountedPrice)%>
-  <!-- product label -->
   <div class="product-labels"><span class="lbl on-sale">
   <%=offerPercentege
   %>% OFF
    </span></div>
-       <!-- End product label -->
-<%}else{}%> 
-
-                                                                     <!-- ===================================================  end   ============================================ -->
-
-                                                                       
-                                                                   
-                                                            
+<%}%> 
+   
                                                                 <%}else{%>
                                                                     <div class="product-labels "><span
                                                                             class="lbl on-sale">out of stock</span>
@@ -214,9 +196,6 @@
                                                                 class="btn btn-addto-cart" type="submit">view
                                                                 Details</button></a>
                                                         <div class="button-set">
-                                                            <!-- <a href="javascript:void(0)" title="Quick View" class="quick-view-popup quick-view" data-toggle="modal" data-target="#content_quickview">
-                                                                   <i class="icon anm anm-search-plus-r"></i>
-                                                               </a> -->
                                                             <div class="wishlist-btn">
                                                                 <a class="wishlist add-to-wishlist"
                                                                     id="wishlist<%= index%>" title="Add to Wishlist"
@@ -243,9 +222,6 @@
                                                                 <%= product.brand %>
                                                             </a>
                                                         </div>
-                                                        <!-- End product name -->
-                                 
-<!-- =================================================================================  Start ====================================== -->
                                                         <%if(offerPercentege){%>
                                                             <!-- product price -->
                                                         <div class="product-price">
@@ -264,8 +240,6 @@
                                                             </span>
                                                         </div>
 <%}%>
-
-<!-- ========================================================================================      end    ======================== -->
 
                                                         <div class="product-review">
                                                             <i class="font-13 fa fa-star"></i>
@@ -475,7 +449,14 @@ let offerPercentege ,offerDiscountedPrice
                                             let categoryOff = product?.category?.appliedOffer?.discount 
                                             let productOff = product?.appliedOffer?.discount 
 
-                                            offerPercentege=Math.max(categoryOff,productOff)
+console.log(`categoryOff---${categoryOff},productOff${productOff}`)//------------------------------------------
+
+ offerPercentege = (productOff === undefined && categoryOff === undefined) 
+    ? undefined 
+    : (productOff !== undefined && categoryOff !== undefined) 
+    ? (productOff > categoryOff ? productOff : categoryOff) 
+    : (productOff !== undefined ? productOff : categoryOff);
+
                                             console.log("offerPercentege",offerPercentege)//----------------------
                                             
                                             offerDiscountedPrice = Math.round((product.offerPrice / 100) * offerPercentege);

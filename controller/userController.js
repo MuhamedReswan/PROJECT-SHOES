@@ -4,7 +4,7 @@ const otpModel = require('../model/otpModel');
 const Token = require('../model/tokenModel');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-const Wallet= require('../model/walletModel');
+const Wallet = require('../model/walletModel');
 const otpGenerator = require('otp-generator');
 
 
@@ -107,8 +107,8 @@ const
 // load registration 
 const loadRegister = (req, res) => {
     try {
-const referel = req.query.referel
-        res.render('signup',{referel});
+        const referel = req.query.referel
+        res.render('signup', { referel });
     } catch (error) {
         console.log(error);
     }
@@ -123,7 +123,7 @@ const insertUser = async (req, res) => {
 
         const Name = req.body.Name;
         const Email = req.body.Email;
-        const refCode= req.body?.referel;
+        const refCode = req.body?.referel;
 
 
         const username = await Users.findOne({ name: Name });
@@ -140,7 +140,7 @@ const insertUser = async (req, res) => {
         } else {
 
             const referelCode = await otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
-            
+
             const user = new Users({
                 email: req.body.Email,
                 name: req.body.Name,
@@ -149,25 +149,25 @@ const insertUser = async (req, res) => {
                 isAdmin: false,
                 isBlocked: false,
                 verified: false,
-                referelCode:referelCode
+                referelCode: referelCode
             })
 
             const userData = await user.save();
 
             if (userData) {
 
-const userId = userData?._id;
+                const userId = userData?._id;
 
-const userWallet = new Wallet({
-    user:userId
-})
+                const userWallet = new Wallet({
+                    user: userId
+                })
 
- const userWalletDetails =  await userWallet.save();
+                const userWalletDetails = await userWallet.save();
 
                 sendOtp(user.email);
 
-                    res.redirect(`/otp?email=${user.email}&referel=${refCode}`);
-     
+                res.redirect(`/otp?email=${user.email}&referel=${refCode}`);
+
             } else {
                 console.log('not saved userData....');
             }
@@ -184,14 +184,14 @@ const userWallet = new Wallet({
 const loadOtp = (req, res) => {
     try {
         const email = req.query.email;
-        const refCode= req.query.referel;
+        const refCode = req.query.referel;
 
         // if(refCode){
-            res.render(`otp`, { email: email, referelCode:refCode });
+        res.render(`otp`, { email: email, referelCode: refCode });
         // }else{
         //     res.render(`otp`, { email: email });
         // }
-       
+
     } catch (error) {
         console.log(error);
     }
@@ -248,7 +248,7 @@ const verifyOtp = async (req, res) => {
         const referelCode = req.body?.referel;
 
         const otp = req.body.otp1 + req.body.otp2 + req.body.otp3 + req.body.otp4;
-        console.log("otp from the verify",otp)//----------------
+        console.log("otp from the verify", otp)//----------------
 
         const otpUser = await otpModel.findOne({ email: email });
 
@@ -266,38 +266,45 @@ const verifyOtp = async (req, res) => {
                     if (verifiedTrue) {
                         await otpModel.deleteOne({ email: otpUser.email });
 
-                        if(referelCode){
-                            const referelOwner = await Users.findOne({referelCode:referelCode});
+                        if (referelCode) {
+                            const referelOwner = await Users.findOne({ referelCode: referelCode });
 
-                            if(referelOwner){
+                            if (referelOwner) {
                                 console.log("within valid areferl code  with owner in userCOntroller0")//------------------------------------
 
-const transaction = {
-    amount:200,
-    mode:"Credited",
-    description:"your friend joined thorugh your referel link"
-}
+                                const transaction = {
+                                    amount: 200,
+                                    mode: "Credited",
+                                    description: "your friend joined thorugh your referel link"
+                                }
 
-                                const updateWalletOwner= await Wallet.updateOne({
-                                    user:referelOwner._id
-                                },{
-                                    $inc:{balance:200},
-                                    $push:{tansactions:transaction}
-                            })
+                                const updateWalletOwner = await Wallet.updateOne(
+                                    {user: referelOwner._id},
+                                     {
+                                        $inc: { balance: 200 },
+                                    $push: { transactions: transaction }
+                                },
+                                {new:true})
 
-                            const userTransaction = {
-                                amount:100,
-                                mode:"Credited",
-                                description:"you got 100 rupees by applied referel code !"
-                            }
-                            
-                       const referlUserWalletUpdation = await Wallet.updateOne({user:userId},{
-                                $inc:{balance:100},
-                                $push:{tansactions:userTransaction}
-                            })
+                                const userTransaction = {
+                                    amount: 100,
+                                    mode: "Credited",
+                                    description: "you got 100 rupees by applied referel code !"
+                                }
+
+                                const referlUserWalletUpdation = await Wallet.updateOne(
+                                    { user: userId },
+                                    {
+                                        $inc: { balance: 100 },
+                                        $push: { transactions: userTransaction }
+                                    },
+                                    { new: true }
+                                )
+
+
                             }
                         }
-                        
+
                         req.flash('success', 'Verification Success...')
                         res.redirect('/login');
 
@@ -467,8 +474,8 @@ const resetPassword = async (req, res) => {
                 }
             })
 
-            req.flash('success', 'New password added successful');
-            res.redirect('/login');
+        req.flash('success', 'New password added successful');
+        res.redirect('/login');
     } catch (error) {
         console.log(error)
     }
@@ -476,10 +483,10 @@ const resetPassword = async (req, res) => {
 }
 
 // profile 
-const loadProfile = (req,res)=>{
+const loadProfile = (req, res) => {
     try {
         console.log('profile working');//------------------
-        const orders = await 
+        const orders = await
         res.render('addProfile')
     } catch (error) {
         console.log(error)
@@ -514,7 +521,7 @@ module.exports = {
     loadResetPassword,
     resetPassword,
     securedPassword
-    
+
 
 
 

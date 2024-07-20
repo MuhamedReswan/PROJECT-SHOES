@@ -788,7 +788,6 @@
                                                     "order_id": res.order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                                                     handler: (response) => {
 
-                                                        alert("Payment Succeeded");
                                                         console.log("payment success", response);//---------------------
                                                         verifyRazorpayPayment(response, res);
                                                     },
@@ -810,7 +809,7 @@
                                                 razorpayObject.on('payment.failed', function (response) {
 
                                                     console.log("annna");///-----------------------
-                                                    console.log("razor failed++++++", response)
+                                                    console.log("razor failed++++++", response)//----------------------
                                                     alert("Payment failed");
                                                     handleRazorpayFailure(response, res)
 

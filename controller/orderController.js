@@ -111,11 +111,6 @@ const couponDetails = {
     discount:cartData?.coupon?.couponDiscount
 }           
 
-            // chnaged this abovecode from applycoupon
-
-            // await Cart.deleteOne({ user: userId });
-
-
 
             if (paymentMethod == "COD") {
 
@@ -171,7 +166,7 @@ const couponDetails = {
                     } else {
 
 
-                        const tansactions ={
+                        const transactions ={
                             amount:subtotal,
                             mode:"Debit",
                             description:"Order amount paid by wallet"
@@ -181,7 +176,7 @@ const couponDetails = {
                             $inc:
                                         { balance: -subtotal },
                                         $push:{
-                                            tansactions  
+                                            transactions  
                                         }
 
                         }
@@ -241,6 +236,8 @@ const couponDetails = {
 
 
 
+            }else if(paymentMethod == "Wallet With Online"){
+                console.log("Wallet With Online")//------------------------
             }
         }
     }else{
@@ -399,7 +396,7 @@ const orderCancel = async (req, res) => {
         const order = await Orders.findOne({_id:orderId,user:userId})
 
 const orderAmount =order.totalAmount;
-        const tansactions ={
+        const transactions ={
             amount:orderAmount,
             mode:"Credited",
             description:"Returned amount of canceled order"
@@ -409,7 +406,7 @@ const orderAmount =order.totalAmount;
             $inc:
                         { balance: orderAmount },
                         $push:{
-                            tansactions  
+                            transactions  
                         }
 
         }
@@ -754,11 +751,14 @@ const changeRetrunProductStatus = async (req, res) => {
             {
                 $set:
                 {
-                    'products.$.status': status
+                    'products.$.status': status,
+                    isReturned:isReturned
                 }
             },{
                 new :true
             });
+
+            console.log("statusChanged+++++++++++++++++++=====================================",statusChanged)//----------------
 
 
         if (status === 'Returned') {
@@ -786,9 +786,14 @@ console.log("DiscountedPrice",DiscountedPrice)//-------------------------
 console.log("DiscountedPriceEachProduct",DiscountedPriceEachProduct)//-------------------------
 
 
-const amount =Math.round((product.offerPrice*quantity)-DiscountedPriceEachProduct);
+let amount =Math.round((product.offerPrice*quantity)-DiscountedPriceEachProduct);
+
+console.log("amount validated",amount);//--------------------------------
+
+amount = amount>0 ? amount : 0
+
 console.log("product",product);//--------------------------------
-console.log("amount",amount);//--------------------------------
+console.log("amount validated",amount);//--------------------------------
 
 
             const transactions ={

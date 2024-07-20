@@ -37,13 +37,13 @@ const loadShop = async (req, res) => {
 
             const offers = await Offers.find({isListed:true});
         const wishlistData = await Wishlist.find({ user: userId });
-        console.log('offers', offers)//----------------
+        // console.log('offers', offers)//----------------
         // console.log('wishlistData', wishlistData)//----------------
         // console.log('count', count)//----------------
         // console.log('totalPage', totalPage)//----------------
         // console.log('previous', previous)//----------------
         // console.log('next', next)//----------------
-        console.log('productData', productData)//----------------
+        // console.log('productData', productData)//----------------
 
         res.render('shop', {
             categoryData: categoryData,

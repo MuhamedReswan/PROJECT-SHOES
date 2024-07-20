@@ -83,7 +83,7 @@ const defaultMonthly = Array.from({ length: 12 }, (_, i) => ({
     count: 0
   }));
 
-  monthlySalesData  = await Orders.aggregate([
+ const monthlySalesData  = await Orders.aggregate([
     {$unwind:"$products"},
     {$match:{'products.status':"Delivered",
         status:{$ne:'Cancelled'},
@@ -113,19 +113,30 @@ return monthData == defaultMonthly
     })
 })
 
-        // console.log('toatal-----',total)//---------------
-        // console.log('totalRevenue-----',totalRevenue)//---------------
-        // console.log('orderCount-----',orderCount)//---------------
-        // console.log('productCount-----',productCount)//---------------
-        // console.log('categoryCount-----',categoryCount)//---------------
-        // console.log('currentDate-----',currentDate)//---------------
-        // console.log('startOfMonth-----',startOfMonth)//---------------
-        // console.log('endOfMonth-----',endOfMonth)//---------------
-        // console.log('monthly-----',monthly)//---------------
-        // console.log('monthlyRevenue-----',monthlyRevenue)//---------------
-        // console.log('users-----',users)//---------------
+        console.log('toatal-----',total)//---------------
+        console.log('totalRevenue-----',totalRevenue)//---------------
+        console.log('orderCount-----',orderCount)//---------------
+        console.log('productCount-----',productCount)//---------------
+        console.log('categoryCount-----',categoryCount)//---------------
+        console.log('currentDate-----',currentDate)//---------------
+        console.log('startOfMonth-----',startOfMonth)//---------------
+        console.log('endOfMonth-----',endOfMonth)//---------------
+        console.log('monthly-----',monthly)//---------------
+        console.log('monthlyRevenue-----',monthlyRevenue)//---------------
+        console.log('users-----',users)//---------------
+        console.log('updatedMonthValue-----',updatedMonthValue)//---------------
 
-        res.render('dashboard');
+        res.render('dashboard',{
+            totalRevenue,
+            orderCount,
+            productCount,
+            categoryCount,
+            currentDate,
+            startOfMonth,
+            endOfMonth,
+            monthlyRevenue,
+            users});
+
     } catch (error) {
         console.log(error);
         res.status(500).send("Internal Server Error");
