@@ -11,18 +11,19 @@ const razorpayInstance = new Razorpay({
 
 
 
-const createOrderPayment = async (req, res, myOrder) => {
-
+const createOrderPayment = async (req, res, myOrder,paymentMethod) => {
+    try {
     // console.log(req, 'order123req')//------------------------
     // console.log(res, 'order123res')//------------------------
-    console.log(myOrder, 'myOrderr123')//------------------------
+    console.log('myOrderr123------------',myOrder)//------------------------
+    console.log('paymentMethod------------',paymentMethod)//------------------------
     console.log("my order._id in pyment controller==============", myOrder._id)//------------------------
+   
 
-
-    try {
-
-        console.log("im in create order payment");//----------------------
+        console.log("im in create order payment%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");//----------------------
         console.log("myOrder.totalAmount", myOrder.totalAmount);//-------------------------
+        console.log("myOrder._id", myOrder._id);//-------------------------
+
         const amount = myOrder.totalAmount * 100
 
         const options = {
@@ -48,7 +49,7 @@ const createOrderPayment = async (req, res, myOrder) => {
 
                     res.send({
                         order,
-                        paymentMethod: 'Online',
+                        paymentMethod: paymentMethod,
                         success: true,
                         msg: 'Order Created',
                         order_id: order.id,
@@ -64,7 +65,7 @@ const createOrderPayment = async (req, res, myOrder) => {
                 }
                 else {
 
-                    res.status(400).json({ success: false, msg: 'Something went wrong !' });
+                    res.status(400).json({ success: false, msg: 'Something went wrong on razorpayInstance !' });
 
                 }
             }

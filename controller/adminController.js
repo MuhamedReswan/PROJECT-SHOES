@@ -4,6 +4,7 @@ const Products = require('../model/productsModel');
 const Offers = require('../model/offerModel');
 const Orders = require('../model/orderModel');
 const Category = require('../model/categoryModel');
+// const { default: products } = require('razorpay/dist/types/products');
 
 
 
@@ -62,6 +63,18 @@ const loadDashboard = async (req, res) => {
 
         const latestOrders = await Orders.find({}).sort({ date: -1 }).populate('user').limit(limit).skip((page - 1) * limit).exec();
         const total = await Orders.aggregate([{ $match: { 'products.status': 'Delivered' } }, { $group: { _id: null, totalRevenue: { $sum: '$totalAmount' } } }]);
+
+
+        // const totatRevenue = await Ordeders.aggregate([
+        //     {$match:{orderStatus:"Delivered"}},
+        //     {$unwind:'$products'},
+        //     ${lookUp:}
+        //     {$match}
+        // ])
+        // const total = await Orders.aggregate([{ $match: { orderStatus
+        //     : 'Delivered' } }, { $group: { _id: null, totalRevenue: { $sum: '$totalAmount' } } }]);
+
+
         const totalRevenue = total.map((value) => value.totalRevenue)[0] || 0
         const orderCount = await Orders.find({}).count();
         const productCount = await Products.find({}).count();

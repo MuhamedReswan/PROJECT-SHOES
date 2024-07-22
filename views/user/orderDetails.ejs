@@ -117,9 +117,20 @@
                                 <section class="order-total d-flex">
                                     <h2>Order Total</h2>
                                     <h4>Subtotal : ₹ <%=orderDetails.totalAmount + orderDetails.coupon.discount%></h4>
-                                    <h4>Delivery Charge : ₹ <%=orderDetails.totalAmount%>.00</h4>
+                                    <h4>Delivery Charge : ₹ <%=orderDetails.deliveryCharge%>.00</h4>
                                     <h4>Discount : ₹ <%=orderDetails.coupon.discount%></h4>
                                     <h3><strong>Total : ₹ <%=orderDetails.totalAmount%></strong></h3>
+
+<!-- <% if (orderDetails.paymentMethod== 'Wallet With Online'){%>
+    <h4>Subtotal : ₹ <%=orderDetails.totalAmount + orderDetails.coupon.discount%></h4>
+                                    <h4>Delivery Charge : ₹ <%=orderDetails.deliveryCharge%>.00</h4>
+                                    <h4>Paid With Wallet : ₹ <%=orderDetails.deliveryCharge%>.00</h4>
+                                    <h4>Discount : ₹ <%=orderDetails.coupon.discount%></h4>
+                                    <h3><strong>Total : ₹ <%=orderDetails.totalAmount%></strong></h3>
+<% }else{ %>
+<% } %> -->
+
+                                   
                                
                                 </section>
                             </div>

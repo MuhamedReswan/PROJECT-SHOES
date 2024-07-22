@@ -59,7 +59,25 @@ font-size: 14px;
                                         </tr>
                                     </thead>
                                     <tbody >
+<!-- want to change the price into offerPrice -->
+                                        <!-- <% let offerDiscountedPrice %> -->
+
                                         <% wishlistData.forEach((data,index)=>{ %>
+<!-- 
+                                            <%let offerPercentege %>
+                                            <%let categoryDiscount=data?.category?.appliedOffer?.discount %>
+                                            <%let productDiscount=data?.appliedOffer?.discount %>
+                                            
+                                                                                        <%if(categoryDiscount){
+                                                                                            offerPercentege = categoryDiscount
+                                                                                            }%>
+                                            
+                                                                                        <%if(productDiscount &&  productDiscount !== undefined ){
+                                                                                                            offerPercentege =  productDiscount}%>
+                                            
+                                            <%if(categoryDiscount && productDiscount){
+                                                offerPercentege =Math.max(categoryDiscount, productDiscount)
+                                                }%> -->
                                                 <tr>
                                                     <td class="product-remove text-center" valign="middle"><i
                                                             class="icon icon anm anm-times-l btn btn--small"

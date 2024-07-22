@@ -17,7 +17,7 @@
                                 <div class="col-lg-4 col-md-6 mx-auto mb-2">
                                     <div class="card">
                                         <div class="card- p-3 text-center" >
-                                          <h4 class="card-title">Delivery Address</h4>
+                                          <h4 class="card-title pb-2">Delivery Address</h4>
                                           <h5 class="card-subtitle mb-2 "><%=singleOrder.deliveryAddress.name%></h5>
                                           <p class="card-subtitle mb-2 text-muted"><span class="text-dark"><%=singleOrder.deliveryAddress.mobile%></span></p>
                                           <p class="card-subtitle mb-2 text-muted"><span class="text-dark"><%=singleOrder.deliveryAddress.address%> (H)</span></p>
@@ -36,9 +36,11 @@
                                 </div>
                                 <div class="col-lg-4 col-md-6 me-auto">
                                     <div class="card">
-                                        <div class="card- p-2">
-                                          <h4 class="card-title">Payment Details</h4>
+                                        <div class="card- p-2  text-center">
+                                          <h4 class="card-title pb-2">Payment Details</h4>
+                                        
                                           <h6 class="card-subtitle mb-2 text-muted">Payment Method : <span class="text-dark"><%=singleOrder.paymentMethod%></span></h6>
+                                          <h6 class="card-subtitle mb-2 text-muted">Payment Status : <span class="text-dark"><%=singleOrder.paymentStatus%></span></h6>
                                           <h6 class="card-subtitle mb-2 text-muted">Order Id  : <span class="text-dark"><%=singleOrder.orderId%></span></h6>
 
                                         </div>

@@ -9,7 +9,6 @@ const Wallet = require('../model/walletModel');
 const mongoose = require('mongoose');
 
 
-
 // place order
 const placeOrder = async (req, res) => {
     try {
@@ -150,7 +149,8 @@ const couponDetails = {
 
                 await Cart.deleteOne({ user: userId });
 
-                createOrderPayment(req, res, orderDetails)
+                createOrderPayment(req, res, orderDetails,paymentMethod)
+                
 
             } else if (paymentMethod == "Wallet") {
 
@@ -161,8 +161,11 @@ const couponDetails = {
                 console.log("walletDetails", walletDetails)//----------
                 if (walletDetails) {
 
-                    if (walletDetails.balance < subtotal) {
-                        return res.json({ paymentMethod: "Wallet", walletBalance: false, message: "Sorry! insufficent balance in wallet!" });
+                    if (walletDetails.balance == 0) {
+                        res.json({ paymentMethod: "Wallet", walletBalance: false, message: "Sorry! no balamce in your wallet!" ,subtotal,index, empty:true});
+
+                    }else  if (walletDetails.balance < subtotal) {
+                        return res.json({ paymentMethod: "Wallet", walletBalance: false, message: "Sorry! insufficent balance in wallet you can pay with online !" ,subtotal,index,empty:false});
                     } else {
 
 
@@ -238,6 +241,59 @@ const couponDetails = {
 
             }else if(paymentMethod == "Wallet With Online"){
                 console.log("Wallet With Online")//------------------------
+
+const userWallet = await Wallet.findOne({user:userId});
+let userWalletAmount = userWallet.balance;
+let WalletId = userWallet._id;
+
+console.log("userWallet",userWallet)//---------------
+console.log("userWalletAmount",userWalletAmount)//---------------
+
+
+
+const transactions ={
+    amount:userWalletAmount,
+    mode:"Debit",
+    description:"Splited order Amount paid by wallet"
+} 
+
+const updation = {
+    $inc:
+                { balance: - userWalletAmount},
+                $push:{
+                    transactions  
+                }
+}
+
+let balanceAmountToPay = subtotal-userWalletAmount;
+const updateWallet = await Wallet.findByIdAndUpdate({_id:WalletId},updation,{new:true});
+
+console.log("updateWallet",updateWallet)//------------------------
+console.log("balanceAmountToPay",balanceAmountToPay)//------------------------
+
+
+             order = new Orders({
+                    user: userId,
+                    products: products,
+                    totalAmount: balanceAmountToPay,
+                    orderStatus: status,
+                    paymentMethod: paymentMethod,
+                    deliveryAddress: address,
+                    orderId: randomNumber,
+                    coupon:couponDetails
+                })
+
+                const orderDetails = await order.save();
+                console.log("order",order)//------------------------
+                console.log("orderDetails",orderDetails)//------------------------
+
+
+                await Cart.deleteOne({ user: userId });
+
+                createOrderPayment(req, res, orderDetails,paymentMethod)
+
+
+
             }
         }
     }else{
