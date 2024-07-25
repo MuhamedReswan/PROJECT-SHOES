@@ -232,16 +232,35 @@ console.log("couopon code 2-----------",couponCode)//-----------------------
                 let couponDiscount = Math.round((coupon.discount / 100) * subTotal);
                 console.log("couponDiscount", couponDiscount)//--------------
 
+const cartData = await Cart.findOne({user:userId});
+
+const productCount = cartData.products.length; 
+const couponOffEachProduct =Math.round(couponDiscount/productCount);
+
+console.log("cartData",cartData)//------------------
+console.log("productCount",productCount)//------------------
+
+console.log("couponOffEachProduct",couponOffEachProduct)//------------------------
+
                 let detailsOfCoupon = {
                     couponDiscount: couponDiscount,
                     couponId: coupon._id,
                     code: couponCode
                 }
+
+// for(let i=0; i<cartData.products.length; i++){
+//     cartData.products[i].offerPrice -=couponOffEachProduct
+// }
+
+
+//  const updatedCart= await cartData.save()
+//  console.log("updatedCart",updatedCart)//------------------------
+
                 await Cart.updateOne({ user: userId },
-                    { $set: { coupon: detailsOfCoupon, couponApplied: true } },
+                    { $set: { coupon: detailsOfCoupon, couponApplied: true,couponDiscoundProduct:couponOffEachProduct } },
                     { new: true });
 
-                res.json({ valid: true, message: "Coupon added success !", couponDiscount, subTotal });
+                res.json({ valid: true, message: "Coupon added success !", couponDiscount, subTotal});
 
             }
         } else {
@@ -260,12 +279,31 @@ const removeAppliedCoupon = async (req, res) => {
     try {
         console.log("within remove applied couopon")//--------------
         const { cartId, subTotal } = req.body
+        const userId = req.session?.user?.id;
 
+
+
+      
+        const cart = await Cart.findOne({user:userId});
+        // const cart= await Cart.findOne({user:userId});
+console.log("cart",cart,)//------------------------
+
+// if(cart.couponApplied){
+//     for(let i=0; i<cart.products.length; i++){
+//         cart.products[i].offerPrice+=cart.couponDiscoundProduct
+//     }
+//     const cartUpdated = await cart.save();        
+
+//     console.log("cart",cart,)//------------------------
+// }
+
+    
         const updateCouponDisCart = await Cart.findByIdAndUpdate({
             _id: cartId
         }, {
             $set: {
-                couponApplied: false
+                couponApplied: false,
+                couponDiscoundProduct:0
             },
             $unset: {
                 coupon: null

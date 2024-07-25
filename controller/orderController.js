@@ -32,6 +32,7 @@ const placeOrder = async (req, res) => {
         if(cartData){
 
         let products = cartData?.products
+        let productCount= cartData?.products.length;
 // // ------------------------------------------------------------------------------------------------------------------------
 //         console.log("cart products. from place order")//--------------
 //         cartData.products.price=cartData.products.offerPrice;
@@ -40,6 +41,7 @@ const placeOrder = async (req, res) => {
 //         // -------------------------------------------------------
         console.log('prodductssssssssssssssssssss', products);//------------------
         let lessQuantity = 0
+        let unListedProduct;
         let size = 0
         if (products.length == 0) {
             console.log("no product in cart");
@@ -50,6 +52,10 @@ const placeOrder = async (req, res) => {
                 if (product?.quantity > product?.productId?.totalStock) {
                     lessQuantity = product.productId.name;
                 }
+if(product?.productId?.isListed == false){
+     unListedProduct=product?.productId?.name;
+}
+
             });
         }
 
@@ -57,6 +63,10 @@ const placeOrder = async (req, res) => {
         if (lessQuantity && lessQuantity !== 0) {
             console.log('within if case');//--------------------------
             return res.json({ quant: true, lessQuantity });
+
+        }else if(unListedProduct){
+    return res.json({notListedProduct : true, unListedProduct });
+
         } else {
             console.log('within else case');//--------------------------
 
@@ -105,11 +115,14 @@ const placeOrder = async (req, res) => {
                     { new: true }
                 );
             }
+
+let couponDiscountProduct=Math.round(cartData?.coupon?.couponDiscount/productCount) ? Math.round(cartData?.coupon?.couponDiscount/productCount) : 0 ;
+
 const couponDetails = {
     couponId:couponId,
-    discount:cartData?.coupon?.couponDiscount
+    discount:cartData?.coupon?.couponDiscount,
+    couponDiscountOnProduct:couponDiscountProduct
 }           
-
 
             if (paymentMethod == "COD") {
 
@@ -162,7 +175,7 @@ const couponDetails = {
                 if (walletDetails) {
 
                     if (walletDetails.balance == 0) {
-                        res.json({ paymentMethod: "Wallet", walletBalance: false, message: "Sorry! no balamce in your wallet!" ,subtotal,index, empty:true});
+                        res.json({ paymentMethod: "Wallet", walletBalance: false, message: "Sorry! your wallet is empty !" ,subtotal,index, empty:true});
 
                     }else  if (walletDetails.balance < subtotal) {
                         return res.json({ paymentMethod: "Wallet", walletBalance: false, message: "Sorry! insufficent balance in wallet you can pay with online !" ,subtotal,index,empty:false});
@@ -799,8 +812,8 @@ const changeRetrunProductStatus = async (req, res) => {
         let { status, orderId, quantity, productId } = req.body
         let isReturned;
 
-        status === 'Accepted' ? status = 'Returned' : status = 'Return Denied'
-        status === 'Accepted' ? isReturned = true : isReturned = false
+        status == 'Accepted' ? isReturned = true : isReturned = false
+        status === 'Accepted' ? status = 'Returned' : status = 'Delivered'
 
         const statusChanged = await Orders.updateOne(
             { _id: orderId, 'products.productId': productId },
@@ -808,14 +821,13 @@ const changeRetrunProductStatus = async (req, res) => {
                 $set:
                 {
                     'products.$.status': status,
-                    isReturned:isReturned
+                    'products.$.isReturned':isReturned
                 }
             },{
                 new :true
             });
 
             console.log("statusChanged+++++++++++++++++++=====================================",statusChanged)//----------------
-
 
         if (status === 'Returned') {
 
@@ -832,24 +844,24 @@ const changeRetrunProductStatus = async (req, res) => {
 
          let product = orderDetails.products.find(product => product.productId.toString() === productId);
 
-            console.log("product from loop",product)//-------------------------
+            // console.log("product from loop",product)//-------------------------
 
 let DiscountedPrice=orderDetails?.coupon.discount;
 let DiscountedPriceEachProduct = DiscountedPrice/orderDetails?.products.length
  ? DiscountedPrice/orderDetails?.products.length : 0
 
-console.log("DiscountedPrice",DiscountedPrice)//-------------------------
-console.log("DiscountedPriceEachProduct",DiscountedPriceEachProduct)//-------------------------
+// console.log("DiscountedPrice",DiscountedPrice)//-------------------------
+// console.log("DiscountedPriceEachProduct",DiscountedPriceEachProduct)//-------------------------
 
 
 let amount =Math.round((product.offerPrice*quantity)-DiscountedPriceEachProduct);
 
-console.log("amount validated",amount);//--------------------------------
+// console.log("amount validated",amount);//--------------------------------
 
 amount = amount>0 ? amount : 0
 
-console.log("product",product);//--------------------------------
-console.log("amount validated",amount);//--------------------------------
+// console.log("product",product);//--------------------------------
+// console.log("amount validated",amount);//--------------------------------
 
 
             const transactions ={
@@ -868,7 +880,7 @@ console.log("amount validated",amount);//--------------------------------
 
             let returnAmountToWallet = await Wallet.updateOne({ user: userId },updation,{ new: true });
     
-            console.log("returnAmountToWallet--------------------",returnAmountToWallet)//--------------------
+            // console.log("returnAmountToWallet--------------------",returnAmountToWallet)//--------------------
             if(!returnAmountToWallet){
 
             console.log("---------------------------------------------------in new wallet")//------------------------

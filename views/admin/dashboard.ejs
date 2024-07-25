@@ -164,7 +164,7 @@
                                 <span class="icon icon-sm rounded-circle bg-info-light"><i class="text-info material-icons md-shopping_basket" ></i></span>
                                 <div class="text">
                                     <h6 class="mb-1 card-title">Monthly Earning</h6>
-                                    <span>$6,982</span>
+                                    <span>₹ <%=monthlyRevenue%></span>
                                     <span class="text-sm"> Based in your local time. </span>
                                 </div>
                             </article>
@@ -176,7 +176,7 @@
                                 <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-dark icon material-icons md-person" style="margin: auto;"></i></span>
                                 <div class="text">
                                     <h6 class="mb-1 card-title">Users</h6>
-                                    <span><%= users %></span>
+                                    <span><%= usersCount %></span>
                                     <span class="text-sm"> No of users </span>
                                 </div>
                             </article>
@@ -198,9 +198,13 @@
                 <div class="row">
                     <div class="col-xl-8 col-lg-12">
                         <div class="card mb-4">
-                            <article class="card-body">
-                                <h5 class="card-title">Sale statistics</h5>
-                                <canvas id="myChart" height="120px"></canvas>
+                            <article id="reload-day-revenue">
+                                <div class="d-flex justify-content-between p-1">
+                                <h5 class="card-title mt-1 ms-1">Sale statistics</h5>
+                                
+                                    <input  type="month" value="02.05.2021" class="form-control w-25" i onchange="filterWithThisMonth(this.value)" />
+                                </div>
+                                <canvas id="myChart"  height="120px" data-days="<%=JSON.stringify(daysArr)%>" data-dayUser="<%=JSON.stringify(usersPerDay)%>" data-dayRevenue="<%=JSON.stringify(revenuePerDay)%>"></canvas>
                             </article>
                         </div>
                         <div class="row">
@@ -323,7 +327,7 @@
                         <div class="card mb-4">
                             <article class="card-body">
                                 <h5 class="card-title">Revenue Base on Area</h5>
-                                <canvas id="myChart2" height="217"></canvas>
+                                <canvas id="myChart2" height="217" data-monthlyDetails="<%=JSON.stringify(updatedMonthlyDetails)%>" data-monthlyUsers="<%=JSON.stringify(monthlyUsers)%>"></canvas>
                             </article>
                         </div>
                         <div class="card mb-4">
@@ -375,7 +379,7 @@
                                 </div>
                             </div>
                             <div class="col-md-2 col-6">
-                                <input type="date" value="02.05.2021" class="form-control" />
+                                <input type="date" value="02.05.2021" class="form-control" i />
                             </div>
                             <div class="col-md-2 col-6">
                                 <div class="custom_select">
@@ -624,9 +628,52 @@
                     return flag;
                 }
             });
+
+
+           function filterWithThisMonth(value){
+            console.log("value",value)//---------------
+//             console.log("within the filter function")//---------------------------
+// axios.post('admin/dashboard/filter-chart',{value})
+// .then((response)=>{
+// if(response.data.filter){
+//     console.log("response withinsd",response.data)//-----------------
+// }
+// }).catch((error)=>{
+//     console.log(error)
+// })
+
+let dayChart = document.getElementById('myChart')
+
+
+
+fetch('/admin/dashboard/filter-chart', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ value })
+})
+.then(response => response.json())
+.then(data => {
+  if (data.filter) {
+    console.log("response withinsd", data);
+    dayChart.setAttribute('data-days',JSON.stringify(data.daysArr))
+    dayChart.setAttribute('data-dayRevenue',JSON.stringify(data.revenuePerDay))
+    dayChart.setAttribute('data-dayUser',JSON.stringify(data.usersPerDay))
+$('#reload-day-revenue').load('/admin/ #reload-day-revenue');
+  }
+})
+.catch((error) => {
+  console.log(error);
+});
+            }
+
+
         </script>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         
+
         <!-- <script>
     function showError(inputId, errorId, message) {
                 if (inputId != null) {

@@ -163,6 +163,10 @@ admin_route.post('/category/remove-offer',adminAuth.isLogin,adminController.remo
 // sales report 
 admin_route.get('/sales-report', adminAuth.isLogin,adminController.loadSalesreport);
 
+//filter chart
+admin_route.post('/dashboard/filter-chart',adminAuth.isLogin,adminController.filterYearlyMonthly);
+
+
 // admin_route.post('/sales-report', adminAuth.isLogin,adminController.);
 
 // load offer for categories

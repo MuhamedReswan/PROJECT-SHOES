@@ -7,27 +7,33 @@ const Category = require('../model/categoryModel');
 // const { default: products } = require('razorpay/dist/types/products');
 
 
-
+// ========================================  DASHBOARD ==================================================
 
 //load dashboard
 const loadDashboard = async (req, res) => {
     try {
         console.log("within dashboard controller")//-----------
 
-        let page = 1;
-        if (req.query.id) {
-            page = req.query.id
-        }
-        const limit = 6;
-        const previous = page > 1 ? page - 1 : 1;
-        let next = page + 1
+        // let page = 1;
+        // if (req.query.id) {
+        //     page = req.query.id
+        // }
+        // const limit = 6;
+        // const previous = page > 1 ? page - 1 : 1;
+        // let next = page + 1
 
-        const count = await Orders.find({}).count()
+        // const count = await Orders.find({}).count()
 
-        const totalPages = Math.ceil(count / limit)
-        if (next > totalPages) {
-            next = totalPages
-        }
+        // const totalPages = Math.ceil(count / limit)
+        // if (next > totalPages) {
+        //     next = totalPages
+        // }
+
+        const currentDate = new Date();
+        const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+        let startOfThisYear = new Date(currentDate.getFullYear(),0,1)
+        let currentMonth = new Date(currentDate.getMonth()+1);
 
         const orders = await Orders.find({})
         let delivered = 0;
@@ -61,85 +67,220 @@ const loadDashboard = async (req, res) => {
         });
 
 
-        const latestOrders = await Orders.find({}).sort({ date: -1 }).populate('user').limit(limit).skip((page - 1) * limit).exec();
-        const total = await Orders.aggregate([{ $match: { 'products.status': 'Delivered' } }, { $group: { _id: null, totalRevenue: { $sum: '$totalAmount' } } }]);
+        let monthlyUsers = new Array(12).fill(0);
+        const users = await Users.aggregate([
+          {
+            $match: {
+                date: { $gte: startOfThisYear },
+            },
+          },
+          {
+            $group: {
+              _id: { $month: "$date" },
+              totalUsers: { $sum: 1 },
+            },
+          },
+        ]);
+
+        users.forEach((item)=>{
+            monthlyUsers[item._id-1]=item.totalUsers
+        })
+        
+
+        console.log("monthlyUser",monthlyUsers)//-----------------
+        console.log("montusershlyUser",users)//-----------------
 
 
-        // const totatRevenue = await Ordeders.aggregate([
-        //     {$match:{orderStatus:"Delivered"}},
-        //     {$unwind:'$products'},
-        //     ${lookUp:}
-        //     {$match}
-        // ])
-        // const total = await Orders.aggregate([{ $match: { orderStatus
-        //     : 'Delivered' } }, { $group: { _id: null, totalRevenue: { $sum: '$totalAmount' } } }]);
+        // const latestOrders = await Orders.find({}).sort({ date: -1 }).populate('user').limit(limit).skip((page - 1) * limit).exec()
 
+        const total = await Orders.aggregate([
+            { $match: { orderStatus: "Delivered"} },
+            { $unwind: '$products' },
+            {$match:{'products.status':{$ne:"Returned"}}},
+            {$project:{
+Revenue:{
+    $subtract:[
+        {$multiply:['$products.offerPrice','$products.quantity']},
+        '$coupon.couponDiscountOnProduct'
+    ]
+}
+            }
+        },
+        {$group:{
+            _id:null,totalRevenue:{$sum:'$Revenue'}
+        }}
+
+        ]) 
+
+
+        const monthly = await Orders.aggregate([
+            {$match:{orderStatus:"Delivered",date:{$gte:startOfMonth,$lt:endOfMonth}}},
+            {$unwind:'$products'},
+            {$match:{'products.status':"Delivered"}},
+            {$project:{
+                productTotal:{
+                    $subtract:[
+                        {$multiply:['$products.offerPrice','$products.quantity']},
+                        '$coupon.couponDiscountOnProduct'
+                    ]
+                }
+            }},
+            {$group:{
+                _id:null,monthlyTotalAmount:{$sum:'$productTotal'} 
+            }}
+    ]);
+
+    // console.log("monthly================================================================",monthly)//---------------------------
+    //     console.log("totalrevernssfsd==============",total)//======================
 
         const totalRevenue = total.map((value) => value.totalRevenue)[0] || 0
+        const monthlyRevenue = monthly.map((value) => value.monthlyTotalAmount)[0] || 0;
+
         const orderCount = await Orders.find({}).count();
         const productCount = await Products.find({}).count();
         const categoryCount = await Category.find({}).count();
-        const currentDate = new Date();
-          const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-    const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
-const monthly = await Orders.aggregate([{$match:{'products.status':'Delivered',date:{$gt:startOfMonth,$lt:endOfMonth}}},{$group:{_id:null,monthlyRevenue:{$sum:'$totalRevenue'}}}]);
-const monthlyRevenue = monthly.map((value)=>value)[0]||0;
-const users = await Users.find({verified:true}).count();
+        const usersCount = await Users.find({ verified: true }).count();
 
 
-const currentMonthh = new Date().getMonth() + 1;
-const currentYear = new Date().getFullYear();
 
-const defaultMonthly = Array.from({ length: 12 }, (_, i) => ({
-    month: i + 1,
-    total: 0,
-    count: 0
-  }));
+        const defaultMonthly = Array.from({ length: 12 }, (_, i) => ({
+            month: i + 1,
+            total: 0,
+            count: 0
+        }));
 
- const monthlySalesData  = await Orders.aggregate([
-    {$unwind:"$products"},
-    {$match:{'products.status':"Delivered",
-        status:{$ne:'Cancelled'},
-        date:{$gte:new Date(currentYear,0,1)}
-    }
+        
+        const monthlySalesData = await Orders.aggregate([
+            {
+                $match: {
+                    orderStatus: 'Delivered',
+                }
+            },
+            {$unwind:'$products'},
+            {$match:{'products.status':{$ne:'Returned'}}},
+            {$project:{
+monthTotal:{
+    $subtract:[
+    { $multiply:['$products.offerPrice','$products.quantity']},
+    '$coupon.couponDiscountOnProduct'
+]
 },
-{
-    $group:{
-        _id:{$month:'$date'},
-        total:{$sum:"$totalAmount"},
-        countt:{$sum:1}
-    }
-},
-{
-    $project:{
-        _id:0,
-        month:'$_id',
-        total:'$total',
-        count:'$countt'
-    }
-}
-]);
+date:1
+            }
+        },
+            {
+                $group: {
+                    _id: { $month: '$date' },
+                    total: { $sum: "$monthTotal"},
+                    countt: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    month: '$_id',
+                    total: '$total',
+                    count: '$countt'
+                }
+            }
+        ]);
 
-const updatedMonthValue = defaultMonthly .map((defaultMonthly)=>{
-    const foundMonth = monthlySalesData.find((monthData)=>{
-return monthData == defaultMonthly
-    })
-})
+        const updatedMonthlyDetails = defaultMonthly.map((defaultMonth) => {
+            const foundMonth = monthlySalesData.find((monthdata) => {
+                return monthdata.month == defaultMonth.month;
+            });
+            return foundMonth || defaultMonth;
+        });
 
-        console.log('toatal-----',total)//---------------
-        console.log('totalRevenue-----',totalRevenue)//---------------
-        console.log('orderCount-----',orderCount)//---------------
-        console.log('productCount-----',productCount)//---------------
-        console.log('categoryCount-----',categoryCount)//---------------
-        console.log('currentDate-----',currentDate)//---------------
-        console.log('startOfMonth-----',startOfMonth)//---------------
-        console.log('endOfMonth-----',endOfMonth)//---------------
-        console.log('monthly-----',monthly)//---------------
-        console.log('monthlyRevenue-----',monthlyRevenue)//---------------
-        console.log('users-----',users)//---------------
-        console.log('updatedMonthValue-----',updatedMonthValue)//---------------
 
-        res.render('dashboard',{
+        // console.log('toatal-----', total)//---------------
+        // console.log('totalRevenue-----', totalRevenue)//---------------
+        // console.log('orderCount-----', orderCount)//---------------
+        // console.log('productCount-----', productCount)//---------------
+        // console.log('categoryCount-----', categoryCount)//---------------
+        // console.log('currentDate-----', currentDate)//---------------
+        // console.log('startOfMonth-----', startOfMonth)//---------------
+        // console.log('endOfMonth-----', endOfMonth)//---------------
+        // console.log('monthly-----', monthly)//---------------
+        // console.log('monthlyRevenue-----', monthlyRevenue)//---------------
+        // console.log('users-----', users)//---------------
+        console.log('updatedMonthlyDetails-----', updatedMonthlyDetails)//---------------
+        console.log('monthlySalesData-----', monthlySalesData)//---------------
+        console.log('defaultMonthly-----', defaultMonthly)//---------------
+
+let currentDateChart =new Date().getFullYear()
+// loading the month wise chart
+                // const {monthYear}=req.body
+                // let monthYear="2024-07"
+                // const [year,month]= monthYear.split("-").map(Number);
+                const year = currentDate.getFullYear()
+                const month = currentDate.getMonth()+1
+                const startOfFilter = new Date(year,month-1,1);
+                const endOfFilter = new Date(year, month, 0);
+        const daysInMonth = endOfFilter.getDate();
+        let daysArr =[]
+        
+        for(let i=0; i<daysInMonth; i++){
+            daysArr.push(i+1)
+        }
+
+        
+        
+        console.log("year1111111111111111111",year)//------------------
+        console.log("month11111111111111111111",month)//------------------
+        // console.log("startOfFilter",startOfFilter)//------------------
+        // console.log("endOfFilter",endOfFilter)//------------------
+        // console.log("daysInMonth",daysInMonth)//------------------
+        
+        let revenuePerDay= new Array(daysInMonth).fill(0);
+        let usersPerDay= new Array(daysInMonth).fill(0);
+        
+        let revenuebyDay = await Orders.aggregate([
+            {$match:{orderStatus:"Delivered",date:{$gte:startOfFilter,$lte:endOfFilter}}},
+            {$unwind:'$products'},
+            {$match:{'products.status':"Delivered"}},
+            {$project:{date:1,
+                totalAmount:{
+                $subtract:[
+        {$multiply:['$products.quantity','$products.offerPrice']},
+        '$coupon.couponDiscountOnProduct'
+                ]
+            }
+        }
+        },
+        {$group:{
+            _id:{$dayOfMonth:'$date'},
+            totalRevenue:{$sum:'$totalAmount'},
+            count: { $sum: 1 }
+        }}
+        ])
+        
+        
+        const user = await Users.aggregate([
+            {
+              $match: {
+                date: { $gte: startOfFilter, $lte: endOfFilter },
+              },
+            },
+            {
+              $group: {
+                _id: { $dayOfMonth: "$date" },
+                totalUsers: { $sum: 1 },
+              },
+            },
+          ]);
+        
+        
+          revenuebyDay.forEach((item) => {
+            revenuePerDay[item._id - 1] = item.totalRevenue;
+          });
+        
+          user.forEach((item) => {
+            usersPerDay[item._id - 1] = item.totalUsers;
+          });
+        
+
+        res.render('dashboard', {
             totalRevenue,
             orderCount,
             productCount,
@@ -148,7 +289,13 @@ return monthData == defaultMonthly
             startOfMonth,
             endOfMonth,
             monthlyRevenue,
-            users});
+            usersCount,
+            updatedMonthlyDetails,
+            monthlyUsers,
+            usersPerDay,
+            revenuePerDay,
+            daysArr
+        });
 
     } catch (error) {
         console.log(error);
@@ -157,6 +304,94 @@ return monthData == defaultMonthly
 
 }
 
+// chart filter 
+const filterYearlyMonthly = async (req,res)=>{
+    try {
+        console.log("withiin filter chart")//-----------------------------
+        // const {monthYear}=req.body
+        let monthYear="2024-07"
+        const [year,month]= monthYear.split("-").map(Number);
+        const startOfFilter = new Date(year,month-1,1);
+        const endOfFilter = new Date(year, month, 0);
+const daysInMonth = endOfFilter.getDate();
+let daysArr =[]
+
+for(let i=0; i<daysInMonth; i++){
+    daysArr.push(i+1)
+}
+
+
+// console.log("year",year)//------------------
+// console.log("month",month)//------------------
+// console.log("startOfFilter",startOfFilter)//------------------
+// console.log("endOfFilter",endOfFilter)//------------------
+// console.log("daysInMonth",daysInMonth)//------------------
+
+let revenuePerDay= new Array(daysInMonth).fill(0);
+let usersPerDay= new Array(daysInMonth).fill(0);
+
+let revenuebyDay = await Orders.aggregate([
+    {$match:{orderStatus:"Delivered",date:{$gte:startOfFilter,$lte:endOfFilter}}},
+    {$unwind:'$products'},
+    {$match:{'products.status':"Delivered"}},
+    {$project:{date:1,
+        totalAmount:{
+        $subtract:[
+{$multiply:['$products.quantity','$products.offerPrice']},
+'$coupon.couponDiscountOnProduct'
+        ]
+    }
+}
+},
+{$group:{
+    _id:{$dayOfMonth:'$date'},
+    totalRevenue:{$sum:'$totalAmount'},
+    count: { $sum: 1 }
+}}
+])
+
+
+const user = await Users.aggregate([
+    {
+      $match: {
+        date: { $gte: startOfFilter, $lte: endOfFilter },
+      },
+    },
+    {
+      $group: {
+        _id: { $dayOfMonth: "$date" },
+        totalUsers: { $sum: 1 },
+      },
+    },
+  ]);
+
+
+  revenuebyDay.forEach((item) => {
+    revenuePerDay[item._id - 1] = item.totalRevenue;
+  });
+
+  user.forEach((item) => {
+    usersPerDay[item._id - 1] = item.totalUsers;
+  });
+
+
+
+  console.log("revenuebyDay",revenuebyDay)//-------------------
+  console.log("user",user)//-------------------
+  console.log("usersPerDay",usersPerDay)//-------------------
+  console.log("revenuePerDay",revenuePerDay)//-------------------
+
+  res.json({filter:true,revenuePerDay,usersPerDay,daysArr})
+  
+
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
+
+
+// ========================================  DASHBOARD END   ==================================================
 
 
 
@@ -507,8 +742,8 @@ const applyPoductOffer = async (req, res) => {
         console.log("req.bpdu", req.body)//-----------------
         const { productId, offerId } = req.body;
 
-        console.log("productId",productId)//---------------------------
-        console.log("offerId",offerId)//---------------------------
+        console.log("productId", productId)//---------------------------
+        console.log("offerId", offerId)//---------------------------
 
         const addOfferProduct = await Products.findByIdAndUpdate({
             _id: productId
@@ -561,46 +796,46 @@ const applyPoductOffer = async (req, res) => {
 
 
 // remove product offer
-const removePoductOffer = async (req, res)=>{
+const removePoductOffer = async (req, res) => {
     try {
 
-        console.log("remove prodcut offer backend-----------------------,",req.body)//-----------------------
-    const {productId,offerId}=req.body;
-    console.log("producuctId",productId)//----------------------------
-    console.log("offerId",offerId)//----------------------------
+        console.log("remove prodcut offer backend-----------------------,", req.body)//-----------------------
+        const { productId, offerId } = req.body;
+        console.log("producuctId", productId)//----------------------------
+        console.log("offerId", offerId)//----------------------------
 
-    console.log("typeOf(ProductId)",typeof(productId))//---------------------
+        console.log("typeOf(ProductId)", typeof (productId))//---------------------
 
-    const removeProductOffer = await Products.findByIdAndUpdate(
-        {_id:productId},
-        {$unset:{appliedOffer:""}},
-        {new:true}
-    );
+        const removeProductOffer = await Products.findByIdAndUpdate(
+            { _id: productId },
+            { $unset: { appliedOffer: "" } },
+            { new: true }
+        );
 
-console.log('removeProductOffer',removeProductOffer)//--------------------------
+        console.log('removeProductOffer', removeProductOffer)//--------------------------
 
-const updatedOffer = await Offers.findByIdAndUpdate(
-    {_id:offerId},
-    {$pull:{productId:productId}}, 
-    { new:true}
-);
+        const updatedOffer = await Offers.findByIdAndUpdate(
+            { _id: offerId },
+            { $pull: { productId: productId } },
+            { new: true }
+        );
 
-    console.log("updatedOffer1")//----------------------
-    console.log("updatedOffer",updatedOffer)//----------------------
-    console.log("updatedOffer2")//----------------------
+        console.log("updatedOffer1")//----------------------
+        console.log("updatedOffer", updatedOffer)//----------------------
+        console.log("updatedOffer2")//----------------------
 
-    if(removeProductOffer){
-        if(updatedOffer){
-            res.status(200).json({removed:true,message:"Category offer succesfully removed"});
+        if (removeProductOffer) {
+            if (updatedOffer) {
+                res.status(200).json({ removed: true, message: "Category offer succesfully removed" });
 
-        }else{
-            res.status(404).json({ removed: false, message: "Offer not found or failed to update" });
+            } else {
+                res.status(404).json({ removed: false, message: "Offer not found or failed to update" });
+            }
+        } else {
+            res.status(404).json({ removed: false, message: "Product not found or failed to update" });
         }
-    }else{
-        res.status(404).json({ removed: false, message: "Product not found or failed to update" });
-    }
 
-  
+
     } catch (error) {
         console.log(error)
     }
@@ -612,10 +847,10 @@ const updatedOffer = await Offers.findByIdAndUpdate(
 const loadOfferForApply = async (req, res) => {
     try {
         console.log('within apply offer')//------------
-let categoryId = null;
-let productId=null
-         categoryId= req.query.category;
-         productId= req.query.product;
+        let categoryId = null;
+        let productId = null
+        categoryId = req.query.category;
+        productId = req.query.product;
 
         let currentdate = Date.now();
 
@@ -715,41 +950,41 @@ const applyCategoryOffer = async (req, res) => {
 
 
 // remove offer on category
- const removecategoryOffer = async (req, res)=>{
+const removecategoryOffer = async (req, res) => {
     try {
-        const {categoryId, offerId}=req.body;
-        console.log("categoryId",categoryId)//--------------------------
-        console.log("offerId",offerId)//--------------------------
+        const { categoryId, offerId } = req.body;
+        console.log("categoryId", categoryId)//--------------------------
+        console.log("offerId", offerId)//--------------------------
 
         const offerRemovedCategory = await Category.findByIdAndUpdate(
-            {_id:categoryId},
-            {$unset:{appliedOffer:offerId}},
-            {new:true}
+            { _id: categoryId },
+            { $unset: { appliedOffer: offerId } },
+            { new: true }
         );
-        
-const updateOffer = await Offers.findByIdAndUpdate(
-    {_id:offerId},
-    {$pull:{appliedCategory:categoryId}},
-    {new:true}
-)
 
-console.log("updateOffer",updateOffer)//--------------------------
-console.log("offerRemovedCategory",offerRemovedCategory)//--------------------------
+        const updateOffer = await Offers.findByIdAndUpdate(
+            { _id: offerId },
+            { $pull: { appliedCategory: categoryId } },
+            { new: true }
+        )
 
-if(offerRemovedCategory){
-    if(updateOffer){
-        res.status(200).json({removed:true,message:"Offer successfully Removed"})
-    }else{
-        res.json({removed:false,message:"Offer not found or failed to update" });
-    }
-}else{
-    res.json({removed:false,message:"Category not found or failed to update"});
-}
+        console.log("updateOffer", updateOffer)//--------------------------
+        console.log("offerRemovedCategory", offerRemovedCategory)//--------------------------
+
+        if (offerRemovedCategory) {
+            if (updateOffer) {
+                res.status(200).json({ removed: true, message: "Offer successfully Removed" })
+            } else {
+                res.json({ removed: false, message: "Offer not found or failed to update" });
+            }
+        } else {
+            res.json({ removed: false, message: "Category not found or failed to update" });
+        }
 
     } catch (error) {
         console.log(error)
     }
- }
+}
 
 // ====================================================================  saleReport    =================================================
 
@@ -762,10 +997,10 @@ const loadSalesreport = async (req, res) => {
         let startDate = new Date(req.query?.start);
         let endDate = new Date(req.query?.end);
         // let status = "all"
-    //    status = req?.query?.status;
-    let dateRange = req.query?.date
+        //    status = req?.query?.status;
+        let dateRange = req.query?.date
 
-    let currentDate= new Date();
+        let currentDate = new Date();
 
         console.log("startDAte", startDate)//-----------------
         console.log("endDate", endDate)//-----------------
@@ -778,67 +1013,67 @@ const loadSalesreport = async (req, res) => {
         console.log("endDate2222", endDate)//-----------------
 
 
-        let filterConditons ={
-          
-                orderStatus: { $nin: ['Cancelled', 'Pending'] },   
+        let filterConditons = {
+
+            orderStatus: { $nin: ['Cancelled', 'Pending'] },
         }
 
-        if(startDate & startDate){
-            filterConditons.date =  { $gte: startDate, $lte: endDate }
-        }        
+        if (startDate & startDate) {
+            filterConditons.date = { $gte: startDate, $lte: endDate }
+        }
 
-if(dateRange){
+        if (dateRange) {
 
-    let year = currentDate.getFullYear();
-    let month = currentDate.getMonth();
-    let day = currentDate.getDay();
+            let year = currentDate.getFullYear();
+            let month = currentDate.getMonth();
+            let day = currentDate.getDay();
 
-    if(dateRange=="All"){
-        const orders = await Orders.find(filterConditons).populate('user').populate('products.productId');
-        console.log("orders.length",orders.length)//-------------------------
-       return res.status(200).render("salesReport", { orders ,dateRange});
-    }
+            if (dateRange == "All") {
+                const orders = await Orders.find(filterConditons).populate('user').populate('products.productId');
+                console.log("orders.length", orders.length)//-------------------------
+                return res.status(200).render("salesReport", { orders, dateRange });
+            }
 
-    if(dateRange=="Day"){
-        startDate= new Date(currentDate.setHours(0,0,0,0));
-        endDate= new Date(currentDate.setHours(23, 59, 59, 999));
+            if (dateRange == "Day") {
+                startDate = new Date(currentDate.setHours(0, 0, 0, 0));
+                endDate = new Date(currentDate.setHours(23, 59, 59, 999));
 
-        console.log(`Day:${startDate}---------------------${endDate}`)//----------------------------
-        filterConditons.date =  { $gte: startDate, $lte: endDate }
-    }
- 
-    if(dateRange=="Week"){
-        // startDate = new Date(year,month,day-(day+6)).setHours(0, 0, 0, 0);
-        // endDate = new Date(year,month,day).setHours(23, 59, 59, 999);
-startDate= new Date(year, month, currentDate.getDate() - day - 7);
+                console.log(`Day:${startDate}---------------------${endDate}`)//----------------------------
+                filterConditons.date = { $gte: startDate, $lte: endDate }
+            }
 
-endDate=currentDate.setDate(currentDate.getDate() - day - 1);
+            if (dateRange == "Week") {
+                // startDate = new Date(year,month,day-(day+6)).setHours(0, 0, 0, 0);
+                // endDate = new Date(year,month,day).setHours(23, 59, 59, 999);
+                startDate = new Date(year, month, currentDate.getDate() - day - 7);
 
-
-        console.log(`Week:${startDate}---------------------${endDate}`)//----------------------------
-        filterConditons.date =  { $gte: startDate, $lte: endDate }
-    }
-
-    if(dateRange=="Month"){
-        startDate=new Date(year,month,1).setHours(0,0,0,0);
-        endDate=new Date(year,month,31).setHours(23, 59, 59, 999);   
-          console.log(`Month:${startDate}---------------------${endDate}`)//----------------------------
-          filterConditons.date =  { $gte: startDate, $lte: endDate }
-    }
-
-    if(dateRange=="Year"){
-        startDate=new Date(year,0,1).setHours(0,0,0,0);
-        endDate=new Date(year,11,31).setHours(23, 59, 59, 999);
-
-        console.log(`Year:${startDate}---------------------${endDate}`)//----------------------------
-        filterConditons.date =  { $gte: startDate, $lte: endDate }
-    }
-
-}
+                endDate = currentDate.setDate(currentDate.getDate() - day - 1);
 
 
-console.log("filterConditons=============",filterConditons)//--------------------
-       
+                console.log(`Week:${startDate}---------------------${endDate}`)//----------------------------
+                filterConditons.date = { $gte: startDate, $lte: endDate }
+            }
+
+            if (dateRange == "Month") {
+                startDate = new Date(year, month, 1).setHours(0, 0, 0, 0);
+                endDate = new Date(year, month, 31).setHours(23, 59, 59, 999);
+                console.log(`Month:${startDate}---------------------${endDate}`)//----------------------------
+                filterConditons.date = { $gte: startDate, $lte: endDate }
+            }
+
+            if (dateRange == "Year") {
+                startDate = new Date(year, 0, 1).setHours(0, 0, 0, 0);
+                endDate = new Date(year, 11, 31).setHours(23, 59, 59, 999);
+
+                console.log(`Year:${startDate}---------------------${endDate}`)//----------------------------
+                filterConditons.date = { $gte: startDate, $lte: endDate }
+            }
+
+        }
+
+
+        console.log("filterConditons=============", filterConditons)//--------------------
+
 
         // if(status && status!="all"){
         //     filterConditons["products.status"]=status;
@@ -847,8 +1082,8 @@ console.log("filterConditons=============",filterConditons)//-------------------
         // const orders = await Orders.find({ date: { $gte: startDate, $lte: endDate }, "products.status": "Delivered" }).populate('user').populate('products.productId');
         const orders = await Orders.find(filterConditons).populate('user').populate('products.productId');
         // console.log("salesData", orders)//---------------
-        console.log("orders.length",orders.length)//-------------------------
-        res.status(200).render("salesReport", { orders ,dateRange});
+        console.log("orders.length", orders.length)//-------------------------
+        res.status(200).render("salesReport", { orders, dateRange });
     } catch (error) {
         console.log(error)
     }
@@ -887,7 +1122,8 @@ module.exports = {
     removecategoryOffer,
 
 
-    loadSalesreport
+    loadSalesreport,
+    filterYearlyMonthly
 
 
 

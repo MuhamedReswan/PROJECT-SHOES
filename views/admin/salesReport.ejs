@@ -70,7 +70,8 @@
                             
                         <% let count=0 %>
                             <% orders.forEach((order)=>{ %>
-                            
+
+                            <% console.log("order form sales repot ejs------------------------------------------",order)%>
                                 <% order.products.forEach((product)=>{ %>
                                     <% count++ %>
                                         <tbody>
@@ -93,10 +94,10 @@
                                                 <%= order.user.name %>
                                             </td>
                                             <td>
-                                                <%= product.price %> x <%= product.quantity %>
+                                                <%= product.offerPrice %> x <%= product.quantity %>
                                             </td>
                                             <td>
-                                                <%= product.price * product.quantity %>
+                                                <%= product.offerPrice * product.quantity %>
                                             </td>
                                             <td>
                                                 <%= (() => {

@@ -10,6 +10,7 @@
                         </div>
                     </div>
                     <%if(singleOrder){%>
+                        <%let orderTotalAmount=0%>
                     <div class="card mb-2">
                         <header class="card-header">
                                
@@ -35,13 +36,17 @@
                                       </div>
                                 </div>
                                 <div class="col-lg-4 col-md-6 me-auto">
-                                    <div class="card">
-                                        <div class="card- p-2  text-center">
-                                          <h4 class="card-title pb-2">Payment Details</h4>
-                                        
+                                    <div class="card  text-start">
+                                        <div class="card- p-2 ">
+                                          <h4 class="card-title pb-2  text-center">Payment Details</h4>
+                                        <%let subTotal  %>
                                           <h6 class="card-subtitle mb-2 text-muted">Payment Method : <span class="text-dark"><%=singleOrder.paymentMethod%></span></h6>
                                           <h6 class="card-subtitle mb-2 text-muted">Payment Status : <span class="text-dark"><%=singleOrder.paymentStatus%></span></h6>
-                                          <h6 class="card-subtitle mb-2 text-muted">Order Id  : <span class="text-dark"><%=singleOrder.orderId%></span></h6>
+                                          <h6 class="card-subtitle mb-2 text-muted">Order Id  : <span class="text-dark"><%=singleOrder.orderId %></span></h6>
+                                          <h6 class="card-subtitle mb-2 text-muted">Subtotal  : <span class="text-dark"><%=singleOrder?.totalAmount + singleOrder?.coupon?.discount%>.00</span></h6>
+                                          <h6 class="card-subtitle mb-2 text-muted">Coupon Discount  : <span class="text-dark"><%=singleOrder?.coupon?.discount ? singleOrder?.coupon?.discount: 0%>.00</span></h6>
+                                          <h6 class="card-subtitle mb-2 text-muted">Delivery Charge  : <span class="text-dark"><%=singleOrder.deliveryCharge%>.00</span></h6>
+                                          <h6 class="card-subtitle mb-2 text-muted">Total Amount  : <span class="text-dark"><%=singleOrder.totalAmount%>.00</span></h6>
 
                                         </div>
                                       </div>
@@ -71,7 +76,9 @@
                                         <% if(singleOrder.products && singleOrder.products.length>0){%>
                                             <% singleOrder.products.forEach((order,i)=>{%>
                                                 <% console.log('order product front',i,order) %>
-<%let subtotal=order.quantity*order.productId.offerPrice%>
+<%let subtotal=order.quantity*order.offerPrice%>
+<% orderTotalAmount+=order.quantity*order.offerPrice%>
+
 <% console.log('subtotal front',subtotal) %> 
 
                                                 <tr class="text-center">
@@ -85,7 +92,7 @@
                                                         <%=order.productId.name%>
                                                     </td>
                                                     <td>
-                                                        <%=order.productId.offerPrice%>
+                                                        <%=order.offerPrice%>
                                                     </td>
                                                     <td>
                                                         <%=order.quantity%>
@@ -102,51 +109,6 @@
                                                             <%=formattedDate%>
                                                         </td>
 
-                                                                    <!-- <td >
-                                                                        <div class="col-md-2 col-6 w-100 btn btn-sm text-center">
-                                                                          
-                                                                            <%if(order.status=='Delivered' || order.status=='Cancelled' ){%>
-                                                                               
-
-                                                                            <select disabled class="form-select order-single-status" style="font-size: 14px;"
-                                                                            onchange="changeSingleProductStatus(this.value,'<%=singleOrder._id%>','<%=order.productId._id%>')"
-                                                                            data-orderId="<%singleOrder._id%>" 
-                                                                            data-productId="<%=singleOrder._id%>"
-                                                                            data-userId="<%=singleOrder.user._id%>"
-                                                                            data-index = <%=i%>
-                                                                            id="order-status"
-                                                                            name="orderStatus"
-                                                                            >
-                                                                                <option selected value="<%=order.status%>">
-                                                                                    <%=order.status%>
-                                                                                </option>
-                                                                                <option value="shipped" >Shipped</option>
-                                                                                <option value="Out of delivery">Out of delivery</option>
-                                                                                <option value="Delivered">Deleverd</option>
-                                                                                <option value="Cancelled" >Cancel</option>
-                                                                            </select>
-                                                                            <%}else{%>
-                                                                                <select  onchange="changeSingleProductStatus(this.value,'<%=singleOrder._id%>','<%=order.productId._id%>')" class="form-select order-single-status" style="font-size: 14px;"
-                                                                                value="<%=order.status%>"
-                                                                                data-orderId="<%singleOrder._id%>" 
-                                                                                data-productId="<%=order.productId._id%>"
-                                                                                data-userId="<%=singleOrder.user._id%>"
-                                                                                data-index = <%=i%>
-                                                                                id="order-status"
-                                                                                name="orderStatus"
-                                                                                >
-                                                                                    <option selected value="<%=order.status%>">
-                                                                                        <%=order.status%>
-                                                                                    </option>
-                                                                                    <option value="shipped" >Shipped</option>
-                                                                                    <option value="Out of delivery">Out of delivery</option>
-                                                                                    <option value="Delivered">Deleverd</option>
-                                                                                    <option value="Cancelled" >Cancel</option>
-                                                                                </select>
-                                                                                <%}%>
-                                                                        </div>
-                                                                       
-                                                                    </td> -->
                                                 </tr>
                                                 <% })%>
                                                     <%}else{%>

@@ -4,6 +4,8 @@ const { json } = require('express');
 const mongoose = require('mongoose');
 const Users = require('../model/userModel');
 const Coupons = require('../model/couponModel');
+const Wallet = require('../model/walletModel');
+
 
 
 //load Cart
@@ -291,6 +293,7 @@ const loadCheckout = async (req, res) => {
         console.log('userId chsckout', userId);//------------
         const userData = await Users.findOne({ _id: userId });
         const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
+        const wallet = await Wallet.findOne({user:userId})
         let date = new Date()
         console.log("date&&&&", date)//--------------------
         const viewCoupons = await Coupons.find({ expiryDate: { $gte: date }, isListed: true, limit: { $gt: 0 }, appliedUsers: { $nin: [userId] } });
@@ -299,7 +302,7 @@ const loadCheckout = async (req, res) => {
         //    console.log('userData',userData);//-----------------
         //    console.log('cartData',cartData);//-----------------
 
-        res.status(200).render('checkout', { userData, cartData, viewCoupons, couponApplied });
+        res.status(200).render('checkout', { userData, cartData, viewCoupons, couponApplied,wallet });
     } catch (error) {
         console.log(error);
     }

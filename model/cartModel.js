@@ -34,7 +34,10 @@ const cartSchema = mongoose.Schema({
 
             }
         }},
-
+        couponDiscoundProduct:{
+            type: Number,
+            default:0
+        },
     couponDiscountAmount:{
         type:Number,
         default:0

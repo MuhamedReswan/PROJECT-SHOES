@@ -435,7 +435,7 @@
                                                     <div id="accordion" class="payment-section">
                                                         <div id=' paymentError' class="text-danger">
                         </div>
-
+<%if(totalAmount>=1000){%>
                         <div class="card mb-2">
                             <div class="card-header d-flex ">
                                 <input class="mr-2" type="radio" name="paymentOption" id="cashOnDelivery" value="COD">
@@ -443,6 +443,7 @@
                                     Delivery</label>
                             </div>
                         </div>
+                        <%}%>
 
                         <div class="card mb-2">
                             <div class="card-header d-flex ">
@@ -456,7 +457,7 @@
                         <div class="card mb-2">
                             <div class="card-header d-flex ">
                                 <input class="mr-2" type="radio" name="paymentOption" value="Wallet" id="wallet">
-                                <label class="card-link" for="Wallet">Wallet</label>
+                                <label class="card-link" for="Wallet">Wallet(₹ <%=wallet?.balance%>.00)</label>
                             </div>
                         </div>
 
@@ -772,6 +773,15 @@
                                             }, 1500)
 
                                         }
+if(res.notListedProduct){
+    Swal.fire({
+                                                icon: 'warning',
+                                                text: `Sorry your product ${res.unListedProduct} Currently Un Available'`,
+                                                width: '300px',
+                                                showConfirmButton: '#d33'
+                                            });
+}
+
                                         if (res.quant) {
                                             Swal.fire({
                                                 icon: 'warning',
@@ -941,7 +951,7 @@ console.log("withi axios response", response)//--------------------------------
                                                 });
                                             }else{
                                                 Swal.fire({
-                                                    icon: 'success',
+                                                    icon: 'error',
                                                     text: `${res.message}`,                                                    width: '300px',
                                                     showConfirmButton: '#d33'
                                                 });
@@ -1043,6 +1053,10 @@ console.log("withi axios response", response)//--------------------------------
 
             applyCouponButton.addEventListener('click', applyCoupon);
 
+                applyCouponButton.addEventListener('click', applyCoupon);
+            
+
+
             // let removeCouponButton =document.getElementById('coupon-remove-button');
 
             const subTotalElement = document.getElementById('sub-total');
@@ -1051,7 +1065,7 @@ console.log("withi axios response", response)//--------------------------------
             console.log("subTotalValue", subTotalValue)//------------
             const cartId = document.getElementById('order').getAttribute('cartId')
             console.log("cartId", cartId)//------------------------
-
+            
             function applyCoupon() {
                 console.log("applyCoupon involked")//----------
 
@@ -1075,6 +1089,8 @@ console.log("withi axios response", response)//--------------------------------
                         subTotal: subTotalValue
                     }
 
+                 
+
                     fetch('/apply-coupon', {
                         method: 'post',
                         headers: {
@@ -1086,6 +1102,7 @@ console.log("withi axios response", response)//--------------------------------
                         .then((response) => {
 
                             if (response.valid) {
+                              
 
                                 let placeOrderButton = document.getElementById('place-order').setAttribute('coupon-code', couponCode);
 
@@ -1106,6 +1123,8 @@ console.log("withi axios response", response)//--------------------------------
                                         width: "300px",
                                         timer: 1500,
                                     });
+
+                                    attachListernerApplyCoupon()
 
                                 })
                             }
@@ -1136,7 +1155,7 @@ console.log("withi axios response", response)//--------------------------------
             function removeCoupon() {
                 let data = {
                     cartId: cartId,
-                    subTotal: subTotalValue
+                    subTotal: subTotalValue,
                 }
                 console.log('remove coupon invoked')//------------------------
 
@@ -1152,9 +1171,8 @@ console.log("withi axios response", response)//--------------------------------
 
                             let placeOrderButton = document.getElementById('place-order').setAttribute('coupon-code', "");
 
-                            $('#page-content').load(`/checkout?subtotal=${subTotalValue} #page-content`, null, function () {
 
-                                Swal.fire({
+                            Swal.fire({
                                     position: "center",
                                     icon: "success",
                                     title: `${response.message}`,
@@ -1162,7 +1180,11 @@ console.log("withi axios response", response)//--------------------------------
                                     width: "300px",
                                     timer: 1500,
                                 });
-                            })
+
+                                setTimeout(()=>{
+                                    window.location.href=`/checkout?subtotal=${subTotalValue}`
+                                },1500)
+
                         }
                     })
             }
