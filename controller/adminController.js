@@ -208,7 +208,7 @@ date:1
         console.log('monthlySalesData-----', monthlySalesData)//---------------
         console.log('defaultMonthly-----', defaultMonthly)//---------------
 
-let currentDateChart =new Date().getFullYear()
+// let currentDateChart =new Date().getFullYear()
 // loading the month wise chart
                 // const {monthYear}=req.body
                 // let monthYear="2024-07"
@@ -218,6 +218,7 @@ let currentDateChart =new Date().getFullYear()
                 const startOfFilter = new Date(year,month-1,1);
                 const endOfFilter = new Date(year, month, 0);
         const daysInMonth = endOfFilter.getDate();
+        const currentSelectedMonth=`${year}-${month.toString().padStart(2, '0')}`
         let daysArr =[]
         
         for(let i=0; i<daysInMonth; i++){
@@ -294,7 +295,8 @@ let currentDateChart =new Date().getFullYear()
             monthlyUsers,
             usersPerDay,
             revenuePerDay,
-            daysArr
+            daysArr,
+            currentSelectedMonth
         });
 
     } catch (error) {
@@ -308,8 +310,7 @@ let currentDateChart =new Date().getFullYear()
 const filterYearlyMonthly = async (req,res)=>{
     try {
         console.log("withiin filter chart")//-----------------------------
-        // const {monthYear}=req.body
-        let monthYear="2024-07"
+        const {monthYear}=req.body
         const [year,month]= monthYear.split("-").map(Number);
         const startOfFilter = new Date(year,month-1,1);
         const endOfFilter = new Date(year, month, 0);

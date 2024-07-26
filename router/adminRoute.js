@@ -13,7 +13,8 @@ const productController =require('../controller/productController');
 const categoryController =require('../controller/categoryController');
 const adminAuth = require('../middlewares/adminAuth');
 const orderController = require('../controller/orderController');
-const couponController = require('../controller/couponController')
+const couponController = require('../controller/couponController');
+const bannerController = require('../controller/bannerController');
 
 
 // admin_route.use(express.static(path.join(__dirname,'public')));
@@ -165,6 +166,11 @@ admin_route.get('/sales-report', adminAuth.isLogin,adminController.loadSalesrepo
 
 //filter chart
 admin_route.post('/dashboard/filter-chart',adminAuth.isLogin,adminController.filterYearlyMonthly);
+
+// load banners
+ admin_route.get('/banners',adminAuth.isLogin,bannerController.loadBanners)
+
+
 
 
 // admin_route.post('/sales-report', adminAuth.isLogin,adminController.);

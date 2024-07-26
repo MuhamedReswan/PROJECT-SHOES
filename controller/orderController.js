@@ -743,22 +743,28 @@ const changeOrderStatus = async (req, res) => {
         const chanagedStatus = req.body.orderStatus;
 
         console.log('im in change-order-status')//---------------
-        console.log('req.body', req.body)//---------------
+        
+        let filterConditons={
+            orderStatus: chanagedStatus,
+            'products.$[].status': chanagedStatus
+        }
+
+        const order = await Orders.findOne({_id:orderId});
+
+        if(chanagedStatus=="Delivered" && order.paymentMethod=='COD' ){
+            filterConditons.paymentStatus='Paid'
+        }
 
         const orderStatusChange = await Orders.findOneAndUpdate({
             _id: orderId
         },
             {
-                $set:
-                {
-                    orderStatus: chanagedStatus,
-                    'products.$[].status': chanagedStatus
-                }
+                $set: filterConditons
             },
             { new: true })
             .populate('user')
-            .populate('products.productId')
-        console.log('orderStatusChange', orderStatusChange)//---------------
+            .populate('products.productId');
+
         res.status(200).json({ statusUpdated: true })
 
     } catch (error) {

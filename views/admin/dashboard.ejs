@@ -200,14 +200,14 @@
                         <div class="card mb-4">
                             <article id="reload-day-revenue">
                                 <div class="d-flex justify-content-between p-1">
-                                <h5 class="card-title mt-1 ms-1">Sale statistics</h5>
+                                <h5 class="card-title mt-3 ms-3">Monthly Sale </h5>
                                 
-                                    <input  type="month" value="02.05.2021" class="form-control w-25" i onchange="filterWithThisMonth(this.value)" />
+                                    <input  type="month" value="<%=currentSelectedMonth%>" class="form-control w-25 mt-3 me-3" i/>
                                 </div>
                                 <canvas id="myChart"  height="120px" data-days="<%=JSON.stringify(daysArr)%>" data-dayUser="<%=JSON.stringify(usersPerDay)%>" data-dayRevenue="<%=JSON.stringify(revenuePerDay)%>"></canvas>
                             </article>
                         </div>
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-lg-5">
                                 <div class="card mb-4">
                                     <article class="card-body">
@@ -321,16 +321,16 @@
                                     </article>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="col-xl-4 col-lg-12">
                         <div class="card mb-4">
                             <article class="card-body">
-                                <h5 class="card-title">Revenue Base on Area</h5>
+                                <h5 class="card-title">current yearly sales</h5>
                                 <canvas id="myChart2" height="217" data-monthlyDetails="<%=JSON.stringify(updatedMonthlyDetails)%>" data-monthlyUsers="<%=JSON.stringify(monthlyUsers)%>"></canvas>
                             </article>
                         </div>
-                        <div class="card mb-4">
+                        <!-- <div class="card mb-4">
                             <article class="card-body">
                                 <h5 class="card-title">Marketing Chanel</h5>
                                 <span class="text-muted font-xs">Facebook</span>
@@ -354,7 +354,7 @@
                                     <div class="progress-bar" role="progressbar" style="width: 80%">80%</div>
                                 </div>
                             </article>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="card mb-4">
@@ -630,45 +630,94 @@
             });
 
 
-           function filterWithThisMonth(value){
-            console.log("value",value)//---------------
-//             console.log("within the filter function")//---------------------------
-// axios.post('admin/dashboard/filter-chart',{value})
-// .then((response)=>{
-// if(response.data.filter){
-//     console.log("response withinsd",response.data)//-----------------
-// }
-// }).catch((error)=>{
-//     console.log(error)
+//            function filterWithThisMonth(value){
+//             console.log("value",value)//---------------
+// //             console.log("within the filter function")//---------------------------
+// // axios.post('admin/dashboard/filter-chart',{value})
+// // .then((response)=>{
+// // if(response.data.filter){
+// //     console.log("response withinsd",response.data)//-----------------
+// // }
+// // }).catch((error)=>{
+// //     console.log(error)
+// // })
+
+// let dayChart = document.getElementById('myChart')
+
+
+// fetch('/admin/dashboard/filter-chart', {
+//   method: 'POST',
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+//   body: JSON.stringify({ value })
 // })
-
-let dayChart = document.getElementById('myChart')
-
-
-
-fetch('/admin/dashboard/filter-chart', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({ value })
-})
-.then(response => response.json())
-.then(data => {
-  if (data.filter) {
-    console.log("response withinsd", data);
-    dayChart.setAttribute('data-days',JSON.stringify(data.daysArr))
-    dayChart.setAttribute('data-dayRevenue',JSON.stringify(data.revenuePerDay))
-    dayChart.setAttribute('data-dayUser',JSON.stringify(data.usersPerDay))
-$('#reload-day-revenue').load('/admin/ #reload-day-revenue');
-  }
-})
-.catch((error) => {
-  console.log(error);
-});
-            }
+// .then(response => response.json())
+// .then(data => {
+//   if (data.filter) {
+//     console.log("response withinsd", data);
+//     dayChart.setAttribute('data-days',JSON.stringify(data.daysArr))
+//     dayChart.setAttribute('data-dayRevenue',JSON.stringify(data.revenuePerDay))
+//     dayChart.setAttribute('data-dayUser',JSON.stringify(data.usersPerDay))
+// $('#myChart').load('/admin/ #myChart');
+//   }
+// })
+// .catch((error) => {
+//   console.log(error);
+// });
+//             }
 
 
+
+//   // Function to fetch new data and update charts
+//   function updateChartsWithNewData(monthYear) {
+//         $.ajax({
+//             url: '/admin/dashboard/filter-chart',  // Adjust this URL as needed
+//             method: 'POST',
+//             data: { monthYear: monthYear },
+//             success: function(response) {
+//                 if (response.filter) {
+//                     initializeOrUpdateChart1(response.days, response.dayRevenue, response.dayUser);
+//                     initializeOrUpdateChart2(response.labels, response.amount, response.count, response.monthlyUsers);
+//                 }
+//             },
+//             error: function(error) {
+//                 console.error('Error fetching new data:', error);
+//             }
+//         });
+//     }
+
+
+
+
+    // // Initial chart setup
+    // $(document).ready(function() {
+    //     let dayRevenueChart = document.getElementById('myChart');
+    //     let days = JSON.parse(dayRevenueChart.getAttribute('data-days'));
+    //     let dayRevenue = JSON.parse(dayRevenueChart.getAttribute('data-dayRevenue'));
+    //     let dayUser = JSON.parse(dayRevenueChart.getAttribute('data-dayUser'));
+
+    //     initializeOrUpdateChart1(days, dayRevenue, dayUser);
+
+    //     let updatedMonthlyDetails = document.getElementById('myChart2');
+    //     let monthlyData = JSON.parse(updatedMonthlyDetails.getAttribute('data-monthlyDetails'));
+    //     let monthlyUsers = JSON.parse(updatedMonthlyDetails.getAttribute('data-monthlyUsers'));
+
+    //     let amount = monthlyData.map(obj => obj.total);
+    //     let count = monthlyData.map(obj => obj.count);
+    //     let labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    //     initializeOrUpdateChart2(labels, amount, count, monthlyUsers);
+
+    //     // Set up event listener for month change
+    //     $('input[type="month"]').on('change', function() {
+    //         updateChartsWithNewData(this.value);
+    //     });
+    // });
+    
+
+
+    
         </script>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
