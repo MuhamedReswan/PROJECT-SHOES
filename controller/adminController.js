@@ -41,7 +41,9 @@ const loadDashboard = async (req, res) => {
         let placed = 0;
         let returned = 0;
         let returnRequested = 0;
-        let returnDenied = 0;
+
+
+        let orderProdutStatus = []
         let pending = 0;
         orders.map((order) => {
             order.products.map((product) => {
@@ -60,11 +62,11 @@ const loadDashboard = async (req, res) => {
                 } else if (product.status == 'Pending') {
                     pending++
 
-                } else if (product.status == 'Return Denied') {
-                    returnDenied++
-                }
+                } 
             })
         });
+
+        orderProdutStatus.push(pending,returnRequested,returned,placed,cancelled,delivered)
 
 
         let monthlyUsers = new Array(12).fill(0);
@@ -87,8 +89,8 @@ const loadDashboard = async (req, res) => {
         })
         
 
-        console.log("monthlyUser",monthlyUsers)//-----------------
-        console.log("montusershlyUser",users)//-----------------
+        // console.log("monthlyUser",monthlyUsers)//-----------------
+        // console.log("montusershlyUser",users)//-----------------
 
 
         // const latestOrders = await Orders.find({}).sort({ date: -1 }).populate('user').limit(limit).skip((page - 1) * limit).exec()
@@ -204,15 +206,10 @@ date:1
         // console.log('monthly-----', monthly)//---------------
         // console.log('monthlyRevenue-----', monthlyRevenue)//---------------
         // console.log('users-----', users)//---------------
-        console.log('updatedMonthlyDetails-----', updatedMonthlyDetails)//---------------
-        console.log('monthlySalesData-----', monthlySalesData)//---------------
-        console.log('defaultMonthly-----', defaultMonthly)//---------------
+        // console.log('updatedMonthlyDetails-----', updatedMonthlyDetails)//---------------
+        // console.log('monthlySalesData-----', monthlySalesData)//---------------
+        // console.log('defaultMonthly-----', defaultMonthly)//---------------
 
-// let currentDateChart =new Date().getFullYear()
-// loading the month wise chart
-                // const {monthYear}=req.body
-                // let monthYear="2024-07"
-                // const [year,month]= monthYear.split("-").map(Number);
                 const year = currentDate.getFullYear()
                 const month = currentDate.getMonth()+1
                 const startOfFilter = new Date(year,month-1,1);
@@ -227,8 +224,8 @@ date:1
 
         
         
-        console.log("year1111111111111111111",year)//------------------
-        console.log("month11111111111111111111",month)//------------------
+        // console.log("year1111111111111111111",year)//------------------
+        // console.log("month11111111111111111111",month)//------------------
         // console.log("startOfFilter",startOfFilter)//------------------
         // console.log("endOfFilter",endOfFilter)//------------------
         // console.log("daysInMonth",daysInMonth)//------------------
@@ -279,6 +276,58 @@ date:1
           user.forEach((item) => {
             usersPerDay[item._id - 1] = item.totalUsers;
           });
+
+let topFiveCategory=[]
+let topFiveBrand=[]
+let topFiveProduct=[]
+
+const topFiveSellingProduct = await  Orders.aggregate([
+    {$match:{orderStatus:"Delivered"}},
+    {$unwind:'$products'},
+    {$match:{'products.status':"Delivered"}},
+    {$lookup:{
+        from:'products',
+        localField:"products.productId",
+        foreignField:'_id',
+        as:'productDetails'
+    }},
+    {$unwind:'$productDetails'},
+    {
+        $lookup:{
+            from:'categories',
+            localField:'productDetails.category',
+            foreignField:'_id',
+            as:'categoryDetails'
+        }
+    },
+    {$unwind:'$categoryDetails'},
+    {
+        $group:{
+        _id:'$productDetails._id',
+        productName: { $first: '$productDetails.name' },
+        brand: { $first: '$productDetails.brand' },
+        category: { $first: '$categoryDetails.name' },
+        image:{$first:{'$arrayElemAt':['$productDetails.images',0]}},
+        soldCount:{$sum:1}
+    }
+},
+    {$sort:{soldCount:-1}},
+    {$limit:5}
+])
+
+
+topFiveSellingProduct.forEach((val)=>{
+    topFiveProduct.push(val.productName)
+    topFiveCategory.push(val.category)
+    topFiveBrand.push(val.brand)
+})
+
+// console.log("topFiveProduct",topFiveProduct)//----------------
+// console.log("topFiveCategory",topFiveCategory)//----------------
+// console.log("topFiveBrand",topFiveBrand)//----------------
+
+console.log("topFiveSellingProduct",topFiveSellingProduct)//------------------------
+
         
 
         res.render('dashboard', {
@@ -296,7 +345,20 @@ date:1
             usersPerDay,
             revenuePerDay,
             daysArr,
-            currentSelectedMonth
+            currentSelectedMonth,
+            // topFiveBrand,
+            // topFiveCategory,
+            // topFiveProduct,
+            topFiveSellingProduct,
+
+            // pending,
+            // returnRequested,
+            // returned,
+            // placed,
+            // cancelled,
+            // delivered,
+            orderProdutStatus
+
         });
 
     } catch (error) {

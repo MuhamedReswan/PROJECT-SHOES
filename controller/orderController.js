@@ -15,10 +15,10 @@ const placeOrder = async (req, res) => {
         console.log('im in place order');//-----------
         const userId = req.session.user?.id;
 
-        console.log('req.subtotal=' + req.body.subtotal); //-----------
-        console.log('place order userId=' + userId); //-----------
-        console.log('req.body.index=' + req.body.index); //-----------
-        console.log('req.body.paymentMethod=', req.body.paymentMethod);//-----------
+        // console.log('req.subtotal=' + req.body.subtotal); //-----------
+        // console.log('place order userId=' + userId); //-----------
+        // console.log('req.body.index=' + req.body.index); //-----------
+        // console.log('req.body.paymentMethod=', req.body.paymentMethod);//-----------
 
         const {
             subtotal,
@@ -39,7 +39,7 @@ const placeOrder = async (req, res) => {
 
 //         console.log("cart products 2. from place order")//--------------
 //         // -------------------------------------------------------
-        console.log('prodductssssssssssssssssssss', products);//------------------
+        // console.log('prodductssssssssssssssssssss', products);//------------------
         let lessQuantity = 0
         let unListedProduct;
         let size = 0
@@ -619,6 +619,29 @@ const loadInvoice = async (req, res)=>{
     }
 }
 
+// retry payment 
+ const retryPayment = async (req, res)=>{
+    try {
+        console.log("within ths controller of retry payment ")//---------------------------
+        const {orderId}=req.body;
+            console.log('orderId-----------', orderId);//--------------------------
+
+const orderDetails = await Orders.findOne({_id:orderId});
+let paymentMethod=orderDetails.paymentMethod;
+
+
+            console.log(' orderDetails', orderDetails)//-------------------------
+            console.log(' paymentMethod', paymentMethod)//-------------------------
+
+
+            createOrderPayment(req, res, orderDetails,paymentMethod);
+            
+        
+    } catch (error) {
+     console.log(error)   
+    }
+}
+
 
 
 
@@ -743,7 +766,7 @@ const changeOrderStatus = async (req, res) => {
         const chanagedStatus = req.body.orderStatus;
 
         console.log('im in change-order-status')//---------------
-        
+
         let filterConditons={
             orderStatus: chanagedStatus,
             'products.$[].status': chanagedStatus
@@ -922,6 +945,7 @@ module.exports = {
     singleOrderProduct,
     returnProduct,
     razorPayFailed,
+    retryPayment,
     // changeStatusSingle,
     // orderSingleProduct,
     // updateSingleOrderStatus,

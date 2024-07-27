@@ -998,13 +998,18 @@ console.log("withi axios response", response)//--------------------------------
                             width: '300px',
                             padding: '10px',
                             icon: 'error',
-
                             showConfirmButton: false,
                             timer: 1500,
                         });
                         setTimeout(() => {
-                            alert(` orderId=${data.orderDetails._id}`)
-
+                            Swal.fire({
+                            titleText: 'Payment Failed',
+                            width: '300px',
+                            padding: '10px',
+                            icon: 'error',
+                            showConfirmButton: false,
+                            timer: 1500,
+                        });
                         }, 500);
 
                         setTimeout(() => {
@@ -1036,14 +1041,13 @@ console.log("withi axios response", response)//--------------------------------
 
                             console.log("payment verification successs in ==============_---------------+=======================_____________________________________________")
                             location.href = `/order-success/${res.orderId}`
-                            // location.href = `/order-details?id=${res.orderId}`
                         } else {
                             Swal.fire({
                                 position: "center",
                                 icon: "error",
                                 title: "Payment failed",
                                 showConfirmButton: false,
-                                timer: 1500,
+                                timer: 10500,
                             });
                         }
                     })

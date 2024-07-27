@@ -6,8 +6,9 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const Wallet = require('../model/walletModel');
 const otpGenerator = require('otp-generator');
-
-
+// const { default: products } = require('razorpay/dist/types/products');
+const Razorpay = require('razorpay');
+// const Products = require('../model/productsModel');
 
 // password secure
 const securedPassword = async (password) => {
@@ -21,8 +22,10 @@ const securedPassword = async (password) => {
 
 
 // load home 
-const loadHome = (req, res) => {
+const loadHome = async (req, res) => {
     try {
+        // const products = await Products.find({})..limit(5)
+        // console.log("products hme",products)//---------------------
         res.render('home');
     } catch (error) {
         console.log(error);
@@ -49,8 +52,13 @@ const userLogout = (req, res) => {
 // load login 
 const loadLogin = (req, res) => {
     try {
+        // console.log("loginSuccess render1",req.session.user.loginSuccess)//--------------------------
+
+        // const loginSuccess = req.session.user.loginSuccess;
+        // console.log("loginSuccess render",loginSuccess)//--------------------------
+        // delete req.session.user.loginSuccess; // Clear the message after it's been read
+        // res.render('login',{loginSuccess});
         res.render('login');
-        // res.render('test');
     } catch (error) {
         console.log(error);
     }
@@ -82,8 +90,8 @@ const
                             name: userData.name,
                             email: userData.email,
                         }
-
-                        console.log(req.session.user);
+                        // req.session.user.loginSuccess = 'Login Successful';
+                        console.log("req.session.user",req.session.user);//------------------------------
                         res.redirect("/");
 
                     }

@@ -13,7 +13,7 @@ const orderSchema = mongoose.Schema({
             productId: {
                 type:  mongoose.Schema.Types.ObjectId,
                 ref: 'Products',
-                requied:true
+                required:true
                 
             },
             offerPrice: {
@@ -28,7 +28,7 @@ const orderSchema = mongoose.Schema({
 
             returnReason: {
                 type: String,
-                enam:['Product no longer required',"Item does not match the description",'Damaged goods','Wrong product shipped']
+                enum:['Product no longer required',"Item does not match the description",'Damaged goods','Wrong product shipped']
             },
             returnComment: {
                 type: String

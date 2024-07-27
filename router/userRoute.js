@@ -159,7 +159,9 @@ user_route.get('/order-success/:orderId', userHelper.countOfCartAndWishlist, ord
 user_route.get('/order-details', userAuth.isLogin, userHelper.countOfCartAndWishlist, orderController.loadOrderDetails);
 
 // my order
-user_route.get('/my-orders', userAuth.isLogin, userHelper.countOfCartAndWishlist, orderController.loadMyOrder)
+user_route.get('/my-orders', userAuth.isLogin, userHelper.countOfCartAndWishlist, orderController.loadMyOrder);
+
+user_route.post('/my-orders/retry-payment', userAuth.isLogin,orderController.retryPayment);
 
 //cancel order
 user_route.post('/cancel-order', orderController.orderCancel);

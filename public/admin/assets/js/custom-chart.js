@@ -25,7 +25,7 @@
 
         // Create new chart
         chart1 = new Chart(ctx, {
-            type: 'bar',
+            type: 'line',
             data: {
                 labels: days,
                 datasets: [{
@@ -132,6 +132,68 @@ console.log("response.dayRevenuefrom custon js",response.revenuePerDay)//-------
         });
     }
 
+
+function orderedProductsStatus(data){
+    const ctx = document.getElementById('orderStatusChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Pending', 'Return Requested', 'Returned', 'Placed', 'Cancelled', 'Delivered'],
+            datasets: [{
+                // data: [30, 15, 10, 25, 5, 15], // Example data, replace with actual values
+                data: data, // Example data, replace with actual values
+                backgroundColor: [
+                    'rgba(255, 206, 86, 0.8)',  // yellow
+                    'rgba(75, 192, 192, 0.8)',  // green
+                    'rgba(153, 102, 255, 0.8)', // purple
+                    'rgba(255, 159, 64, 0.8)',  // orange
+                    'rgba(255, 99, 132, 0.8)',  // red
+                    'rgba(54, 162, 235, 0.8)'   // blue
+                ],
+                borderColor: [
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        // options: {
+        //     responsive: true,
+        //     plugins: {
+        //         legend: {
+        //             position: 'top',
+        //         },
+        //         title: {
+        //             display: true,
+        //             text: 'Ordered  Product Status '
+        //         }
+        //     }
+        // }
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'circle'
+                    }
+                },
+                // title: {
+                //     display: true,
+                //     text: 'Ordered Product Status'
+                // }
+            }
+        }
+    });
+}
+
+
+
     // Initial chart setup
     $(document).ready(function() {
         let dayRevenueChart = document.getElementById('myChart');
@@ -150,6 +212,14 @@ console.log("response.dayRevenuefrom custon js",response.revenuePerDay)//-------
         let labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
         initializeOrUpdateChart2(labels, amount, count, monthlyUsers);
+
+        let orderPirChart = document.getElementById('orderStatusChart')
+        let orderdata = JSON.parse(orderPirChart.getAttribute('data-products-status'))
+        console.log("orderdata",orderdata)//----------------
+
+ orderedProductsStatus(orderdata)
+
+        
 
         // Set up event listener for month change
         $('input[type="month"]').on('change', function() {

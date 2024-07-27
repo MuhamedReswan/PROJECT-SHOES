@@ -98,20 +98,17 @@ const addCoupon = async (req, res) => {
 // updated coupon 
 const updateCoupon = async (req, res) => {
     try {
-        console.log("update coupon")//-------------------
-        console.log("req.body", req.body)//-------------------
         const { name, endDate, userLimit, description, discountPercentage, minimumAmount, isListed, couponId } = req.body;
+       
         let customisedName = name.toLowerCase();
-        let customiseDescription = description.toLowerCase();
-        console.log("couponId=============", couponId)//-------------------
+        let  = description.toLowerCase();
+        const couponData = await Coupons.findOne({_id:couponId})
+        let couponCode=couponData.couponCode.slice(0,-2)+discountPercentage
         const nameExist = await Coupons.findOne({ title: name, _id: { $ne: couponId } })
-        console.log("nameExist////////", nameExist)//-------------------
 
         if (nameExist) {
             return res.status(200).json({ already: true })
         } else {
-
-
 
             const updatedCoupon = await Coupons.findByIdAndUpdate({ _id: couponId }, {
                 $set: {
@@ -121,10 +118,10 @@ const updateCoupon = async (req, res) => {
                     expiryDate: endDate,
                     discount: discountPercentage,
                     minCost: minimumAmount,
-                    isListed: isListed
+                    isListed: isListed,
+                    couponCode:couponCode
                 }
             })
-            console.log('updatedCoupon', updatedCoupon)//-----------------
 
             return res.status(200).json({ success: true })
         }
@@ -139,14 +136,9 @@ const updateCoupon = async (req, res) => {
 const changeStatus = async (req, res) => {
     try {
         console.log("changeStatus")//--------------------------------------
-        console.log("changeStatus body", req.body);
+        
         const { couponId, status } = req.body;
-        console.log("coupon Id", couponId)//------------------
-        console.log("status Id", status)//---------
-
         let toStatus = status === true ? false : true;
-        console.log("toStatus ", toStatus)//---------
-
 
         const coupon = await Coupons.findByIdAndUpdate({
             _id: couponId
