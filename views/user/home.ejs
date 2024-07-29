@@ -20,13 +20,14 @@
                         <img class="blur-up lazyload bg-img" data-src="user/assets/images/slideshow-banners/home7-banner1.jpg" src="user/assets/images/slideshow-banners/home7-banner1.jpg" alt="Modern Sophistication" title="Modern Sophistication" />
                         <div class="slideshow__text-wrap slideshow__overlay classic middle">
                             <div class="slideshow__text-content classic left">
-                            	<div class="container">
+                            	<div class="container" id="success-login" data-success="<%=loginSuccess%>">
                                 <% if (typeof loginSuccess !== 'undefined' && loginSuccess) { %>
                                   <%console.log("loginSuccess",loginSuccess)%>
 
                                   
                                   <script>
                                       document.addEventListener('DOMContentLoaded', function() {
+
                                           Swal.fire({
                                               icon: 'success',
                                               title: 'Success',
@@ -73,7 +74,7 @@
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="section-header text-center">
                         <h2 class="h2">Shop the Latest &amp; Greatest Shoes</h2>
-                        <p>Shop The most popular shoes from belle store</p>
+                        <p>Shop The most popular shoes from shoe factory</p>
                     </div>
                 </div>
             </div>
@@ -219,41 +220,37 @@
         <div class="section three-column-pro">
         	<div class="container">
             	<div class="row">
+
+                <% if (mostPopularProduct){%>
+
                 	<div class="col-12 col-sm-6 col-md-4 col-lg-4">
                     	<div class="section-header text-left">
                             <h2 class="h2">Most Popular</h2>
                         </div>
                         <div class="grid">
+                          <%mostPopularProduct.forEach((pro)=>{%>
+
                             <div class="grid__item">
                               <div class="mini-list-item">
                                 <div class="mini-view_image">
-                                    <a class="grid-view-item__link" href="#">
-                                        <img class="grid-view-item__image blur-up lazyload" src="user/assets/images/product-images/home7-product1.jpg" alt="">
+                                    <a class="grid-view-item__link" href="/single-product?id=<%=pro.product._id%>">
+                                        <img class="grid-view-item__image blur-up lazyload" src="/user/assets/images/product-images/sharpedImages/<%=pro.image%>" alt="">
                                     </a>
                                 </div>
-                                <div class="details"> <a class="grid-view-item__title" href="#">Camoscio Zip Heel</a>
-                                  <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">$173.60</span></span></div>
+                                <div class="details"> <a class="grid-view-item__title" href="/single-product?id=<%=pro.product._id%> "><%=pro.product.name%></a>
+<%if(pro.discountPercentage>0){%>
+  <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">₹ <%=Math.max(pro.product.offerPrice)%>.00 <br><span class="text-success"><%=pro.discountPercentage%>% OFF</span></span></span></div>
+  <%}else{%>
+
+  <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">₹ <%=Math.max(pro.product.offerPrice)%>.00</span></span></div>
+                                  <%}%>
                                 </div>
                               </div>
                             </div>
-                            <div class="grid__item">
-                              <div class="mini-list-item">
-                                <div class="mini-view_image"> <a class="grid-view-item__link" href="#"><img class="grid-view-item__image blur-up lazyload" src="user/assets/images/product-images/home7-product2.jpg" alt=""></a> </div>
-                                <div class="details"> <a class="grid-view-item__title" href="#">Camoscio Heel</a>
-                                  <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">$378.00</span></span></div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="grid__item">
-                              <div class="mini-list-item">
-                                <div class="mini-view_image"> <a class="grid-view-item__link" href="#"><img class="grid-view-item__image blur-up lazyload" src="user/assets/images/product-images/home7-product3.jpg" alt=""></a> </div>
-                                <div class="details"> <a class="grid-view-item__title" href="#">Aqualina Sandal</a>
-                                  <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">$278.60</span></span></div>
-                                </div>
-                              </div>
-                            </div>
+                            <%})%>
                           </div>
                     </div>
+                    <%}%>
                     <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                     	<div class="section-header text-left">
                             <h2 class="h2">Weekly Top Seller</h2>
@@ -291,22 +288,34 @@
                     </div>
                     <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                     	<div class="section-header text-left">
-                            <h2 class="h2">Flash Sale</h2>
+                            <h2 class="h2">Latest Product</h2>
                         </div>
                         <div class="grid">
+
+<%latestProduct.forEach((pro)=>{%>
+
                             <div class="grid__item">
                               <div class="mini-list-item">
                                 <div class="mini-view_image">
-                                    <a class="grid-view-item__link" href="#">
-                                        <img class="grid-view-item__image blur-up lazyload" src="user/assets/images/product-images/home7-product1.jpg" alt="">
+                                    <a class="grid-view-item__link" href="/single-product?id=<%=pro._id%>">
+                                        <img class="grid-view-item__image blur-up lazyload" src="/user/assets/images/product-images/sharpedImages/<%=pro.images[0]%>" alt="">
                                     </a>
                                 </div>
-                                <div class="details"> <a class="grid-view-item__title" href="#">Camoscio Zip Heel</a>
-                                  <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">$173.60</span></span></div>
+                                <div class="details"> <a class="grid-view-item__title" href="/single-product?id=<%=pro._id%>"><%=pro.name%></a>
+                                  <%if(pro.maxDiscount>0){%>
+                                  <div class="grid-view-item__meta"><span class="product-price__price"><span class="money ">₹ <%=Math.round(pro.finalPrice)%>.00<br><span class="text-success"> <%=pro.maxDiscount%>% oFF </span></span></span></div>
+                                  <%}else{%>
+                                    <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">₹ <%=Math.round(pro.finalPrice)%>.00</span></span></div>
+
+                                  <%}%>
                                 </div>
                               </div>
                             </div>
-                            <div class="grid__item">
+                            
+                            <%})%>
+
+
+                            <!-- <div class="grid__item">
                               <div class="mini-list-item">
                                 <div class="mini-view_image"> <a class="grid-view-item__link" href="#"><img class="grid-view-item__image blur-up lazyload" src="user/assets/images/product-images/home7-product2.jpg" alt=""></a> </div>
                                 <div class="details"> <a class="grid-view-item__title" href="#">Camoscio Heel</a>
@@ -321,7 +330,7 @@
                                   <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">$278.60</span></span></div>
                                 </div>
                               </div>
-                            </div>
+                            </div> -->
                           </div>
                     </div>
                 </div>
@@ -533,6 +542,28 @@
 		  }
 		});
 	</script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+
+let loginSuccess = document.getElementById('success-login').getAttribute('data-success')
+if(typeof(loginSuccess)!==undefined){
+
+
+      Swal.fire({
+          icon: 'success',
+          text: '<%= loginSuccess %>',
+          timer:"1500",
+          toast:true,
+          width:"300px",
+    showConfirmButton: false,
+      },1000);
+      
+    }
+  });
+</script>
+
     <!--End For Newsletter Popup-->
 </div>
 

@@ -4,6 +4,7 @@ const path = require('path');
 const flash = require('express-flash');
 require('dotenv').config();
 const { MONGO_CONNECTION } = process.env;
+const userController = require('../PROJECT SHOES/controller/userController')
 
 
 
@@ -37,9 +38,11 @@ const admin_route = require('./router/adminRoute');
 app.use('/admin',admin_route);
 
 
-// app.get('/',(req, res)=>{
-//     res.send("i am here")
-// })
+// 404 handling
+// app.use('*',userController.loadError404)
+app.use("*", (req, res) => {
+    res.status(404).render(path.join(__dirname, "views/users/404.ejs"));
+  });
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT,()=>{

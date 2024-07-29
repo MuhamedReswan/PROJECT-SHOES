@@ -186,8 +186,7 @@ admin_route.post('/dashboard/filter-chart',adminAuth.isLogin,adminController.fil
 
 
 // admin_route.post('admin/login', adminController.LoginVerify);
-// admin_route.get('/*', adminController.adminLoginLoad);
-
+// admin_route.get('/*', adminController.loadError404);
 
 module.exports=admin_route;
 

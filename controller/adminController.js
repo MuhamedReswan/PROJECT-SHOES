@@ -461,7 +461,8 @@ const user = await Users.aggregate([
 //admin login
 const adminLoginLoad = (req, res) => {
     try {
-        res.render('aaadmin-login');
+        // res.render('aaadmin-login');
+        res.render('admin-login');
     } catch (error) {
         console.log(error);
         res.status(500).send("Internal Server Error");
@@ -1154,7 +1155,15 @@ const loadSalesreport = async (req, res) => {
 
 
 
-
+// load 404 page
+const loadError404 = (req,res)=>{
+    try {
+        res.render("admin-404");
+        
+    } catch (error) {
+        
+    }
+}
 
 module.exports = {
     adminLoginLoad,
@@ -1163,6 +1172,7 @@ module.exports = {
     customersLoad,
     blockUser,
     loadLogout,
+    loadError404,
 
 
 

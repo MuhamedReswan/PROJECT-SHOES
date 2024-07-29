@@ -20,7 +20,7 @@
                                     <form class="searchform">
                                         <div class="input-group">
                                             <input list="search_terms" type="text" class="form-control"
-                                                placeholder="Search term" id="customersSearch" />
+                                                placeholder="Search term" id="order-name-Search" />
                                             <button class="btn btn-light bg" type="button"><i
                                                     class="material-icons md-search"></i></button>
                                         </div>
@@ -31,7 +31,7 @@
                         <!-- card-header end// -->
                         <div class="card-body">
                             <div class="table-responsive" id="orders">
-                                <table class="table table-hover" id="customerTable">
+                                <table class="table table-hover" id="orderTable">
                                     <thead class="bg-dark text-white bg-opacity-50">
                                         <tr class="text-center">
                                             <th>ID</th>
@@ -201,13 +201,34 @@
 
 
 
+            document.addEventListener('DOMContentLoaded', () => {
+
+let searchInput = document.getElementById('order-name-Search');
+searchInput.addEventListener('keyup', () => {
+
+    let searchTerm = searchInput.value.toLowerCase();
+    let tableRow = document.querySelectorAll('#orderTable tbody tr');
+
+    tableRow.forEach(function (row) {
+        let nameColoumn = row.querySelector('td:nth-child(2)');
+
+        if (nameColoumn) {
+            let nameText = nameColoumn.textContent.toLowerCase()
+            row.style.display = nameText.includes(searchTerm) ? "" : "none";
+        }
+    })
+
+
+})
+})
+
+
+
         </script>
 
 
 
-        <script>
-
-        </script>
+       
 
 
         <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>

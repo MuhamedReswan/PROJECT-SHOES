@@ -8,7 +8,9 @@ const Wallet = require('../model/walletModel');
 const otpGenerator = require('otp-generator');
 // const { default: products } = require('razorpay/dist/types/products');
 const Razorpay = require('razorpay');
-// const Products = require('../model/productsModel');
+const Products = require('../model/productsModel');
+const Orders = require('../model/orderModel');
+
 
 // password secure
 const securedPassword = async (password) => {
@@ -24,9 +26,170 @@ const securedPassword = async (password) => {
 // load home 
 const loadHome = async (req, res) => {
     try {
-        // const products = await Products.find({})..limit(5)
-        // console.log("products hme",products)//---------------------
-        res.render('home');
+
+        const mostPopularProduct = await Orders.aggregate([
+            { $match: { orderStatus: "Delivered" } },
+            { $unwind: '$products' },
+            { $match: { 'products.status': "Delivered" } },
+        
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'products.productId',
+                    foreignField: '_id',
+                    as: 'product'
+                }
+            },
+            { $unwind: '$product' },
+        
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'product.category',
+                    foreignField: '_id',
+                    as: 'categoryDetails'
+                }
+            },
+            { $unwind: '$categoryDetails' },
+        
+            {
+                $lookup: {
+                    from: 'offers',
+                    localField: 'product.appliedOffer',
+                    foreignField: '_id',
+                    as: 'productOffer'
+                }
+            },
+            { $unwind: { path: '$productOffer', preserveNullAndEmptyArrays: true } },
+        
+            {
+                $lookup: {
+                    from: 'offers',
+                    localField: 'categoryDetails.appliedOffer',
+                    foreignField: '_id',
+                    as: 'categoryOffer'
+                }
+            },
+            { $unwind: { path: '$categoryOffer', preserveNullAndEmptyArrays: true } },
+        
+            {
+                $addFields: {
+                    maxDiscount: {
+                        $max: [
+                            { $ifNull: ['$productOffer.discount', 0] },
+                            { $ifNull: ['$categoryOffer.discount', 0] }
+                        ]
+                    },
+                    finalPrice: {
+                        $cond: [
+                            { $gt: [{ $ifNull: ['$productOffer.discount', 0] }, 0] },
+                            {
+                                $subtract: [
+                                    '$product.offerPrice',
+                                    { $multiply: ['$product.offerPrice', { $divide: [{ $ifNull: ['$productOffer.discount', 0] }, 100] }] }
+                                ]
+                            },
+                            {
+                                $cond: [
+                                    { $gt: [{ $ifNull: ['$categoryOffer.discount', 0] }, 0] },
+                                    {
+                                        $subtract: [
+                                            '$product.offerPrice',
+                                            { $multiply: ['$product.offerPrice', { $divide: [{ $ifNull: ['$categoryOffer.discount', 0] }, 100] }] }
+                                        ]
+                                    },
+                                    { $ifNull: ['$product.price', '$product.offerPrice'] }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            },
+        
+            {
+                $group: {
+                    _id: '$product._id',
+                    product: { $first: '$product' },
+                    brand: { $first: '$product.brand' },
+                    category: { $first: '$categoryDetails.name' },
+                    image: { $first: { $arrayElemAt: ['$product.images', 0] } },
+                    finalPrice: { $first: '$finalPrice' },
+                    soldCount: { $sum: 1 },
+                    discountPercentage:{$first:'$maxDiscount'}
+                }
+            },
+        
+            { $sort: { soldCount: -1 } },
+            { $limit: 5 }
+        ]);
+        
+
+
+
+
+const latestProduct = await Products.aggregate([
+    { $sort: { created: -1 } },
+    { $limit: 4 },
+
+    {
+        $lookup: {
+            from: 'offers',
+            localField: 'appliedOffer',
+            foreignField: '_id',
+            as: 'productOffer'
+        }
+    },
+    { $unwind: { path: '$productOffer', preserveNullAndEmptyArrays: true } },
+
+    {
+        $lookup: {
+            from: 'categories',
+            localField: 'category',
+            foreignField: '_id',
+            as: 'category'
+        }
+    },
+    { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
+
+    {
+        $lookup: {
+            from: 'offers',
+            localField: 'category.appliedOffer',
+            foreignField: '_id',
+            as: 'categoryOffer'
+        }
+    },
+    { $unwind: { path: '$categoryOffer', preserveNullAndEmptyArrays: true } },
+
+    {
+        $addFields: {
+            maxDiscount: {
+                $max: [
+                    { $ifNull: ['$productOffer.discount', 0] },
+                    { $ifNull: ['$categoryOffer.discount', 0] }
+                ]
+            }
+        }
+    },
+    {
+        $addFields: {
+            finalPrice: {
+                $cond: [
+                    
+                    { $gt: ['$maxDiscount', 0] },
+                    { $subtract: ['$offerPrice', { $multiply: ['$offerPrice', { $divide: ['$maxDiscount', 100] }] }] },
+                    { $ifNull: ['$offerPrice', '$price'] }
+                ]
+            }
+        }
+    }
+]);
+
+// console.log("latest 5",latestProduct)//----------------------------
+        
+        console.log("mostPopularProduct",mostPopularProduct)//-------------------------------------
+        // { successMessage: req.flash('successMessage') 
+        res.render('home',{mostPopularProduct,latestProduct,loginSuccess:"Login successful !"});
     } catch (error) {
         console.log(error);
     }
@@ -504,7 +667,7 @@ const loadProfile = (req, res) => {
 
 
 // 404 Error
-const loadError = (req, res) => {
+const loadError404 = (req, res) => {
     try {
         res.render('404');
     } catch (error) {
@@ -523,12 +686,13 @@ module.exports = {
     sendOtp,
     resendOtp,
     userLogout,
-    loadError,
+    loadError404,
     loadForgotPassword,
     forgotPassword,
     loadResetPassword,
     resetPassword,
-    securedPassword
+    securedPassword,
+    
 
 
 
