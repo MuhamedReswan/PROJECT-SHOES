@@ -37,12 +37,33 @@ app.use('/', user_route);
 const admin_route = require('./router/adminRoute');
 app.use('/admin',admin_route);
 
-
 // 404 handling
-// app.use('*',userController.loadError404)
 app.use("*", (req, res) => {
     res.status(404).render(path.join(__dirname, "views/user/404.ejs"));
   });
+  
+
+// for error message render
+app.set('views', './views');
+
+
+
+  // Global Error Handler Middleware (Define this last)
+app.use((err, req, res, next) => {
+    console.error("Unhandled error:", err.stack); // Log the error stack trace for debugging
+  
+    // Set the response status code
+    res.status(err.status || 500);
+  
+    // Check if the request accepts JSON
+    if (req.accepts('json')) {
+      res.json({ error: err.message || 'Internal Server Error' });
+    } else {
+      // Render an error view for web pages
+      res.render('error/500', { errorMessage: err.message || 'Internal Server Error' });
+    }
+  });
+
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT,()=>{

@@ -46,7 +46,7 @@ const loadDashboard = async (req, res) => {
         let orderProdutStatus = []
         let pending = 0;
         orders.map((order) => {
-            order.products.map((product) => {
+            order.products.map((productw) => {
                 if (product.status == 'Delivered') {
                     delivered++
                 } else if (product.status == 'Placed') {
@@ -362,8 +362,8 @@ console.log("topFiveSellingProduct",topFiveSellingProduct)//--------------------
         });
 
     } catch (error) {
-        console.log(error);
-        res.status(500).send("Internal Server Error");
+        console.log(error.message);
+        next(error); 
     }
 
 }
@@ -449,7 +449,11 @@ const user = await Users.aggregate([
 
     } catch (error) {
         console.log(error);
-        
+        res.status(500).json({
+            filter: false,
+            message: "An error occurred while processing the request.",
+            error: error.message
+          });
     }
 }
 

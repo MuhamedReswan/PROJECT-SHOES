@@ -20,23 +20,10 @@
                         <img class="blur-up lazyload bg-img" data-src="user/assets/images/slideshow-banners/home7-banner1.jpg" src="user/assets/images/slideshow-banners/home7-banner1.jpg" alt="Modern Sophistication" title="Modern Sophistication" />
                         <div class="slideshow__text-wrap slideshow__overlay classic middle">
                             <div class="slideshow__text-content classic left">
-                            	<div class="container" id="success-login" data-success="<%=loginSuccess%>">
-                                <% if (typeof loginSuccess !== 'undefined' && loginSuccess) { %>
-                                  <%console.log("loginSuccess",loginSuccess)%>
+                            	<div class="container" id="success-login" 
+                              <%if(messages.loginSuccess)%>
+                              data-success="<%=JSON.stringify(messages.loginSuccess)%>">
 
-                                  
-                                  <script>
-                                      document.addEventListener('DOMContentLoaded', function() {
-
-                                          Swal.fire({
-                                              icon: 'success',
-                                              title: 'Success',
-                                              text: '<%= loginSuccess %>',
-                                              timer:"50000"
-                                          });
-                                      });
-                                  </script>
-                              <% } %>
                                     <div class="wrap-caption left">
                                         <h2 class="h1 mega-title slideshow__title">Modern Sophistication</h2>
                                         <span class="mega-subtitle slideshow__subtitle">Ecco Sharp comfort and innovation</span>
@@ -547,19 +534,21 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
 
-let loginSuccess = document.getElementById('success-login').getAttribute('data-success')
+let loginData = document.getElementById('success-login');
+let loginSuccess= loginData.getAttribute('data-success');
+console.log("admin home kscritpt loginSuccess ",loginSuccess)
 if(typeof(loginSuccess)!==undefined){
 
 
       Swal.fire({
           icon: 'success',
-          text: '<%= loginSuccess %>',
+          text: "loged",
           timer:"1500",
           toast:true,
           width:"300px",
     showConfirmButton: false,
       },1000);
-      
+      loginData.setAttribute('data-success',undefined);
     }
   });
 </script>

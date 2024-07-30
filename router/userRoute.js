@@ -16,6 +16,7 @@ const config = require('../config/config');
 const userAuth = require('../middlewares/userAuth');
 const userHelper = require('../middlewares/userHelper')
 const { verify } = require('crypto');
+const { error } = require('console');
 
 
 user_route.use('/user', express.static(path.join(__dirname, 'public/user')));
@@ -61,16 +62,16 @@ user_route.get('/logout', userAuth.isLogin, userController.userLogout);
 user_route.get('/login', userAuth.isLogout, userHelper.countOfCartAndWishlist, userController.loadLogin);
 
 // verify login 
-user_route.post('/login', userHelper.countOfCartAndWishlist, userController.verifyLogin);
+user_route.post('/login',userAuth.isLogout, userHelper.countOfCartAndWishlist, userController.verifyLogin);
 
 // load otp
 user_route.get('/otp', userAuth.isLogout, userHelper.countOfCartAndWishlist, userController.loadOtp);
 
 // verify otp
-user_route.post('/otp', userController.verifyOtp);
+user_route.post('/otp', userAuth.isLogout, userController.verifyOtp);
 
 // resend otp
-user_route.get('/resend/:email', userController.resendOtp);
+user_route.get('/resend/:email', userAuth.isLogout, userController.resendOtp);
 
 //forgot password
 user_route.get('/forgot-password', userAuth.isLogout, userHelper.countOfCartAndWishlist, userController.loadForgotPassword);
@@ -80,7 +81,7 @@ user_route.post('/forgot-password', userAuth.isLogout, userController.forgotPass
 
 // reset Password 
 user_route.get('/reset-password/:id/:token', userAuth.isLogin, userHelper.countOfCartAndWishlist, userController.loadResetPassword);
-user_route.post('/reset-password', userController.resetPassword);
+user_route.post('/reset-password', userAuth.isLogin, userController.resetPassword);
 
 //profile
 user_route.get('/profile', userAuth.isLogin, userHelper.countOfCartAndWishlist, userProfileController.loadProfile)
@@ -104,19 +105,19 @@ user_route.post('/filter-shop', userAuth.isLogin, userHelper.countOfCartAndWishl
 
 
 // load cart
-user_route.get('/cart', userHelper.countOfCartAndWishlist, cartController.loadCart);
+user_route.get('/cart', userAuth.isLogin, userHelper.countOfCartAndWishlist, cartController.loadCart);
 
 // add to cart
-user_route.post('/addtocart', cartController.addToCart);//want to add middleware to login
+user_route.post('/addtocart',userAuth.isLogin, cartController.addToCart);
 
 // remove single product from cart
-user_route.post('/remove-cart', cartController.removeFromCart);
+user_route.post('/remove-cart',userAuth.isLogin, cartController.removeFromCart);
 
 // check cart
-user_route.post('/check-cart', cartController.checkCart);
+user_route.post('/check-cart',userAuth.isLogin, cartController.checkCart);
 
 // change cart quantity
-user_route.post('/change-quantity', cartController.changeQuantity);
+user_route.post('/change-quantity',userAuth.isLogin, cartController.changeQuantity);
 
 
 
@@ -125,35 +126,26 @@ user_route.post('/change-quantity', cartController.changeQuantity);
 //checkout 
 user_route.get('/checkout', userAuth.isLogin, userHelper.countOfCartAndWishlist, cartController.loadCheckout);
 // place order
-user_route.post('/place-order', userHelper.countOfCartAndWishlist,orderController.placeOrder);
-
-// user_route.get('/online-payment',paymentController.paymentGateway);
-
-// user_route.post('/create-online-order',paymentController.createOrderPayment);
-
+user_route.post('/place-order',userAuth.isLogin, userHelper.countOfCartAndWishlist,orderController.placeOrder);
 
 //wishlist 
 user_route.get('/wishlist', userAuth.isLogin, userHelper.countOfCartAndWishlist, wishlistController.loadWishlist);
 
 //add to wishlist
-user_route.post('/add-to-wishlist', wishlistController.addToWishlist);
+user_route.post('/add-to-wishlist', userAuth.isLogin, wishlistController.addToWishlist);
 
 //remove from wishlist
-user_route.post('/remove-wishlist', userAuth.checkLogin, wishlistController.removeFromWishlist);
-
-
-
-
+user_route.post('/remove-wishlist', userAuth.isLogin, wishlistController.removeFromWishlist);
 
 
 //add address
-user_route.post('/add-address', userProfileController.addAddress);
+user_route.post('/add-address',userAuth.isLogin, userProfileController.addAddress);
 user_route.get('/edit-address', userAuth.isLogin, userProfileController.editAddress);
-user_route.post('/edit-address', userProfileController.updateAddress);
+user_route.post('/edit-address',userAuth.isLogin, userProfileController.updateAddress);
 
 
 //order success
-user_route.get('/order-success/:orderId', userHelper.countOfCartAndWishlist, orderController.loadOrderSuccess);
+user_route.get('/order-success/:orderId',userAuth.isLogin, userHelper.countOfCartAndWishlist, orderController.loadOrderSuccess);
 
 //order details
 user_route.get('/order-details', userAuth.isLogin, userHelper.countOfCartAndWishlist, orderController.loadOrderDetails);
@@ -161,44 +153,40 @@ user_route.get('/order-details', userAuth.isLogin, userHelper.countOfCartAndWish
 // my order
 user_route.get('/my-orders', userAuth.isLogin, userHelper.countOfCartAndWishlist, orderController.loadMyOrder);
 
-user_route.post('/my-orders/retry-payment', userAuth.isLogin,orderController.retryPayment);
+//retry payment
+user_route.post('/my-orders/retry-payment',userAuth.isLogin, userAuth.isLogin,orderController.retryPayment);
 
 //cancel order
-user_route.post('/cancel-order', orderController.orderCancel);
+user_route.post('/cancel-order',userAuth.isLogin, orderController.orderCancel);
 
 //order-single-product
 user_route.get('/single-order-product', userAuth.isLogin, userHelper.countOfCartAndWishlist, orderController.singleOrderProduct);
 
-user_route.post('/return-product', orderController.returnProduct);
+//return product
+user_route.post('/return-product',userAuth.isLogin, orderController.returnProduct);
 
 
 // razor pay failed
-user_route.put('/order/razorpay-failed', orderController.razorPayFailed);
+user_route.put('/order/razorpay-failed',userAuth.isLogin, orderController.razorPayFailed);
 
 // verify razorpay payment
-user_route.post('/order/verify-payment',paymentController.verifyPaymentRazorpay);
+user_route.post('/order/verify-payment',userAuth.isLogin, paymentController.verifyPaymentRazorpay);
 
 
 // coupon validate and apply
-user_route.post('/apply-coupon',couponController.validateCoupon);
+user_route.post('/apply-coupon', userAuth.isLogin, couponController.validateCoupon);
 
 // remove coupon
-user_route.post('/remove-coupon',couponController.removeAppliedCoupon);
+user_route.post('/remove-coupon', userAuth.isLogin,couponController.removeAppliedCoupon);
+
+// error
+// user_route.get('/500',userAuth.isLogin,userController.loadError500);
 
 
 
 
 // load invoice 
- user_route.get('/my-orders/single-order-product/invoice',userAuth.isLogin,orderController.loadInvoice)
-
-
-
-
-// user_route.post('/change-order-status-single', orderController.updateSingleOrderStatus);
-
-
-// 404 error
-// user_route.get('/*',userController.loadError)//
+ user_route.get('/my-orders/single-order-product/invoice',userAuth.isLogin,orderController.loadInvoice);
 
 
 module.exports = user_route;

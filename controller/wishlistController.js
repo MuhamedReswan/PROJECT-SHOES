@@ -15,8 +15,8 @@ const wishlistData = await Wishlist.find({user:userId}).populate('product');
 console.log('wishlistData.......',wishlistData);//-----------------------
         res.render('wishlist',{wishlistData});
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Internal Server Error');
+        console.log(error.message);
+        next(error); 
     }
 }
 
@@ -55,8 +55,8 @@ res.status(200).json({removed: true});
 }
     }
 } catch (error) {
-    console.log(error);
-    res.status(500).send('Internal Server Error');
+    console.log(error.message);
+        next(error); 
 }
 }
 
@@ -69,8 +69,8 @@ const removeFromWishlist = async (req,res)=>{
         await Wishlist.deleteOne({user:userId,product:productId})
         res.status(200).json({removed:true})
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Internal Server Error');
+        console.log(error.message);
+        next(error); 
     }
 }
 

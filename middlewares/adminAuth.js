@@ -18,7 +18,7 @@ const isLogout = (req, res, next) => {
     try {
         if (req.session.admin) {
             // console.log('admin home logout');//-----------------------------------
-            res.redirect('/admin/login');
+            res.redirect('/admin/');
         } else { 
             // console.log('next logout');//-------------------------
             next();

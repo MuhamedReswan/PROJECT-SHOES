@@ -17,7 +17,6 @@ const couponController = require('../controller/couponController');
 const bannerController = require('../controller/bannerController');
 
 
-// admin_route.use(express.static(path.join(__dirname,'public')));
 admin_route.use('/user',express.static(path.join(__dirname,'public/user')));
 admin_route.use('/admin',express.static(path.join(__dirname,'public/admin')));
 
@@ -40,7 +39,7 @@ admin_route.use((req,res,next)=>{
 
 // admin login
 admin_route.get('/login', adminAuth.isLogout, adminController.adminLoginLoad);
-admin_route.post('/login', adminController.verifyAdminLogin);
+admin_route.post('/login', adminAuth.isLogout, adminController.verifyAdminLogin);
 
 
 // admin home
@@ -48,10 +47,10 @@ admin_route.get('/',adminAuth.isLogin, adminController.loadDashboard);
 
 
 // user management
-admin_route.get('/customers',adminAuth.isLogin, adminController.customersLoad);
+admin_route.get('/customers', adminAuth.isLogin, adminController.customersLoad);
 
 // block user
-admin_route.post('/block-user', adminController.blockUser);
+admin_route.post('/block-user', adminAuth.isLogin, adminController.blockUser);
 
 //admin logout 
 admin_route.get('/logout',adminAuth.isLogin, adminController.loadLogout);
@@ -64,14 +63,14 @@ admin_route.get('/products-list' ,adminAuth.isLogin, productController.ProductsL
 
 //add product 
 admin_route.get('/add-products' ,adminAuth.isLogin, productController.addProducts);
-admin_route.post('/add-products', multerUpload.array('images'), productController.insertProduct);
+admin_route.post('/add-products',adminAuth.isLogin, multerUpload.array('images'), productController.insertProduct);
 
 // edit products
-admin_route.get('/edit-products/:id' ,adminAuth.isLogin, productController.loadEditProduct);
-admin_route.post('/edit-products', multerUpload.array('images'), productController.updateProduct);
+admin_route.get('/edit-products/:id',adminAuth.isLogin, productController.loadEditProduct);
+admin_route.post('/edit-products', adminAuth.isLogin, multerUpload.array('images'), productController.updateProduct);
 
 // product list and unlist
-admin_route.post('/products-list',productController.productListAndUnlist);
+admin_route.post('/products-list', adminAuth.isLogin, productController.productListAndUnlist);
 
 
 
@@ -81,14 +80,14 @@ admin_route.get('/category' ,adminAuth.isLogin, adminAuth.isLogin, categoryContr
 
 //add category 
 admin_route.get('/add-category',adminAuth.isLogin , categoryController.addCategory);
-admin_route.post('/add-category', categoryController.insertCategory);
+admin_route.post('/add-category', adminAuth.isLogin, categoryController.insertCategory);
 
 // edit category
 admin_route.get('/edit-category',adminAuth.isLogin, categoryController.loadEditCategory);
-admin_route.post('/edit-category', categoryController.updateCategory);
+admin_route.post('/edit-category', adminAuth.isLogin, categoryController.updateCategory);
 
 // list and unlist category
-admin_route.post('/list-category', categoryController.categoryListAndUnlist);
+admin_route.post('/list-category', adminAuth.isLogin, categoryController.categoryListAndUnlist);
 
 
 //orders
@@ -97,13 +96,13 @@ admin_route.get('/orders',adminAuth.isLogin, orderController.adminOrders);
 admin_route.get('/order-single',adminAuth.isLogin, orderController.singleOrderDetails);
 
 //single order status change
-admin_route.post('/change-order-status',orderController.changeOrderStatus);
+admin_route.post('/change-order-status', adminAuth.isLogin, orderController.changeOrderStatus);
 
 // return request
 admin_route.get('/return-request',adminAuth.isLogin,orderController.loadReturnRequest);
 
 // return product status change
-admin_route.post('/return-product-status-change',orderController.changeRetrunProductStatus);
+admin_route.post('/return-product-status-change', adminAuth.isLogin, orderController.changeRetrunProductStatus);
 
 
 //coupon Management 
@@ -158,9 +157,6 @@ admin_route.post('/category/apply-offer',adminAuth.isLogin,adminController.apply
 admin_route.post('/category/remove-offer',adminAuth.isLogin,adminController.removecategoryOffer)
 
 
-
-
-
 // sales report 
 admin_route.get('/sales-report', adminAuth.isLogin,adminController.loadSalesreport);
 
@@ -171,23 +167,11 @@ admin_route.post('/dashboard/filter-chart',adminAuth.isLogin,adminController.fil
  admin_route.get('/banners',adminAuth.isLogin,bannerController.loadBanners)
 
 
-
-
 // admin_route.post('/sales-report', adminAuth.isLogin,adminController.);
 
 // load offer for categories
 // admin_route.get('/category/offer',adminAuth.isLogin, adminController.applyOffer);
 
 
-
-
-
-
-
-
-// admin_route.post('admin/login', adminController.LoginVerify);
-// admin_route.get('/*', adminController.loadError404);
-
 module.exports=admin_route;
 
-// on userlist delete

@@ -22,10 +22,20 @@ const securedPassword = async (password) => {
     }
 }
 
+// Error 500
+const loadError500 = (req,res)=>{
+    try {
+        res.render('')
+    } catch (error) {
+        console.log("error 500",error.message)
+    }
+}
+
 
 // load home 
 const loadHome = async (req, res) => {
     try {
+        console.log("resqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",req.query)//------------------
 
         const mostPopularProduct = await Orders.aggregate([
             { $match: { orderStatus: "Delivered" } },
@@ -189,7 +199,7 @@ const latestProduct = await Products.aggregate([
         
         console.log("mostPopularProduct",mostPopularProduct)//-------------------------------------
         // { successMessage: req.flash('successMessage') 
-        res.render('home',{mostPopularProduct,latestProduct,loginSuccess:"Login successful !"});
+        res.render('home',{mostPopularProduct,latestProduct});
     } catch (error) {
         console.log(error);
     }
@@ -224,6 +234,7 @@ const loadLogin = (req, res) => {
         res.render('login');
     } catch (error) {
         console.log(error);
+                res.status(500).send("Internal Server Error");
     }
 
 }
@@ -254,7 +265,7 @@ const
                             email: userData.email,
                         }
                         // req.session.user.loginSuccess = 'Login Successful';
-                        console.log("req.session.user",req.session.user);//------------------------------
+                        req.flash('loginSuccess', 'Login Successful')
                         res.redirect("/");
 
                     }
@@ -657,7 +668,6 @@ const resetPassword = async (req, res) => {
 const loadProfile = (req, res) => {
     try {
         console.log('profile working');//------------------
-        const orders = await
         res.render('addProfile')
     } catch (error) {
         console.log(error)
