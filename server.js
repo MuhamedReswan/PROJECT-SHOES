@@ -41,7 +41,7 @@ app.use('/admin',admin_route);
 // 404 handling
 // app.use('*',userController.loadError404)
 app.use("*", (req, res) => {
-    res.status(404).render(path.join(__dirname, "views/users/404.ejs"));
+    res.status(404).render(path.join(__dirname, "views/user/404.ejs"));
   });
 
 const PORT = process.env.PORT || 3001;

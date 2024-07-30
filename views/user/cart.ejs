@@ -207,16 +207,16 @@
                 console.log('remove cart function');//---
                 let data = { productId: id }
 
-                Toastify({
-  text: "This is a toast",
-  duration: 3000, // Duration in milliseconds (3 seconds)
-  close: true, // Show a close button
-  gravity: "top", // Position: 'top' or 'bottom'
-  position: 'right', // Position: 'left', 'center' or 'right'
-  backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)", // Background color
-  stopOnFocus: true, // Stop the timer when the user hovers over the toast
-  onClick: function(){} // Callback function to run when the toast is clicked
-}).showToast();
+//                 Toastify({
+//   text: "This is a toast",
+//   duration: 3000, // Duration in milliseconds (3 seconds)
+//   close: true, // Show a close button
+//   gravity: "top", // Position: 'top' or 'bottom'
+//   position: 'right', // Position: 'left', 'center' or 'right'
+//   backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)", // Background color
+//   stopOnFocus: true, // Stop the timer when the user hovers over the toast
+//   onClick: function(){} // Callback function to run when the toast is clicked
+// }).showToast();
 
 
 
@@ -242,7 +242,8 @@
                                         Swal.fire({
                                             title: "Removed!",
                                             text: "Your product has been removed from cart.",
-                                            icon: "success"
+                                            icon: "success",
+                                            width:"300px"
                                         });
                                     })
 
@@ -277,18 +278,21 @@
                                 icon: "warning",
                                 title: "Oops...",
                                 text: "Minimum Quantity Required !",
+                                width:"300px"
                             });
                         } else if (res.maxQty) {
                             swal.fire({
                                 icon: "warning",
                                 title: "Oops...",
                                 text: "Maximum quantity user!",
+                                width:"300px"
                             });
                         } else if (res.max) {
                             swal.fire({
                                 icon: "warning",
                                 title: "Oops...",
                                 text: "No More products !",
+                                width:"300px"
                             });
                         } else if (res.update) {
                             console.log('updated Sucessfuly !');
