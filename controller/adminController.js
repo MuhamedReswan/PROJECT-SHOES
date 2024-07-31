@@ -10,7 +10,7 @@ const Category = require('../model/categoryModel');
 // ========================================  DASHBOARD ==================================================
 
 //load dashboard
-const loadDashboard = async (req, res) => {
+const loadDashboard = async (req, res,next) => {
     try {
         console.log("within dashboard controller")//-----------
 
@@ -32,8 +32,8 @@ const loadDashboard = async (req, res) => {
         const currentDate = new Date();
         const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
-        let startOfThisYear = new Date(currentDate.getFullYear(),0,1)
-        let currentMonth = new Date(currentDate.getMonth()+1);
+        let startOfThisYear = new Date(currentDate.getFullYear(), 0, 1)
+        let currentMonth = new Date(currentDate.getMonth() + 1);
 
         const orders = await Orders.find({})
         let delivered = 0;
@@ -46,7 +46,7 @@ const loadDashboard = async (req, res) => {
         let orderProdutStatus = []
         let pending = 0;
         orders.map((order) => {
-            order.products.map((productw) => {
+            order.products.map((product) => {
                 if (product.status == 'Delivered') {
                     delivered++
                 } else if (product.status == 'Placed') {
@@ -62,32 +62,32 @@ const loadDashboard = async (req, res) => {
                 } else if (product.status == 'Pending') {
                     pending++
 
-                } 
+                }
             })
         });
 
-        orderProdutStatus.push(pending,returnRequested,returned,placed,cancelled,delivered)
+        orderProdutStatus.push(pending, returnRequested, returned, placed, cancelled, delivered)
 
 
         let monthlyUsers = new Array(12).fill(0);
         const users = await Users.aggregate([
-          {
-            $match: {
-                date: { $gte: startOfThisYear },
+            {
+                $match: {
+                    date: { $gte: startOfThisYear },
+                },
             },
-          },
-          {
-            $group: {
-              _id: { $month: "$date" },
-              totalUsers: { $sum: 1 },
+            {
+                $group: {
+                    _id: { $month: "$date" },
+                    totalUsers: { $sum: 1 },
+                },
             },
-          },
         ]);
 
-        users.forEach((item)=>{
-            monthlyUsers[item._id-1]=item.totalUsers
+        users.forEach((item) => {
+            monthlyUsers[item._id - 1] = item.totalUsers
         })
-        
+
 
         // console.log("monthlyUser",monthlyUsers)//-----------------
         // console.log("montusershlyUser",users)//-----------------
@@ -96,44 +96,51 @@ const loadDashboard = async (req, res) => {
         // const latestOrders = await Orders.find({}).sort({ date: -1 }).populate('user').limit(limit).skip((page - 1) * limit).exec()
 
         const total = await Orders.aggregate([
-            { $match: { orderStatus: "Delivered"} },
+            { $match: { orderStatus: "Delivered" } },
             { $unwind: '$products' },
-            {$match:{'products.status':{$ne:"Returned"}}},
-            {$project:{
-Revenue:{
-    $subtract:[
-        {$multiply:['$products.offerPrice','$products.quantity']},
-        '$coupon.couponDiscountOnProduct'
-    ]
-}
+            { $match: { 'products.status': { $ne: "Returned" } } },
+            {
+                $project: {
+                    Revenue: {
+                        $subtract: [
+                            { $multiply: ['$products.offerPrice', '$products.quantity'] },
+                            '$coupon.couponDiscountOnProduct'
+                        ]
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: null, totalRevenue: { $sum: '$Revenue' }
+                }
             }
-        },
-        {$group:{
-            _id:null,totalRevenue:{$sum:'$Revenue'}
-        }}
 
-        ]) 
+        ])
 
 
         const monthly = await Orders.aggregate([
-            {$match:{orderStatus:"Delivered",date:{$gte:startOfMonth,$lt:endOfMonth}}},
-            {$unwind:'$products'},
-            {$match:{'products.status':"Delivered"}},
-            {$project:{
-                productTotal:{
-                    $subtract:[
-                        {$multiply:['$products.offerPrice','$products.quantity']},
-                        '$coupon.couponDiscountOnProduct'
-                    ]
+            { $match: { orderStatus: "Delivered", date: { $gte: startOfMonth, $lt: endOfMonth } } },
+            { $unwind: '$products' },
+            { $match: { 'products.status': "Delivered" } },
+            {
+                $project: {
+                    productTotal: {
+                        $subtract: [
+                            { $multiply: ['$products.offerPrice', '$products.quantity'] },
+                            '$coupon.couponDiscountOnProduct'
+                        ]
+                    }
                 }
-            }},
-            {$group:{
-                _id:null,monthlyTotalAmount:{$sum:'$productTotal'} 
-            }}
-    ]);
+            },
+            {
+                $group: {
+                    _id: null, monthlyTotalAmount: { $sum: '$productTotal' }
+                }
+            }
+        ]);
 
-    // console.log("monthly================================================================",monthly)//---------------------------
-    //     console.log("totalrevernssfsd==============",total)//======================
+        // console.log("monthly================================================================",monthly)//---------------------------
+        //     console.log("totalrevernssfsd==============",total)//======================
 
         const totalRevenue = total.map((value) => value.totalRevenue)[0] || 0
         const monthlyRevenue = monthly.map((value) => value.monthlyTotalAmount)[0] || 0;
@@ -151,29 +158,30 @@ Revenue:{
             count: 0
         }));
 
-        
+
         const monthlySalesData = await Orders.aggregate([
             {
                 $match: {
                     orderStatus: 'Delivered',
                 }
             },
-            {$unwind:'$products'},
-            {$match:{'products.status':{$ne:'Returned'}}},
-            {$project:{
-monthTotal:{
-    $subtract:[
-    { $multiply:['$products.offerPrice','$products.quantity']},
-    '$coupon.couponDiscountOnProduct'
-]
-},
-date:1
-            }
-        },
+            { $unwind: '$products' },
+            { $match: { 'products.status': { $ne: 'Returned' } } },
+            {
+                $project: {
+                    monthTotal: {
+                        $subtract: [
+                            { $multiply: ['$products.offerPrice', '$products.quantity'] },
+                            '$coupon.couponDiscountOnProduct'
+                        ]
+                    },
+                    date: 1
+                }
+            },
             {
                 $group: {
                     _id: { $month: '$date' },
-                    total: { $sum: "$monthTotal"},
+                    total: { $sum: "$monthTotal" },
                     countt: { $sum: 1 }
                 }
             },
@@ -210,125 +218,131 @@ date:1
         // console.log('monthlySalesData-----', monthlySalesData)//---------------
         // console.log('defaultMonthly-----', defaultMonthly)//---------------
 
-                const year = currentDate.getFullYear()
-                const month = currentDate.getMonth()+1
-                const startOfFilter = new Date(year,month-1,1);
-                const endOfFilter = new Date(year, month, 0);
+        const year = currentDate.getFullYear()
+        const month = currentDate.getMonth() + 1
+        const startOfFilter = new Date(year, month - 1, 1);
+        const endOfFilter = new Date(year, month, 0);
         const daysInMonth = endOfFilter.getDate();
-        const currentSelectedMonth=`${year}-${month.toString().padStart(2, '0')}`
-        let daysArr =[]
-        
-        for(let i=0; i<daysInMonth; i++){
-            daysArr.push(i+1)
+        const currentSelectedMonth = `${year}-${month.toString().padStart(2, '0')}`
+        let daysArr = []
+
+        for (let i = 0; i < daysInMonth; i++) {
+            daysArr.push(i + 1)
         }
 
-        
-        
+
+
         // console.log("year1111111111111111111",year)//------------------
         // console.log("month11111111111111111111",month)//------------------
         // console.log("startOfFilter",startOfFilter)//------------------
         // console.log("endOfFilter",endOfFilter)//------------------
         // console.log("daysInMonth",daysInMonth)//------------------
-        
-        let revenuePerDay= new Array(daysInMonth).fill(0);
-        let usersPerDay= new Array(daysInMonth).fill(0);
-        
+
+        let revenuePerDay = new Array(daysInMonth).fill(0);
+        let usersPerDay = new Array(daysInMonth).fill(0);
+
         let revenuebyDay = await Orders.aggregate([
-            {$match:{orderStatus:"Delivered",date:{$gte:startOfFilter,$lte:endOfFilter}}},
-            {$unwind:'$products'},
-            {$match:{'products.status':"Delivered"}},
-            {$project:{date:1,
-                totalAmount:{
-                $subtract:[
-        {$multiply:['$products.quantity','$products.offerPrice']},
-        '$coupon.couponDiscountOnProduct'
-                ]
+            { $match: { orderStatus: "Delivered", date: { $gte: startOfFilter, $lte: endOfFilter } } },
+            { $unwind: '$products' },
+            { $match: { 'products.status': "Delivered" } },
+            {
+                $project: {
+                    date: 1,
+                    totalAmount: {
+                        $subtract: [
+                            { $multiply: ['$products.quantity', '$products.offerPrice'] },
+                            '$coupon.couponDiscountOnProduct'
+                        ]
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { $dayOfMonth: '$date' },
+                    totalRevenue: { $sum: '$totalAmount' },
+                    count: { $sum: 1 }
+                }
             }
-        }
-        },
-        {$group:{
-            _id:{$dayOfMonth:'$date'},
-            totalRevenue:{$sum:'$totalAmount'},
-            count: { $sum: 1 }
-        }}
         ])
-        
-        
+
+
         const user = await Users.aggregate([
             {
-              $match: {
-                date: { $gte: startOfFilter, $lte: endOfFilter },
-              },
+                $match: {
+                    date: { $gte: startOfFilter, $lte: endOfFilter },
+                },
             },
             {
-              $group: {
-                _id: { $dayOfMonth: "$date" },
-                totalUsers: { $sum: 1 },
-              },
+                $group: {
+                    _id: { $dayOfMonth: "$date" },
+                    totalUsers: { $sum: 1 },
+                },
             },
-          ]);
-        
-        
-          revenuebyDay.forEach((item) => {
+        ]);
+
+
+        revenuebyDay.forEach((item) => {
             revenuePerDay[item._id - 1] = item.totalRevenue;
-          });
-        
-          user.forEach((item) => {
+        });
+
+        user.forEach((item) => {
             usersPerDay[item._id - 1] = item.totalUsers;
-          });
+        });
 
-let topFiveCategory=[]
-let topFiveBrand=[]
-let topFiveProduct=[]
+        let topFiveCategory = []
+        let topFiveBrand = []
+        let topFiveProduct = []
 
-const topFiveSellingProduct = await  Orders.aggregate([
-    {$match:{orderStatus:"Delivered"}},
-    {$unwind:'$products'},
-    {$match:{'products.status':"Delivered"}},
-    {$lookup:{
-        from:'products',
-        localField:"products.productId",
-        foreignField:'_id',
-        as:'productDetails'
-    }},
-    {$unwind:'$productDetails'},
-    {
-        $lookup:{
-            from:'categories',
-            localField:'productDetails.category',
-            foreignField:'_id',
-            as:'categoryDetails'
-        }
-    },
-    {$unwind:'$categoryDetails'},
-    {
-        $group:{
-        _id:'$productDetails._id',
-        productName: { $first: '$productDetails.name' },
-        brand: { $first: '$productDetails.brand' },
-        category: { $first: '$categoryDetails.name' },
-        image:{$first:{'$arrayElemAt':['$productDetails.images',0]}},
-        soldCount:{$sum:1}
-    }
-},
-    {$sort:{soldCount:-1}},
-    {$limit:5}
-])
+        const topFiveSellingProduct = await Orders.aggregate([
+            { $match: { orderStatus: "Delivered" } },
+            { $unwind: '$products' },
+            { $match: { 'products.status': "Delivered" } },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: "products.productId",
+                    foreignField: '_id',
+                    as: 'productDetails'
+                }
+            },
+            { $unwind: '$productDetails' },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'productDetails.category',
+                    foreignField: '_id',
+                    as: 'categoryDetails'
+                }
+            },
+            { $unwind: '$categoryDetails' },
+            {
+                $group: {
+                    _id: '$productDetails._id',
+                    productName: { $first: '$productDetails.name' },
+                    brand: { $first: '$productDetails.brand' },
+                    category: { $first: '$categoryDetails.name' },
+                    image: { $first: { '$arrayElemAt': ['$productDetails.images', 0] } },
+                    soldCount: { $sum: 1 }
+                }
+            },
+            { $sort: { soldCount: -1 } },
+            { $limit: 5 }
+        ])
 
 
-topFiveSellingProduct.forEach((val)=>{
-    topFiveProduct.push(val.productName)
-    topFiveCategory.push(val.category)
-    topFiveBrand.push(val.brand)
-})
+        topFiveSellingProduct.forEach((val) => {
+            topFiveProduct.push(val.productName)
+            topFiveCategory.push(val.category)
+            topFiveBrand.push(val.brand)
+        })
 
-// console.log("topFiveProduct",topFiveProduct)//----------------
-// console.log("topFiveCategory",topFiveCategory)//----------------
-// console.log("topFiveBrand",topFiveBrand)//----------------
+        // console.log("topFiveProduct",topFiveProduct)//----------------
+        // console.log("topFiveCategory",topFiveCategory)//----------------
+        // console.log("topFiveBrand",topFiveBrand)//----------------
 
-console.log("topFiveSellingProduct",topFiveSellingProduct)//------------------------
+        console.log("topFiveSellingProduct", topFiveSellingProduct)//------------------------
 
-        
+
 
         res.render('dashboard', {
             totalRevenue,
@@ -363,98 +377,97 @@ console.log("topFiveSellingProduct",topFiveSellingProduct)//--------------------
 
     } catch (error) {
         console.log(error.message);
-        next(error); 
-    }
-
+        next(error);   
+     }
 }
 
 // chart filter 
-const filterYearlyMonthly = async (req,res)=>{
+const filterYearlyMonthly = async (req, res,next) => {
     try {
         console.log("withiin filter chart")//-----------------------------
-        const {monthYear}=req.body
-        const [year,month]= monthYear.split("-").map(Number);
-        const startOfFilter = new Date(year,month-1,1);
+        const { monthYear } = req.body
+        const [year, month] = monthYear.split("-").map(Number);
+        const startOfFilter = new Date(year, month - 1, 1);
         const endOfFilter = new Date(year, month, 0);
-const daysInMonth = endOfFilter.getDate();
-let daysArr =[]
+        const daysInMonth = endOfFilter.getDate();
+        let daysArr = []
 
-for(let i=0; i<daysInMonth; i++){
-    daysArr.push(i+1)
-}
-
-
-// console.log("year",year)//------------------
-// console.log("month",month)//------------------
-// console.log("startOfFilter",startOfFilter)//------------------
-// console.log("endOfFilter",endOfFilter)//------------------
-// console.log("daysInMonth",daysInMonth)//------------------
-
-let revenuePerDay= new Array(daysInMonth).fill(0);
-let usersPerDay= new Array(daysInMonth).fill(0);
-
-let revenuebyDay = await Orders.aggregate([
-    {$match:{orderStatus:"Delivered",date:{$gte:startOfFilter,$lte:endOfFilter}}},
-    {$unwind:'$products'},
-    {$match:{'products.status':"Delivered"}},
-    {$project:{date:1,
-        totalAmount:{
-        $subtract:[
-{$multiply:['$products.quantity','$products.offerPrice']},
-'$coupon.couponDiscountOnProduct'
-        ]
-    }
-}
-},
-{$group:{
-    _id:{$dayOfMonth:'$date'},
-    totalRevenue:{$sum:'$totalAmount'},
-    count: { $sum: 1 }
-}}
-])
+        for (let i = 0; i < daysInMonth; i++) {
+            daysArr.push(i + 1)
+        }
 
 
-const user = await Users.aggregate([
-    {
-      $match: {
-        date: { $gte: startOfFilter, $lte: endOfFilter },
-      },
-    },
-    {
-      $group: {
-        _id: { $dayOfMonth: "$date" },
-        totalUsers: { $sum: 1 },
-      },
-    },
-  ]);
+        // console.log("year",year)//------------------
+        // console.log("month",month)//------------------
+        // console.log("startOfFilter",startOfFilter)//------------------
+        // console.log("endOfFilter",endOfFilter)//------------------
+        // console.log("daysInMonth",daysInMonth)//------------------
+
+        let revenuePerDay = new Array(daysInMonth).fill(0);
+        let usersPerDay = new Array(daysInMonth).fill(0);
+
+        let revenuebyDay = await Orders.aggregate([
+            { $match: { orderStatus: "Delivered", date: { $gte: startOfFilter, $lte: endOfFilter } } },
+            { $unwind: '$products' },
+            { $match: { 'products.status': "Delivered" } },
+            {
+                $project: {
+                    date: 1,
+                    totalAmount: {
+                        $subtract: [
+                            { $multiply: ['$products.quantity', '$products.offerPrice'] },
+                            '$coupon.couponDiscountOnProduct'
+                        ]
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { $dayOfMonth: '$date' },
+                    totalRevenue: { $sum: '$totalAmount' },
+                    count: { $sum: 1 }
+                }
+            }
+        ])
 
 
-  revenuebyDay.forEach((item) => {
-    revenuePerDay[item._id - 1] = item.totalRevenue;
-  });
+        const user = await Users.aggregate([
+            {
+                $match: {
+                    date: { $gte: startOfFilter, $lte: endOfFilter },
+                },
+            },
+            {
+                $group: {
+                    _id: { $dayOfMonth: "$date" },
+                    totalUsers: { $sum: 1 },
+                },
+            },
+        ]);
 
-  user.forEach((item) => {
-    usersPerDay[item._id - 1] = item.totalUsers;
-  });
+
+        revenuebyDay.forEach((item) => {
+            revenuePerDay[item._id - 1] = item.totalRevenue;
+        });
+
+        user.forEach((item) => {
+            usersPerDay[item._id - 1] = item.totalUsers;
+        });
 
 
 
-  console.log("revenuebyDay",revenuebyDay)//-------------------
-  console.log("user",user)//-------------------
-  console.log("usersPerDay",usersPerDay)//-------------------
-  console.log("revenuePerDay",revenuePerDay)//-------------------
+        console.log("revenuebyDay", revenuebyDay)//-------------------
+        console.log("user", user)//-------------------
+        console.log("usersPerDay", usersPerDay)//-------------------
+        console.log("revenuePerDay", revenuePerDay)//-------------------
 
-  res.json({filter:true,revenuePerDay,usersPerDay,daysArr})
-  
+        res.json({ filter: true, revenuePerDay, usersPerDay, daysArr })
+
 
     } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            filter: false,
-            message: "An error occurred while processing the request.",
-            error: error.message
-          });
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
@@ -463,21 +476,21 @@ const user = await Users.aggregate([
 
 
 //admin login
-const adminLoginLoad = (req, res) => {
+const adminLoginLoad = (req, res,next) => {
     try {
         // res.render('aaadmin-login');
         res.render('admin-login');
     } catch (error) {
-        console.log(error);
-        res.status(500).send("Internal Server Error");
-    }
+        console.log(error.message);
+        next(error);   
+     }
 
 }
 
 
 //verify login
 
-const verifyAdminLogin = (req, res) => {
+const verifyAdminLogin = (req, res,next) => {
     try {
         const Email = process.env.EMAIL;
         const Password = process.env.PASSWORD;
@@ -506,13 +519,13 @@ const verifyAdminLogin = (req, res) => {
             res.redirect('/admin/login');
         }
     } catch (error) {
-        console.log(error);
-        res.status(500).send("Internal Server Error");
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 // admin logout
-const loadLogout = (req, res) => {
+const loadLogout = (req, res,next) => {
     try {
         console.log('im in logout admin');//--------------------
         console.log('admin session a', req.session.admin);//----------
@@ -521,14 +534,14 @@ const loadLogout = (req, res) => {
 
         res.redirect('/admin')
     } catch (error) {
-        console.log(error);
-        res.status(500).send("Internal Server Error");
-    }
+        console.log(error.message);
+        next(error);   
+     }
 
 }
 
 // load customers
-const customersLoad = async (req, res) => {
+const customersLoad = async (req, res,next) => {
     try {
 
         let page = 1;
@@ -562,15 +575,15 @@ const customersLoad = async (req, res) => {
             start: start
         });
     } catch (error) {
-        console.log(error);
-        res.status(500).send("Internal Server Error");
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
 
 // block user
-const blockUser = async (req, res) => {
+const blockUser = async (req, res,next) => {
     try {
         const id = await req.body.id;
         console.log(`id from block user ${id} `); //----------------------------------------------------------------------
@@ -595,9 +608,9 @@ const blockUser = async (req, res) => {
             res.status(404).json({ error: 'user not loged' });
         }
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'An error occurred' });
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
@@ -605,7 +618,7 @@ const blockUser = async (req, res) => {
 
 
 // load offers
-const loadOffers = async (req, res) => {
+const loadOffers = async (req, res,next) => {
     try {
 
         const totalOffer = await Offers.find({})
@@ -635,28 +648,28 @@ const loadOffers = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error);
-        res.status(500).send("Internal Server Error");
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
 
 
 // add offer 
-const addOffer = (req, res) => {
+const addOffer = (req, res,next) => {
     try {
         res.status(200).render('addOffer');
 
     } catch (error) {
-        console.log(error);
-        res.status(500).send("Internal Server Error");
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
 // insert Offer
-const insertOffer = async (req, res) => {
+const insertOffer = async (req, res,next) => {
     try {
         console.log('within inset offer')//-------------------
         let { name, endDate, discount, isListed } = req.body;
@@ -684,15 +697,15 @@ const insertOffer = async (req, res) => {
 
 
     } catch (error) {
-        console.log(error);
-        res.status(500).send("Internal Server Error");
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
 
 // edit offer
-const editOffer = async (req, res) => {
+const editOffer = async (req, res,next) => {
     try {
         const offerId = req.query.id;
         console.log("offerId", offerId)//---------------------
@@ -709,16 +722,15 @@ const editOffer = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
-        res.status(500).send("Internal Server Error");
-
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
 
 //update offer
-const updateOffer = async (req, res) => {
+const updateOffer = async (req, res,next) => {
     try {
         console.log("within updatre offer");//------------------
         console.log("within updatre body", req.body);//------------------
@@ -750,9 +762,9 @@ const updateOffer = async (req, res) => {
             res.status(200).json({ success: true });
         }
     } catch (error) {
-        console.log(error);
-        res.status(500).send("Internal Server Error");
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
@@ -763,7 +775,7 @@ function parseBoolean(value) {
 }
 
 // change offer status
-const changeOfferStatus = async (req, res) => {
+const changeOfferStatus = async (req, res,next) => {
     console.log("changeOfferStatus invoked"); //-----------
     try {
         const { offerId, status } = req.body;
@@ -795,16 +807,16 @@ const changeOfferStatus = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Internal Server Error", statusChanged: false });
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
 
 
 // apply offer on product
-const applyPoductOffer = async (req, res) => {
+const applyPoductOffer = async (req, res,next) => {
     try {
         console.log("with product apply offer");//---------
         console.log("req.bpdu", req.body)//-----------------
@@ -856,15 +868,15 @@ const applyPoductOffer = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
-
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
 
 // remove product offer
-const removePoductOffer = async (req, res) => {
+const removePoductOffer = async (req, res,next) => {
     try {
 
         console.log("remove prodcut offer backend-----------------------,", req.body)//-----------------------
@@ -905,14 +917,15 @@ const removePoductOffer = async (req, res) => {
 
 
     } catch (error) {
-        console.log(error)
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
 
 // load category, product offers
-const loadOfferForApply = async (req, res) => {
+const loadOfferForApply = async (req, res,next) => {
     try {
         console.log('within apply offer')//------------
         let categoryId = null;
@@ -950,8 +963,9 @@ const loadOfferForApply = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(error)
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
@@ -959,7 +973,7 @@ const loadOfferForApply = async (req, res) => {
 
 
 // apply offer on product
-const applyCategoryOffer = async (req, res) => {
+const applyCategoryOffer = async (req, res,next) => {
     try {
         console.log("with product apply offer");//---------
         console.log("req.bpdu", req.body)//-----------------
@@ -1010,15 +1024,15 @@ const applyCategoryOffer = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
-
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
 
 // remove offer on category
-const removecategoryOffer = async (req, res) => {
+const removecategoryOffer = async (req, res,next) => {
     try {
         const { categoryId, offerId } = req.body;
         console.log("categoryId", categoryId)//--------------------------
@@ -1050,8 +1064,9 @@ const removecategoryOffer = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error)
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 // ====================================================================  saleReport    =================================================
@@ -1059,7 +1074,7 @@ const removecategoryOffer = async (req, res) => {
 
 // load sales report
 
-const loadSalesreport = async (req, res) => {
+const loadSalesreport = async (req, res,next) => {
     try {
         console.log("within controller sales report")//--------------------
         let startDate = new Date(req.query?.start);
@@ -1153,20 +1168,22 @@ const loadSalesreport = async (req, res) => {
         console.log("orders.length", orders.length)//-------------------------
         res.status(200).render("salesReport", { orders, dateRange });
     } catch (error) {
-        console.log(error)
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
 
 // load 404 page
-const loadError404 = (req,res)=>{
+const loadError404 = (req, res,next) => {
     try {
         res.render("admin-404");
-        
+
     } catch (error) {
-        
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 module.exports = {

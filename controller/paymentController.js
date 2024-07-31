@@ -11,7 +11,7 @@ const razorpayInstance = new Razorpay({
 
 
 
-const createOrderPayment = async (req, res, myOrder,paymentMethod) => {
+const createOrderPayment = async (req, res, myOrder,paymentMethod,next) => {
     try {
     // console.log(req, 'order123req')//------------------------
     // console.log(res, 'order123res')//------------------------
@@ -73,14 +73,15 @@ const createOrderPayment = async (req, res, myOrder,paymentMethod) => {
 
     } catch (error) {
         console.log(error.message);
-    }
+        next(error);   
+     }
 }
 
 
 
 
 // Verify payment razorpay
-const verifyPaymentRazorpay = (async (req, res) => {
+const verifyPaymentRazorpay = (async (req, res,next) => {
     try {
 
         console.log("verfy razopay---------------------------------------------------------", req.body)//---------------
@@ -111,11 +112,9 @@ const verifyPaymentRazorpay = (async (req, res) => {
 
 
     } catch (error) {
-
-        console.log('catch error');//-----------------------
-        console.log(error);
-    }
-
+        console.log(error.message);
+        next(error);   
+     }
 })
 
 

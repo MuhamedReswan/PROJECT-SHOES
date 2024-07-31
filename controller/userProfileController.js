@@ -7,7 +7,7 @@ const { securedPassword } = require('../controller/userController')
 
 
 // add address
-const addAddress = async (req, res) => {
+const addAddress = async (req, res,next) => {
     try {
 
         const { name, mobile, address, district, city, pincode, state, country } = req.body;
@@ -21,14 +21,14 @@ const addAddress = async (req, res) => {
         res.redirect('/checkout');
 
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+ console.log(error.message);
+        next(error); 
     }
 }
 
 
 // profile 
-const loadProfile = async (req, res) => {
+const loadProfile = async (req, res,next) => {
     try {
         const userId = req.session.user.id;
         const orders = await Orders.find({ user: userId }).populate('products.productId').sort({createdAt:-1});
@@ -40,14 +40,14 @@ const loadProfile = async (req, res) => {
         console.log("wallet in controller",walletDetails)//----------------------------------
         res.render('addProfile', { orders, user, walletDetails });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+ console.log(error.message);
+        next(error); 
     }
 }
 
 
 // update profile
-const updateProfile = async (req, res) => {
+const updateProfile = async (req, res,next) => {
     try {
         const userId = req.session.user.id;
         const name = req.body.name;
@@ -64,15 +64,15 @@ const updateProfile = async (req, res) => {
         console.log('updatedProfile', updatedProfile)//-----------------
         res.status(200).json({ updated: true });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+ console.log(error.message);
+        next(error); 
     }
 }
 
 
 
 //change password
-const changePassword = async (req, res) => {
+const changePassword = async (req, res,next) => {
     try {
         const { newPassword, oldPassword } = req.body;
         const userId = req.session.user.id;
@@ -100,15 +100,16 @@ const changePassword = async (req, res) => {
 
 
     } catch (error) {
-        console.log(error)
-    }
+ console.log(error.message);
+        next(error);    
+     }
 
 }
 
 
 
 // edit adddress
-const editAddress = async (req, res) => {
+const editAddress = async (req, res,next) => {
     try {
         console.log('im in edit address')//----------------
         const userId = req.session.user.id;
@@ -120,15 +121,15 @@ const editAddress = async (req, res) => {
         console.log('user', user)//----------------------
         res.render('editAddress', { address })
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+ console.log(error.message);
+        next(error); 
     }
 }
 
 
 
 // update address
-const updateAddress = async (req, res) => {
+const updateAddress = async (req, res,next) => {
     try {
         console.log('im in update address');//-----------------------
         console.log('req.body', req.body)//--------------------
@@ -163,8 +164,8 @@ const updateAddress = async (req, res) => {
         //}
         // console.log('userAdress',userAdress)//-------------------- 
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+ console.log(error.message);
+        next(error); 
     }
 }
 

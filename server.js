@@ -43,6 +43,10 @@ app.use("*", (req, res) => {
   });
   
 
+// set view engine
+app.set('view engine', 'ejs');
+
+
 // for error message render
 app.set('views', './views');
 
@@ -56,12 +60,12 @@ app.use((err, req, res, next) => {
     res.status(err.status || 500);
   
     // Check if the request accepts JSON
-    if (req.accepts('json')) {
-      res.json({ error: err.message || 'Internal Server Error' });
-    } else {
+    // if (req.accepts('json')) {
+    //   res.json({ error: err.message || 'Internal Server Error' });
+    // } else {
       // Render an error view for web pages
-      res.render('error/500', { errorMessage: err.message || 'Internal Server Error' });
-    }
+      res.render('error/error-500', { errorMessage: err.message || 'Internal Server Error' });
+    // }
   });
 
 

@@ -1,10 +1,11 @@
 // load banners
-const loadBanners = (req,res)=>{
+const loadBanners = (req, res,next) => {
     try {
         res.render('banners')
     } catch (error) {
-        console.log(error);
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 

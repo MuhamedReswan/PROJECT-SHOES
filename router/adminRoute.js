@@ -24,7 +24,7 @@ admin_route.use(session({secret:config.sessionSecret,resave:false,saveUninitiali
 admin_route.use(nocache());
 
 
-admin_route.set('view engine', 'ejs');
+// admin_route.set('view engine', 'ejs');
 admin_route.set('views', './views/admin');
 
 // setting global middleware

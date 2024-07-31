@@ -8,7 +8,7 @@ const Cart = require('../model/cartModel');
 
 
 // coupon management
-const loadcouponManagement = async (req, res) => {
+const loadcouponManagement = async (req, res,next) => {
     try {
         console.log("load coupon management", req.body);
         let page = 1;
@@ -29,7 +29,7 @@ const loadcouponManagement = async (req, res) => {
 
         const couponData = await Coupons.find({})
             .limit(limit)
-            .sort({createdAt:-1})
+            .sort({ createdAt: -1 })
             .skip((page - 1) * limit)
             .exec()
 
@@ -46,14 +46,15 @@ const loadcouponManagement = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error);
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
 
 // add coupon 
-const addCoupon = async (req, res) => {
+const addCoupon = async (req, res,next) => {
     try {
         console.log("add coupon")//-------------------
         console.log("couponbody", req.body)//---------
@@ -87,23 +88,23 @@ const addCoupon = async (req, res) => {
             res.status(201).json({ success: true })
         }
     } catch (error) {
-        console.log(error)//-------------
-        console.log(' in add coupon')//-------------
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
 
 
 // updated coupon 
-const updateCoupon = async (req, res) => {
+const updateCoupon = async (req, res,next) => {
     try {
         const { name, endDate, userLimit, description, discountPercentage, minimumAmount, isListed, couponId } = req.body;
-       
+
         let customisedName = name.toLowerCase();
-        let  = description.toLowerCase();
-        const couponData = await Coupons.findOne({_id:couponId})
-        let couponCode=couponData.couponCode.slice(0,-2)+discountPercentage
+        let = description.toLowerCase();
+        const couponData = await Coupons.findOne({ _id: couponId })
+        let couponCode = couponData.couponCode.slice(0, -2) + discountPercentage
         const nameExist = await Coupons.findOne({ title: name, _id: { $ne: couponId } })
 
         if (nameExist) {
@@ -119,24 +120,25 @@ const updateCoupon = async (req, res) => {
                     discount: discountPercentage,
                     minCost: minimumAmount,
                     isListed: isListed,
-                    couponCode:couponCode
+                    couponCode: couponCode
                 }
             })
 
             return res.status(200).json({ success: true })
         }
     } catch (error) {
-        console.log(error)
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
 
 // change coupon status
-const changeStatus = async (req, res) => {
+const changeStatus = async (req, res,next) => {
     try {
         console.log("changeStatus")//--------------------------------------
-        
+
         const { couponId, status } = req.body;
         let toStatus = status === true ? false : true;
 
@@ -159,8 +161,9 @@ const changeStatus = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error)
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
@@ -170,18 +173,18 @@ const changeStatus = async (req, res) => {
 
 // validate coupon
 
-const validateCoupon = async (req, res) => {
+const validateCoupon = async (req, res,next) => {
     try {
         console.log("in validate coupon");//-------------
         console.log("req.body=", req.body);//-----------
         let { subTotal, cartId, couponCode } = req.body;
-        console.log("couopon code 1-----------",couponCode)//-----------------------
+        console.log("couopon code 1-----------", couponCode)//-----------------------
 
-        couponCode=couponCode.toLowerCase();
+        couponCode = couponCode.toLowerCase();
         const userId = req.session?.user?.id;
         console.log(" userId==", userId)//----------------------
 
-console.log("couopon code 2-----------",couponCode)//-----------------------
+        console.log("couopon code 2-----------", couponCode)//-----------------------
 
 
         const coupon = await Coupons.findOne({ couponCode: couponCode });
@@ -224,15 +227,15 @@ console.log("couopon code 2-----------",couponCode)//-----------------------
                 let couponDiscount = Math.round((coupon.discount / 100) * subTotal);
                 console.log("couponDiscount", couponDiscount)//--------------
 
-const cartData = await Cart.findOne({user:userId});
+                const cartData = await Cart.findOne({ user: userId });
 
-const productCount = cartData.products.length; 
-const couponOffEachProduct =Math.round(couponDiscount/productCount);
+                const productCount = cartData.products.length;
+                const couponOffEachProduct = Math.round(couponDiscount / productCount);
 
-console.log("cartData",cartData)//------------------
-console.log("productCount",productCount)//------------------
+                console.log("cartData", cartData)//------------------
+                console.log("productCount", productCount)//------------------
 
-console.log("couponOffEachProduct",couponOffEachProduct)//------------------------
+                console.log("couponOffEachProduct", couponOffEachProduct)//------------------------
 
                 let detailsOfCoupon = {
                     couponDiscount: couponDiscount,
@@ -240,19 +243,19 @@ console.log("couponOffEachProduct",couponOffEachProduct)//----------------------
                     code: couponCode
                 }
 
-// for(let i=0; i<cartData.products.length; i++){
-//     cartData.products[i].offerPrice -=couponOffEachProduct
-// }
+                // for(let i=0; i<cartData.products.length; i++){
+                //     cartData.products[i].offerPrice -=couponOffEachProduct
+                // }
 
 
-//  const updatedCart= await cartData.save()
-//  console.log("updatedCart",updatedCart)//------------------------
+                //  const updatedCart= await cartData.save()
+                //  console.log("updatedCart",updatedCart)//------------------------
 
                 await Cart.updateOne({ user: userId },
-                    { $set: { coupon: detailsOfCoupon, couponApplied: true,couponDiscoundProduct:couponOffEachProduct } },
+                    { $set: { coupon: detailsOfCoupon, couponApplied: true, couponDiscoundProduct: couponOffEachProduct } },
                     { new: true });
 
-                res.json({ valid: true, message: "Coupon added success !", couponDiscount, subTotal});
+                res.json({ valid: true, message: "Coupon added success !", couponDiscount, subTotal });
 
             }
         } else {
@@ -260,14 +263,15 @@ console.log("couponOffEachProduct",couponOffEachProduct)//----------------------
         }
 
     } catch (error) {
-        console.log(error)
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
 
 // remove applied coupon
-const removeAppliedCoupon = async (req, res) => {
+const removeAppliedCoupon = async (req, res,next) => {
     try {
         console.log("within remove applied couopon")//--------------
         const { cartId, subTotal } = req.body
@@ -275,27 +279,27 @@ const removeAppliedCoupon = async (req, res) => {
 
 
 
-      
-        const cart = await Cart.findOne({user:userId});
+
+        const cart = await Cart.findOne({ user: userId });
         // const cart= await Cart.findOne({user:userId});
-console.log("cart",cart,)//------------------------
+        console.log("cart", cart,)//------------------------
 
-// if(cart.couponApplied){
-//     for(let i=0; i<cart.products.length; i++){
-//         cart.products[i].offerPrice+=cart.couponDiscoundProduct
-//     }
-//     const cartUpdated = await cart.save();        
+        // if(cart.couponApplied){
+        //     for(let i=0; i<cart.products.length; i++){
+        //         cart.products[i].offerPrice+=cart.couponDiscoundProduct
+        //     }
+        //     const cartUpdated = await cart.save();        
 
-//     console.log("cart",cart,)//------------------------
-// }
+        //     console.log("cart",cart,)//------------------------
+        // }
 
-    
+
         const updateCouponDisCart = await Cart.findByIdAndUpdate({
             _id: cartId
         }, {
             $set: {
                 couponApplied: false,
-                couponDiscoundProduct:0
+                couponDiscoundProduct: 0
             },
             $unset: {
                 coupon: null
@@ -309,8 +313,9 @@ console.log("cart",cart,)//------------------------
         res.status(200).json({ removed: true, message: 'coupon successfully removed !' });
 
     } catch (error) {
-        console.log(error)
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 module.exports = {

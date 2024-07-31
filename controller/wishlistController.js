@@ -3,7 +3,7 @@ const Users = require('../model/userModel');
 const Wishlist = require('../model/wishlistModel');
 
 // load wishlist
-const loadWishlist = async (req,res)=>{
+const loadWishlist = async (req,res,next)=>{
     try {
         console.log('loadwishilist');//-------------
         const userId = req.session.user.id;       
@@ -21,7 +21,7 @@ console.log('wishlistData.......',wishlistData);//-----------------------
 }
 
 // add to wishlist 
-const addToWishlist = async (req,res)=>{
+const addToWishlist = async (req,res,next)=>{
 try {
     console.log('im in add wishlist back');//--------------
     console.log('req.body',req.body);//------------
@@ -61,7 +61,7 @@ res.status(200).json({removed: true});
 }
 
 // remove from wishlist
-const removeFromWishlist = async (req,res)=>{
+const removeFromWishlist = async (req,res,next)=>{
     try {
         const {productId}=req.body;
         const userId = req.session.user.id;

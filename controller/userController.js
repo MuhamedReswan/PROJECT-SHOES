@@ -18,30 +18,32 @@ const securedPassword = async (password) => {
         const passwordHash = await bcrypt.hash(password, 10);
         return passwordHash;
     } catch (error) {
-        console.log(error);
-    }
+        console.log(error.message);
+        throw error;
+        }
 }
 
 // Error 500
-const loadError500 = (req,res)=>{
+const loadError500 = (req, res,next) => {
     try {
         res.render('')
     } catch (error) {
-        console.log("error 500",error.message)
+        console.log(error.message);
+        next(error);
     }
 }
 
 
 // load home 
-const loadHome = async (req, res) => {
+const loadHome = async (req, res,next) => {
     try {
-        console.log("resqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",req.query)//------------------
+        console.log("resqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq", req.query)//------------------
 
         const mostPopularProduct = await Orders.aggregate([
             { $match: { orderStatus: "Delivered" } },
             { $unwind: '$products' },
             { $match: { 'products.status': "Delivered" } },
-        
+
             {
                 $lookup: {
                     from: 'products',
@@ -51,7 +53,7 @@ const loadHome = async (req, res) => {
                 }
             },
             { $unwind: '$product' },
-        
+
             {
                 $lookup: {
                     from: 'categories',
@@ -61,7 +63,7 @@ const loadHome = async (req, res) => {
                 }
             },
             { $unwind: '$categoryDetails' },
-        
+
             {
                 $lookup: {
                     from: 'offers',
@@ -71,7 +73,7 @@ const loadHome = async (req, res) => {
                 }
             },
             { $unwind: { path: '$productOffer', preserveNullAndEmptyArrays: true } },
-        
+
             {
                 $lookup: {
                     from: 'offers',
@@ -81,7 +83,7 @@ const loadHome = async (req, res) => {
                 }
             },
             { $unwind: { path: '$categoryOffer', preserveNullAndEmptyArrays: true } },
-        
+
             {
                 $addFields: {
                     maxDiscount: {
@@ -115,7 +117,7 @@ const loadHome = async (req, res) => {
                     }
                 }
             },
-        
+
             {
                 $group: {
                     _id: '$product._id',
@@ -125,93 +127,95 @@ const loadHome = async (req, res) => {
                     image: { $first: { $arrayElemAt: ['$product.images', 0] } },
                     finalPrice: { $first: '$finalPrice' },
                     soldCount: { $sum: 1 },
-                    discountPercentage:{$first:'$maxDiscount'}
+                    discountPercentage: { $first: '$maxDiscount' }
                 }
             },
-        
+
             { $sort: { soldCount: -1 } },
             { $limit: 5 }
         ]);
-        
 
 
 
 
-const latestProduct = await Products.aggregate([
-    { $sort: { created: -1 } },
-    { $limit: 4 },
 
-    {
-        $lookup: {
-            from: 'offers',
-            localField: 'appliedOffer',
-            foreignField: '_id',
-            as: 'productOffer'
-        }
-    },
-    { $unwind: { path: '$productOffer', preserveNullAndEmptyArrays: true } },
+        const latestProduct = await Products.aggregate([
+            { $sort: { created: -1 } },
+            { $limit: 4 },
 
-    {
-        $lookup: {
-            from: 'categories',
-            localField: 'category',
-            foreignField: '_id',
-            as: 'category'
-        }
-    },
-    { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
+            {
+                $lookup: {
+                    from: 'offers',
+                    localField: 'appliedOffer',
+                    foreignField: '_id',
+                    as: 'productOffer'
+                }
+            },
+            { $unwind: { path: '$productOffer', preserveNullAndEmptyArrays: true } },
 
-    {
-        $lookup: {
-            from: 'offers',
-            localField: 'category.appliedOffer',
-            foreignField: '_id',
-            as: 'categoryOffer'
-        }
-    },
-    { $unwind: { path: '$categoryOffer', preserveNullAndEmptyArrays: true } },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'category',
+                    foreignField: '_id',
+                    as: 'category'
+                }
+            },
+            { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
 
-    {
-        $addFields: {
-            maxDiscount: {
-                $max: [
-                    { $ifNull: ['$productOffer.discount', 0] },
-                    { $ifNull: ['$categoryOffer.discount', 0] }
-                ]
+            {
+                $lookup: {
+                    from: 'offers',
+                    localField: 'category.appliedOffer',
+                    foreignField: '_id',
+                    as: 'categoryOffer'
+                }
+            },
+            { $unwind: { path: '$categoryOffer', preserveNullAndEmptyArrays: true } },
+
+            {
+                $addFields: {
+                    maxDiscount: {
+                        $max: [
+                            { $ifNull: ['$productOffer.discount', 0] },
+                            { $ifNull: ['$categoryOffer.discount', 0] }
+                        ]
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    finalPrice: {
+                        $cond: [
+
+                            { $gt: ['$maxDiscount', 0] },
+                            { $subtract: ['$offerPrice', { $multiply: ['$offerPrice', { $divide: ['$maxDiscount', 100] }] }] },
+                            { $ifNull: ['$offerPrice', '$price'] }
+                        ]
+                    }
+                }
             }
-        }
-    },
-    {
-        $addFields: {
-            finalPrice: {
-                $cond: [
-                    
-                    { $gt: ['$maxDiscount', 0] },
-                    { $subtract: ['$offerPrice', { $multiply: ['$offerPrice', { $divide: ['$maxDiscount', 100] }] }] },
-                    { $ifNull: ['$offerPrice', '$price'] }
-                ]
-            }
-        }
-    }
-]);
+        ]);
 
-// console.log("latest 5",latestProduct)//----------------------------
-        
-        console.log("mostPopularProduct",mostPopularProduct)//-------------------------------------
+        // console.log("latest 5",latestProduct)//----------------------------
+
+        console.log("mostPopularProduct", mostPopularProduct)//-------------------------------------
         // { successMessage: req.flash('successMessage') 
-        res.render('home',{mostPopularProduct,latestProduct});
+        res.render('home', { mostPopularProduct, latestProduct });
     } catch (error) {
-        console.log(error);
+        console.log(error.message);
+        next(error);
     }
 }
 
 // user logout
-const userLogout = (req, res) => {
+const userLogout = (req, res,next) => {
     try {
         req.session.user = null;
         res.redirect('/');
     } catch (error) {
-        console.log(error);
+        console.log(error.message);
+        next(error);
     }
 
 }
@@ -223,7 +227,7 @@ const userLogout = (req, res) => {
 //========================================= user login and verify ============================================================
 
 // load login 
-const loadLogin = (req, res) => {
+const loadLogin = (req, res,next) => {
     try {
         // console.log("loginSuccess render1",req.session.user.loginSuccess)//--------------------------
 
@@ -233,8 +237,8 @@ const loadLogin = (req, res) => {
         // res.render('login',{loginSuccess});
         res.render('login');
     } catch (error) {
-        console.log(error);
-                res.status(500).send("Internal Server Error");
+        console.log(error.message);
+        next(error);
     }
 
 }
@@ -242,7 +246,7 @@ const loadLogin = (req, res) => {
 
 //verify login
 const
-    verifyLogin = async (req, res) => {
+    verifyLogin = async (req, res,next) => {
         try {
             const Email = req.body.Email;
             const Password = req.body.Password;
@@ -279,7 +283,8 @@ const
                 res.redirect('/login');
             }
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
+            next(error);
         }
 
     }
@@ -287,19 +292,20 @@ const
 //=================================== user signup and otp verification =================================================
 
 // load registration 
-const loadRegister = (req, res) => {
+const loadRegister = (req, res,next) => {
     try {
         const referel = req.query.referel
         res.render('signup', { referel });
     } catch (error) {
-        console.log(error);
+        console.log(error.message);
+        next(error);
     }
 
 }
 
 
 // insert user
-const insertUser = async (req, res) => {
+const insertUser = async (req, res,next) => {
     try {
         const hashPassword = await securedPassword(req.body.Password)
 
@@ -356,14 +362,15 @@ const insertUser = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
+        console.log(error.message);
+        next(error);
     }
 
 }
 
 
 // load otp
-const loadOtp = (req, res) => {
+const loadOtp = (req, res,next) => {
     try {
         const email = req.query.email;
         const refCode = req.query.referel;
@@ -375,7 +382,8 @@ const loadOtp = (req, res) => {
         // }
 
     } catch (error) {
-        console.log(error);
+        console.log(error.message);
+        next(error);
     }
 
 }
@@ -417,14 +425,14 @@ const sendOtp = async (email) => {
         const otpSave = await userOtp.save();
 
     } catch (error) {
-        console.log(error);
-    }
-
+        console.log(error.message);
+        throw error;
+            }
 }
 
 
 // verify otp 
-const verifyOtp = async (req, res) => {
+const verifyOtp = async (req, res,next) => {
     try {
         const email = req.body.email;
         const referelCode = req.body?.referel;
@@ -461,12 +469,12 @@ const verifyOtp = async (req, res) => {
                                 }
 
                                 const updateWalletOwner = await Wallet.updateOne(
-                                    {user: referelOwner._id},
-                                     {
+                                    { user: referelOwner._id },
+                                    {
                                         $inc: { balance: 200 },
-                                    $push: { transactions: transaction }
-                                },
-                                {new:true})
+                                        $push: { transactions: transaction }
+                                    },
+                                    { new: true })
 
                                 const userTransaction = {
                                     amount: 100,
@@ -508,13 +516,14 @@ const verifyOtp = async (req, res) => {
             res.redirect(`/otp?email=${email}&referel=${referelCode}`);
         }
     } catch (error) {
-        console.log(error);
-    }
+        console.log(error.message);
+        next(error); 
+        }
 }
 
 
 // resend Otp
-const resendOtp = async (req, res) => {
+const resendOtp = async (req, res,next) => {
     try {
         const email = req.params.email;
         const referel = req.query.referel;
@@ -531,21 +540,22 @@ const resendOtp = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
-    }
+        console.log(error.message);
+        next(error); 
+        }
 
 }
 
 // ============================================== user signup and verification end =============================================
 
 //  load forgot password
-const loadForgotPassword = (req, res) => {
+const loadForgotPassword = (req, res,next) => {
     try {
         res.status(200).render('forgotPassword');
     } catch (error) {
-        console.log(error);
-        res.status(500).send("Error while rendering forgot password page");
-    }
+        console.log(error.message);
+        next(error); 
+        }
 }
 
 
@@ -589,14 +599,15 @@ const resetPass = async (email, res) => {
 
         await transport.sendMail(mailOption);
     } catch (error) {
-        console.log(error);
-    }
+        console.log(error.message);
+        next(error); 
+        }
 
 
 }
 
 // forgot password
-const forgotPassword = async (req, res) => {
+const forgotPassword = async (req, res,next) => {
     try {
         const email = req.body.email;
         console.log(req.body, 'body');//------------------------------------
@@ -605,24 +616,26 @@ const forgotPassword = async (req, res) => {
         req.flash('success', 'Sent a reset password link to your email');
         res.redirect('/login');
     } catch (error) {
-
+        console.log(error.message);
+        next(error); 
     }
 }
 
 // load reset password 
-const loadResetPassword = async (req, res) => {
+const loadResetPassword = async (req, res,next) => {
     try {
         const userId = req.params.id;
         const token = req.params.token;
         res.render('resetPassword', { userId, token });
 
     } catch (error) {
-        console.log(error);
+        console.log(error.message);
+        next(error); 
     }
 }
 
 //reset password
-const resetPassword = async (req, res) => {
+const resetPassword = async (req, res,next) => {
     try {
         console.log(req.body, 'body')//-----------------------------
         const userId = req.body.userId;
@@ -659,30 +672,33 @@ const resetPassword = async (req, res) => {
         req.flash('success', 'New password added successful');
         res.redirect('/login');
     } catch (error) {
-        console.log(error)
+        console.log(error.message);
+        next(error); 
     }
 
 }
 
 // profile 
-const loadProfile = (req, res) => {
+const loadProfile = (req, res,next) => {
     try {
         console.log('profile working');//------------------
         res.render('addProfile')
     } catch (error) {
-        console.log(error)
+        console.log(error.message);
+        next(error); 
     }
 }
 
 
 
 // 404 Error
-const loadError404 = (req, res) => {
+const loadError404 = (req, res,next) => {
     try {
         res.render('404');
     } catch (error) {
-        console.log(error);
-    }
+        console.log(error.message);
+        next(error); 
+        }
 }
 
 module.exports = {
@@ -702,7 +718,7 @@ module.exports = {
     loadResetPassword,
     resetPassword,
     securedPassword,
-    
+
 
 
 

@@ -6,7 +6,7 @@ const Offers = require('../model/offerModel');
 
 
 // load shop
-const loadShop = async (req, res) => {
+const loadShop = async (req, res,next) => {
     try {
         const userId = req.session.user.id;
         // console.log('req.body', req.body)//-------------
@@ -29,13 +29,13 @@ const loadShop = async (req, res) => {
             .sort({ createdAt: -1 })
             .limit(limit)
             .skip(start)
-            .populate('appliedOffer').populate({path:'category',populate:{path:'appliedOffer',model: 'Offers' }});
+            .populate('appliedOffer').populate({ path: 'category', populate: { path: 'appliedOffer', model: 'Offers' } });
 
-            // .populate('category')
-            // .populate('appliedOffer');
+        // .populate('category')
+        // .populate('appliedOffer');
 
 
-            const offers = await Offers.find({isListed:true});
+        const offers = await Offers.find({ isListed: true });
         const wishlistData = await Wishlist.find({ user: userId });
         // console.log('offers', offers)//----------------
         // console.log('wishlistData', wishlistData)//----------------
@@ -54,21 +54,21 @@ const loadShop = async (req, res) => {
             totalPage: totalPage,
             start: start,
             page: page,
-            offers:offers
+            offers: offers
         });
     } catch (error) {
-        console.log(error);
-    }
-
+        console.log(error.message);
+        next(error);
+        }
 }
 
 // load single product 
-const loadSingleProduct = async (req, res) => {
+const loadSingleProduct = async (req, res,next) => {
     try {
         const id = req.query.id;
         // console.log('id', id);//----------
         const userId = req.session.user.id;
-        const product = await Products.findOne({ _id: id }).populate('appliedOffer').populate({path:'category',populate:{path:'appliedOffer',model: 'Offers' }});
+        const product = await Products.findOne({ _id: id }).populate('appliedOffer').populate({ path: 'category', populate: { path: 'appliedOffer', model: 'Offers' } });
         const sDate = new Date();
         const dDate = new Date(sDate.getTime() + 7 * 24 * 60 * 60 * 1000);
         const startDate = sDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit' }).replaceAll(',', "-");
@@ -81,14 +81,15 @@ const loadSingleProduct = async (req, res) => {
         }
 
     } catch (error) {
-        console.log();
-    }
+        console.log(error.message);
+        next(error);   
+     }
 }
 
 
 
 //filter shop 
-const filterShop = async (req, res) => {
+const filterShop = async (req, res,next) => {
     try {
         console.log('imi filter-shop')//---------------
         // console.log('req.body filterShop', req.body)//--------------
@@ -144,7 +145,7 @@ const filterShop = async (req, res) => {
 
         let start = (page - 1) * limit
         // console.log('start1', start)//-------------
-        start=Math.abs(start)
+        start = Math.abs(start)
         // console.log('start2', start)//-------------
 
 
@@ -161,20 +162,20 @@ const filterShop = async (req, res) => {
 
         let filterdProduct;
 
-            if(searchInputText){
-                filterdProduct = await Products.find(filterTerms)
+        if (searchInputText) {
+            filterdProduct = await Products.find(filterTerms)
                 .sort(sortOption)
                 .populate('category');
-            } else {
-             filterdProduct = await Products.find(filterTerms)
-            .sort(sortOption)
-            .limit(limit)
-            .skip(start)
-            // .populate('category')
-            .populate('appliedOffer').populate({path:'category',populate:{path:'appliedOffer',model: 'Offers' }})
+        } else {
+            filterdProduct = await Products.find(filterTerms)
+                .sort(sortOption)
+                .limit(limit)
+                .skip(start)
+                // .populate('category')
+                .populate('appliedOffer').populate({ path: 'category', populate: { path: 'appliedOffer', model: 'Offers' } })
 
-            }
-       
+        }
+
         let countOfProducts = filterdProduct.length;
 
         // console.log('filterdProductax', filterdProduct)//-------------
@@ -188,8 +189,9 @@ const filterShop = async (req, res) => {
                 page
             })
     } catch (error) {
-        console.log(error)
-    }
+        console.log(error.message);
+        next(error);
+        }
 }
 
 
