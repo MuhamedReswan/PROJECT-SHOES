@@ -691,15 +691,15 @@ const loadProfile = (req, res,next) => {
 
 
 
-// 404 Error
-const loadError404 = (req, res,next) => {
-    try {
-        res.render('404');
-    } catch (error) {
-        console.log(error.message);
-        next(error); 
-        }
-}
+// // 404 Error
+// const LoadError404 = (req, res,next) => {
+//     try {
+//         res.render('Error404');
+//     } catch (error) {
+//         console.log(error.message);
+//         next(error); 
+//         }
+// }
 
 module.exports = {
     loadHome,
@@ -712,7 +712,7 @@ module.exports = {
     sendOtp,
     resendOtp,
     userLogout,
-    loadError404,
+    // LoadError404,
     loadForgotPassword,
     forgotPassword,
     loadResetPassword,

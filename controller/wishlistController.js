@@ -11,7 +11,7 @@ const loadWishlist = async (req,res,next)=>{
         // res.render('addAddress');
         // res.render('invoice');
         // res.render('invoiceNew');
-const wishlistData = await Wishlist.find({user:userId}).populate('product');
+const wishlistData = await Wishlistq.find({user:userId}).populate('product');
 console.log('wishlistData.......',wishlistData);//-----------------------
         res.render('wishlist',{wishlistData});
     } catch (error) {

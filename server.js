@@ -16,7 +16,7 @@ const userController = require('../PROJECT SHOES/controller/userController')
 const mongoose = require('mongoose');
 mongoose.connect(MONGO_CONNECTION)
 .then(() => {
-    console.log("Mongo Db Connected");
+    console.log("Mongo Db Connected");//---------------------
 }).catch((error) => {
     console.log(error);
 });
@@ -37,20 +37,31 @@ app.use('/', user_route);
 const admin_route = require('./router/adminRoute');
 app.use('/admin',admin_route);
 
-// 404 handling
-app.use("*", (req, res) => {
-    res.status(404).render(path.join(__dirname, "views/user/404.ejs"));
-  });
+// // 404 handling
+// app.use("*", (req, res) => {
+//     res.status(404).render("error/error-404");
+//   });
   
 
 // set view engine
 app.set('view engine', 'ejs');
-
-
-// for error message render
 app.set('views', './views');
 
+// Set views directory
+// app.set('views', path.resolve(__dirname, "views"));
 
+
+
+// Admin error handlers
+app.use('/admin', (req, res, next) => {
+  res.status(404).render('admin/admin-404');
+});
+
+
+// User error handlers
+app.use((req, res, next) => {
+  res.status(404).render('user/Error404');
+});
 
   // Global Error Handler Middleware (Define this last)
 app.use((err, req, res, next) => {

@@ -5,6 +5,10 @@ const session = require('express-session');
 const multerUpload = require('../middlewares/multer');
 const nocache =require('nocache');
 
+// const upload = multer({ dest: 'uploads/' });
+// const multer = require('multer');
+
+
 
 const config = require('../config/config');
 
@@ -24,7 +28,6 @@ admin_route.use(session({secret:config.sessionSecret,resave:false,saveUninitiali
 admin_route.use(nocache());
 
 
-// admin_route.set('view engine', 'ejs');
 admin_route.set('views', './views/admin');
 
 // setting global middleware
@@ -54,9 +57,6 @@ admin_route.post('/block-user', adminAuth.isLogin, adminController.blockUser);
 
 //admin logout 
 admin_route.get('/logout',adminAuth.isLogin, adminController.loadLogout);
-  
-
-
 
 // list product  
 admin_route.get('/products-list' ,adminAuth.isLogin, productController.ProductsList);
@@ -71,9 +71,6 @@ admin_route.post('/edit-products', adminAuth.isLogin, multerUpload.array('images
 
 // product list and unlist
 admin_route.post('/products-list', adminAuth.isLogin, productController.productListAndUnlist);
-
-
-
 
 // load catagory
 admin_route.get('/category' ,adminAuth.isLogin, adminAuth.isLogin, categoryController.loadCategory);
@@ -136,10 +133,6 @@ admin_route.post('/offers/edit-offer',adminAuth.isLogin,adminController.updateOf
 // change offer status
 admin_route.post('/offers/change-status',adminAuth.isLogin,adminController.changeOfferStatus);
 
-// load offer for product
-// admin_route.get('/product/offer',adminAuth.isLogin, adminController.loadOfferForApply);
-
-
 // load offers for category and product
 admin_route.get('/apply-offer/offer',adminAuth.isLogin, adminController.loadOfferForApply);
 
@@ -163,15 +156,18 @@ admin_route.get('/sales-report', adminAuth.isLogin,adminController.loadSalesrepo
 //filter chart
 admin_route.post('/dashboard/filter-chart',adminAuth.isLogin,adminController.filterYearlyMonthly);
 
+// 404
+admin_route.get('*', adminAuth.isLogin,adminController.loadError404);
+
+
+
 // load banners
- admin_route.get('/banners',adminAuth.isLogin,bannerController.loadBanners)
+//  admin_route.get('/banners',adminAuth.isLogin,bannerController.loadBanners);
+//  admin_route.get('/banners/add-banner',adminAuth.isLogin,bannerController.loadAddBanner );
+//  admin_route.post('/banners/add-banner',adminAuth.isLogin,multerUpload.single('file'),bannerController.insertBanners );
 
-
-// admin_route.post('/sales-report', adminAuth.isLogin,adminController.);
-
-// load offer for categories
-// admin_route.get('/category/offer',adminAuth.isLogin, adminController.applyOffer);
-
-
+// app.use("*", (req, res) => {
+//     res.status(404).render("error/error-404");
+//   });
 module.exports=admin_route;
 

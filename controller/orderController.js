@@ -721,7 +721,7 @@ const adminOrders = async (req, res, next) => {
             next = totalPage
         }
 
-        const ordersDetails = await Order.find({})
+        const ordersDetails = await Orders.find({})
             .populate('user')
             .populate('products.productId')
             .sort({ date: -1 })
