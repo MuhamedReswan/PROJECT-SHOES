@@ -4,7 +4,7 @@ const path = require('path');
 const flash = require('express-flash');
 require('dotenv').config();
 const { MONGO_CONNECTION } = process.env;
-const userController = require('../PROJECT SHOES/controller/userController')
+// const userController = require('../PROJECT SHOES/controller/userController')
 
 
 
