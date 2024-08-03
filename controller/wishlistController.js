@@ -8,7 +8,7 @@ const loadWishlist = async (req,res,next)=>{
         console.log('loadwishilist');//-------------
         const userId = req.session.user.id;       
          console.log('userId',userId);//-------------
-const wishlistData = await Wishlistq.find({user:userId}).populate('product');
+const wishlistData = await Wishlist.find({user:userId}).populate('product');
 console.log('wishlistData.......',wishlistData);//-----------------------
         res.render('wishlist',{wishlistData});
     } catch (error) {
