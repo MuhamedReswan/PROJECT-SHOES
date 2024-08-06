@@ -1047,7 +1047,7 @@ console.log("withi axios response", response)//--------------------------------
                                 icon: "error",
                                 title: "Payment failed",
                                 showConfirmButton: false,
-                                timer: 10500,
+                                timer: 1000,
                             });
                         }
                     })
@@ -1072,7 +1072,6 @@ console.log("withi axios response", response)//--------------------------------
             
             function applyCoupon() {
                 console.log("applyCoupon involked")//----------
-
 
                 const regex = /^[A-Za-z]{1,4}-[A-Za-z0-9]{6}-\d{1,2}$/;
                 let couponCode = document.getElementById('coupon-code').value
