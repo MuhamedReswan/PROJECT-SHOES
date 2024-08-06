@@ -1013,8 +1013,8 @@ console.log("withi axios response", response)//--------------------------------
                         }, 500);
 
                         setTimeout(() => {
-                            location.href = `/order-details?id=${data.orderDetails._id}`
-
+                            // location.href = `/order-details?id=${data.orderDetails._id}`
+                            location.href = `/single-order-product?orderid=${data.orderDetails._id}`
                         }, 1600);
                     })
             }

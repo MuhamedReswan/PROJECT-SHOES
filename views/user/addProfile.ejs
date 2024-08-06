@@ -34,11 +34,6 @@
                                         <a class="nav-link" id="tab-orders-link" href="/my-orders">Orders</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="tab-downloads-link" data-toggle="tab"
-                                            href="#tab-downloads" role="tab" aria-controls="tab-downloads"
-                                            aria-selected="false">Downloads</a>
-                                    </li>
-                                    <li class="nav-item">
                                         <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#wallet"
                                             role="tab" aria-controls="tab-downloads" aria-selected="false">Wallet</a>
                                     </li>
@@ -72,13 +67,6 @@
                                                 your
                                                 password and account details</a>.
                                         </p>
-                                    </div><!-- .End .tab-pane -->
-
-                                    <div class="tab-pane fade" id="tab-downloads" role="tabpanel"
-                                        aria-labelledby="tab-downloads-link">
-                                        <p>No downloads available yet.</p>
-                                        <a href="shop" class="btn btn-outline-primary-2"><span>GO SHOP</span><i
-                                                class="icon-long-arrow-right"></i></a>
                                     </div><!-- .End .tab-pane -->
 
                                     <div class="tab-pane fade" id="tab-address" role="tabpanel"
@@ -129,12 +117,12 @@
                                         aria-labelledby="tab-account-link">
 
                                         <div class="" style="display: flex; justify-content: end; align-items: end;">
-                                            <h3 class="bg-dark text-white">referel code:</h3>
-                                            <input type="text" class="form-control"
+                                            <!-- <h3 class="bg-dark text-white">referel code:</h3> -->
+                                            <input style="display: none;" type="text" class="form-control"
                                                 value="localhost:3001/signup?referel=<%= user.referelCode%>" required
                                                 id="referralLink" readonly>
                                             <button class="btn btn-dark" id="referel-copy-button" style="height: 40px; "
-                                                onclick="copyToClipboard()">copy</button>
+                                                onclick="copyToClipboard()">Referel Link</button>
                                         </div>
                                         <label>Name *</label>
                                         <input type="text" class="form-control" value="<%= user.name %>" required
@@ -462,17 +450,8 @@
 
                             }
                         })
-
-
-                    // if (nameError.textContent !== '' || mobileError.textContent !== '') {
-                    //     event.preventDefault();
                 }
-
-
             }
-
-            // Attach the validation function to the form submit event
-            // document.querySelector('form').addEventListener('submit', validateForm);
 
             let table = document.getElementById('history-table');
             let historyButton = document.getElementById('transaction-button');
