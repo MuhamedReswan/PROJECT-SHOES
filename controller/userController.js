@@ -587,8 +587,10 @@ const resetPass = async (email, res,next) => {
                 pass: 'rpwg jlhk dnoa qkcj'
             }
         })
-
-        const restPage = `http://localhost:3001/reset-password/${user._id}/${token.token}`
+// domain changed for hosting 
+        // const restPage = `http://localhost:3001/reset-password/${user._id}/${token.token}`
+        
+        const restPage = `https://shoefactori.online/forgot-password/${user._id}/${token.token}`
 
         const mailOption = {
             from: 'muhamedreswan9917@gmail.com',
