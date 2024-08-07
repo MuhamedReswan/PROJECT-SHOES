@@ -67,7 +67,7 @@ const
                 totalStock: details.quantity,
             });
             const productAlready = await products.findOne({ name: details.name })
-            console.log(productAlready, 'producttttttttttttttttttttttttttttt');
+            console.log(productAlready, 'producttttttttttttttttttttttttttttt');//-----------------------
             if (productAlready) {
                 console.log('Product alredy exist');//--------------------
                 // req.flash('already','Product name already exist !')

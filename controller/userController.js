@@ -561,7 +561,7 @@ const loadForgotPassword = (req, res,next) => {
 
 
 // reset password function
-const resetPass = async (email, res) => {
+const resetPass = async (email, res,next) => {
     try {
         email = email;
         const user = await Users.findOne({ email: email });
@@ -607,7 +607,7 @@ const resetPass = async (email, res) => {
 }
 
 // forgot password
-const forgotPassword = async (req, res,next) => {
+const forgotPassword = async (req, res, next) => {
     try {
         const email = req.body.email;
         console.log(req.body, 'body');//------------------------------------
@@ -635,7 +635,7 @@ const loadResetPassword = async (req, res,next) => {
 }
 
 //reset password
-const resetPassword = async (req, res,next) => {
+const resetPassword = async (req, res, next) => {
     try {
         console.log(req.body, 'body')//-----------------------------
         const userId = req.body.userId;
