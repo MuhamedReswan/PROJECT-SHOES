@@ -238,41 +238,38 @@
                           </div>
                     </div>
                     <%}%>
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-                    	<div class="section-header text-left">
-                            <h2 class="h2">Weekly Top Seller</h2>
-                        </div>
-                        <div class="grid">
-                            <div class="grid__item">
-                              <div class="mini-list-item">
-                                <div class="mini-view_image">
-                                    <a class="grid-view-item__link" href="#">
-                                        <img class="grid-view-item__image blur-up lazyload" src="user/assets/images/product-images/home7-product4.jpg" alt="">
-                                    </a>
-                                </div>
-                                <div class="details"> <a class="grid-view-item__title" href="#">White Sneaker</a>
-                                  <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">$173.60</span></span></div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="grid__item">
-                              <div class="mini-list-item">
-                                <div class="mini-view_image"> <a class="grid-view-item__link" href="#"><img class="grid-view-item__image blur-up lazyload" src="user/assets/images/product-images/home7-product5.jpg" alt=""></a> </div>
-                                <div class="details"> <a class="grid-view-item__title" href="#">Suede Loafers - Black/Blue</a>
-                                  <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">$378.00</span></span></div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="grid__item">
-                              <div class="mini-list-item">
-                                <div class="mini-view_image"> <a class="grid-view-item__link" href="#"><img class="grid-view-item__image blur-up lazyload" src="user/assets/images/product-images/home7-product6.jpg" alt=""></a> </div>
-                                <div class="details"> <a class="grid-view-item__title" href="#">Stiro Oxford in Slate</a>
-                                  <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">$278.60</span></span></div>
-                                </div>
-                              </div>
-                            </div>
+                    <%if(topOfferedProduct){%>
+                      <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                        <div class="section-header text-left">
+                              <h2 class="h2">Top Offer Products</h2>
                           </div>
-                    </div>
+                          <div class="grid">
+  
+  <%topOfferedProduct.forEach((pro)=>{%>
+  
+                              <div class="grid__item">
+                                <div class="mini-list-item">
+                                  <div class="mini-view_image">
+                                      <a class="grid-view-item__link" href="/single-product?id=<%=pro._id%>">
+                                          <img class="grid-view-item__image blur-up lazyload" src="/user/assets/images/product-images/sharpedImages/<%=pro.images[0]%>" alt="">
+                                      </a>
+                                  </div>
+                                  <div class="details"> <a class="grid-view-item__title" href="/single-product?id=<%=pro._id%>"><%=pro.name%></a>
+                                    <%if(pro.maxDiscount>0){%>
+                                    <div class="grid-view-item__meta"><span class="product-price__price"><span class="money ">₹ <%=Math.round(pro.finalPrice)%>.00<br><span class="text-success"> <%=pro.maxDiscount%>% oFF </span></span></span></div>
+                                    <%}else{%>
+                                      <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">₹ <%=Math.round(pro.finalPrice)%>.00</span></span></div>
+  
+                                    <%}%>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <%})%>
+
+                            </div>
+                      </div>
+                    <%}%>
                     <div class="col-12 col-sm-6 col-md-4 col-lg-4">
                     	<div class="section-header text-left">
                             <h2 class="h2">Latest Product</h2>
@@ -301,23 +298,6 @@
                             
                             <%})%>
 
-
-                            <!-- <div class="grid__item">
-                              <div class="mini-list-item">
-                                <div class="mini-view_image"> <a class="grid-view-item__link" href="#"><img class="grid-view-item__image blur-up lazyload" src="user/assets/images/product-images/home7-product2.jpg" alt=""></a> </div>
-                                <div class="details"> <a class="grid-view-item__title" href="#">Camoscio Heel</a>
-                                  <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">$378.00</span></span></div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="grid__item">
-                              <div class="mini-list-item">
-                                <div class="mini-view_image"> <a class="grid-view-item__link" href="#"><img class="grid-view-item__image blur-up lazyload" src="user/assets/images/product-images/home7-product3.jpg" alt=""></a> </div>
-                                <div class="details"> <a class="grid-view-item__title" href="#">Aqualina Sandal</a>
-                                  <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">$278.60</span></span></div>
-                                </div>
-                              </div>
-                            </div> -->
                           </div>
                     </div>
                 </div>

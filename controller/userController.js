@@ -10,6 +10,7 @@ const otpGenerator = require('otp-generator');
 const Razorpay = require('razorpay');
 const Products = require('../model/productsModel');
 const Orders = require('../model/orderModel');
+const { match } = require('assert');
 
 
 // password secure
@@ -197,11 +198,78 @@ const loadHome = async (req, res,next) => {
             }
         ]);
 
+
+
+const topOfferedProduct = await Products.aggregate([
+    {$match:{isListed:true}},
+
+    {
+        $lookup: {
+            from: 'offers',
+            localField: 'appliedOffer',
+            foreignField: '_id',
+            as: 'productOffer'
+        }
+    },
+    { $unwind: { path: '$productOffer', preserveNullAndEmptyArrays: true } },
+
+    {
+        $lookup: {
+            from: 'categories',
+            localField: 'category',
+            foreignField: '_id',
+            as: 'category'
+        }
+    },
+    { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
+
+    {
+        $lookup: {
+            from: 'offers',
+            localField: 'category.appliedOffer',
+            foreignField: '_id',
+            as: 'categoryOffer'
+        }
+    },
+    { $unwind: { path: '$categoryOffer', preserveNullAndEmptyArrays: true } },
+
+    {
+        $addFields: {
+            maxDiscount: {
+                $max: [
+                    { $ifNull: ['$productOffer.discount', 0] },
+                    { $ifNull: ['$categoryOffer.discount', 0] }
+                ]
+            }
+        }
+    },
+    {
+        $addFields: {
+            finalPrice: {
+                $cond: [
+
+                    { $gt: ['$maxDiscount', 0] },
+                    { $subtract: ['$offerPrice', { $multiply: ['$offerPrice', { $divide: ['$maxDiscount', 100] }] }] },
+                    { $ifNull: ['$offerPrice', '$price'] }
+                ]
+            }
+        }
+    },
+    {$sort:{maxDiscount:-1}},
+    {$limit:4}
+
+]);
+
+
+
+  
+
+        // console.log("topOfferedProduct ",topOfferedProduct)//----------------------------
         // console.log("latest 5",latestProduct)//----------------------------
 
-        console.log("mostPopularProduct", mostPopularProduct)//-------------------------------------
+        // console.log("mostPopularProduct", mostPopularProduct)//-------------------------------------
         // { successMessage: req.flash('successMessage') 
-        res.render('home', { mostPopularProduct, latestProduct });
+        res.render('home', { mostPopularProduct, latestProduct, topOfferedProduct });
     } catch (error) {
         console.log(error.message);
         next(error);

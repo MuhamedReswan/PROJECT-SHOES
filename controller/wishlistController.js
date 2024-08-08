@@ -32,7 +32,7 @@ try {
 console.log('productId',productId)//-----------
 console.log('userId',userId)//-----------
 
-const wishlistData = await Wishlist.findOne({user:userId,product:productId});
+const wishlistData = await Wishlistq.findOne({user:userId,product:productId});
 
 if(wishlistData){
     console.log('exist wishlit')//--------------
