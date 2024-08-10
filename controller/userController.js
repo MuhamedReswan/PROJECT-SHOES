@@ -10,6 +10,7 @@ const otpGenerator = require('otp-generator');
 const Razorpay = require('razorpay');
 const Products = require('../model/productsModel');
 const Orders = require('../model/orderModel');
+const Banners = require('../model/bannerModel');
 const { match } = require('assert');
 
 
@@ -259,6 +260,12 @@ const topOfferedProduct = await Products.aggregate([
     {$limit:4}
 
 ]);
+
+const currentTime = new Date()
+
+const banners = await Banners.find({isListed:true}).sort({createdAt:-1});
+
+console.log("banners",banners)//----------------------------
 
 
 

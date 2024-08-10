@@ -30,8 +30,14 @@
                 </div>
   
                 <div class="mb-4">
-                  <label for="url" class="form-label">Url productId</label>
-                  <input type="text" placeholder="Type here" class="form-control" id="url" name="url" />
+                  <label for="url" class="form-label">Category</label>
+                  <!-- <input type="text" placeholder="Type here" class="form-control" id="url" name="url" /> -->
+                  <select class="form-select" name="url" id="url"  class="form-control">
+                    <%categories.forEach((category)=>{%>
+                      <option value=<%=category.name%>  > <%=category.name%> </option>
+
+                    <%})%>
+                  </select>
                   <div id="urlError" class="text-danger font-weight-bold"></div>
                 </div>
   
@@ -41,6 +47,12 @@
                     <option value="true">Yes</option>
                     <option value="false">No</option>
                   </select>
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label">Expire Date</label>
+                  <input type="date" id="Expire-date" name="ExpireDate" class="form-control">
+                  <div id="ExpireDateError" class="text-danger font-weight-bold"></div>
                 </div>
   
                 <div class="mb-4">
@@ -94,6 +106,8 @@
         const description = document.getElementById('description').value.trim();
         const url = document.getElementById('url').value.trim();
         const imageFile = imageInput.files.length;
+        let expireDate = document.getElementById('Expire-date').value.trim();
+        let currentDate = Date.now()
   
         let valid = true;
         errorMessages.innerText = '';
@@ -104,14 +118,17 @@
         } else if (description.length < 20) {
           errorMessages.innerText = 'Description should contain at least 20 characters.';
           valid = false;
-        } else if (!/^[a-f\d]{24}$/i.test(url)) {
-          errorMessages.innerText = 'Url productId should be a 24-character hexadecimal string.';
-          valid = false;
+        // } else if (!/^[a-f\d]{24}$/i.test(url)) {
+        //   errorMessages.innerText = 'Url productId should be a 24-character hexadecimal string.';
+        //   valid = false;
         } else if (imageFile < 1) {
           errorMessages.innerText = 'Please add an image.';
           valid = false;
         }
-  
+        else if (expireDate <currentDate ) {
+          errorMessages.innerText = 'Please enter a future date';
+          valid = false;
+        }
         return valid;
       }
   
@@ -126,7 +143,7 @@
       console.log(`${key}: ${value}`);
     }
 
-    formData.append('image', imageInput.files[0]);
+    // formData.append('image', imageInput.file);
   console.log("form data====== ",formData )//---------------------------------
         try {
          fetch('/admin/banners/add-banner', {
@@ -135,7 +152,7 @@
           })
           .then((res)=>{
             console.log("res",res)//-------------------
-            res.json()})
+           return res.json()})
           .then((result)=>{
             console.log("fetch reslul",result)//---------------
             if (result.success) {

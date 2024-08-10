@@ -156,15 +156,17 @@ admin_route.get('/sales-report', adminAuth.isLogin,adminController.loadSalesrepo
 //filter chart
 admin_route.post('/dashboard/filter-chart',adminAuth.isLogin,adminController.filterYearlyMonthly);
 
-// 404
-admin_route.get('*', adminAuth.isLogin,adminController.loadError404);
 
 
 
 // load banners
-//  admin_route.get('/banners',adminAuth.isLogin,bannerController.loadBanners);
-//  admin_route.get('/banners/add-banner',adminAuth.isLogin,bannerController.loadAddBanner );
-//  admin_route.post('/banners/add-banner',adminAuth.isLogin,multerUpload.single('file'),bannerController.insertBanners );
+ admin_route.get('/banners',adminAuth.isLogin,bannerController.loadBanners);
+ admin_route.get('/banners/add-banner',adminAuth.isLogin,bannerController.loadAddBanner );
+ admin_route.post('/banners/add-banner',adminAuth.isLogin,multerUpload.single('image'),bannerController.insertBanners );
+
+ 
+// 404
+admin_route.get('*', adminAuth.isLogin,adminController.loadError404);
 
 // app.use("*", (req, res) => {
 //     res.status(404).render("error/error-404");

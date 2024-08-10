@@ -21,6 +21,11 @@ const bannerSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-});
+  expireDate:{
+    type:Date,
+    required:false
+  }
+},
+{timestamps:true});
 
 module.exports = mongoose.model("Banner", bannerSchema);
