@@ -276,7 +276,7 @@ console.log("banners",banners)//----------------------------
 
         // console.log("mostPopularProduct", mostPopularProduct)//-------------------------------------
         // { successMessage: req.flash('successMessage') 
-        res.render('home', { mostPopularProduct, latestProduct, topOfferedProduct });
+        res.render('home', { mostPopularProduct, latestProduct, topOfferedProduct,banners });
     } catch (error) {
         console.log(error.message);
         next(error);

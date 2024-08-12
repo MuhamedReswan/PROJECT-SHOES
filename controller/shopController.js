@@ -6,61 +6,64 @@ const Offers = require('../model/offerModel');
 
 
 // load shop
-const loadShop = async (req, res,next) => {
+const loadShop = async (req, res, next) => {
     try {
         const userId = req.session.user.id;
-        // console.log('req.body', req.body)//-------------
-        // console.log('req.query.page', req.query.page)//-------------
-        let count = await Products.find({ isListed: true }).count();
-        let limit = 8
-        let page = 1
-        if (req.query.page) {
-            page = req.query.page;
-        }
-        let previous = page - 1
-        let next = page + 1
-        let totalPage = Math.ceil(count / limit);
-        previous = previous > 1 ? page - 1 : 1
-        next = next > totalPage ? totalPage : page + 1
-        let start = (page - 1) * limit
+        const queryFilter = req.query.category;
+        
+        let filterConditions = { isListed: true };
 
-        const categoryData = await Category.find({ isListed: true });
-        const productData = await Products.find({ isListed: true })
+        if (queryFilter) {
+            // Find the category by name
+            const category = await Category.findOne({ name: queryFilter, isListed: true });
+
+            if (category) {
+                // If the category is found, filter products by this category's ID
+                filterConditions.category = category._id;
+            } else {
+                // If no such category is found, return no products
+                filterConditions.category = null; // Ensures no products are returned
+            }
+        }
+
+        // Get the count of products that match the filter conditions
+        let count = await Products.countDocuments(filterConditions);
+
+        let limit = 8;
+        let page = parseInt(req.query.page) || 1;
+        let start = (page - 1) * limit;
+        let totalPage = Math.ceil(count / limit);
+
+        // Fetch the products that match the filter conditions
+        let products = await Products.find(filterConditions)
             .sort({ createdAt: -1 })
             .limit(limit)
             .skip(start)
-            .populate('appliedOffer').populate({ path: 'category', populate: { path: 'appliedOffer', model: 'Offers' } });
+            .populate('appliedOffer')
+            .populate({ path: 'category', populate: { path: 'appliedOffer', model: 'Offers' } });
 
-        // .populate('category')
-        // .populate('appliedOffer');
-
-
+        const categoryData = await Category.find({ isListed: true });
         const offers = await Offers.find({ isListed: true });
         const wishlistData = await Wishlist.find({ user: userId });
-        // console.log('offers', offers)//----------------
-        // console.log('wishlistData', wishlistData)//----------------
-        // console.log('count', count)//----------------
-        // console.log('totalPage', totalPage)//----------------
-        // console.log('previous', previous)//----------------
-        // console.log('next', next)//----------------
-        // console.log('productData', productData)//----------------
 
         res.render('shop', {
-            categoryData: categoryData,
-            productData: productData,
-            wishlistData: wishlistData,
-            next: next,
-            previous: previous,
-            totalPage: totalPage,
-            start: start,
-            page: page,
-            offers: offers
+            categoryData,
+            productData: products,
+            wishlistData,
+            next: page + 1 > totalPage ? totalPage : page + 1,
+            previous: page - 1 < 1 ? 1 : page - 1,
+            totalPage,
+            start,
+            page,
+            offers,
+            queryFilter
         });
     } catch (error) {
         console.log(error.message);
         next(error);
-        }
-}
+    }
+};
+
 
 // load single product 
 const loadSingleProduct = async (req, res,next) => {

@@ -34,7 +34,30 @@
                         </div>
                     </div>
                 </div>
-                <div class="slide slideshow--medium">
+<%if(banners){%>
+<%banners.forEach((banner)=>{%>
+    <div class="slide slideshow--medium">
+        <div class="blur-up lazyload bg-size">
+            <img class="blur-up lazyload bg-img" data-src="user/assets/images/slideshow-banners/home7-banner2.jpg" src="user/assets/images/banners/<%=banner.image%>" alt="New Season Styles" title="New Season Styles" />
+            <div class="slideshow__text-wrap slideshow__overlay classic middle">
+                <div class="slideshow__text-content classic middle">
+                    <div class="container">
+                        <div class="wrap-caption right">
+                            <h2 class="h1 mega-title slideshow__title"><%=banner.title%></h2>
+                            <span class="mega-subtitle slideshow__subtitle"><%=banner.description%></span>
+                           <a href="/shop?category=<%=banner.url%>"><span class="btn">Shop now</span></a> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<%})%>
+<%}%>
+
+                
+                <!-- <div class="slide slideshow--medium">
                 	<div class="blur-up lazyload bg-size">
                         <img class="blur-up lazyload bg-img" data-src="user/assets/images/slideshow-banners/home7-banner2.jpg" src="user/assets/images/slideshow-banners/home7-banner2.jpg" alt="New Season Styles" title="New Season Styles" />
                         <div class="slideshow__text-wrap slideshow__overlay classic middle">
@@ -49,7 +72,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
         <!--End Home slider-->

@@ -66,7 +66,7 @@ let updatedUrl = `665b1ea34bf856131341a8dd`
 const banner = new Banners({
     title:name,
     description:description,
-    url:`http://localhost:3001/single-product?id=${url}`,
+    url:`${url}`,
     isListed:isListed,
     image:imageName,
     expireDate:formatedExpire

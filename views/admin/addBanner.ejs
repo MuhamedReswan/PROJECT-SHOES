@@ -118,14 +118,14 @@
         } else if (description.length < 20) {
           errorMessages.innerText = 'Description should contain at least 20 characters.';
           valid = false;
-        // } else if (!/^[a-f\d]{24}$/i.test(url)) {
-        //   errorMessages.innerText = 'Url productId should be a 24-character hexadecimal string.';
-        //   valid = false;
+        } else if (!/^[A-Za-z\s]+$/.test(url)) {
+          errorMessages.innerText = 'Description only allowed leteters and space.';
+          valid = false;
         } else if (imageFile < 1) {
           errorMessages.innerText = 'Please add an image.';
           valid = false;
         }
-        else if (expireDate <currentDate ) {
+        else if (new Date(expireDate) <new Date() ) {
           errorMessages.innerText = 'Please enter a future date';
           valid = false;
         }

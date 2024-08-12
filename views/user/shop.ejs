@@ -44,6 +44,12 @@
                                             <% categoryData.forEach((category,index)=>{ %>
                                                 <li>
                                                     <input type="checkbox" class="category-input-filter"
+                                                    <%if(queryFilter){%>
+                                                        <%if(category.name ==queryFilter){%>
+                                                            checked
+                                                   <%}%>
+                                                   <%}%>
+                                                    
                                                         value="<%= category._id %>" id="category<%=index%>">
                                                     <label for="check1"><span><span></span></span>
                                                         <%= category.name %>
