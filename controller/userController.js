@@ -12,6 +12,8 @@ const Products = require('../model/productsModel');
 const Orders = require('../model/orderModel');
 const Banners = require('../model/bannerModel');
 const { match } = require('assert');
+const Category = require('../model/categoryModel');
+
 
 
 // password secure
@@ -268,15 +270,14 @@ const banners = await Banners.find({isListed:true}).sort({createdAt:-1});
 console.log("banners",banners)//----------------------------
 
 
-
+const categoryData =await Category.find({isListed:true});
   
-
         // console.log("topOfferedProduct ",topOfferedProduct)//----------------------------
         // console.log("latest 5",latestProduct)//----------------------------
 
         // console.log("mostPopularProduct", mostPopularProduct)//-------------------------------------
         // { successMessage: req.flash('successMessage') 
-        res.render('home', { mostPopularProduct, latestProduct, topOfferedProduct,banners });
+        res.render('home', { mostPopularProduct, latestProduct, topOfferedProduct,banners,categoryData });
     } catch (error) {
         console.log(error.message);
         next(error);
