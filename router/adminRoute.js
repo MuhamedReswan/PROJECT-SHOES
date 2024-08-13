@@ -15,10 +15,11 @@ const config = require('../config/config');
 const adminController = require('../controller/adminController');
 const productController =require('../controller/productController');
 const categoryController =require('../controller/categoryController');
-const adminAuth = require('../middlewares/adminAuth');
 const orderController = require('../controller/orderController');
 const couponController = require('../controller/couponController');
 const bannerController = require('../controller/bannerController');
+const adminAuth = require('../middlewares/adminAuth');
+
 
 
 admin_route.use('/user',express.static(path.join(__dirname,'public/user')));
@@ -163,6 +164,9 @@ admin_route.post('/dashboard/filter-chart',adminAuth.isLogin,adminController.fil
  admin_route.get('/banners',adminAuth.isLogin,bannerController.loadBanners);
  admin_route.get('/banners/add-banner',adminAuth.isLogin,bannerController.loadAddBanner );
  admin_route.post('/banners/add-banner',adminAuth.isLogin,multerUpload.single('image'),bannerController.insertBanners );
+ admin_route.post('/banners/change-status',adminAuth.isLogin,bannerController.changeBannerStatus)
+ admin_route.get('/banners/edit-banner',adminAuth.isLogin,bannerController.loadEditBanner)
+ admin_route.post('/banners/edit-banner',adminAuth.isLogin,multerUpload.single('image'),bannerController.updateBanner)
 
  
 // 404

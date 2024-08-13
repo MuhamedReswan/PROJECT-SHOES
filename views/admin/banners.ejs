@@ -52,18 +52,19 @@
                                                     <%= banner.isListed==true ? 'Listed' : 'Unlisted' %>
                                                 </button>
                                             </td>                                             <td>
-                                                <a href="/admin/edit-banner/<%= banner._id%>" class="btn btn-sm  rounded font-sm text-center btn-outline-dark"><span> Edit </span> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                <!-- <a href="/admin/banners/edit-banner" class="btn btn-sm  rounded font-sm text-center btn-outline-dark"><span> Edit </span> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-pencil-square" viewBox="0 0 16 16"> -->
+                                                <a href="/admin/banners/edit-banner?id=<%= banner._id %>" class="btn btn-sm  rounded font-sm text-center btn-outline-dark"><span> Edit </span> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="blue" class="bi bi-pencil-square" viewBox="0 0 16 16">
                                                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                                     <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                                                   </svg></a>
                                               </td>
                                               <% if (banner.isListed){%>
                                                 <td>
-                                                    <div class="btn btn-sm btn-danger rounded font-sm text-center list-unlist" banner-id="<%= banner._id %>" data-initial-status="<%= banner.isListed %>" onclick="listAndUnlist('<%= banner._id%>')">Un list</div>
+                                                    <div class="btn btn-sm btn-danger rounded font-sm text-center list-unlist" banner-id="<%= banner._id %>" data-initial-status="<%= banner.isListed %>" onclick="changeStatus('<%= banner._id%>','<%= banner.isListed%>')">Un list</div>
                                                 </td>
                                                 <%}else{%>
                                                     <td>
-                                                        <div class="btn btn-sm btn-dark rounded font-sm text-center list-unlist" banner-id="<%= banner._id %>" data-initial-status="<%= banner.isListed %>" onclick="listAndUnlist('<%= banner._id%>')">List</div>
+                                                        <div class="btn btn-sm btn-dark rounded font-sm text-center list-unlist" banner-id="<%= banner._id %>" data-initial-status="<%= banner.isListed %>" onclick="changeStatus('<%= banner._id%>','<%= banner.isListed%>')">List</div>
                                                     </td>
                                                     <%}%>
                                             </tr>
@@ -82,7 +83,35 @@
                         </div>
                         <!-- table-responsive //end -->
                     </div>
-
+                    <div class="pagination-area mt-20 mb-30">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                                <!-- Previous Page Link -->
+                                <li class="page-item <%= previous === page ? 'disabled' : '' %>">
+                                    <a class="page-link d-flex align-items-center justify-content-center"
+                                       href="<%= previous === page ? '#' : '/admin/banners?page=' + previous %>">
+                                       <i class="material-icons md-chevron_left"></i>
+                                    </a>
+                                </li>
+                                
+                                <!-- Current Page Link -->
+                                <li class="page-item active">
+                                    <a class="page-link d-flex align-items-center justify-content-center" href="#">
+                                        <%= page %>
+                                    </a>
+                                </li>
+                    
+                                <!-- Next Page Link -->
+                                <li class="page-item <%= next === page ? 'disabled' : '' %>">
+                                    <a class="page-link d-flex align-items-center justify-content-center"
+                                       href="<%= next === page ? '#' : '/admin/banners?page=' + next %>">
+                                       <i class="material-icons md-chevron_right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    
                 </section>
                 <!-- content-main end// -->
                 <footer class="main-footer font-xs">
@@ -100,17 +129,17 @@
                 </footer>
         </main>
 
-        <!-- <script>
+        <script>
 
             document.addEventListener('DOMContentLoaded', (event) => {
                 // Your code here
             });
 
 
-            function changeStatus(offerId, status) {
+            function changeStatus(bannerId, status) {
                 console.log('change status')//--------------
 
-                let data = { offerId, status }
+                let data = { bannerId, status }
 
                 console.log('data status', data);//-----------------------
 
@@ -124,10 +153,11 @@
                     confirmButtonText: "Yes!",
                     width: '300px'
                 }).then((result) => {
+                    console.log("result on sjax",result)//-------------------
                     if (result.isConfirmed) {
                         $.ajax({
                             method: "POST",
-                            url: '/admin/offers/change-status',
+                            url: '/admin/banners/change-status',
                             data: data,
                             success: (response) => {
                                 if (response.statusChanged) {
@@ -141,7 +171,7 @@
                                     });
 
                                     setTimeout(() => {
-                                        window.location.href = "/admin/offers"
+                                        window.location.href = "/admin/banners"
                                     }, 1000)
                                 }
 
@@ -166,7 +196,12 @@
             }
 
 
-        </script> -->
+        </script><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="path/to/your/custom-script.js"></script>
+
+
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
