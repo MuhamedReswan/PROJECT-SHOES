@@ -20,8 +20,7 @@ const loadBanners = async (req, res, next) => {
         console.log("req.query.page", req.query.page);//----------
 
         let page = parseInt(req.query.page) || 1;
-
-        let limit = 3;
+        let limit = 8;
         let skip = (page - 1) * limit;
 
         const banners = await Banners.find({})
@@ -94,7 +93,6 @@ const insertBanners = async (req, res, next) => {
             throw new Error(error);
         }
 
-        let updatedUrl = `665b1ea34bf856131341a8dd`
         const banner = new Banners({
             title: name,
             description: description,
@@ -105,8 +103,7 @@ const insertBanners = async (req, res, next) => {
         })
 
         const savedBanner = await banner.save();
-        // console.log('savedBanner', savedBanner)//-------------------------
-
+        
         if (savedBanner) {
             res.status(200).json({ success: true });
 

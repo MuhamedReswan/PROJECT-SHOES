@@ -35,4 +35,4 @@ type:Number,
 })
 
 
-module.exports = mongoose.model('Returns',retrunSchema)
+module.exports = mongoose.model('Returns', returnSchema)
