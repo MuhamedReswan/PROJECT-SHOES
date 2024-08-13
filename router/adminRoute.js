@@ -43,7 +43,7 @@ admin_route.use((req,res,next)=>{
 
 
 // admin login
-admin_route.get('/login', adminAuth.isLogout, adminController.adminLoginLoad);
+admin_route.get('/login', adminAuth.isLogout, adminHelper.returnRequestCount, adminController.adminLoginLoad);
 admin_route.post('/login', adminAuth.isLogout, adminController.verifyAdminLogin);
 
 
@@ -58,7 +58,7 @@ admin_route.get('/customers', adminAuth.isLogin, adminHelper.returnRequestCount,
 admin_route.post('/block-user', adminAuth.isLogin, adminController.blockUser);
 
 //admin logout 
-admin_route.get('/logout',adminAuth.isLogin, adminController.loadLogout);
+admin_route.get('/logout',adminAuth.isLogin, adminHelper.returnRequestCount, adminController.loadLogout);
 
 // list product  
 admin_route.get('/products-list' ,adminAuth.isLogin, adminHelper.returnRequestCount, productController.ProductsList);
@@ -68,7 +68,7 @@ admin_route.get('/add-products' ,adminAuth.isLogin, adminHelper.returnRequestCou
 admin_route.post('/add-products',adminAuth.isLogin, multerUpload.array('images'), productController.insertProduct);
 
 // edit products
-admin_route.get('/edit-products/:id',adminAuth.isLogin, productController.loadEditProduct);
+admin_route.get('/edit-products/:id',adminAuth.isLogin, adminHelper.returnRequestCount, productController.loadEditProduct);
 admin_route.post('/edit-products', adminAuth.isLogin, multerUpload.array('images'), productController.updateProduct);
 
 // product list and unlist
