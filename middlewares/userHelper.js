@@ -2,6 +2,8 @@
 const Products = require('../model/productsModel');
 const Cart = require('../model/cartModel');
 const Wishlist = require('../model/wishlistModel');
+const Category = require('../model/categoryModel');
+
 
 const countOfCartAndWishlist = async (req, res, next) => {
     try {
@@ -20,12 +22,17 @@ const countOfCartAndWishlist = async (req, res, next) => {
 
         let cartCount = cart?.products ? cart.products.length : 0;
 
+
+        const categoryData =await Category.find({isListed:true});
+
+
         user = {
             wishlistCount: wishlistCount,
             cartCount: cartCount
         }
 
         res.locals.user = user;
+        res.locals.categoryData =categoryData
 
         next();
     } catch (error) {

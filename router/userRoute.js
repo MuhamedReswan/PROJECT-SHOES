@@ -102,8 +102,8 @@ user_route.get('/single-product', userAuth.isLogin, userHelper.countOfCartAndWis
 user_route.post('/filter-shop', userAuth.isLogin, userHelper.countOfCartAndWishlist, shopController.filterShop);
 
 
-
-
+// about us
+user_route.get('/about-us',userAuth.isLogin, userHelper.countOfCartAndWishlist, userController.loadAboutUs)
 // load cart
 user_route.get('/cart', userAuth.isLogin, userHelper.countOfCartAndWishlist, cartController.loadCart);
 

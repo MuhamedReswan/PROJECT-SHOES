@@ -269,15 +269,13 @@ const banners = await Banners.find({isListed:true}).sort({createdAt:-1});
 
 console.log("banners",banners)//----------------------------
 
-
-const categoryData =await Category.find({isListed:true});
   
         // console.log("topOfferedProduct ",topOfferedProduct)//----------------------------
         // console.log("latest 5",latestProduct)//----------------------------
 
         // console.log("mostPopularProduct", mostPopularProduct)//-------------------------------------
         // { successMessage: req.flash('successMessage') 
-        res.render('home', { mostPopularProduct, latestProduct, topOfferedProduct,banners,categoryData });
+        res.render('home', { mostPopularProduct, latestProduct, topOfferedProduct,banners });
     } catch (error) {
         console.log(error.message);
         next(error);
@@ -779,16 +777,30 @@ const loadProfile = (req, res,next) => {
 //         }
 // }
 
+
+// about us 
+const loadAboutUs = (req,res)=>{
+    try {
+        res.status(200).render("aboutUs")
+    } catch (error) {
+        console.log(error.message);
+        next(error); 
+    }
+}
+
 module.exports = {
     loadHome,
+    loadAboutUs,
     loadRegister,
     loadLogin,
     insertUser,
     verifyLogin,
+
     loadOtp,
     verifyOtp,
     sendOtp,
     resendOtp,
+
     userLogout,
     // LoadError404,
     loadForgotPassword,
