@@ -1,11 +1,9 @@
 const Products = require('../model/productsModel');
 const Category = require('../model/categoryModel');
 const Wishlist = require('../model/wishlistModel');
-const { populate } = require('dotenv');
 const Offers = require('../model/offerModel');
 
-
-// load shop
+// Load Shop Page
 const loadShop = async (req, res, next) => {
     try {
         const userId = req.session.user.id;
@@ -13,29 +11,28 @@ const loadShop = async (req, res, next) => {
         
         let filterConditions = { isListed: true };
 
+        // Apply category filter if specified
         if (queryFilter) {
-            // Find the category by name
             const category = await Category.findOne({ name: queryFilter, isListed: true });
 
             if (category) {
-                // If the category is found, filter products by this category's ID
                 filterConditions.category = category._id;
             } else {
-                // If no such category is found, return no products
-                filterConditions.category = null; // Ensures no products are returned
+                // If no valid category found, ensure no products are returned
+                filterConditions.category = null;
             }
         }
 
-        // Get the count of products that match the filter conditions
-        let count = await Products.countDocuments(filterConditions);
+        // Count total products matching the filter
+        const count = await Products.countDocuments(filterConditions);
 
-        let limit = 8;
-        let page = parseInt(req.query.page) || 1;
-        let start = (page - 1) * limit;
-        let totalPage = Math.ceil(count / limit);
+        const limit = 8;
+        const page = parseInt(req.query.page) || 1;
+        const start = (page - 1) * limit;
+        const totalPage = Math.ceil(count / limit);
 
-        // Fetch the products that match the filter conditions
-        let products = await Products.find(filterConditions)
+        // Fetch filtered products with pagination
+        const products = await Products.find(filterConditions)
             .sort({ createdAt: -1 })
             .limit(limit)
             .skip(start)
@@ -46,6 +43,7 @@ const loadShop = async (req, res, next) => {
         const offers = await Offers.find({ isListed: true });
         const wishlistData = await Wishlist.find({ user: userId });
 
+        // Render shop page with fetched data
         res.render('shop', {
             categoryData,
             productData: products,
@@ -59,149 +57,122 @@ const loadShop = async (req, res, next) => {
             queryFilter
         });
     } catch (error) {
-        console.log(error.message);
+        console.error('Error in loadShop:', error.message);
         next(error);
     }
 };
 
-
-// load single product 
-const loadSingleProduct = async (req, res,next) => {
+// Load Single Product Page
+const loadSingleProduct = async (req, res, next) => {
     try {
-        const id = req.query.id;
-        // console.log('id', id);//----------
+        const productId = req.query.id;
         const userId = req.session.user.id;
-        const product = await Products.findOne({ _id: id }).populate('appliedOffer').populate({ path: 'category', populate: { path: 'appliedOffer', model: 'Offers' } });
-        const sDate = new Date();
-        const dDate = new Date(sDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-        const startDate = sDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit' }).replaceAll(',', "-");
-        const deliveryDate = dDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit' }).replaceAll(',', "-");
-        const wishlistData = await Wishlist.findOne({ user: userId, product: id });
+
+        // Fetch single product by ID with related offers and categories
+        const product = await Products.findById(productId)
+            .populate('appliedOffer')
+            .populate({ path: 'category', populate: { path: 'appliedOffer', model: 'Offers' } });
+
+        // Set delivery dates
+        const startDate = new Date();
+        const deliveryDate = new Date(startDate.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days later
+        const formattedStartDate = startDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit' }).replaceAll(',', "-");
+        const formattedDeliveryDate = deliveryDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit' }).replaceAll(',', "-");
+
+        const wishlistData = await Wishlist.findOne({ user: userId, product: productId });
+
+        // Render single product page
         if (product) {
-            res.render('singleProduct', { product, deliveryDate, startDate, wishlistData });
+            res.render('singleProduct', { product, deliveryDate: formattedDeliveryDate, startDate: formattedStartDate, wishlistData });
         } else {
-            console.log('no prodcut getting')//----------------------
+            console.error('Product not found');
         }
-
     } catch (error) {
-        console.log(error.message);
-        next(error);   
-     }
-}
-
-
-
-//filter shop 
-const filterShop = async (req, res,next) => {
-    try {
-        console.log('imi filter-shop')//---------------
-        // console.log('req.body filterShop', req.body)//--------------
-        const { selectedCategory, sortBy, priceRange, currentPage, buttonStatus, searchInputText } = req.body
-        let filterTerms = { isListed: true }
-        if (selectedCategory && selectedCategory.length > 0) {
-            filterTerms.category = { $in: selectedCategory }
-        }
-        if (searchInputText) {
-            filterTerms.name = { $regex: searchInputText, $options: 'i' }
-        }
-
-        let price = priceRange.split('-');
-        let min = parseInt(price[0].substring(1).trim());
-        let max = parseInt(price[1].substring(1).replace('₹', ""));
-        filterTerms.offerPrice = { $gte: min, $lte: max }
-
-        let sortOption = {}
-        if (sortBy === 'all') {
-            sortOption = { createdAt: 1 }
-        } else if (sortBy === 'a-z') {
-            sortOption = { name: 1 }
-        } else if (sortBy === 'z-a') {
-            sortOption = { name: -1 }
-        } else if (sortBy === 'low-high') {
-            sortOption = { price: 1 }
-        } else if (sortBy === 'high-low') {
-            sortOption = { price: -1 }
-        }
-
-        const count = await Products.find(filterTerms).count()
-
-        let limit = 8
-        let page = 1
-        if (currentPage > 1) {
-            page = currentPage;
-        }
-        // let previous = page - 1
-        // let next = page + 1
-        let totalPage = Math.ceil(count / limit);
-        // previous = previous > 1 ? page - 1 : 1
-        // next = next > totalPage ? totalPage : page + 1
-
-        if (buttonStatus !== undefined && buttonStatus === 'previous') {
-            page = page - 1 > 1 ? page - 1 : 1
-            // console.log('previous if')//------------
-        }
-
-        if (buttonStatus !== undefined && buttonStatus === 'next') {
-            page = page + 1 > totalPage ? totalPage : page + 1
-            // console.log('next if')//-------------
-        }
-
-        let start = (page - 1) * limit
-        // console.log('start1', start)//-------------
-        start = Math.abs(start)
-        // console.log('start2', start)//-------------
-
-
-        // console.log('price', price)//-------------
-        // console.log('min', min)//-------------
-        // console.log('max', max)//-------------
-        // console.log('currentPage', currentPage)//-------------
-        // console.log('filter', filterTerms)//-------------
-        // console.log('count', count)//-------------
-        // console.log('start', start)//-------------
-        // console.log('buttonStatus', buttonStatus)//-------------
-
-
-
-        let filterdProduct;
-
-        if (searchInputText) {
-            filterdProduct = await Products.find(filterTerms)
-                .sort(sortOption)
-                .populate('category');
-        } else {
-            filterdProduct = await Products.find(filterTerms)
-                .sort(sortOption)
-                .limit(limit)
-                .skip(start)
-                // .populate('category')
-                .populate('appliedOffer').populate({ path: 'category', populate: { path: 'appliedOffer', model: 'Offers' } })
-
-        }
-
-        let countOfProducts = filterdProduct.length;
-
-        // console.log('filterdProductax', filterdProduct)//-------------
-        // console.log('countOfProducts', countOfProducts)//-------------
-
-        res.status(200)
-            .json({
-                filterdProduct,
-                countOfProducts,
-                totalPage,
-                page
-            })
-    } catch (error) {
-        console.log(error.message);
+        console.error('Error in loadSingleProduct:', error.message);
         next(error);
+    }
+};
+
+// Filter Shop Products
+const filterShop = async (req, res, next) => {
+    try {
+        const { selectedCategory, sortBy, priceRange, currentPage, buttonStatus, searchInputText } = req.body;
+
+        let filterConditions = { isListed: true };
+
+        // Apply category filter if selected
+        if (selectedCategory && selectedCategory.length > 0) {
+            filterConditions.category = { $in: selectedCategory };
         }
-}
 
+        // Apply search filter if input text is provided
+        if (searchInputText) {
+            filterConditions.name = { $regex: searchInputText, $options: 'i' };
+        }
 
+        // Apply price range filter
+        let [minPrice, maxPrice] = priceRange.split('-').map(price => parseInt(price.substring(1).trim()));
+        filterConditions.offerPrice = { $gte: minPrice, $lte: maxPrice };
+
+        // Define sorting options based on the user's choice
+        let sortOption = {};
+        switch (sortBy) {
+            case 'a-z':
+                sortOption.name = 1;
+                break;
+            case 'z-a':
+                sortOption.name = -1;
+                break;
+            case 'low-high':
+                sortOption.price = 1;
+                break;
+            case 'high-low':
+                sortOption.price = -1;
+                break;
+            default:
+                sortOption.createdAt = 1;
+        }
+
+        // Count total filtered products
+        const count = await Products.find(filterConditions).countDocuments();
+
+        const limit = 8;
+        let page = currentPage || 1;
+
+        // Adjust page for next or previous button
+        if (buttonStatus === 'previous') {
+            page = Math.max(1, page - 1);
+        } else if (buttonStatus === 'next') {
+            page = Math.min(page + 1, Math.ceil(count / limit));
+        }
+
+        const start = (page - 1) * limit;
+
+        // Fetch filtered products with pagination
+        const filteredProducts = await Products.find(filterConditions)
+            .sort(sortOption)
+            .limit(limit)
+            .skip(start)
+            .populate('appliedOffer')
+            .populate({ path: 'category', populate: { path: 'appliedOffer', model: 'Offers' } });
+
+        const countOfProducts = filteredProducts.length;
+
+        // Respond with filtered products and pagination info
+        res.status(200).json({
+            filteredProducts,
+            countOfProducts,
+            totalPage: Math.ceil(count / limit),
+            page
+        });
+    } catch (error) {
+        console.error('Error in filterShop:', error.message);
+        next(error);
+    }
+};
 
 module.exports = {
     loadShop,
     loadSingleProduct,
     filterShop
-
-}
+};

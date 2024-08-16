@@ -74,7 +74,7 @@ admin_route.get('/return-request', adminAuth.isLogin, adminHelper.returnRequestC
 admin_route.post('/return-product-status-change', adminAuth.isLogin, orderController.changeRetrunProductStatus);
 
 // Coupon Management
-admin_route.get('/coupons', adminAuth.isLogin, adminHelper.returnRequestCount, couponController.loadcouponManagement);
+admin_route.get('/coupons', adminAuth.isLogin, adminHelper.returnRequestCount, couponController.loadCouponManagement);
 admin_route.post('/coupons/add-coupon', adminAuth.isLogin, couponController.addCoupon);
 admin_route.post('/coupons/edit-coupon', adminAuth.isLogin, couponController.updateCoupon);
 admin_route.post('/coupons/change-status', adminAuth.isLogin, couponController.changeStatus);

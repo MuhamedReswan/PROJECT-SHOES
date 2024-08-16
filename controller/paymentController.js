@@ -1,125 +1,91 @@
 const Razorpay = require('razorpay');
-const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
+const crypto = require('crypto');
 const Orders = require('../model/orderModel');
-const crypto = require('crypto')
+const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 
-
+// Initialize Razorpay instance
 const razorpayInstance = new Razorpay({
     key_id: RAZORPAY_ID_KEY,
     key_secret: RAZORPAY_SECRET_KEY
 });
 
-
-
-const createOrderPayment = async (req, res, myOrder,paymentMethod,next) => {
+// Create an order payment with Razorpay
+const createOrderPayment = async (req, res, myOrder, paymentMethod, next) => {
     try {
-    // console.log(req, 'order123req')//------------------------
-    // console.log(res, 'order123res')//------------------------
-    console.log('myOrderr123------------',myOrder)//------------------------
-    console.log('paymentMethod------------',paymentMethod)//------------------------
-    console.log("my order._id in pyment controller==============", myOrder._id)//------------------------
-   
+        console.log('Creating order payment for:', myOrder._id);
 
-        console.log("im in create order payment%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");//----------------------
-        console.log("myOrder.totalAmount", myOrder.totalAmount);//-------------------------
-        console.log("myOrder._id", myOrder._id);//-------------------------
-
-        const amount = myOrder.totalAmount * 100
-
+        const amount = myOrder.totalAmount * 100; // Convert amount to paise
         const options = {
-
             amount: amount,
             currency: 'INR',
-            receipt: 'muhamedreswan9917@gmail.com'
+            receipt: myOrder._id.toString() // Use order ID as receipt
+        };
 
-        }
-
-        console.log('options ----s-', options);//---------------------------------
-
-        razorpayInstance.orders.create(options,
-
-            (err, order) => {
-
-                console.log("order on razor pay instance", order)//----------------------------------
-
-                if (!err) {
-
-                    console.log("sdfsadfsdfsdfs", order.amount)//---------------------------
-
-
-                    res.send({
-                        order,
-                        paymentMethod: paymentMethod,
-                        success: true,
-                        msg: 'Order Created',
-                        order_id: order.id,
-                        orderId: myOrder._id,
-                        amount: amount,
-                        key_id: RAZORPAY_ID_KEY,
-                        contact: myOrder?.deliveryAddress?.mobile,
-                        name: myOrder?.deliveryAddress?.name,
-                        email: "customer@gmail.com"
-
-                    });
-                    // res.json({ success: true, paymentMethod: "Online", orderId: orderId, totalAmount: subtotal })
-                }
-                else {
-
-                    res.status(400).json({ success: false, msg: 'Something went wrong on razorpayInstance !' });
-
-                }
+        // Create order with Razorpay
+        razorpayInstance.orders.create(options, (err, order) => {
+            if (err) {
+                console.error('Error creating order with Razorpay:', err);
+                return res.status(400).json({ success: false, msg: 'Something went wrong with Razorpay!' });
             }
-        );
+
+            console.log('Order created:', order);
+            res.send({
+                success: true,
+                order,
+                paymentMethod,
+                msg: 'Order Created',
+                order_id: order.id,
+                orderId: myOrder._id,
+                amount,
+                key_id: RAZORPAY_ID_KEY,
+                contact: myOrder?.deliveryAddress?.mobile,
+                name: myOrder?.deliveryAddress?.name,
+                email: "customer@gmail.com"
+            });
+        });
 
     } catch (error) {
-        console.log(error.message);
-        next(error);   
-     }
-}
+        console.error('Error in createOrderPayment:', error.message);
+        next(error);
+    }
+};
 
-
-
-
-// Verify payment razorpay
-const verifyPaymentRazorpay = (async (req, res,next) => {
+// Verify Razorpay payment
+const verifyPaymentRazorpay = async (req, res, next) => {
     try {
+        console.log('Verifying Razorpay payment:', req.body);
 
-        console.log("verfy razopay---------------------------------------------------------", req.body)//---------------
-        const userId = req.session.user?.id;
         const { payment, order } = req.body;
-        console.log("verfy razopay payment--------------", payment)//---------------
-        console.log("verfy razopay order--------------", order)//---------------
 
+        // Generate HMAC for validation
+        const hmac = crypto.createHmac('sha256', RAZORPAY_SECRET_KEY);
+        hmac.update(`${payment.razorpay_order_id}|${payment.razorpay_payment_id}`);
+        const hmacValue = hmac.digest('hex');
 
-        const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET_KEY);
-        hmac.update(payment.razorpay_order_id + "|" + payment.razorpay_payment_id);
-        const hmacValue = hmac.digest("hex");
+        // Validate HMAC
+        if (hmacValue === payment.razorpay_signature) {
+            console.log('Payment verified for order:', order.orderId);
 
-        if (hmacValue == payment.razorpay_signature) {
-            console.log("order.orderId", order.orderId);//-------------
+            // Update order status in database
+            const updatedOrder = await Orders.findOneAndUpdate(
+                { _id: order.orderId },
+                { $set: { paymentStatus: 'Paid', paymentId: payment.razorpay_payment_id, orderStatus: 'Placed' } },
+                { new: true }
+            );
 
-            const val = await Orders.findOneAndUpdate({ _id: order.orderId },
-                { $set: { paymentStatus: "Paid", paymentId: payment.razorpay_payment_id, orderStatus: "Placed" } },
-                { new: true })
-
-            console.log('val', val);//-----------------------
-
-
+            console.log('Updated order:', updatedOrder);
             return res.json({ paymentSuccess: true, orderId: order.orderId });
         } else {
-            res.json({ paymentSuccess: false, orderId: order.orderId })
+            return res.json({ paymentSuccess: false, orderId: order.orderId });
         }
 
-
     } catch (error) {
-        console.log(error.message);
-        next(error);   
-     }
-})
-
-
+        console.error('Error verifying payment with Razorpay:', error.message);
+        next(error);
+    }
+};
 
 module.exports = {
     createOrderPayment,
     verifyPaymentRazorpay
-}
+};

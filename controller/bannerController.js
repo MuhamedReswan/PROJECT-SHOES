@@ -4,7 +4,7 @@ const sharp = require('sharp');
 const { format } = require('date-fns');
 const Category = require('../model/categoryModel');
 
-//parse data type in to boolean
+// Utility function to parse string booleans to actual boolean values
 function parseBoolean(value) {
     if (typeof value === 'string') {
         return value.toLowerCase() === 'true';
@@ -12,28 +12,23 @@ function parseBoolean(value) {
     return Boolean(value);
 }
 
-
-// load banners
+// Load banners with pagination
 const loadBanners = async (req, res, next) => {
     try {
-        console.log("within load banners");//--------------------
-        console.log("req.query.page", req.query.page);//----------
+        const page = parseInt(req.query.page) || 1;
+        const limit = 8;
+        const skip = (page - 1) * limit;
 
-        let page = parseInt(req.query.page) || 1;
-        let limit = 8;
-        let skip = (page - 1) * limit;
-
+        // Fetch banners with pagination and sorting by creation date
         const banners = await Banners.find({})
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
 
-        let count = await Banners.countDocuments({});
-
-        let totalPages = Math.ceil(count / limit);
-
-        let next = page < totalPages ? page + 1 : totalPages;
-        let previous = page > 1 ? page - 1 : 1;
+        const count = await Banners.countDocuments({});
+        const totalPages = Math.ceil(count / limit);
+        const next = page < totalPages ? page + 1 : totalPages;
+        const previous = page > 1 ? page - 1 : 1;
 
         res.render('banners', {
             banners,
@@ -44,206 +39,146 @@ const loadBanners = async (req, res, next) => {
             url: req.originalUrl
         });
     } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
         next(error);
     }
-}
+};
 
-
-// add banner
+// Load form to add a new banner
 const loadAddBanner = async (req, res, next) => {
     try {
-        const categories = await Category.find({ isListed: true })
-        // console.log("categories", categories)//---------------
+        const categories = await Category.find({ isListed: true });
         res.status(200).render("addBanner", { categories });
-
     } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
         next(error);
     }
-}
+};
 
-
-
-// insert banner
+// Insert a new banner
 const insertBanners = async (req, res, next) => {
     try {
-        console.log("within insert Banner")//---------------------  
-        // console.log("req.body", req.body)//---------------------  
-        // console.log("req.file", req.file)//---------------------  
         const { isListed, url, description, name, ExpireDate } = req.body;
-        // const imageFile = req.file
-        // console.log("image banner", image)//---------------------
-        name.toLowerCase();
-        const formatedExpire = format(ExpireDate, 'MMMM d, yyyy');
 
-
-        let imageName = req.file.originalname;
-
+        // Format banner title and expiration date
+        const formattedName = name.toLowerCase();
+        const formattedExpireDate = format(ExpireDate, 'MMMM d, yyyy');
+        const imageName = req.file.originalname;
         const inputPath = req.file.path;
         const outputPath = path.join(__dirname, '..', 'public', 'user', 'assets', 'images', 'banners', imageName);
 
-        try {
-            await sharp(inputPath)
-                .resize(1920, 1080)
-                .toFile(outputPath);
-
-        } catch (error) {
-            console.error('Error processing image:', error.message);
-            throw new Error(error);
-        }
-
-        const banner = new Banners({
-            title: name,
-            description: description,
-            url: `${url}`,
-            isListed: isListed,
-            image: imageName,
-            expireDate: formatedExpire
-        })
-
-        const savedBanner = await banner.save();
-        
-        if (savedBanner) {
-            res.status(200).json({ success: true });
-
-        } else {
-            res.status(400).json({ success: false, error: "banner not saved" });
-        }
-    } catch (error) {
-        console.log(error.message);
-        next(error);
-    }
-}
-
-
-
-// change banner status
-const changeBannerStatus = async (req, res, next) => {
-    console.log("changeBannersStatus invoked"); //-----------
-    try {
-        const { bannerId, status } = req.body;
-
-
-        // Convert status to boolean
-        const currentStatus = parseBoolean(status)
-        // console.log('iam curr', currentStatus)//---------------------
-        const toStatus = !currentStatus;
-
-        console.log('changeOfferStatus'); //--------------------
-        console.log('req.body', req.body); //--------------------
-        console.log('status', currentStatus); //--------------------
-        console.log('toStatus', toStatus); //--------------------
-
-        const updatedBanner = await Banners.findByIdAndUpdate(
-            { _id: bannerId },
-            { $set: { isListed: toStatus } },
-            { new: true }
-        );
-
-        console.log("updatedBanner", updatedBanner); //-------------------
-
-        if (updatedBanner) {
-            console.log('ooooooooooooooooooooooooo', updatedBanner);//---------------
-            res.status(200).json({ statusChanged: true });
-        } else {
-            res.status(404).json({ message: "Banner not found", statusChanged: false });
-        }
-
-    } catch (error) {
-        console.log(error.message);
-        next(error);
-    }
-}
-
-
-
-// edit banner
-const loadEditBanner = async (req, res, next) => {
-    try {
-        console.log("within loadBanner conroleer edit")//-----------------------
-        const bannerId = req.query.id;
-        console.log("bannerId", bannerId)//---------------------
-        const categories = await Category.find({ isListed: true })
-
-
-        const bannerDetails = await Banners.findOne({ _id: bannerId });
-        console.log("bannerbannerDetails", bannerDetails)//---------------
-
-        if (bannerDetails) {
-            console.log("within offerDEtail if")//-----------------------------
-            res.status(200).render('editBanner', { bannerDetails, categories });
-        } else {
-            console.log("within offerDEtail else")//-----------------------------
-
-            throw new Error("offer not found this bannerId")
-        }
-
-    } catch (error) {
-        console.log(error.message);
-        next(error);
-    }
-}
-
-
-
-// update banner
-const updateBanner = async (req, res, next) => {
-    try {
-        console.log("within update Banner")//---------------------  
-        console.log("req.body", req.body)//---------------------  
-        console.log("req.file", req.file)//---------------------  
-        const { isListed, url, description, name, ExpireDate, bannerId } = req.body;
-        // const imageFile = req.file
-        // console.log("image banner", image)//---------------------
-        name.toLowerCase();
-        const formatedExpire = format(ExpireDate, 'MMMM d, yyyy');
-let updation ={
-    title: name,
-    description: description,
-    url: `${url}`,
-    isListed: isListed,
-    expireDate: formatedExpire
-}
-
-if(req.file){
-    let imageName = req.file.originalname;
-
-    const inputPath = req.file.path;
-    const outputPath = path.join(__dirname, '..', 'public', 'user', 'assets', 'images', 'banners', imageName);
-    updation.image=imageName;
-    try {
+        // Resize and save the image using sharp
         await sharp(inputPath)
             .resize(1920, 1080)
             .toFile(outputPath);
 
+        // Save the banner data
+        const banner = new Banners({
+            title: formattedName,
+            description,
+            url,
+            isListed,
+            image: imageName,
+            expireDate: formattedExpireDate
+        });
+
+        const savedBanner = await banner.save();
+        if (savedBanner) {
+            res.status(200).json({ success: true });
+        } else {
+            res.status(400).json({ success: false, error: "Banner not saved" });
+        }
     } catch (error) {
-        console.error('Error processing image:', error.message);
-        throw new Error(error);
+        console.error(error.message);
+        next(error);
     }
-}
-       
+};
 
-
+// Change the status of a banner (list/unlist)
+const changeBannerStatus = async (req, res, next) => {
+    try {
+        const { bannerId, status } = req.body;
+        const currentStatus = parseBoolean(status);
         const updatedBanner = await Banners.findByIdAndUpdate(
             { _id: bannerId },
-            {
-                $set:updation
-            },
-        )
+            { $set: { isListed: !currentStatus } },
+            { new: true }
+        );
+
+        if (updatedBanner) {
+            res.status(200).json({ statusChanged: true });
+        } else {
+            res.status(404).json({ message: "Banner not found", statusChanged: false });
+        }
+    } catch (error) {
+        console.error(error.message);
+        next(error);
+    }
+};
+
+// Load banner details for editing
+const loadEditBanner = async (req, res, next) => {
+    try {
+        const bannerId = req.query.id;
+        const categories = await Category.find({ isListed: true });
+        const bannerDetails = await Banners.findOne({ _id: bannerId });
+
+        if (bannerDetails) {
+            res.status(200).render('editBanner', { bannerDetails, categories });
+        } else {
+            throw new Error("Banner not found for the given ID");
+        }
+    } catch (error) {
+        console.error(error.message);
+        next(error);
+    }
+};
+
+// Update a banner
+const updateBanner = async (req, res, next) => {
+    try {
+        const { isListed, url, description, name, ExpireDate, bannerId } = req.body;
+        const formattedName = name.toLowerCase();
+        const formattedExpireDate = format(ExpireDate, 'MMMM d, yyyy');
+        
+        let updateData = {
+            title: formattedName,
+            description,
+            url,
+            isListed,
+            expireDate: formattedExpireDate
+        };
+
+        // If a new image is uploaded, process it
+        if (req.file) {
+            const imageName = req.file.originalname;
+            const inputPath = req.file.path;
+            const outputPath = path.join(__dirname, '..', 'public', 'user', 'assets', 'images', 'banners', imageName);
+            
+            await sharp(inputPath)
+                .resize(1920, 1080)
+                .toFile(outputPath);
+
+            updateData.image = imageName;
+        }
+
+        // Update banner
+        const updatedBanner = await Banners.findByIdAndUpdate(
+            { _id: bannerId },
+            { $set: updateData },
+            { new: true }
+        );
 
         if (updatedBanner) {
             res.status(200).json({ success: true });
-
         } else {
-            res.status(400).json({ success: false, error: "banner not updated" });
+            res.status(400).json({ success: false, error: "Banner not updated" });
         }
     } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
         next(error);
     }
-}
-
+};
 
 module.exports = {
     loadBanners,
@@ -252,4 +187,4 @@ module.exports = {
     changeBannerStatus,
     loadEditBanner,
     updateBanner
-}
+};

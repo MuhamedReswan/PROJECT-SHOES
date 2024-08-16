@@ -2,144 +2,124 @@ const Users = require('../model/userModel');
 const Orders = require('../model/orderModel');
 const Wallet = require('../model/walletModel');
 const bcrypt = require('bcrypt');
-const { securedPassword } = require('../controller/userController')
+const { securedPassword } = require('../controller/userController');
 
-
-
-// add address
-const addAddress = async (req, res,next) => {
+// Add new address to user profile
+const addAddress = async (req, res, next) => {
     try {
-
         const { name, mobile, address, district, city, pincode, state, country } = req.body;
         const userId = req.session.user.id;
-        const data = { name: name, mobile: mobile, address: address, district: district, city: city, pincode: pincode, state: state, country: country }
+        const newAddress = { name, mobile, address, district, city, pincode, state, country };
 
-        const userData = await Users.updateOne(
-            { _id: userId },
-            { $push: { addresses: data } })
+        // Add address to the user's address list
+        await Users.updateOne({ _id: userId }, { $push: { addresses: newAddress } });
 
+        // Redirect to the checkout page after address is added
         res.redirect('/checkout');
-
     } catch (error) {
- console.log(error.message);
-        next(error); 
+        console.error('Error adding address:', error.message);
+        next(error);
     }
 }
 
-
-// profile 
-const loadProfile = async (req, res,next) => {
+// Load user profile with orders and wallet details
+const loadProfile = async (req, res, next) => {
     try {
         const userId = req.session.user.id;
-        const orders = await Orders.find({ user: userId }).populate('products.productId').sort({createdAt:-1});
-        const walletDetails = await Wallet.findOne({ user: userId }).sort({createdAt:-1});
-        const user = await Users.findOne({ _id: userId });
-        
-        walletDetails.transactions.sort((a,b)=>b.date-a.date);
 
-        console.log("wallet in controller",walletDetails)//----------------------------------
+        // Fetch user orders, wallet details, and user info
+        const orders = await Orders.find({ user: userId }).populate('products.productId').sort({ createdAt: -1 });
+        const walletDetails = await Wallet.findOne({ user: userId });
+        const user = await Users.findOne({ _id: userId });
+
+        // Sort wallet transactions by date
+        walletDetails.transactions.sort((a, b) => b.date - a.date);
+
+        // Render profile page with fetched data
         res.render('addProfile', { orders, user, walletDetails });
     } catch (error) {
- console.log(error.message);
-        next(error); 
+        console.error('Error loading profile:', error.message);
+        next(error);
     }
 }
 
-
-// update profile
-const updateProfile = async (req, res,next) => {
+// Update user profile (name and mobile)
+const updateProfile = async (req, res, next) => {
     try {
         const userId = req.session.user.id;
-        const name = req.body.name;
-        const mobile = req.body.mobile;
-        console.log('body update profile', req.body);//-----------------
-        const nameExist = await Users.findOne({ name: name });
+        const { name, mobile } = req.body;
+
+        // Check if the new name already exists for another user
+        const nameExist = await Users.findOne({ name });
         const currentUser = await Users.findOne({ _id: userId });
-        console.log('currentUser', currentUser)//--------------------
-        console.log('nameExist', nameExist)//--------------------
+
         if (nameExist && nameExist.name !== currentUser.name) {
-            res.status(409).json({ nameAlready: true });
+            return res.status(409).json({ nameAlready: true });
         }
-        const updatedProfile = await Users.updateOne({ _id: userId }, { $set: { name: name, mobile: mobile } }, { new: true });
-        console.log('updatedProfile', updatedProfile)//-----------------
+
+        // Update user profile
+        await Users.updateOne({ _id: userId }, { $set: { name, mobile } }, { new: true });
+
         res.status(200).json({ updated: true });
     } catch (error) {
- console.log(error.message);
-        next(error); 
+        console.error('Error updating profile:', error.message);
+        next(error);
     }
 }
 
-
-
-//change password
-const changePassword = async (req, res,next) => {
+// Change user password
+const changePassword = async (req, res, next) => {
     try {
         const { newPassword, oldPassword } = req.body;
         const userId = req.session.user.id;
 
         const user = await Users.findOne({ _id: userId });
-        const existPassword = user.password;
 
-        const match = await bcrypt.compare(oldPassword, existPassword);
+        // Compare old password with existing password
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
 
-        if (match) {
-            const hashPassword = await securedPassword(newPassword)
+        if (isMatch) {
+            // Hash new password and update it in the database
+            const hashPassword = await securedPassword(newPassword);
 
-            await Users.updateOne({
-                _id: userId
-            },
-                {
-                    $set: {
-                        password: hashPassword
-                    }
-                })
-            res.status(200).json({ success: true })
+            await Users.updateOne({ _id: userId }, { $set: { password: hashPassword } });
+
+            res.status(200).json({ success: true });
         } else {
-            res.status(400).json({ success: false })
+            res.status(400).json({ success: false });
         }
-
-
     } catch (error) {
- console.log(error.message);
-        next(error);    
-     }
-
-}
-
-
-
-// edit adddress
-const editAddress = async (req, res,next) => {
-    try {
-        console.log('im in edit address')//----------------
-        const userId = req.session.user.id;
-        const addressIndex = req.query.index;
-        const user = await Users.findOne({ _id: userId });
-        const address = user.addresses[addressIndex]
-        console.log('addressIndex', addressIndex)//----------------------
-        console.log('address', address)//----------------------
-        console.log('user', user)//----------------------
-        res.render('editAddress', { address })
-    } catch (error) {
- console.log(error.message);
-        next(error); 
+        console.error('Error changing password:', error.message);
+        next(error);
     }
 }
 
-
-
-// update address
-const updateAddress = async (req, res,next) => {
+// Load a specific address for editing
+const editAddress = async (req, res, next) => {
     try {
-        console.log('im in update address');//-----------------------
-        console.log('req.body', req.body)//--------------------
+        const userId = req.session.user.id;
+        const addressIndex = req.query.index;
+
+        // Find user and get the specific address by index
+        const user = await Users.findOne({ _id: userId });
+        const address = user.addresses[addressIndex];
+
+        // Render the edit address page with the fetched address data
+        res.render('editAddress', { address });
+    } catch (error) {
+        console.error('Error editing address:', error.message);
+        next(error);
+    }
+}
+
+// Update an existing address
+const updateAddress = async (req, res, next) => {
+    try {
         const { name, mobile, address, district, city, pincode, country, state, id } = req.body;
         const userId = req.session.user.id;
-        // const userAdress = await Users.findOne({_id:userId, 'addresses.name':name});
-        // if (userAdress){
-        //     res.json({nameAlready:true})
-        // }else{
-        const update = await Users.findOneAndUpdate(
+
+        // Find and update the specific address using its ID
+        await Users.findOneAndUpdate(
             { _id: userId, 'addresses._id': id },
             {
                 $set: {
@@ -152,29 +132,25 @@ const updateAddress = async (req, res,next) => {
                     'addresses.$.pincode': pincode,
                     'addresses.$.country': country
                 }
-            }, { new: true }
-        )
-        return res.json({
-            success: true,
-            error: false,
-            message: 'Address updated successfully'
-        })
-        //console.log('update',update)//--------------------
+            },
+            { new: true }
+        );
 
-        //}
-        // console.log('userAdress',userAdress)//-------------------- 
+        res.json({
+            success: true,
+            message: 'Address updated successfully'
+        });
     } catch (error) {
- console.log(error.message);
-        next(error); 
+        console.error('Error updating address:', error.message);
+        next(error);
     }
 }
 
-
 module.exports = {
-    addAddress,
-    loadProfile,
-    updateProfile,
-    editAddress,
-    updateAddress,
-    changePassword
+    addAddress,       // Add new address to user profile
+    loadProfile,      // Load user profile with orders and wallet details
+    updateProfile,    // Update user profile (name and mobile)
+    editAddress,      // Load a specific address for editing
+    updateAddress,    // Update an existing address
+    changePassword    // Change user password
 }

@@ -1,137 +1,120 @@
 const category = require('../model/categoryModel');
 
-// load category
-const loadCategory = async (req, res,next) => {
+// Load Category with Pagination
+const loadCategory = async (req, res, next) => {
     try {
+        let page = parseInt(req.query.page) || 1;
+        const limit = 8;
+        const start = (page - 1) * limit;
+        const count = await category.countDocuments();
 
-        let page = 1;
-        if (req.query.page) {
-            page = req.query.page
-        }
-        let limit = 8;
-        let next = page + 1;
-        let previous = page > 1 ? page - 1 : 1;
-        let count = await category.find({}).count();
-
-        let totalPage = Math.ceil(count / limit);
-        if (next > totalPage) {
-            next = totalPage
-        }
-
+        const totalPage = Math.ceil(count / limit);
+        const next = page < totalPage ? page + 1 : totalPage;
+        const previous = page > 1 ? page - 1 : 1;
 
         const categories = await category.find({})
             .limit(limit)
-            .skip((page - 1) * limit)
-            .exec();
+            .skip(start);
 
         res.render('category', {
-            categories: categories,
-            totalPage: totalPage,
-            previous: previous,
-            next: next,
-            page: page
-        })
-
+            categories,
+            totalPage,
+            previous,
+            next,
+            page
+        });
     } catch (error) {
-        console.log(error.message);
         next(error);   
-     }
+    }
 }
 
-// add category
-const addCategory = async (req, res,next) => {
+// Load Add Category Page
+const addCategory = async (req, res, next) => {
     try {
         const categories = await category.find({});
         res.render('addCategory', { categories });
     } catch (error) {
-        console.log(error.message);
         next(error);   
-     }
+    }
 }
 
-
-// insert catogery 
-const insertCategory = async (req, res,next) => {
+// Insert New Category
+const insertCategory = async (req, res, next) => {
     try {
-        const name = req.body.name
-        const findName = await category.findOne({ name: name });
+        const { name, description, isListed } = req.body;
+        const findName = await category.findOne({ name });
 
         if (findName) {
             req.flash('nameExist', 'This category name already exists.');
             res.redirect('/admin/add-category');
         } else {
-
-            const catagoryData = new category({
-                name: req.body.name,
-                description: req.body.description,
-                isListed: req.body.isListed
+            const categoryData = new category({
+                name,
+                description,
+                isListed
             });
 
-            await catagoryData.save();
+            await categoryData.save();
             res.redirect('/admin/category');
         }
     } catch (error) {
-        console.log(error.message);
         next(error);   
-     }
+    }
 }
 
-
-// edit category
-const loadEditCategory = async (req, res,next) => {
+// Load Edit Category Page
+const loadEditCategory = async (req, res, next) => {
     try {
-        const id = req.query.id;
-        const editCategory = await category.findOne({ _id: id });
+        const { id } = req.query;
+        const editCategory = await category.findById(id);
 
         res.render('editCategory', { editCategory });
     } catch (error) {
-        console.log(error.message);
         next(error);   
-     }
+    }
 }
 
-// update category
-const updateCategory = async (req, res,next) => {
+// Update Existing Category
+const updateCategory = async (req, res, next) => {
     try {
-        const id = req.body.id
-        const editName = req.body.ename;
-        const editDescription = req.body.edescription;
+        const { id, ename: editName, edescription: editDescription } = req.body;
 
+        // Check if the category name already exists for a different category
         const nameAlready = await category.findOne({ _id: { $ne: id }, name: editName });
-        console.log(nameAlready, 'name already');
+
         if (nameAlready) {
-            req.flash('nameExist', 'Category name already exist.');
+            req.flash('nameExist', 'Category name already exists.');
             res.redirect(`/admin/edit-category?id=${id}`);
         } else {
-
-            await category.findByIdAndUpdate({ _id: id }, { $set: { name: editName, description: editDescription } });
+            await category.findByIdAndUpdate(id, {
+                $set: {
+                    name: editName,
+                    description: editDescription
+                }
+            });
             res.redirect('/admin/category');
         }
     } catch (error) {
-        console.log(error.message);
         next(error);   
-     }
+    }
 }
 
-// list and unlist category
-const categoryListAndUnlist = async (req, res,next) => {
+// Toggle Category Listing Status
+const categoryListAndUnlist = async (req, res, next) => {
     try {
-        const catagoryId = req.body.id;
-        const catagoryData = await category.findOne({ _id: catagoryId });
+        const { id: categoryId } = req.body;
+        const categoryData = await category.findById(categoryId);
 
-        if (catagoryData.isListed === true) {
-            var result;
-            result = await category.updateOne({ _id: catagoryId }, { $set: { isListed: false } })
-        } else {
+        // Toggle the listing status of the category
+        const updatedCategory = await category.updateOne(
+            { _id: categoryId },
+            { $set: { isListed: !categoryData.isListed } }
+        );
 
-            result = await category.updateOne({ _id: catagoryId }, { $set: { isListed: true } })
-            console.log('result', JSON.stringify(result));
-        }
-        res.json({ list: true })
+        res.json({ list: true });
     } catch (error) {
-        console.log(error.message);
         next(error);   
-     }
+    }
 }
 
 module.exports = {
@@ -141,5 +124,4 @@ module.exports = {
     loadEditCategory,
     updateCategory,
     categoryListAndUnlist
-
 }
