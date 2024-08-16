@@ -1,35 +1,31 @@
+
 const isLogin = (req, res, next) => {
     try {
         if (req.session.admin) {
-            // console.log('next islogin');//-------------------------------
-            next();
+            next(); // Proceed if admin session exists
         } else {
-            // console.log('admin login islogin');//------------------
-            res.redirect('/admin/login');
+            res.redirect('/admin/login'); // Redirect to login if not logged in
         }
     } catch (error) {
-        console.log(error);
+        console.error("Error in isLogin middleware:", error);
+        res.status(500).send("Internal Server Error");
     }
-}
-
-
+};
 
 const isLogout = (req, res, next) => {
     try {
         if (req.session.admin) {
-            // console.log('admin home logout');//-----------------------------------
-            res.redirect('/admin/');
-        } else { 
-            // console.log('next logout');//-------------------------
-            next();
+            res.redirect('/admin/'); // Redirect to admin home if already logged in
+        } else {
+            next(); // Proceed if no admin session
         }
     } catch (error) {
-        console.log(error);
-    }  
-}
-
+        console.error("Error in isLogout middleware:", error);
+        res.status(500).send("Internal Server Error");
+    }
+};
 
 module.exports = {
     isLogin,
     isLogout
-}
+};

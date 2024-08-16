@@ -1,12 +1,12 @@
-const Returns = require('../model/returnModel')
 const Orders = require('../model/orderModel');
+
 const returnRequestCount = async (req, res, next) => {
     try {
-        console.log("in countOfCartAndWishlist")//-------------
-        let admin = req.session.admin ?? null;
+        console.log("In returnRequestCount middleware"); // For debugging
+        const admin = req.session.admin || null;
 
         const requestedCount = await Orders.aggregate([
-            {$match:{orderStatus:"Delivered"}},
+            { $match: { orderStatus: "Delivered" } },
             {
                 $lookup: {
                     from: 'products',
@@ -15,7 +15,7 @@ const returnRequestCount = async (req, res, next) => {
                     as: 'product'
                 }
             },
-            { $unwind: "$products" }, 
+            { $unwind: "$products" },
             { 
                 $match: { 
                     "products.status": "Return Requested" 
@@ -23,25 +23,24 @@ const returnRequestCount = async (req, res, next) => {
             },
             { 
                 $group: {
-                    _id: null, 
+                    _id: null,
                     count: { $sum: 1 }  
                 }
             }
-             
         ]);
-       
-if(admin){
-    console.log("requestedCount[0].count",requestedCount[0].count)//-------------------------
-    res.locals.requestedCount=requestedCount[0].count
-}
+
+        if (admin && requestedCount.length > 0) {
+            console.log("Requested Count:", requestedCount[0].count); // For debugging
+            res.locals.requestedCount = requestedCount[0].count;
+        }
 
         next();
     } catch (error) {
-        console.log(error);
+        console.error("Error in returnRequestCount middleware:", error);
+        res.status(500).send("Internal Server Error");
     }
-}
-
+};
 
 module.exports = {
     returnRequestCount
-}
+};
