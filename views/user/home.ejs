@@ -38,6 +38,7 @@
                 <%}else{%>
 
 <%banners.forEach((banner)=>{%>
+    <%console.log("banner from ejs",banner)%>
     <div class="slide slideshow--medium">
         <div class="blur-up lazyload bg-size">
             <img class="blur-up lazyload bg-img" data-src="user/assets/images/banners/<%=banner.image%>" src="user/assets/images/banners/<%=banner.image%>" alt="New Season Styles" title="New Season Styles" />
