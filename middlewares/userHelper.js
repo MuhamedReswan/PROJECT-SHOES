@@ -5,9 +5,8 @@ const Category = require('../model/categoryModel');
 
 const countOfCartAndWishlist = async (req, res, next) => {
     try {
-        console.log("Executing countOfCartAndWishlist middleware..."); // Debugging log
+        console.log("Executing countOfCartAndWishlist middleware..."); 
 
-        // Retrieve the user from the session if it exists
         let user = req.session?.user ?? null;
 
         if (!user) {
@@ -22,10 +21,8 @@ const countOfCartAndWishlist = async (req, res, next) => {
         let cart = await Cart.findOne({ user: userId });
         let wishlistCount = await Wishlist.countDocuments({ user: userId });
 
-        // Determine the number of items in the cart
         let cartCount = cart?.products ? cart.products.length : 0;
 
-        // Fetch the listed categories
         const categoryData = await Category.find({ isListed: true });
 
         // Prepare the user object with wishlist and cart counts
@@ -42,7 +39,7 @@ const countOfCartAndWishlist = async (req, res, next) => {
         next();
     } catch (error) {
         console.error("Error in countOfCartAndWishlist middleware:", error);
-        res.status(500).send('Internal Server Error'); // Handle any errors
+        res.status(500).send('Internal Server Error');
     }
 };
 
