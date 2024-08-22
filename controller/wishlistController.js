@@ -8,7 +8,6 @@ const loadWishlist = async (req, res, next) => {
         const userId = req.session.user.id;
         const wishlistData = await Wishlist.find({ user: userId }).populate('product');
         
-        // Display wishlist page with data
         res.render('wishlist', { wishlistData });
     } catch (error) {
         console.error('Error loading wishlist:', error.message);
@@ -65,7 +64,7 @@ const removeFromWishlist = async (req, res, next) => {
 }
 
 module.exports = {
-    loadWishlist,      // Show user's wishlist
-    addToWishlist,     // Add product to wishlist
-    removeFromWishlist // Remove product from wishlist
+    loadWishlist,      
+    addToWishlist,    
+    removeFromWishlist 
 }

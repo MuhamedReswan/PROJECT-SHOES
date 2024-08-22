@@ -4,98 +4,65 @@ const Products = require('../model/productsModel');
 const Offers = require('../model/offerModel');
 const Orders = require('../model/orderModel');
 const Category = require('../model/categoryModel');
-// const { default: products } = require('razorpay/dist/types/products');
 
 
-// ========================================  DASHBOARD ==================================================
-
-//load dashboard
-const loadDashboard = async (req, res,next) => {
+// Load dashboard
+const loadDashboard = async (req, res, next) => {
     try {
-        console.log("within dashboard controller")//-----------
-
-        // let page = 1;
-        // if (req.query.id) {
-        //     page = req.query.id
-        // }
-        // const limit = 6;
-        // const previous = page > 1 ? page - 1 : 1;
-        // let next = page + 1
-
-        // const count = await Orders.find({}).count()
-
-        // const totalPages = Math.ceil(count / limit)
-        // if (next > totalPages) {
-        //     next = totalPages
-        // }
-
         const currentDate = new Date();
         const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
-        let startOfThisYear = new Date(currentDate.getFullYear(), 0, 1)
-        let currentMonth = new Date(currentDate.getMonth() + 1);
+        const startOfThisYear = new Date(currentDate.getFullYear(), 0, 1);
 
-        const orders = await Orders.find({})
-        let delivered = 0;
-        let cancelled = 0;
-        let placed = 0;
-        let returned = 0;
-        let returnRequested = 0;
+        // Order Status Counts
+        const orders = await Orders.find({});
+        let orderProductStatus = {
+            delivered: 0,
+            cancelled: 0,
+            placed: 0,
+            returned: 0,
+            returnRequested: 0,
+            pending: 0
+        };
 
-
-        let orderProdutStatus = []
-        let pending = 0;
-        orders.map((order) => {
-            order.products.map((product) => {
-                if (product.status == 'Delivered') {
-                    delivered++
-                } else if (product.status == 'Placed') {
-                    placed++
-                } else if (product.status == 'Cancelled') {
-                    cancelled++
-                } else if (product.status == 'Returned') {
-                    returned++
+        orders.forEach(order => {
+            order.products.forEach(product => {
+                switch (product.status) {
+                    case 'Delivered':
+                        orderProductStatus.delivered++;
+                        break;
+                    case 'Placed':
+                        orderProductStatus.placed++;
+                        break;
+                    case 'Cancelled':
+                        orderProductStatus.cancelled++;
+                        break;
+                    case 'Returned':
+                        orderProductStatus.returned++;
+                        break;
+                    case 'Return Requested':
+                        orderProductStatus.returnRequested++;
+                        break;
+                    case 'Pending':
+                        orderProductStatus.pending++;
+                        break;
                 }
-                else if (product.status == 'Return Requested') {
-                    returnRequested++
-
-                } else if (product.status == 'Pending') {
-                    pending++
-
-                }
-            })
+            });
         });
 
-        orderProdutStatus.push(pending, returnRequested, returned, placed, cancelled, delivered)
-
-
-        let monthlyUsers = new Array(12).fill(0);
+        // Monthly Users Count
+        const monthlyUsers = new Array(12).fill(0);
         const users = await Users.aggregate([
-            {
-                $match: {
-                    date: { $gte: startOfThisYear },
-                },
-            },
-            {
-                $group: {
-                    _id: { $month: "$date" },
-                    totalUsers: { $sum: 1 },
-                },
-            },
+            { $match: { date: { $gte: startOfThisYear } } },
+            { $group: { _id: { $month: "$date" }, totalUsers: { $sum: 1 } } }
         ]);
 
-        users.forEach((item) => {
-            monthlyUsers[item._id - 1] = item.totalUsers
-        })
+        users.forEach(user => {
+            monthlyUsers[user._id - 1] = user.totalUsers;
+        });
 
-
-        // console.log("monthlyUser",monthlyUsers)//-----------------
-        // console.log("montusershlyUser",users)//-----------------
-
-
-        // const latestOrders = await Orders.find({}).sort({ date: -1 }).populate('user').limit(limit).skip((page - 1) * limit).exec()
-
-        const total = await Orders.aggregate([
+        // Total Revenue
+        const [total] = await Orders.aggregate([
             { $match: { orderStatus: "Delivered" } },
             { $unwind: '$products' },
             { $match: { 'products.status': { $ne: "Returned" } } },
@@ -109,16 +76,13 @@ const loadDashboard = async (req, res,next) => {
                     }
                 }
             },
-            {
-                $group: {
-                    _id: null, totalRevenue: { $sum: '$Revenue' }
-                }
-            }
+            { $group: { _id: null, totalRevenue: { $sum: '$Revenue' } } }
+        ]);
 
-        ])
+        const totalRevenue = total?.totalRevenue || 0;
 
-
-        const monthly = await Orders.aggregate([
+        // Monthly Revenue
+        const [monthly] = await Orders.aggregate([
             { $match: { orderStatus: "Delivered", date: { $gte: startOfMonth, $lt: endOfMonth } } },
             { $unwind: '$products' },
             { $match: { 'products.status': "Delivered" } },
@@ -132,39 +96,26 @@ const loadDashboard = async (req, res,next) => {
                     }
                 }
             },
-            {
-                $group: {
-                    _id: null, monthlyTotalAmount: { $sum: '$productTotal' }
-                }
-            }
+            { $group: { _id: null, monthlyTotalAmount: { $sum: '$productTotal' } } }
         ]);
 
-        // console.log("monthly================================================================",monthly)//---------------------------
-        //     console.log("totalrevernssfsd==============",total)//======================
+        const monthlyRevenue = monthly?.monthlyTotalAmount || 0;
 
-        const totalRevenue = total.map((value) => value.totalRevenue)[0] || 0
-        const monthlyRevenue = monthly.map((value) => value.monthlyTotalAmount)[0] || 0;
+        // Counts
+        const orderCount = await Orders.countDocuments({});
+        const productCount = await Products.countDocuments({});
+        const categoryCount = await Category.countDocuments({});
+        const usersCount = await Users.countDocuments({ verified: true });
 
-        const orderCount = await Orders.find({}).count();
-        const productCount = await Products.find({}).count();
-        const categoryCount = await Category.find({}).count();
-        const usersCount = await Users.find({ verified: true }).count();
-
-
-
+        // Monthly Sales Data
         const defaultMonthly = Array.from({ length: 12 }, (_, i) => ({
             month: i + 1,
             total: 0,
             count: 0
         }));
 
-
         const monthlySalesData = await Orders.aggregate([
-            {
-                $match: {
-                    orderStatus: 'Delivered',
-                }
-            },
+            { $match: { orderStatus: 'Delivered' } },
             { $unwind: '$products' },
             { $match: { 'products.status': { $ne: 'Returned' } } },
             {
@@ -182,66 +133,29 @@ const loadDashboard = async (req, res,next) => {
                 $group: {
                     _id: { $month: '$date' },
                     total: { $sum: "$monthTotal" },
-                    countt: { $sum: 1 }
+                    count: { $sum: 1 }
                 }
             },
-            {
-                $project: {
-                    _id: 0,
-                    month: '$_id',
-                    total: '$total',
-                    count: '$countt'
-                }
-            }
+            { $project: { _id: 0, month: '$_id', total: '$total', count: '$count' } }
         ]);
 
-        const updatedMonthlyDetails = defaultMonthly.map((defaultMonth) => {
-            const foundMonth = monthlySalesData.find((monthdata) => {
-                return monthdata.month == defaultMonth.month;
-            });
-            return foundMonth || defaultMonth;
+        const updatedMonthlyDetails = defaultMonthly.map(defaultMonth => {
+            return monthlySalesData.find(monthData => monthData.month === defaultMonth.month) || defaultMonth;
         });
 
-
-        // console.log('toatal-----', total)//---------------
-        // console.log('totalRevenue-----', totalRevenue)//---------------
-        // console.log('orderCount-----', orderCount)//---------------
-        // console.log('productCount-----', productCount)//---------------
-        // console.log('categoryCount-----', categoryCount)//---------------
-        // console.log('currentDate-----', currentDate)//---------------
-        // console.log('startOfMonth-----', startOfMonth)//---------------
-        // console.log('endOfMonth-----', endOfMonth)//---------------
-        // console.log('monthly-----', monthly)//---------------
-        // console.log('monthlyRevenue-----', monthlyRevenue)//---------------
-        // console.log('users-----', users)//---------------
-        // console.log('updatedMonthlyDetails-----', updatedMonthlyDetails)//---------------
-        // console.log('monthlySalesData-----', monthlySalesData)//---------------
-        // console.log('defaultMonthly-----', defaultMonthly)//---------------
-
-        const year = currentDate.getFullYear()
-        const month = currentDate.getMonth() + 1
+        // Revenue and Users per Day
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1;
         const startOfFilter = new Date(year, month - 1, 1);
         const endOfFilter = new Date(year, month, 0);
         const daysInMonth = endOfFilter.getDate();
-        const currentSelectedMonth = `${year}-${month.toString().padStart(2, '0')}`
-        let daysArr = []
-
-        for (let i = 0; i < daysInMonth; i++) {
-            daysArr.push(i + 1)
-        }
-
-
-
-        // console.log("year1111111111111111111",year)//------------------
-        // console.log("month11111111111111111111",month)//------------------
-        // console.log("startOfFilter",startOfFilter)//------------------
-        // console.log("endOfFilter",endOfFilter)//------------------
-        // console.log("daysInMonth",daysInMonth)//------------------
+        const currentSelectedMonth = `${year}-${month.toString().padStart(2, '0')}`;
+        const daysArr = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
         let revenuePerDay = new Array(daysInMonth).fill(0);
         let usersPerDay = new Array(daysInMonth).fill(0);
 
-        let revenuebyDay = await Orders.aggregate([
+        const revenueByDay = await Orders.aggregate([
             { $match: { orderStatus: "Delivered", date: { $gte: startOfFilter, $lte: endOfFilter } } },
             { $unwind: '$products' },
             { $match: { 'products.status': "Delivered" } },
@@ -263,36 +177,27 @@ const loadDashboard = async (req, res,next) => {
                     count: { $sum: 1 }
                 }
             }
-        ])
+        ]);
 
-
-        const user = await Users.aggregate([
-            {
-                $match: {
-                    date: { $gte: startOfFilter, $lte: endOfFilter },
-                },
-            },
+        const dailyUsers = await Users.aggregate([
+            { $match: { date: { $gte: startOfFilter, $lte: endOfFilter } } },
             {
                 $group: {
                     _id: { $dayOfMonth: "$date" },
-                    totalUsers: { $sum: 1 },
-                },
-            },
+                    totalUsers: { $sum: 1 }
+                }
+            }
         ]);
 
-
-        revenuebyDay.forEach((item) => {
+        revenueByDay.forEach(item => {
             revenuePerDay[item._id - 1] = item.totalRevenue;
         });
 
-        user.forEach((item) => {
+        dailyUsers.forEach(item => {
             usersPerDay[item._id - 1] = item.totalUsers;
         });
 
-        let topFiveCategory = []
-        let topFiveBrand = []
-        let topFiveProduct = []
-
+        // Top Selling Products
         const topFiveSellingProduct = await Orders.aggregate([
             { $match: { orderStatus: "Delivered" } },
             { $unwind: '$products' },
@@ -326,24 +231,10 @@ const loadDashboard = async (req, res,next) => {
                 }
             },
             { $sort: { soldCount: -1 } },
-            { $limit: 5 }
-        ])
+            { $limit: 4 }
+        ]);
 
-
-        topFiveSellingProduct.forEach((val) => {
-            topFiveProduct.push(val.productName)
-            topFiveCategory.push(val.category)
-            topFiveBrand.push(val.brand)
-        })
-
-        // console.log("topFiveProduct",topFiveProduct)//----------------
-        // console.log("topFiveCategory",topFiveCategory)//----------------
-        // console.log("topFiveBrand",topFiveBrand)//----------------
-
-        console.log("topFiveSellingProduct", topFiveSellingProduct)//------------------------
-
-
-
+        // Render dashboard
         res.render('dashboard', {
             totalRevenue,
             orderCount,
@@ -360,53 +251,35 @@ const loadDashboard = async (req, res,next) => {
             revenuePerDay,
             daysArr,
             currentSelectedMonth,
-            // topFiveBrand,
-            // topFiveCategory,
-            // topFiveProduct,
             topFiveSellingProduct,
-
-            // pending,
-            // returnRequested,
-            // returned,
-            // placed,
-            // cancelled,
-            // delivered,
-            orderProdutStatus
-
+            orderProductStatus
         });
 
     } catch (error) {
-        console.log(error.message);
-        next(error);   
-     }
-}
+        console.error("Dashboard error:", error.message);
+        next(error);
+    }
+};
 
-// chart filter 
-const filterYearlyMonthly = async (req, res,next) => {
+// Chart Filter
+const filterYearlyMonthly = async (req, res, next) => {
     try {
-        console.log("withiin filter chart")//-----------------------------
-        const { monthYear } = req.body
+        console.log("Within filter chart");
+
+        // Extract and parse the monthYear from the request body
+        const { monthYear } = req.body;
         const [year, month] = monthYear.split("-").map(Number);
         const startOfFilter = new Date(year, month - 1, 1);
         const endOfFilter = new Date(year, month, 0);
         const daysInMonth = endOfFilter.getDate();
-        let daysArr = []
+        const daysArr = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-        for (let i = 0; i < daysInMonth; i++) {
-            daysArr.push(i + 1)
-        }
+        // Initialize arrays to hold revenue and user data per day
+        const revenuePerDay = new Array(daysInMonth).fill(0);
+        const usersPerDay = new Array(daysInMonth).fill(0);
 
-
-        // console.log("year",year)//------------------
-        // console.log("month",month)//------------------
-        // console.log("startOfFilter",startOfFilter)//------------------
-        // console.log("endOfFilter",endOfFilter)//------------------
-        // console.log("daysInMonth",daysInMonth)//------------------
-
-        let revenuePerDay = new Array(daysInMonth).fill(0);
-        let usersPerDay = new Array(daysInMonth).fill(0);
-
-        let revenuebyDay = await Orders.aggregate([
+        // Aggregation pipeline to get revenue per day
+        const revenuebyDay = await Orders.aggregate([
             { $match: { orderStatus: "Delivered", date: { $gte: startOfFilter, $lte: endOfFilter } } },
             { $unwind: '$products' },
             { $match: { 'products.status': "Delivered" } },
@@ -428,312 +301,246 @@ const filterYearlyMonthly = async (req, res,next) => {
                     count: { $sum: 1 }
                 }
             }
-        ])
+        ]);
 
-
+        // Aggregation pipeline to get users per day
         const user = await Users.aggregate([
-            {
-                $match: {
-                    date: { $gte: startOfFilter, $lte: endOfFilter },
-                },
-            },
+            { $match: { date: { $gte: startOfFilter, $lte: endOfFilter } } },
             {
                 $group: {
                     _id: { $dayOfMonth: "$date" },
-                    totalUsers: { $sum: 1 },
-                },
-            },
+                    totalUsers: { $sum: 1 }
+                }
+            }
         ]);
 
+        // Populate revenuePerDay and usersPerDay arrays based on aggregation results
+        revenuebyDay.forEach(item => revenuePerDay[item._id - 1] = item.totalRevenue);
+        user.forEach(item => usersPerDay[item._id - 1] = item.totalUsers);
 
-        revenuebyDay.forEach((item) => {
-            revenuePerDay[item._id - 1] = item.totalRevenue;
-        });
+        console.log("Revenue by Day:", revenuebyDay);
+        console.log("Users:", user);
+        console.log("Users Per Day:", usersPerDay);
+        console.log("Revenue Per Day:", revenuePerDay);
 
-        user.forEach((item) => {
-            usersPerDay[item._id - 1] = item.totalUsers;
-        });
-
-
-
-        console.log("revenuebyDay", revenuebyDay)//-------------------
-        console.log("user", user)//-------------------
-        console.log("usersPerDay", usersPerDay)//-------------------
-        console.log("revenuePerDay", revenuePerDay)//-------------------
-
-        res.json({ filter: true, revenuePerDay, usersPerDay, daysArr })
-
+        // Send response with filtered data
+        res.json({ filter: true, revenuePerDay, usersPerDay, daysArr });
 
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
-}
+        next(error);
+    }
+};
 
-
-// ========================================  DASHBOARD END   ==================================================
-
-
-
-//admin login
-const adminLoginLoad = (req, res,next) => {
+// Admin Login
+const adminLoginLoad = (req, res, next) => {
     try {
-        // res.render('aaadmin-login');
+        // Render the admin login page
         res.render('admin-login');
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
+        next(error);
+    }
+};
 
-}
-
-
-//verify login
-
-const verifyAdminLogin = (req, res,next) => {
+const verifyAdminLogin = (req, res, next) => {
     try {
-        const Email = process.env.EMAIL;
-        const Password = process.env.PASSWORD;
-        console.log(`Email = ${Email}`)//--------------------------------------------------------------------
+        // Get credentials from environment variables and request body
+        const { EMAIL: envEmail, PASSWORD: envPassword } = process.env;
+        const { Email: email, Password: password } = req.body;
 
-        const email = req.body.Email;
-        const password = req.body.Password;
-        console.log(` admin entered email = ${email}`)//--------------------------------------------------------------------
-
-        if (Email === email) {
-            if (Password === password) {
-                req.session.admin = {
-                    email: email,
-                    password: password
-                }
-                console.log('session from admin control', req.session.admin);//-----------------------------
+        // Check if the provided email and password match the environment variables
+        if (envEmail === email) {
+            if (envPassword === password) {
+                req.session.admin = { email, password };
+                console.log('Session from admin control:', req.session.admin);
                 res.redirect('/admin');
             } else {
                 req.flash('passwordError', 'Incorrect Password');
                 res.redirect('/admin/login');
             }
-
         } else {
-            console.log("email error");
             req.flash('emailError', 'Invalid Email');
             res.redirect('/admin/login');
         }
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
-}
+        next(error);
+    }
+};
 
-// admin logout
-const loadLogout = (req, res,next) => {
+const loadLogout = (req, res, next) => {
     try {
-        console.log('im in logout admin');//--------------------
-        console.log('admin session a', req.session.admin);//----------
+        console.log('In logout admin');
+        console.log('Admin session before:', req.session.admin);
         req.session.admin = null;
-        console.log('admin session b', req.session.admin);//-------------
+        console.log('Admin session after:', req.session.admin);
 
-        res.redirect('/admin')
+        // Redirect to the admin dashboard
+        res.redirect('/admin');
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
+        next(error);
+    }
+};
 
-}
-
-// load customers
-const customersLoad = async (req, res,next) => {
+// Load Customers
+const customersLoad = async (req, res, next) => {
     try {
+        // Pagination logic
+        let page = parseInt(req.query.id) || 1;
+        const limit = 6;
+        const start = (page - 1) * limit;
+        const count = await Users.countDocuments();
 
-        let page = 1;
-        let limit = 6;
-        if (req.query.id) {
-            page = req.query.id
-        }
-        let next = page + 1
-        let previous = page > 1 ? page - 1 : 1
-        let start = (page - 1) * limit
-        console.log('start', start);//---------------------
-        const count = await Users.find({}).count()
+        const totalPage = Math.ceil(count / limit);
+        const next = Math.min(page + 1, totalPage);
+        const previous = Math.max(page - 1, 1);
 
-        let totalPage = Math.ceil(count / limit)
-        if (next > totalPage) {
-            next = totalPage
-        }
-
+        // Fetch user data with pagination
         const userData = await Users.find({})
             .limit(limit)
             .sort({ date: -1 })
-            .skip((page - 1) * limit)
-            .exec()
-        // console.log(`userData = ${userData}`)//--------------------------------------------------------------------------------
+            .skip(start)
+            .exec();
+
         res.render("userManagement", {
             users: userData,
-            page: page,
-            previous: previous,
-            next: next,
-            totalPage: totalPage,
-            start: start
+            page,
+            previous,
+            next,
+            totalPage,
+            start
         });
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
-}
+        next(error);
+    }
+};
 
-
-
-// block user
-const blockUser = async (req, res,next) => {
+// Block User
+const blockUser = async (req, res, next) => {
     try {
-        const id = await req.body.id;
-        console.log(`id from block user ${id} `); //----------------------------------------------------------------------
+        const { id } = req.body;
 
         if (id) {
-            const user = await Users.findOne({ _id: id });
+            const user = await Users.findById(id);
 
             if (user) {
-                if (user.isBlocked) {
-                    await Users.updateOne({ _id: id }, { $set: { isBlocked: false } });
-                    console.log(`user blocked `); //---------------------------------------------------------------
-                    res.json({ block: true });
-
-                } else {
-                    await Users.updateOne({ _id: id }, { $set: { isBlocked: true } });
-                    console.log(`user unblocked`); //---------------------------------------------------------------
-                    res.json({ block: true });
-                }
+                // Toggle block status
+                const updatedStatus = !user.isBlocked;
+                await Users.updateOne({ _id: id }, { $set: { isBlocked: updatedStatus } });
+                console.log(`User ${updatedStatus ? 'blocked' : 'unblocked'}`);
+                res.json({ block: true });
+            } else {
+                res.status(404).json({ error: 'User not found' });
             }
         } else {
-            console.log('id not getting in the block user');//------------------------------------------
-            res.status(404).json({ error: 'user not loged' });
+            res.status(404).json({ error: 'ID not provided' });
         }
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
-}
+        next(error);
+    }
+};
 
-
-// ========================================================================== OFFER ========================================================
-
-
-// load offers
-const loadOffers = async (req, res,next) => {
+// Load Offers
+const loadOffers = async (req, res, next) => {
     try {
+        // Pagination logic
+        const page = parseInt(req.query.page) || 1;
+        const limit = 8;
+        const count = await Offers.countDocuments();
 
-        const totalOffer = await Offers.find({})
-        let page = 1;
-        if (req.query.page) {
-            page = req.query.page;
-        }
-        let limit = 8;
-        let next = page + 1;
-        let previous = page > 1 ? page - 1 : 1;
-        let count = totalOffer.length;
+        const totalPage = Math.ceil(count / limit);
+        const next = Math.min(page + 1, totalPage);
+        const previous = Math.max(page - 1, 1);
 
-        let totalPage = Math.ceil(count / limit);
-        if (next > totalPage) {
-            next = totalPage
-        }
+        // Fetch offers with pagination
+        const offers = await Offers.find({})
+            .limit(limit)
+            .sort({ createdAt: -1 })
+            .exec();
 
-        const offers = await Offers.find({}).limit(limit).sort({ createdAt: -1 });
-
-
-        res.status(200).render('offers', {
+        res.render('offers', {
             offers,
             totalPage,
             previous,
             next,
             page
-        })
-
+        });
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
-}
+        next(error);
+    }
+};
 
-
-
-
-// add offer 
-const addOffer = (req, res,next) => {
+// Add Offer
+const addOffer = (req, res, next) => {
     try {
-        res.status(200).render('addOffer');
-
+        // Render the add offer page
+        res.render('addOffer');
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
-}
+        next(error);
+    }
+};
 
-
-// insert Offer
-const insertOffer = async (req, res,next) => {
+// Insert Offer
+const insertOffer = async (req, res, next) => {
     try {
-        console.log('within inset offer')//-------------------
+        console.log('Within insert offer');
+
         let { name, endDate, discount, isListed } = req.body;
-        name = name.toLowerCase();
-        name = name.charAt(0).toUpperCase() + name.slice(1);
-        console.log("name", name);//--------------
+        name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+        console.log("Name:", name);
 
-        const nameAlready = await Offers.findOne({ name: name });
-        if (nameAlready) {
-            res.json({ already: "This name already exists !" })
+        // Check if the offer name already exists
+        const existingOffer = await Offers.findOne({ name });
+
+        if (existingOffer) {
+            res.json({ already: "This name already exists!" });
         } else {
-            const offer = new Offers({
-                name: name,
-                discount: discount,
-                endDate: endDate,
-                isListed: isListed
-            });
-
+            // Create and save the new offer
+            const offer = new Offers({ name, discount, endDate, isListed });
             await offer.save();
-
-            console.log("offer saved");//----------------------
+            console.log("Offer saved");
             res.status(200).json({ success: true });
         }
-
-
-
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
-}
+        next(error);
+    }
+};
 
-
-
-// edit offer
-const editOffer = async (req, res,next) => {
+// Edit Offer
+const editOffer = async (req, res, next) => {
     try {
-        const offerId = req.query.id;
-        console.log("offerId", offerId)//---------------------
+        const { id: offerId } = req.query;
+        console.log("Offer ID:", offerId);
 
-        const offerDetails = await Offers.findOne({ _id: offerId });
+        // Fetch offer details by ID
+        const offerDetails = await Offers.findById(offerId);
 
         if (offerDetails) {
-            console.log("within offerDEtail if")//-----------------------------
-            res.status(200).render('editOffer', { offerDetails });
+            console.log("Offer details found");
+            res.render('editOffer', { offerDetails });
         } else {
-            console.log("within offerDEtail else")//-----------------------------
-
-            throw new Error("offer not found this offerId")
+            throw new Error("Offer not found");
         }
-
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
-}
+        next(error);
+    }
+};
+
 
 
 
 //update offer
-const updateOffer = async (req, res,next) => {
+const updateOffer = async (req, res, next) => {
     try {
-        console.log("within updatre offer");//------------------
-        console.log("within updatre body", req.body);//------------------
+        console.log("within update offer");
         let { name, endDate, discount, offerId } = req.body;
         name = name.toLowerCase();
         name = name.charAt(0).toUpperCase() + name.slice(1);
@@ -741,55 +548,36 @@ const updateOffer = async (req, res,next) => {
         const nameAlready = await Offers.findOne({ name: name, _id: { $ne: offerId } });
 
         if (nameAlready) {
-
             res.json({ already: "This name already exists !" });
-
         } else {
+            const updatedOffer = await Offers.findByIdAndUpdate(
+                { _id: offerId },
+                { $set: { name: name, endDate: endDate, discount: discount } },
+                { new: true }
+            );
 
-            const updatedOffer = await Offers.findByIdAndUpdate({
-                _id: offerId
-            }, {
-                $set: {
-                    name: name,
-                    endDate: endDate,
-                    discount: discount
-                }
-            }, {
-                new: true
-            })
-
-            console.log("updatedOffer", updatedOffer)//-----------------
+            console.log("updatedOffer", updatedOffer);
             res.status(200).json({ success: true });
         }
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
+        next(error);
+    }
 }
 
-
-
-
 function parseBoolean(value) {
-    return Boolean(value === 'true')
+    return Boolean(value === 'true');
 }
 
 // change offer status
-const changeOfferStatus = async (req, res,next) => {
-    console.log("changeOfferStatus invoked"); //-----------
+const changeOfferStatus = async (req, res, next) => {
     try {
+        console.log("changeOfferStatus invoked");
         const { offerId, status } = req.body;
 
-
         // Convert status to boolean
-        const currentStatus = parseBoolean(status)
-        console.log('iam curr', currentStatus)//---------------------
+        const currentStatus = parseBoolean(status);
         const toStatus = !currentStatus;
-
-        console.log('changeOfferStatus'); //--------------------
-        console.log('req.body', req.body); //--------------------
-        console.log('status', currentStatus); //--------------------
-        console.log('toStatus', toStatus); //--------------------
 
         const updatedOffer = await Offers.findByIdAndUpdate(
             { _id: offerId },
@@ -797,94 +585,50 @@ const changeOfferStatus = async (req, res,next) => {
             { new: true }
         );
 
-        console.log("updatedOffer", updatedOffer); //-------------------
-
         if (updatedOffer) {
-            console.log('ooooooooooooooooooooooooo', updatedOffer);//---------------
             res.json({ statusChanged: true });
         } else {
             res.json({ message: "Offer not found", statusChanged: false });
         }
-
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
+        next(error);
+    }
 }
-
-
-
 
 // apply offer on product
-const applyPoductOffer = async (req, res,next) => {
+const applyProductOffer = async (req, res, next) => {
     try {
-        console.log("with product apply offer");//---------
-        console.log("req.bpdu", req.body)//-----------------
         const { productId, offerId } = req.body;
 
-        console.log("productId", productId)//---------------------------
-        console.log("offerId", offerId)//---------------------------
+        const addOfferProduct = await Products.findByIdAndUpdate(
+            { _id: productId },
+            { $set: { appliedOffer: offerId } },
+            { new: true }
+        );
 
-        const addOfferProduct = await Products.findByIdAndUpdate({
-            _id: productId
-        }, {
-            $set: {
-                appliedOffer: offerId
-            }
-        }, {
-            new: true
-        });
+        const updateAppliedProduct = await Offers.findByIdAndUpdate(
+            { _id: offerId },
+            { $addToSet: { productId: productId } },
+            { new: true }
+        );
 
-        const updateAppliedProduct = await Offers.findByIdAndUpdate({
-            _id: offerId
-        }, {
-            $addToSet: {
-                productId: productId
-            }
-        }, {
-            new: true
-        })
-
-        console.log("addOfferProduct", addOfferProduct)//--------------
-        console.log("updateAppliedProduct", updateAppliedProduct)//---------------------
-
-        if (addOfferProduct) {
-            console.log(" if addOfferProduct")//--------------
-
-            if (updateAppliedProduct) {
-                console.log(" if updateAppliedProduct")//--------------
-
-                res.status(200).json({ success: true, message: "offer added successful!" });
-            } else {
-                console.log(" else updateAppliedProduct")//--------------
-
-                res.status(400).json({ success: false, message: "offer Product Id not updated!" });
-            }
-
+        if (addOfferProduct && updateAppliedProduct) {
+            res.status(200).json({ success: true, message: "Offer added successfully!" });
         } else {
-            console.log(" else addOfferProduct")//--------------
-
-            res.status(400).json({ success: false, message: "product not found!" });
+            res.status(400).json({ success: false, message: "Failed to update offer!" });
         }
-
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
+        next(error);
+    }
 }
 
-
-
 // remove product offer
-const removePoductOffer = async (req, res,next) => {
+
+const removeProductOffer = async (req, res, next) => {
     try {
-
-        console.log("remove prodcut offer backend-----------------------,", req.body)//-----------------------
         const { productId, offerId } = req.body;
-        console.log("producuctId", productId)//----------------------------
-        console.log("offerId", offerId)//----------------------------
-
-        console.log("typeOf(ProductId)", typeof (productId))//---------------------
 
         const removeProductOffer = await Products.findByIdAndUpdate(
             { _id: productId },
@@ -892,54 +636,33 @@ const removePoductOffer = async (req, res,next) => {
             { new: true }
         );
 
-        console.log('removeProductOffer', removeProductOffer)//--------------------------
-
         const updatedOffer = await Offers.findByIdAndUpdate(
             { _id: offerId },
             { $pull: { productId: productId } },
             { new: true }
         );
 
-        console.log("updatedOffer1")//----------------------
-        console.log("updatedOffer", updatedOffer)//----------------------
-        console.log("updatedOffer2")//----------------------
-
-        if (removeProductOffer) {
-            if (updatedOffer) {
-                res.status(200).json({ removed: true, message: "Category offer succesfully removed" });
-
-            } else {
-                res.status(404).json({ removed: false, message: "Offer not found or failed to update" });
-            }
+        if (removeProductOffer && updatedOffer) {
+            res.status(200).json({ removed: true, message: "Product offer successfully removed" });
         } else {
-            res.status(404).json({ removed: false, message: "Product not found or failed to update" });
+            res.status(404).json({ removed: false, message: "Failed to update offer or product" });
         }
-
-
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
+        next(error);
+    }
 }
 
-
-
 // load category, product offers
-const loadOfferForApply = async (req, res,next) => {
+const loadOfferForApply = async (req, res, next) => {
     try {
-        console.log('within apply offer')//------------
-        let categoryId = null;
-        let productId = null
-        categoryId = req.query.category;
-        productId = req.query.product;
+        let categoryId = req.query.category || null;
+        let productId = req.query.product || null;
 
-        let currentdate = Date.now();
+        const currentdate = Date.now();
 
         const totalOffer = await Offers.find({ isListed: true, endDate: { $gte: currentdate } });
-        let page = 1;
-        if (req.query.page) {
-            page = req.query.page;
-        }
+        let page = parseInt(req.query.page) || 1;
         let limit = 8;
         let next = page + 1;
         let previous = page > 1 ? page - 1 : 1;
@@ -947,10 +670,12 @@ const loadOfferForApply = async (req, res,next) => {
 
         let totalPage = Math.ceil(count / limit);
         if (next > totalPage) {
-            next = totalPage
+            next = totalPage;
         }
 
-        const offers = await Offers.find({ isListed: true, endDate: { $gte: currentdate } }).limit(limit).sort({ createdAt: -1 });
+        const offers = await Offers.find({ isListed: true, endDate: { $gte: currentdate } })
+            .limit(limit)
+            .sort({ createdAt: -1 });
 
         res.status(200).render('applyOffers', {
             offers,
@@ -960,231 +685,151 @@ const loadOfferForApply = async (req, res,next) => {
             previous,
             next,
             page
-        })
-
-    } catch (error) {
-        console.log(error.message);
-        next(error);   
-     }
-}
-
-
-
-
-
-// apply offer on product
-const applyCategoryOffer = async (req, res,next) => {
-    try {
-        console.log("with product apply offer");//---------
-        console.log("req.bpdu", req.body)//-----------------
-        const { categoryId, offerId } = req.body;
-
-
-
-        const addOfferCategory = await Category.findByIdAndUpdate({
-            _id: categoryId
-        }, {
-            $set: {
-                appliedOffer: offerId
-            }
-        }, {
-            new: true
         });
-
-        const updateAppliedCategory = await Offers.findByIdAndUpdate({
-            _id: offerId
-        }, {
-            $addToSet: {
-                appliedCategory: categoryId
-            }
-        }, {
-            new: true
-        })
-
-        console.log("addOfferCategory", addOfferCategory)//--------------
-        console.log("updateAppliedCategory", updateAppliedCategory)//---------------------
-
-        if (addOfferCategory) {
-            console.log(" if addOfferCategory")//--------------
-
-            if (updateAppliedCategory) {
-                console.log(" if updateAppliedCategory")//--------------
-
-                res.status(200).json({ success: true, message: "offer added successful!" });
-            } else {
-                console.log(" else updateAppliedCategory")//--------------
-
-                res.status(400).json({ success: false, message: "offer category id not updated!" });
-            }
-
-        } else {
-            console.log(" else addOfferCategory")//--------------
-
-            res.status(400).json({ success: false, message: "product not found!" });
-        }
-
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
+        next(error);
+    }
 }
 
-
-
-// remove offer on category
-const removecategoryOffer = async (req, res,next) => {
+// apply offer on category
+const applyCategoryOffer = async (req, res, next) => {
     try {
         const { categoryId, offerId } = req.body;
-        console.log("categoryId", categoryId)//--------------------------
-        console.log("offerId", offerId)//--------------------------
 
-        const offerRemovedCategory = await Category.findByIdAndUpdate(
+        const addOfferCategory = await Category.findByIdAndUpdate(
             { _id: categoryId },
-            { $unset: { appliedOffer: offerId } },
+            { $set: { appliedOffer: offerId } },
             { new: true }
         );
 
+        const updateAppliedCategory = await Offers.findByIdAndUpdate(
+            { _id: offerId },
+            { $addToSet: { appliedCategory: categoryId } },
+            { new: true }
+        );
+
+        if (addOfferCategory && updateAppliedCategory) {
+            res.status(200).json({ success: true, message: "Offer added successfully!" });
+        } else {
+            res.status(400).json({ success: false, message: "Failed to update offer category!" });
+        }
+    } catch (error) {
+        console.log(error.message);
+        next(error);
+    }
+}
+
+
+
+// remove offer from category
+const removeCategoryOffer = async (req, res, next) => {
+    try {
+        const { categoryId, offerId } = req.body;
+
+        // Find and update category by removing the applied offer
+        const offerRemovedCategory = await Category.findByIdAndUpdate(
+            { _id: categoryId },
+            { $unset: { appliedOffer: "" } },
+            { new: true }
+        );
+
+        // Find and update offer by pulling the category from appliedCategory
         const updateOffer = await Offers.findByIdAndUpdate(
             { _id: offerId },
             { $pull: { appliedCategory: categoryId } },
             { new: true }
-        )
-
-        console.log("updateOffer", updateOffer)//--------------------------
-        console.log("offerRemovedCategory", offerRemovedCategory)//--------------------------
+        );
 
         if (offerRemovedCategory) {
             if (updateOffer) {
-                res.status(200).json({ removed: true, message: "Offer successfully Removed" })
+                res.status(200).json({ removed: true, message: "Offer successfully removed" });
             } else {
-                res.json({ removed: false, message: "Offer not found or failed to update" });
+                res.status(400).json({ removed: false, message: "Offer not found or failed to update" });
             }
         } else {
-            res.json({ removed: false, message: "Category not found or failed to update" });
+            res.status(400).json({ removed: false, message: "Category not found or failed to update" });
         }
-
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
+        next(error);
+    }
 }
+
 
 // ====================================================================  saleReport    =================================================
 
-
 // load sales report
-
-const loadSalesreport = async (req, res,next) => {
+const loadSalesReport = async (req, res, next) => {
     try {
-        console.log("within controller sales report")//--------------------
         let startDate = new Date(req.query?.start);
         let endDate = new Date(req.query?.end);
-        // let status = "all"
-        //    status = req?.query?.status;
-        let dateRange = req.query?.date
-
+        let dateRange = req.query?.date;
         let currentDate = new Date();
-
-        console.log("startDAte", startDate)//-----------------
-        console.log("endDate", endDate)//-----------------
-        // console.log("status", status)//-----------------
-        console.log("currentDate", currentDate)//-----------------
 
         // Adjust endDate to include the entire end day by setting the time to the end of the day
         endDate.setHours(23, 59, 59, 999);
 
-        console.log("endDate2222", endDate)//-----------------
-
-
-        let filterConditons = {
-
+        let filterConditions = {
             orderStatus: { $nin: ['Cancelled', 'Pending'] },
-        }
+        };
 
-        if (startDate & startDate) {
-            filterConditons.date = { $gte: startDate, $lte: endDate }
+        if (startDate && endDate) {
+            filterConditions.date = { $gte: startDate, $lte: endDate };
         }
 
         if (dateRange) {
-
             let year = currentDate.getFullYear();
             let month = currentDate.getMonth();
-            let day = currentDate.getDay();
 
-            if (dateRange == "All") {
-                const orders = await Orders.find(filterConditons).populate('user').populate('products.productId');
-                console.log("orders.length", orders.length)//-------------------------
+            if (dateRange === "All") {
+                const orders = await Orders.find(filterConditions).populate('user').populate('products.productId');
                 return res.status(200).render("salesReport", { orders, dateRange });
             }
 
-            if (dateRange == "Day") {
+            if (dateRange === "Day") {
                 startDate = new Date(currentDate.setHours(0, 0, 0, 0));
                 endDate = new Date(currentDate.setHours(23, 59, 59, 999));
-
-                console.log(`Day:${startDate}---------------------${endDate}`)//----------------------------
-                filterConditons.date = { $gte: startDate, $lte: endDate }
+                filterConditions.date = { $gte: startDate, $lte: endDate };
             }
 
-            if (dateRange == "Week") {
-                // startDate = new Date(year,month,day-(day+6)).setHours(0, 0, 0, 0);
-                // endDate = new Date(year,month,day).setHours(23, 59, 59, 999);
-                startDate = new Date(year, month, currentDate.getDate() - day - 7);
-
-                endDate = currentDate.setDate(currentDate.getDate() - day - 1);
-
-
-                console.log(`Week:${startDate}---------------------${endDate}`)//----------------------------
-                filterConditons.date = { $gte: startDate, $lte: endDate }
+            if (dateRange === "Week") {
+                startDate = new Date(year, month, currentDate.getDate() - currentDate.getDay() - 7);
+                endDate = new Date(year, month, currentDate.getDate() - currentDate.getDay() - 1);
+                filterConditions.date = { $gte: startDate, $lte: endDate };
             }
 
-            if (dateRange == "Month") {
+            if (dateRange === "Month") {
                 startDate = new Date(year, month, 1).setHours(0, 0, 0, 0);
-                endDate = new Date(year, month, 31).setHours(23, 59, 59, 999);
-                console.log(`Month:${startDate}---------------------${endDate}`)//----------------------------
-                filterConditons.date = { $gte: startDate, $lte: endDate }
+                endDate = new Date(year, month + 1, 0).setHours(23, 59, 59, 999);
+                filterConditions.date = { $gte: startDate, $lte: endDate };
             }
 
-            if (dateRange == "Year") {
+            if (dateRange === "Year") {
                 startDate = new Date(year, 0, 1).setHours(0, 0, 0, 0);
                 endDate = new Date(year, 11, 31).setHours(23, 59, 59, 999);
-
-                console.log(`Year:${startDate}---------------------${endDate}`)//----------------------------
-                filterConditons.date = { $gte: startDate, $lte: endDate }
+                filterConditions.date = { $gte: startDate, $lte: endDate };
             }
-
         }
 
-
-        console.log("filterConditons=============", filterConditons)//--------------------
-
-
-        // if(status && status!="all"){
-        //     filterConditons["products.status"]=status;
-        // }
-
-        // const orders = await Orders.find({ date: { $gte: startDate, $lte: endDate }, "products.status": "Delivered" }).populate('user').populate('products.productId');
-        const orders = await Orders.find(filterConditons).populate('user').populate('products.productId');
-        // console.log("salesData", orders)//---------------
-        console.log("orders.length", orders.length)//-------------------------
+        const orders = await Orders.find(filterConditions).populate('user').populate('products.productId');
         res.status(200).render("salesReport", { orders, dateRange });
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
+        next(error);
+    }
 }
-
-
 
 // load 404 page
-const loadError404 = (req, res,next) => {
+const loadError404 = (req, res, next) => {
     try {
         res.render("admin-404");
-
     } catch (error) {
         console.log(error.message);
-        next(error);   
-     }
+        next(error);
+    }
 }
+
 
 module.exports = {
     adminLoginLoad,
@@ -1195,9 +840,6 @@ module.exports = {
     loadLogout,
     loadError404,
 
-
-
-
     loadOffers,
     addOffer,
     insertOffer,
@@ -1205,23 +847,12 @@ module.exports = {
     updateOffer,
     changeOfferStatus,
 
-
-    // loadProductOffer,
-    applyPoductOffer,
-    removePoductOffer,
-
-
+    applyProductOffer,
+    removeProductOffer,
     loadOfferForApply,
     applyCategoryOffer,
-    removecategoryOffer,
+    removeCategoryOffer,
 
-
-    loadSalesreport,
+    loadSalesReport,
     filterYearlyMonthly
-
-
-    // load404Error
-
-
-
 }

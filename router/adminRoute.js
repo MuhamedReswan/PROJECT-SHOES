@@ -33,8 +33,8 @@ admin_route.set('views', './views/admin');
 admin_route.use((req, res, next) => {
     res.locals.admin = req.session.admin;
     res.adminLoggedIn = req.session.admin ? true : false;
-    console.log('locals.admin', res.locals.admin); // Debugging line
-    console.log('adminLoggedIn', res.adminLoggedIn); // Debugging line
+    console.log('locals.admin', res.locals.admin); 
+    console.log('adminLoggedIn', res.adminLoggedIn); 
     next();
 });
 
@@ -86,14 +86,14 @@ admin_route.post('/offers/add-offer', adminAuth.isLogin, adminController.insertO
 admin_route.get('/offers/edit-offer', adminAuth.isLogin, adminHelper.returnRequestCount, adminController.editOffer);
 admin_route.post('/offers/edit-offer', adminAuth.isLogin, adminController.updateOffer);
 admin_route.post('/offers/change-status', adminAuth.isLogin, adminController.changeOfferStatus);
-admin_route.get('/apply-offer/offer', adminAuth.isLogin, adminController.loadOfferForApply);
-admin_route.post('/product/apply-offer', adminAuth.isLogin, adminController.applyPoductOffer);
-admin_route.post('/product/remove-offer', adminAuth.isLogin, adminController.removePoductOffer);
+admin_route.get('/apply-offer/offer', adminAuth.isLogin, adminHelper.returnRequestCount, adminController.loadOfferForApply);
+admin_route.post('/product/apply-offer', adminAuth.isLogin, adminController.applyProductOffer);
+admin_route.post('/product/remove-offer', adminAuth.isLogin, adminController.removeProductOffer);
 admin_route.post('/category/apply-offer', adminAuth.isLogin, adminController.applyCategoryOffer);
-admin_route.post('/category/remove-offer', adminAuth.isLogin, adminController.removecategoryOffer);
+admin_route.post('/category/remove-offer', adminAuth.isLogin, adminController.removeCategoryOffer);
 
 // Sales Report
-admin_route.get('/sales-report', adminAuth.isLogin, adminHelper.returnRequestCount, adminController.loadSalesreport);
+admin_route.get('/sales-report', adminAuth.isLogin, adminHelper.returnRequestCount, adminController.loadSalesReport);
 admin_route.post('/dashboard/filter-chart', adminAuth.isLogin, adminController.filterYearlyMonthly);
 
 // Banner Management

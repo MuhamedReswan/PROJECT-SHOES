@@ -16,38 +16,38 @@ const Category = require('../model/categoryModel');
 
 
 
-// password secure
+// const bcrypt = require('bcrypt');
+
+// Password secure
 const securedPassword = async (password) => {
     try {
         const passwordHash = await bcrypt.hash(password, 10);
         return passwordHash;
     } catch (error) {
-        console.log(error.message);
+        console.error('Error in securedPassword:', error.message);
         throw error;
-        }
-}
+    }
+};
 
-// Error 500
-const loadError500 = (req, res,next) => {
+// Error 500 handler
+const loadError500 = (req, res, next) => {
     try {
-        res.render('')
+        res.render('error-500');
     } catch (error) {
-        console.log(error.message);
+        console.error('Error in loadError500:', error.message);
         next(error);
     }
-}
+};
 
-
-// load home 
-const loadHome = async (req, res,next) => {
+// Load Home Page
+const loadHome = async (req, res, next) => {
     try {
-        console.log("resqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq", req.query)//------------------
+        console.log("Loading home page...");
 
         const mostPopularProduct = await Orders.aggregate([
             { $match: { orderStatus: "Delivered" } },
             { $unwind: '$products' },
             { $match: { 'products.status': "Delivered" } },
-
             {
                 $lookup: {
                     from: 'products',
@@ -57,7 +57,6 @@ const loadHome = async (req, res,next) => {
                 }
             },
             { $unwind: '$product' },
-
             {
                 $lookup: {
                     from: 'categories',
@@ -67,7 +66,6 @@ const loadHome = async (req, res,next) => {
                 }
             },
             { $unwind: '$categoryDetails' },
-
             {
                 $lookup: {
                     from: 'offers',
@@ -77,7 +75,6 @@ const loadHome = async (req, res,next) => {
                 }
             },
             { $unwind: { path: '$productOffer', preserveNullAndEmptyArrays: true } },
-
             {
                 $lookup: {
                     from: 'offers',
@@ -87,7 +84,6 @@ const loadHome = async (req, res,next) => {
                 }
             },
             { $unwind: { path: '$categoryOffer', preserveNullAndEmptyArrays: true } },
-
             {
                 $addFields: {
                     maxDiscount: {
@@ -121,7 +117,6 @@ const loadHome = async (req, res,next) => {
                     }
                 }
             },
-
             {
                 $group: {
                     _id: '$product._id',
@@ -134,19 +129,13 @@ const loadHome = async (req, res,next) => {
                     discountPercentage: { $first: '$maxDiscount' }
                 }
             },
-
             { $sort: { soldCount: -1 } },
             { $limit: 5 }
         ]);
 
-
-
-
-
         const latestProduct = await Products.aggregate([
             { $sort: { created: -1 } },
             { $limit: 4 },
-
             {
                 $lookup: {
                     from: 'offers',
@@ -156,7 +145,6 @@ const loadHome = async (req, res,next) => {
                 }
             },
             { $unwind: { path: '$productOffer', preserveNullAndEmptyArrays: true } },
-
             {
                 $lookup: {
                     from: 'categories',
@@ -166,7 +154,6 @@ const loadHome = async (req, res,next) => {
                 }
             },
             { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
-
             {
                 $lookup: {
                     from: 'offers',
@@ -176,7 +163,6 @@ const loadHome = async (req, res,next) => {
                 }
             },
             { $unwind: { path: '$categoryOffer', preserveNullAndEmptyArrays: true } },
-
             {
                 $addFields: {
                     maxDiscount: {
@@ -191,7 +177,6 @@ const loadHome = async (req, res,next) => {
                 $addFields: {
                     finalPrice: {
                         $cond: [
-
                             { $gt: ['$maxDiscount', 0] },
                             { $subtract: ['$offerPrice', { $multiply: ['$offerPrice', { $divide: ['$maxDiscount', 100] }] }] },
                             { $ifNull: ['$offerPrice', '$price'] }
@@ -201,269 +186,189 @@ const loadHome = async (req, res,next) => {
             }
         ]);
 
+        const topOfferedProduct = await Products.aggregate([
+            { $match: { isListed: true } },
+            {
+                $lookup: {
+                    from: 'offers',
+                    localField: 'appliedOffer',
+                    foreignField: '_id',
+                    as: 'productOffer'
+                }
+            },
+            { $unwind: { path: '$productOffer', preserveNullAndEmptyArrays: true } },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'category',
+                    foreignField: '_id',
+                    as: 'category'
+                }
+            },
+            { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
+            {
+                $lookup: {
+                    from: 'offers',
+                    localField: 'category.appliedOffer',
+                    foreignField: '_id',
+                    as: 'categoryOffer'
+                }
+            },
+            { $unwind: { path: '$categoryOffer', preserveNullAndEmptyArrays: true } },
+            {
+                $addFields: {
+                    maxDiscount: {
+                        $max: [
+                            { $ifNull: ['$productOffer.discount', 0] },
+                            { $ifNull: ['$categoryOffer.discount', 0] }
+                        ]
+                    }
+                }
+            },
+            {
+                $addFields: {
+                    finalPrice: {
+                        $cond: [
+                            { $gt: ['$maxDiscount', 0] },
+                            { $subtract: ['$offerPrice', { $multiply: ['$offerPrice', { $divide: ['$maxDiscount', 100] }] }] },
+                            { $ifNull: ['$offerPrice', '$price'] }
+                        ]
+                    }
+                }
+            },
+            { $sort: { maxDiscount: -1 } },
+            { $limit: 4 }
+        ]);
 
+        const banners = await Banners.find({ isListed: true }).sort({ createdAt: -1 });
+        console.log("Banners retrieved:", banners.length);
 
-const topOfferedProduct = await Products.aggregate([
-    {$match:{isListed:true}},
-
-    {
-        $lookup: {
-            from: 'offers',
-            localField: 'appliedOffer',
-            foreignField: '_id',
-            as: 'productOffer'
-        }
-    },
-    { $unwind: { path: '$productOffer', preserveNullAndEmptyArrays: true } },
-
-    {
-        $lookup: {
-            from: 'categories',
-            localField: 'category',
-            foreignField: '_id',
-            as: 'category'
-        }
-    },
-    { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
-
-    {
-        $lookup: {
-            from: 'offers',
-            localField: 'category.appliedOffer',
-            foreignField: '_id',
-            as: 'categoryOffer'
-        }
-    },
-    { $unwind: { path: '$categoryOffer', preserveNullAndEmptyArrays: true } },
-
-    {
-        $addFields: {
-            maxDiscount: {
-                $max: [
-                    { $ifNull: ['$productOffer.discount', 0] },
-                    { $ifNull: ['$categoryOffer.discount', 0] }
-                ]
-            }
-        }
-    },
-    {
-        $addFields: {
-            finalPrice: {
-                $cond: [
-
-                    { $gt: ['$maxDiscount', 0] },
-                    { $subtract: ['$offerPrice', { $multiply: ['$offerPrice', { $divide: ['$maxDiscount', 100] }] }] },
-                    { $ifNull: ['$offerPrice', '$price'] }
-                ]
-            }
-        }
-    },
-    {$sort:{maxDiscount:-1}},
-    {$limit:4}
-
-]);
-
-const currentTime = new Date()
-
-const banners = await Banners.find({isListed:true}).sort({createdAt:-1});
-
-console.log("banners",banners)//----------------------------
-
-  
-        // console.log("topOfferedProduct ",topOfferedProduct)//----------------------------
-        // console.log("latest 5",latestProduct)//----------------------------
-
-        // console.log("mostPopularProduct", mostPopularProduct)//-------------------------------------
-        // { successMessage: req.flash('successMessage') 
-        res.render('home', { mostPopularProduct, latestProduct, topOfferedProduct,banners });
+        res.render('home', { mostPopularProduct, latestProduct, topOfferedProduct, banners });
     } catch (error) {
-        console.log(error.message);
+        console.error('Error loading home page:', error.message);
         next(error);
     }
-}
+};
 
-// user logout
-const userLogout = (req, res,next) => {
+
+        //========================================= User Login and Verify ============================================================
+
+// Load login
+const loadLogin = (req, res, next) => {
     try {
-        req.session.user = null;
-        res.redirect('/');
-    } catch (error) {
-        console.log(error.message);
-        next(error);
-    }
-
-}
-
-
-
-
-
-//========================================= user login and verify ============================================================
-
-// load login 
-const loadLogin = (req, res,next) => {
-    try {
-        // console.log("loginSuccess render1",req.session.user.loginSuccess)//--------------------------
-
-        // const loginSuccess = req.session.user.loginSuccess;
-        // console.log("loginSuccess render",loginSuccess)//--------------------------
-        // delete req.session.user.loginSuccess; // Clear the message after it's been read
-        // res.render('login',{loginSuccess});
         res.render('login');
     } catch (error) {
-        console.log(error.message);
+        console.error('Error loading login page:', error.message);
         next(error);
     }
-
 }
 
+// Verify login
+const verifyLogin = async (req, res, next) => {
+    try {
+        const { Email, Password } = req.body;
+        const userData = await Users.findOne({ email: Email });
 
-//verify login
-const
-    verifyLogin = async (req, res,next) => {
-        try {
-            const Email = req.body.Email;
-            const Password = req.body.Password;
-            const userData = await Users.findOne({ email: Email });
+        if (userData) {
+            const verifyPassword = await bcrypt.compare(Password, userData.password);
 
-            if (userData) {
-                const verifyPassword = await bcrypt.compare(Password, userData.password);
-
-                if (verifyPassword) {
-                    const userBlock = await userData.isBlocked;
-
-                    if (userBlock) {
-                        req.flash('blocked', 'You were blocked By admin')
-                        res.redirect('/login');
-                    } else {
-
-                        req.session.user = {
-                            id: userData._id,
-                            name: userData.name,
-                            email: userData.email,
-                        }
-                        // req.session.user.loginSuccess = 'Login Successful';
-                        req.flash('loginSuccess', 'Login Successful')
-                        res.redirect("/");
-
-                    }
+            if (verifyPassword) {
+                if (userData.isBlocked) {
+                    req.flash('blocked', 'You were blocked by admin');
+                    res.redirect('/login');
                 } else {
-
-                    req.flash('passwordError', 'Incorrect password ');
-                    res.redirect('/login')
+                    req.session.user = {
+                        id: userData._id,
+                        name: userData.name,
+                        email: userData.email,
+                    };
+                    req.flash('loginSuccess', 'Login Successful');
+                    res.redirect("/");
                 }
             } else {
-                req.flash('emailError', 'Incorrect email ');
+                req.flash('passwordError', 'Incorrect password');
                 res.redirect('/login');
             }
-        } catch (error) {
-            console.log(error.message);
-            next(error);
+        } else {
+            req.flash('emailError', 'Incorrect email');
+            res.redirect('/login');
         }
-
-    }
-
-//=================================== user signup and otp verification =================================================
-
-// load registration 
-const loadRegister = (req, res,next) => {
-    try {
-        const referel = req.query.referel
-        res.render('signup', { referel });
     } catch (error) {
-        console.log(error.message);
+        console.error('Error verifying login:', error.message);
         next(error);
     }
-
 }
 
+//=================================== User Signup and OTP Verification =================================================
 
-// insert user
-const insertUser = async (req, res,next) => {
+// Load registration
+const loadRegister = (req, res, next) => {
     try {
-        const hashPassword = await securedPassword(req.body.Password)
+        const referel = req.query.referel;
+        res.render('signup', { referel });
+    } catch (error) {
+        console.error('Error loading registration page:', error.message);
+        next(error);
+    }
+}
 
-        const Name = req.body.Name;
-        const Email = req.body.Email;
-        const refCode = req.body?.referel;
+// Insert user
+const insertUser = async (req, res, next) => {
+    try {
+        const { Name, Email, Password, referel } = req.body;
+        const hashPassword = await securedPassword(Password);
 
+        const usernameExists = await Users.findOne({ name: Name });
+        const emailExists = await Users.findOne({ email: Email });
 
-        const username = await Users.findOne({ name: Name });
-        const useremail = await Users.findOne({ email: Email });
-
-        if (username) {
-            req.flash('nameExist', 'User name already exist');
+        if (usernameExists) {
+            req.flash('nameExist', 'Username already exists');
             res.redirect('/signup');
-
-        } else if (useremail) {
-            req.flash('emailExist', 'Email already exist');
+        } else if (emailExists) {
+            req.flash('emailExist', 'Email already exists');
             res.redirect('/signup');
-
         } else {
-
-            const referelCode = await otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
+            const referelCode = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
 
             const user = new Users({
-                email: req.body.Email,
-                name: req.body.Name,
+                email: Email,
+                name: Name,
                 mobile: req.body.Mobile,
                 password: hashPassword,
                 isAdmin: false,
                 isBlocked: false,
                 verified: false,
                 referelCode: referelCode
-            })
+            });
 
             const userData = await user.save();
 
             if (userData) {
-
-                const userId = userData?._id;
-
-                const userWallet = new Wallet({
-                    user: userId
-                })
-
-                const userWalletDetails = await userWallet.save();
-
+                await new Wallet({ user: userData._id }).save();
                 sendOtp(user.email);
-
-                res.redirect(`/otp?email=${user.email}&referel=${refCode}`);
-
+                res.redirect(`/otp?email=${user.email}&referel=${referel}`);
             } else {
-                console.log('not saved userData....');
+                console.error('Failed to save user data');
             }
         }
-
     } catch (error) {
-        console.log(error.message);
+        console.error('Error inserting user:', error.message);
         next(error);
     }
-
 }
 
-
-// load otp
-const loadOtp = (req, res,next) => {
+// Load OTP
+const loadOtp = (req, res, next) => {
     try {
-        const email = req.query.email;
-        const refCode = req.query.referel;
-
-        // if(refCode){
-        res.render(`otp`, { email: email, referelCode: refCode });
-        // }else{
-        //     res.render(`otp`, { email: email });
-        // }
-
+        const { email, referel } = req.query;
+        res.render('otp', { email, referelCode: referel });
     } catch (error) {
-        console.log(error.message);
+        console.error('Error loading OTP page:', error.message);
         next(error);
     }
-
 }
 
-
-// send otp
+// Send OTP
 const sendOtp = async (email) => {
     try {
         const transport = nodemailer.createTransport({
@@ -473,181 +378,153 @@ const sendOtp = async (email) => {
             secure: true,
             auth: {
                 user: 'muhamedreswan9917@gmail.com',
-                // pass: 'rpwg jlhk dnoa qkcj'
                 pass: 'neek jdze decd qtoa'
             }
-        })
+        });
 
-        const createOtp = `${Math.floor(1000 + Math.random() * 9000)}`
-        console.log(`OTP${createOtp}`)//-------------------------------------------------
+        const createOtp = `${Math.floor(1000 + Math.random() * 9000)}`;
+        console.log(`OTP: ${createOtp}`);
 
         const mailOption = {
             from: 'muhamedreswan9917@gmail.com',
             to: email,
-            subject: "otp verification",
-            html: `your otp is ${createOtp}`
-        }
+            subject: "OTP Verification",
+            html: `Your OTP is ${createOtp}`
+        };
 
         await transport.sendMail(mailOption);
+
         const hashOtp = await bcrypt.hash(createOtp, 10);
-
-        const userOtp = await new otpModel({
-            email: email,
-            otp: hashOtp
-        })
-
-        const otpSave = await userOtp.save();
-
+        await new otpModel({ email, otp: hashOtp }).save();
     } catch (error) {
-        console.log(error.message);
+        console.error('Error sending OTP:', error.message);
         throw error;
-            }
+    }
 }
 
-
-// verify otp 
-const verifyOtp = async (req, res,next) => {
+// Verify OTP
+const verifyOtp = async (req, res, next) => {
     try {
-        const email = req.body.email;
-        const referelCode = req.body?.referel;
-
+        const { email, referel } = req.body;
         const otp = req.body.otp1 + req.body.otp2 + req.body.otp3 + req.body.otp4;
-        console.log("otp from the verify", otp)//----------------
 
-        const otpUser = await otpModel.findOne({ email: email });
+        console.log("Received OTP:", otp);
+
+        const otpUser = await otpModel.findOne({ email });
 
         if (otpUser) {
             const otpVerification = await bcrypt.compare(otp, otpUser.otp);
 
             if (otpVerification) {
-                const userData = await Users.findOne({ email: email });
+                const userData = await Users.findOne({ email });
                 const userId = userData._id;
 
                 if (userData) {
-                    const verifiedTrue = await Users.findByIdAndUpdate({ _id: userData._id }, { $set: { verified: true } });
-                    console.log('verifiedTrue' + verifiedTrue);//-----------------------------------------
+                    await Users.findByIdAndUpdate(userId, { verified: true });
+                    await otpModel.deleteOne({ email });
 
-                    if (verifiedTrue) {
-                        await otpModel.deleteOne({ email: otpUser.email });
+                    if (referel) {
+                        const referelOwner = await Users.findOne({ referelCode: referel });
 
-                        if (referelCode) {
-                            const referelOwner = await Users.findOne({ referelCode: referelCode });
+                        if (referelOwner) {
+                            console.log("Valid referral code found.");
 
-                            if (referelOwner) {
-                                console.log("within valid areferl code  with owner in userCOntroller0")//------------------------------------
+                            const transaction = {
+                                amount: 200,
+                                mode: "Credited",
+                                description: "Your friend joined through your referral link"
+                            };
 
-                                const transaction = {
-                                    amount: 200,
-                                    mode: "Credited",
-                                    description: "your friend joined thorugh your referel link"
-                                }
+                            await Wallet.updateOne(
+                                { user: referelOwner._id },
+                                { $inc: { balance: 200 }, $push: { transactions: transaction } },
+                                { new: true }
+                            );
 
-                                const updateWalletOwner = await Wallet.updateOne(
-                                    { user: referelOwner._id },
-                                    {
-                                        $inc: { balance: 200 },
-                                        $push: { transactions: transaction }
-                                    },
-                                    { new: true })
+                            const userTransaction = {
+                                amount: 100,
+                                mode: "Credited",
+                                description: "You received 100 rupees by applying referral code"
+                            };
 
-                                const userTransaction = {
-                                    amount: 100,
-                                    mode: "Credited",
-                                    description: "you got 100 rupees by applied referel code !"
-                                }
-
-                                const referlUserWalletUpdation = await Wallet.updateOne(
-                                    { user: userId },
-                                    {
-                                        $inc: { balance: 100 },
-                                        $push: { transactions: userTransaction }
-                                    },
-                                    { new: true }
-                                )
-
-
-                            }
+                            await Wallet.updateOne(
+                                { user: userId },
+                                { $inc: { balance: 100 }, $push: { transactions: userTransaction } },
+                                { new: true }
+                            );
                         }
-
-                        req.flash('success', 'Verification Success...')
-                        res.redirect('/login');
-
-                    } else {
-                        console.log(' verified verification failed');
                     }
 
+                    req.flash('success', 'Verification successful');
+                    res.redirect('/login');
                 } else {
-                    console.log('userData not getting');
+                    console.error('User data not found');
                 }
             } else {
-                console.log('otp verification failed !');
-                req.flash('incorrect', 'Please Enter Valid OTP !');
-                res.redirect(`/otp?email=${email}&referel=${referelCode}`);
+                console.error('OTP verification failed');
+                req.flash('incorrect', 'Please enter a valid OTP');
+                res.redirect(`/otp?email=${email}&referel=${referel}`);
             }
         } else {
-            console.log('user not found');
-            req.flash('expired', 'OTP Expired  Please Resend');
-            res.redirect(`/otp?email=${email}&referel=${referelCode}`);
+            console.error('User not found');
+            req.flash('expired', 'OTP expired. Please resend');
+            res.redirect(`/otp?email=${email}&referel=${referel}`);
         }
     } catch (error) {
-        console.log(error.message);
-        next(error); 
-        }
+        console.error('Error verifying OTP:', error.message);
+        next(error);
+    }
 }
 
-
-// resend Otp
-const resendOtp = async (req, res,next) => {
+// Resend OTP
+const resendOtp = async (req, res, next) => {
     try {
-        const email = req.params.email;
-        const referel = req.query.referel;
+        const { email } = req.params;
+        const { referel } = req.query;
 
         if (email) {
-            await otpModel.deleteMany({ email: email });
+            await otpModel.deleteMany({ email });
             sendOtp(email);
-            req.flash('resend', 'OTP Resended ');
+            req.flash('resend', 'OTP Resent');
             res.redirect(`/otp?email=${email}&referel=${referel}`);
-            console.log('otp resended');//--------------------------
-
+            console.log('OTP resent successfully');
         } else {
-            console.log('no email in query');//-----------------
+            console.error('No email in query');
         }
-
     } catch (error) {
-        console.log(error.message);
-        next(error); 
-        }
-
+        console.error('Error resending OTP:', error.message);
+        next(error);
+    }
 }
 
-// ============================================== user signup and verification end =============================================
+// ============================================== User Signup and Verification End =============================================
 
-//  load forgot password
-const loadForgotPassword = (req, res,next) => {
+// Load forgot password
+const loadForgotPassword = (req, res, next) => {
     try {
         res.status(200).render('forgotPassword');
     } catch (error) {
-        console.log(error.message);
-        next(error); 
-        }
+        console.error('Error loading forgot password page:', error.message);
+        next(error);
+    }
 }
 
-
-
-// reset password function
-const resetPass = async (email, res,next) => {
+// Reset password function
+const resetPass = async (email, res, next) => {
     try {
-        email = email;
-        const user = await Users.findOne({ email: email });
+        const user = await Users.findOne({ email });
+
         if (!user) {
-            return res.status(400).send('user with this email is not existing');
+            return res.status(400).send('User with this email does not exist');
         }
+
         let token = await Token.findOne({ userId: user._id });
-        console.log('reswantoken1', token);//-------------------
+
         if (!token) {
-            console.log('reswan');//----------------------------
-            token = new Token({ userId: user._id, token: crypto.randomBytes(32).toString('hex') })
-            console.log('reswantoken', token);//-------------------
+            token = new Token({
+                userId: user._id,
+                token: crypto.randomBytes(32).toString('hex')
+            });
             await token.save();
         }
 
@@ -660,133 +537,122 @@ const resetPass = async (email, res,next) => {
                 user: 'muhamedreswan9917@gmail.com',
                 pass: 'rpwg jlhk dnoa qkcj'
             }
-        })
-// domain changed for hosting 
-        // const restPage = `http://localhost:3001/reset-password/${user._id}/${token.token}`
-        
-        const restPage = `https://shoefactori.online/forgot-password/${user._id}/${token.token}`
+        });
+
+        const resetPage = `https://shoefactori.online/forgot-password/${user._id}/${token.token}`;
 
         const mailOption = {
             from: 'muhamedreswan9917@gmail.com',
             to: email,
             subject: "Verify Your Email",
-            html: `Your reset password link is ${restPage}`
-        }
+            html: `Your reset password link is <a href="${resetPage}">here</a>.`
+        };
 
         await transport.sendMail(mailOption);
     } catch (error) {
-        console.log(error.message);
-        next(error); 
-        }
-
-
+        console.error('Error resetting password:', error.message);
+        next(error);
+    }
 }
 
-// forgot password
+// Forgot password
 const forgotPassword = async (req, res, next) => {
     try {
         const email = req.body.email;
-        console.log(req.body, 'body');//------------------------------------
-        console.log(email, 'email');//------------------------
-        await resetPass(email, res)
+        await resetPass(email, res, next);
         req.flash('success', 'Sent a reset password link to your email');
         res.redirect('/login');
     } catch (error) {
-        console.log(error.message);
-        next(error); 
+        console.error('Error handling forgot password request:', error.message);
+        next(error);
     }
 }
 
-// load reset password 
-const loadResetPassword = async (req, res,next) => {
+// Load reset password page
+const loadResetPassword = async (req, res, next) => {
     try {
-        const userId = req.params.id;
-        const token = req.params.token;
+        const { id: userId, token } = req.params;
         res.render('resetPassword', { userId, token });
-
     } catch (error) {
-        console.log(error.message);
-        next(error); 
+        console.error('Error loading reset password page:', error.message);
+        next(error);
     }
 }
 
-//reset password
+// Reset password
 const resetPassword = async (req, res, next) => {
     try {
-        console.log(req.body, 'body')//-----------------------------
-        const userId = req.body.userId;
-        const token = req.body.token;
-        const password = req.body.confirmPassword;
+        const { userId, token, confirmPassword: password } = req.body;
 
         const user = await Users.findOne({ _id: userId });
-        console.log(user, 'user');//--------------
 
         if (!user) {
-            console.log('from user')//-------------
-            res.status(400).send('Invalid link or expired');
-        }
-        const { email } = user;
-
-        const tok = await Token.findOne({ token: token, userId: userId });
-
-        if (!tok) {
-            console.log('from token');//-----------------
-            res.status(400).send('Invalid link or link expeired');
+            return res.status(400).send('Invalid link or expired');
         }
 
-        const hashPassword = await securedPassword(password)
+        const validToken = await Token.findOne({ token, userId });
 
-        await Users.updateOne({
-            email: email
-        },
-            {
-                $set: {
-                    password: hashPassword
-                }
-            })
+        if (!validToken) {
+            return res.status(400).send('Invalid link or expired');
+        }
 
-        req.flash('success', 'New password added successful');
+        const hashPassword = await securedPassword(password);
+
+        await Users.updateOne({ _id: userId }, { $set: { password: hashPassword } });
+
+        req.flash('success', 'Password reset successfully');
         res.redirect('/login');
     } catch (error) {
-        console.log(error.message);
-        next(error); 
+        console.error('Error resetting password:', error.message);
+        next(error);
     }
-
 }
 
-// profile 
-const loadProfile = (req, res,next) => {
+// Load profile
+const loadProfile = (req, res, next) => {
     try {
-        console.log('profile working');//------------------
-        res.render('addProfile')
+        res.render('addProfile');
     } catch (error) {
-        console.log(error.message);
-        next(error); 
+        console.error('Error loading profile page:', error.message);
+        next(error);
     }
 }
-
-
 
 // 404 Error
-const LoadError404 = (req, res,next) => {
+const LoadError404 = (req, res, next) => {
     try {
         res.render('Error404');
     } catch (error) {
-        console.log(error.message);
-        next(error); 
-        }
-}
-
-
-// about us 
-const loadAboutUs = (req,res)=>{
-    try {
-        res.status(200).render("aboutUs")
-    } catch (error) {
-        console.log(error.message);
-        next(error); 
+        console.error('Error loading 404 page:', error.message);
+        next(error);
     }
 }
+
+// About us 
+const loadAboutUs = (req, res, next) => {
+    try {
+        res.status(200).render("aboutUs");
+    } catch (error) {
+        console.error('Error loading about us page:', error.message);
+        next(error);
+    }
+}
+
+
+// User Logout
+const userLogout = (req, res, next) => {
+    try {
+        req.session.user = null;
+        console.log('User successfully logged out');
+        res.redirect('/');
+    } catch (error) {
+        console.error('Error during user logout:', error.message);
+        next(error);
+    }
+};
+    
+
+
 
 module.exports = {
     loadHome,
@@ -807,12 +673,5 @@ module.exports = {
     forgotPassword,
     loadResetPassword,
     resetPassword,
-    securedPassword,
-
-
-
-
-
-
-
+    securedPassword
 }

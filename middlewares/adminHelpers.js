@@ -2,7 +2,7 @@ const Orders = require('../model/orderModel');
 
 const returnRequestCount = async (req, res, next) => {
     try {
-        console.log("In returnRequestCount middleware"); // For debugging
+        console.log("In returnRequestCount middleware"); 
         const admin = req.session.admin || null;
 
         const requestedCount = await Orders.aggregate([
@@ -30,8 +30,10 @@ const returnRequestCount = async (req, res, next) => {
         ]);
 
         if (admin && requestedCount.length > 0) {
-            console.log("Requested Count:", requestedCount[0].count); // For debugging
+            console.log("Requested Count:", requestedCount[0].count); 
             res.locals.requestedCount = requestedCount[0].count;
+        }else{
+            res.locals.requestedCount = 0;
         }
 
         next();
