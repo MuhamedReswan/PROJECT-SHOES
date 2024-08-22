@@ -6,7 +6,6 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const Wallet = require('../model/walletModel');
 const otpGenerator = require('otp-generator');
-// const { default: products } = require('razorpay/dist/types/products');
 const Razorpay = require('razorpay');
 const Products = require('../model/productsModel');
 const Orders = require('../model/orderModel');
@@ -15,8 +14,6 @@ const { match } = require('assert');
 const Category = require('../model/categoryModel');
 
 
-
-// const bcrypt = require('bcrypt');
 
 // Password secure
 const securedPassword = async (password) => {
@@ -29,6 +26,8 @@ const securedPassword = async (password) => {
     }
 };
 
+
+
 // Error 500 handler
 const loadError500 = (req, res, next) => {
     try {
@@ -39,11 +38,14 @@ const loadError500 = (req, res, next) => {
     }
 };
 
+
+
 // Load Home Page
 const loadHome = async (req, res, next) => {
     try {
         console.log("Loading home page...");
 
+        // fetch the most populat products
         const mostPopularProduct = await Orders.aggregate([
             { $match: { orderStatus: "Delivered" } },
             { $unwind: '$products' },
@@ -130,9 +132,10 @@ const loadHome = async (req, res, next) => {
                 }
             },
             { $sort: { soldCount: -1 } },
-            { $limit: 5 }
+            { $limit: 4 }
         ]);
 
+        // fetch latest products
         const latestProduct = await Products.aggregate([
             { $sort: { created: -1 } },
             { $limit: 4 },
@@ -186,6 +189,7 @@ const loadHome = async (req, res, next) => {
             }
         ]);
 
+        // fetch top offered product
         const topOfferedProduct = await Products.aggregate([
             { $match: { isListed: true } },
             {
@@ -251,7 +255,6 @@ const loadHome = async (req, res, next) => {
 };
 
 
-        //========================================= User Login and Verify ============================================================
 
 // Load login
 const loadLogin = (req, res, next) => {
@@ -263,6 +266,8 @@ const loadLogin = (req, res, next) => {
     }
 }
 
+
+
 // Verify login
 const verifyLogin = async (req, res, next) => {
     try {
@@ -273,7 +278,7 @@ const verifyLogin = async (req, res, next) => {
             const verifyPassword = await bcrypt.compare(Password, userData.password);
 
             if (verifyPassword) {
-                if (userData.isBlocked) {
+                if (userData.isBlocked) { // if the user blocked by admin  redirecting to login with a message
                     req.flash('blocked', 'You were blocked by admin');
                     res.redirect('/login');
                 } else {
@@ -299,7 +304,7 @@ const verifyLogin = async (req, res, next) => {
     }
 }
 
-//=================================== User Signup and OTP Verification =================================================
+
 
 // Load registration
 const loadRegister = (req, res, next) => {
@@ -312,6 +317,8 @@ const loadRegister = (req, res, next) => {
     }
 }
 
+
+
 // Insert user
 const insertUser = async (req, res, next) => {
     try {
@@ -321,7 +328,7 @@ const insertUser = async (req, res, next) => {
         const usernameExists = await Users.findOne({ name: Name });
         const emailExists = await Users.findOne({ email: Email });
 
-        if (usernameExists) {
+        if (usernameExists) {  
             req.flash('nameExist', 'Username already exists');
             res.redirect('/signup');
         } else if (emailExists) {
@@ -357,6 +364,8 @@ const insertUser = async (req, res, next) => {
     }
 }
 
+
+
 // Load OTP
 const loadOtp = (req, res, next) => {
     try {
@@ -368,51 +377,64 @@ const loadOtp = (req, res, next) => {
     }
 }
 
+
+
 // Send OTP
 const sendOtp = async (email) => {
     try {
+        // Configure nodemailer transport for Gmail service
         const transport = nodemailer.createTransport({
             service: 'gmail',
             host: "smtp.gmail.com",
             port: 465,
-            secure: true,
+            secure: true, 
             auth: {
-                user: 'muhamedreswan9917@gmail.com',
-                pass: 'neek jdze decd qtoa'
+                user: 'muhamedreswan9917@gmail.com', // Your Gmail address
+                pass: 'neek jdze decd qtoa' // App-specific password for Gmail
             }
         });
 
+        // Generate a 4-digit OTP
         const createOtp = `${Math.floor(1000 + Math.random() * 9000)}`;
-        console.log(`OTP: ${createOtp}`);
+        console.log(`OTP: ${createOtp}`); 
 
+        // Set up the email options
         const mailOption = {
-            from: 'muhamedreswan9917@gmail.com',
+            from: 'muhamedreswan9917@gmail.com', 
             to: email,
-            subject: "OTP Verification",
-            html: `Your OTP is ${createOtp}`
+            subject: "OTP Verification", 
+            html: `Your OTP is <strong>${createOtp}</strong>`
         };
 
+        // Send the email with OTP
         await transport.sendMail(mailOption);
 
+        // Hash the OTP before saving it in the database for security purposes
         const hashOtp = await bcrypt.hash(createOtp, 10);
+
         await new otpModel({ email, otp: hashOtp }).save();
+
     } catch (error) {
         console.error('Error sending OTP:', error.message);
         throw error;
     }
 }
 
+
+
 // Verify OTP
 const verifyOtp = async (req, res, next) => {
     try {
         const { email, referel } = req.body;
-        const otp = req.body.otp1 + req.body.otp2 + req.body.otp3 + req.body.otp4;
 
+        const otp = req.body.otp1 + req.body.otp2 + req.body.otp3 + req.body.otp4;
         console.log("Received OTP:", otp);
 
+        // Find the OTP document based on the provided email
         const otpUser = await otpModel.findOne({ email });
 
         if (otpUser) {
+            // Compare the received OTP with the hashed OTP stored in the database
             const otpVerification = await bcrypt.compare(otp, otpUser.otp);
 
             if (otpVerification) {
@@ -420,33 +442,39 @@ const verifyOtp = async (req, res, next) => {
                 const userId = userData._id;
 
                 if (userData) {
+                    // Mark the user as verified and remove the OTP from the database
                     await Users.findByIdAndUpdate(userId, { verified: true });
                     await otpModel.deleteOne({ email });
 
+                    // If a referral code is provided, process the referral bonus
                     if (referel) {
                         const referelOwner = await Users.findOne({ referelCode: referel });
 
                         if (referelOwner) {
                             console.log("Valid referral code found.");
 
+                            // Create a transaction for the referral owner
                             const transaction = {
                                 amount: 200,
                                 mode: "Credited",
                                 description: "Your friend joined through your referral link"
                             };
 
+                            // Update the wallet of the referral owner
                             await Wallet.updateOne(
                                 { user: referelOwner._id },
                                 { $inc: { balance: 200 }, $push: { transactions: transaction } },
                                 { new: true }
                             );
 
+                            // Create a transaction for the referred user
                             const userTransaction = {
                                 amount: 100,
                                 mode: "Credited",
                                 description: "You received 100 rupees by applying referral code"
                             };
 
+                            // Update the wallet of the newly verified user
                             await Wallet.updateOne(
                                 { user: userId },
                                 { $inc: { balance: 100 }, $push: { transactions: userTransaction } },
@@ -455,26 +483,32 @@ const verifyOtp = async (req, res, next) => {
                         }
                     }
 
+                    // Flash success message and redirect to login page
                     req.flash('success', 'Verification successful');
-                    res.redirect('/login');
+                    return res.redirect('/login');
                 } else {
                     console.error('User data not found');
+                    req.flash('error', 'User data not found');
+                    return res.redirect(`/otp?email=${email}&referel=${referel}`);
                 }
             } else {
                 console.error('OTP verification failed');
                 req.flash('incorrect', 'Please enter a valid OTP');
-                res.redirect(`/otp?email=${email}&referel=${referel}`);
+                return res.redirect(`/otp?email=${email}&referel=${referel}`);
             }
         } else {
-            console.error('User not found');
+            console.error('OTP expired or not found');
             req.flash('expired', 'OTP expired. Please resend');
-            res.redirect(`/otp?email=${email}&referel=${referel}`);
+            return res.redirect(`/otp?email=${email}&referel=${referel}`);
         }
     } catch (error) {
+        // Log any errors and pass them to the next middleware for handling
         console.error('Error verifying OTP:', error.message);
         next(error);
     }
-}
+};
+
+
 
 // Resend OTP
 const resendOtp = async (req, res, next) => {
@@ -497,7 +531,7 @@ const resendOtp = async (req, res, next) => {
     }
 }
 
-// ============================================== User Signup and Verification End =============================================
+
 
 // Load forgot password
 const loadForgotPassword = (req, res, next) => {
@@ -508,6 +542,8 @@ const loadForgotPassword = (req, res, next) => {
         next(error);
     }
 }
+
+
 
 // Reset password function
 const resetPass = async (email, res, next) => {
@@ -555,6 +591,8 @@ const resetPass = async (email, res, next) => {
     }
 }
 
+
+
 // Forgot password
 const forgotPassword = async (req, res, next) => {
     try {
@@ -568,6 +606,8 @@ const forgotPassword = async (req, res, next) => {
     }
 }
 
+
+
 // Load reset password page
 const loadResetPassword = async (req, res, next) => {
     try {
@@ -578,6 +618,8 @@ const loadResetPassword = async (req, res, next) => {
         next(error);
     }
 }
+
+
 
 // Reset password
 const resetPassword = async (req, res, next) => {
@@ -608,6 +650,8 @@ const resetPassword = async (req, res, next) => {
     }
 }
 
+
+
 // Load profile
 const loadProfile = (req, res, next) => {
     try {
@@ -617,6 +661,8 @@ const loadProfile = (req, res, next) => {
         next(error);
     }
 }
+
+
 
 // 404 Error
 const LoadError404 = (req, res, next) => {
@@ -628,6 +674,8 @@ const LoadError404 = (req, res, next) => {
     }
 }
 
+
+
 // About us 
 const loadAboutUs = (req, res, next) => {
     try {
@@ -637,6 +685,8 @@ const loadAboutUs = (req, res, next) => {
         next(error);
     }
 }
+
+
 
 
 // User Logout

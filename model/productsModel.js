@@ -55,16 +55,6 @@ type:Number
         required:false
     },
 
-    // stock: {
-    //     type: Object,
-    //     required: true,
-    // },
-
-    // size:{
-    //     type:Array,
-    //     required:true
-    // },
-
     created: {
         type: Date,
         default: Date.now  
