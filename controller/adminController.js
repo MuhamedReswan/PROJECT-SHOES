@@ -762,63 +762,75 @@ const removeCategoryOffer = async (req, res, next) => {
 // load sales report
 const loadSalesReport = async (req, res, next) => {
     try {
+        console.log("within controller sales report")//--------------------
         let startDate = new Date(req.query?.start);
         let endDate = new Date(req.query?.end);
-        let dateRange = req.query?.date;
+        let dateRange = req.query?.date
+
         let currentDate = new Date();
 
         // Adjust endDate to include the entire end day by setting the time to the end of the day
         endDate.setHours(23, 59, 59, 999);
 
-        let filterConditions = {
+        let filterConditons = {
             orderStatus: { $nin: ['Cancelled', 'Pending'] },
-        };
+        }
 
-        if (startDate && endDate) {
-            filterConditions.date = { $gte: startDate, $lte: endDate };
+        if (startDate & startDate) {
+            filterConditons.date = { $gte: startDate, $lte: endDate }
         }
 
         if (dateRange) {
+
             let year = currentDate.getFullYear();
             let month = currentDate.getMonth();
+            let day = currentDate.getDay();
 
-            if (dateRange === "All") {
-                const orders = await Orders.find(filterConditions).populate('user').populate('products.productId');
+            if (dateRange == "All") {
+                const orders = await Orders.find(filterConditons).populate('user').populate('products.productId');
                 return res.status(200).render("salesReport", { orders, dateRange });
             }
 
-            if (dateRange === "Day") {
+            if (dateRange == "Day") {
                 startDate = new Date(currentDate.setHours(0, 0, 0, 0));
                 endDate = new Date(currentDate.setHours(23, 59, 59, 999));
-                filterConditions.date = { $gte: startDate, $lte: endDate };
+
+                filterConditons.date = { $gte: startDate, $lte: endDate }
             }
 
-            if (dateRange === "Week") {
-                startDate = new Date(year, month, currentDate.getDate() - currentDate.getDay() - 7);
-                endDate = new Date(year, month, currentDate.getDate() - currentDate.getDay() - 1);
-                filterConditions.date = { $gte: startDate, $lte: endDate };
+            if (dateRange == "Week") {
+
+                startDate = new Date(year, month, currentDate.getDate() - day - 7);
+
+                endDate = currentDate.setDate(currentDate.getDate() - day - 1);
+
+                filterConditons.date = { $gte: startDate, $lte: endDate }
             }
 
-            if (dateRange === "Month") {
+            if (dateRange == "Month") {
                 startDate = new Date(year, month, 1).setHours(0, 0, 0, 0);
-                endDate = new Date(year, month + 1, 0).setHours(23, 59, 59, 999);
-                filterConditions.date = { $gte: startDate, $lte: endDate };
+                endDate = new Date(year, month, 31).setHours(23, 59, 59, 999);
+                filterConditons.date = { $gte: startDate, $lte: endDate }
             }
 
-            if (dateRange === "Year") {
+            if (dateRange == "Year") {
                 startDate = new Date(year, 0, 1).setHours(0, 0, 0, 0);
                 endDate = new Date(year, 11, 31).setHours(23, 59, 59, 999);
-                filterConditions.date = { $gte: startDate, $lte: endDate };
+
+                filterConditons.date = { $gte: startDate, $lte: endDate }
             }
         }
 
-        const orders = await Orders.find(filterConditions).populate('user').populate('products.productId');
+        const orders = await Orders.find(filterConditons).populate('user').populate('products.productId');
+
         res.status(200).render("salesReport", { orders, dateRange });
     } catch (error) {
         console.log(error.message);
         next(error);
     }
 }
+
+
 
 // load 404 page
 const loadError404 = (req, res, next) => {

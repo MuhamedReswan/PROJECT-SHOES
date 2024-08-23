@@ -23,7 +23,7 @@ admin_route.use('/user', express.static(path.join(__dirname, 'public/user')));
 admin_route.use('/admin', express.static(path.join(__dirname, 'public/admin')));
 
 // Session management and security
-admin_route.use(session({ secret: config.sessionSecret, resave: false, saveUninitialized: false }));
+admin_route.use(session({ secret: config.sessionSecret, resave: false, saveUninitialized: false, name: 'admin_session' }));
 admin_route.use(nocache());
 
 // Set views directory
@@ -93,7 +93,7 @@ admin_route.post('/category/apply-offer', adminAuth.isLogin, adminController.app
 admin_route.post('/category/remove-offer', adminAuth.isLogin, adminController.removeCategoryOffer);
 
 // Sales Report
-admin_route.get('/sales-report', adminAuth.isLogin, adminHelper.returnRequestCount, adminController.loadSalesReport);
+admin_route.get('/sales-report', adminAuth.isLogin, adminController.loadSalesReport);
 admin_route.post('/dashboard/filter-chart', adminAuth.isLogin, adminController.filterYearlyMonthly);
 
 // Banner Management

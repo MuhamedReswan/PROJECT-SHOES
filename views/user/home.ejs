@@ -1,402 +1,464 @@
 <%- include('../layout/user/header') -%>
 
-<!-- Include SweetAlert2 CSS and JS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Include SweetAlert2 CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<div id="pre-loader">
-    <img src="user/assets/images/loader.gif" alt="Loading..." />
-</div>
-<div class="pageWrapper">
-	<%-include('../partials/userNavbar')-%>
-    
-    <!-- Body Content -->
-    <div id="page-content">
-    	<!--Home slider-->
-    	<div class="slideshow slideshow-wrapper pb-section sliderFull">
-        	<div class="home-slideshow">
-                <%if(!banners){%>
-            	<div class="slide slideshow--medium">
-                	<div class="blur-up lazyload bg-size">
-                        <img class="blur-up lazyload bg-img" data-src="user/assets/images/slideshow-banners/home7-banner1.jpg" src="user/assets/images/slideshow-banners/home7-banner1.jpg" alt="Modern Sophistication" title="Modern Sophistication" />
-                        <div class="slideshow__text-wrap slideshow__overlay classic middle">
-                            <div class="slideshow__text-content classic left">
-                            	<div class="container" id="success-login" 
-                              <%if(messages.loginSuccess)%>
-                              data-success="<%=JSON.stringify(messages.loginSuccess)%>">
+    <div id="pre-loader">
+        <img src="user/assets/images/loader.gif" alt="Loading..." />
+    </div>
+    <div class="pageWrapper">
+        <%-include('../partials/userNavbar')-%>
 
-                                    <div class="wrap-caption left">
-                                        <h2 class="h1 mega-title slideshow__title">Modern Sophistication</h2>
-                                        <span class="mega-subtitle slideshow__subtitle">Ecco Sharp comfort and innovation</span>
-                                      <a href="/shop"><span class="btn">Shop now</span></a>  
+            <!-- Body Content -->
+            <div id="page-content">
+                <!--Home slider-->
+                <div class="slideshow slideshow-wrapper pb-section sliderFull">
+                    <div class="home-slideshow">
+                        <%if(!banners){%>
+                            <div class="slide slideshow--medium">
+                                <div class="blur-up lazyload bg-size">
+                                    <img class="blur-up lazyload bg-img"
+                                        data-src="user/assets/images/slideshow-banners/home7-banner1.jpg"
+                                        src="user/assets/images/slideshow-banners/home7-banner1.jpg"
+                                        alt="Modern Sophistication" title="Modern Sophistication" />
+                                    <div class="slideshow__text-wrap slideshow__overlay classic middle">
+                                        <div class="slideshow__text-content classic left">
+                                            <div class="container" id="success-login" <%if(messages.loginSuccess)%>
+                                                data-success="<%=JSON.stringify(messages.loginSuccess)%>">
+
+                                                    <div class="wrap-caption left">
+                                                        <h2 class="h1 mega-title slideshow__title">Modern Sophistication
+                                                        </h2>
+                                                        <span class="mega-subtitle slideshow__subtitle">Ecco Sharp
+                                                            comfort and innovation</span>
+                                                        <a href="/shop"><span class="btn">Shop now</span></a>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <%}else{%>
+
+                                <%banners.forEach((banner)=>{%>
+                                    <%console.log("banner from ejs",banner)%>
+                                        <div class="slide slideshow--medium">
+                                            <div class="blur-up lazyload bg-size">
+                                                <img class="blur-up lazyload bg-img"
+                                                    data-src="user/assets/images/banners/<%=banner.image%>"
+                                                    src="user/assets/images/banners/<%=banner.image%>"
+                                                    alt="New Season Styles" title="New Season Styles" />
+                                                <div class="slideshow__text-wrap slideshow__overlay classic middle">
+                                                    <div class="slideshow__text-content classic middle">
+                                                        <div class="container">
+                                                            <div class="wrap-caption right">
+                                                                <h2 class="h1 mega-title slideshow__title">
+                                                                    <%=banner.title%>
+                                                                </h2>
+                                                                <span class="mega-subtitle slideshow__subtitle">
+                                                                    <%=banner.description%>
+                                                                </span>
+                                                                <a href="/shop?category=<%=banner.url%>"><span
+                                                                        class="btn">Shop now</span></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <%})%>
+                                            <%}%>
+
+                    </div>
+                </div>
+                <!--End Home slider-->
+
+                <!--Shop the Latest & Greatest Shoes-->
+                <div class="section">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="section-header text-center">
+                                    <h2 class="h2">Shop the Latest &amp; Greatest Shoes</h2>
+                                    <p>Shop The most popular shoes from belle store</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid-products grid-products-hover-btn">
+                            <div class="productSlider-style1">
+                                <%latestProduct.forEach((product)=>{%>
+                                    <div class="col-12 item grid-view-item style2 " style="border: 5px darkslategrey;">
+                                        <div class="grid-view_image">
+                                            <!-- start product image -->
+                                            <a href="/single-product?id=<%=product._id%>" class="grid-view-item__link">
+                                                <!-- image -->
+                                                <img class="grid-view-item__image primary blur-up lazyload"
+                                                    data-src="/user/assets/images/product-images/sharpedImages/<%=product.images[0]%>"
+                                                    src="/user/assets/images/product-images/sharpedImages/<%=product.images[0]%>"
+                                                    alt="image" title="product">
+                                                <!-- End image -->
+                                                <!-- Hover image -->
+                                                <img class="grid-view-item__image hover blur-up lazyload"
+                                                    data-src="/user/assets/images/product-images/sharpedImages/<%=product.images[1]%>"
+                                                    src="/user/assets/images/product-images/sharpedImages/<%=product.images[1]%>"
+                                                    alt="image" title="product">
+                                                <!-- End hover image -->
+                                            </a>
+                                            <!-- end product image -->
+                                            <!--start product details -->
+                                            <div class="product-details hoverDetails text-center mobile">
+                                                <!-- product name -->
+                                                <div class="product-name fs-3">
+                                                    <a href="/single-product?id=<%=product._id%>">
+                                                        <h6>
+                                                            <%=product.name%>
+                                                        </h6>
+                                                    </a>
+                                                </div>
+                                                <!-- End product name -->
+                                                <!-- product price -->
+                                                <div class="product-price">
+                                                    <span class="old-price">₹ <%=product.offerPrice%>.00</span>
+                                                    <span class="price">₹ <%=Math.round(product.finalPrice)%>.00</span>
+                                                </div>
+                                                <!-- End product price -->
+
+
+                                            </div>
+                                            <!-- End product details -->
+                                        </div>
+                                    </div>
+                                    <%})%>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End Shop the Latest & Greatest Shoes-->
+
+                <!--Logo Slider-->
+                <div class="section logo-section">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="logo-bar">
+                                    <div class="logo-bar__item">
+                                        <img src="user/assets/images/logo/brandlogo1.png" alt="" title="" />
+                                    </div>
+                                    <div class="logo-bar__item">
+                                        <img src="user/assets/images/logo/brandlogo2.png" alt="" title="" />
+                                    </div>
+                                    <div class="logo-bar__item">
+                                        <img src="user/assets/images/logo/brandlogo3.png" alt="" title="" />
+                                    </div>
+                                    <div class="logo-bar__item">
+                                        <img src="user/assets/images/logo/brandlogo4.png" alt="" title="" />
+                                    </div>
+                                    <div class="logo-bar__item">
+                                        <img src="user/assets/images/logo/brandlogo5.png" alt="" title="" />
+                                    </div>
+                                    <div class="logo-bar__item">
+                                        <img src="user/assets/images/logo/brandlogo6.png" alt="" title="" />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <%}else{%>
+                <!--End Logo Slider-->
 
-<%banners.forEach((banner)=>{%>
-    <%console.log("banner from ejs",banner)%>
-    <div class="slide slideshow--medium">
-        <div class="blur-up lazyload bg-size">
-            <img class="blur-up lazyload bg-img" data-src="user/assets/images/banners/<%=banner.image%>" src="user/assets/images/banners/<%=banner.image%>" alt="New Season Styles" title="New Season Styles" />
-            <div class="slideshow__text-wrap slideshow__overlay classic middle">
-                <div class="slideshow__text-content classic middle">
+                <!--Trendy Collection-->
+                <div class="section custom-content-style1">
                     <div class="container">
-                        <div class="wrap-caption right">
-                            <h2 class="h1 mega-title slideshow__title"><%=banner.title%></h2>
-                            <span class="mega-subtitle slideshow__subtitle"><%=banner.description%></span>
-                           <a href="/shop?category=<%=banner.url%>"><span class="btn">Shop now</span></a> 
+                        <div class="row">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="section-header text-center">
+                                    <h2 class="h2">Trendy Collection</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center mb-4">
+                            <div class="col-12 col-sm-4 col-md-4 col-lg-4">
+                                <div class="custom-text text-center">
+                                    <h4 class="h3">
+                                        <a href="#">Warm layers, fall colors and trendy styles are here for fall!</a>
+                                    </h4>
+                                    <div class="rte-setting">
+                                        <p>UP TO 60% OFF </p>
+                                    </div>
+                                    <a class="btn" href="/shop">Shop now</a>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-4 col-md-4 col-lg-4">
+                                <div class="custom-text text-center">
+                                    <img class="blur-up lazyload"
+                                        data-src="user/assets/images/collection/shoes-collection1.jpg"
+                                        src="user/assets/images/collection/shoes-collection1.jpg" alt="" title="">
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-4 col-md-4 col-lg-4">
+                                <div class="custom-text text-center">
+                                    <img class="blur-up lazyload"
+                                        data-src="user/assets/images/collection/shoes-collection2.jpg"
+                                        src="user/assets/images/collection/shoes-collection2.jpg" alt="" title="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-12 col-sm-8 col-md-8 col-lg-8">
+                                <div class="custom-text text-center">
+                                    <img class="blur-up lazyload"
+                                        data-src="user/assets/images/collection/shoes-collection3.jpg"
+                                        src="user/assets/images/collection/shoes-collection3.jpg" alt="" title="">
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-4 col-md-4 col-lg-4">
+                                <div class="custom-text text-center">
+                                    <h4 class="h3">
+                                        <a href="#">Stay warm and look cool in fall styles for guys!</a>
+                                    </h4>
+                                    <div class="rte-setting">
+                                        <p>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, velit...</p>
+                                    </div>
+                                    <a class="btn" href="/shop">Shop now</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+                <!--End Trendy Collection-->
+
+                <!--Three Column Products-->
+                <div class="section three-column-pro">
+                    <div class="container">
+                        <div class="row">
+
+                            <% if (mostPopularProduct){%>
+
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                    <div class="section-header text-left">
+                                        <h2 class="h2">Most Popular</h2>
+                                    </div>
+                                    <div class="grid">
+                                        <%mostPopularProduct.forEach((pro)=>{%>
+
+                                            <div class="grid__item">
+                                                <div class="mini-list-item">
+                                                    <div class="mini-view_image">
+                                                        <a class="grid-view-item__link"
+                                                            href="/single-product?id=<%=pro.product._id%>">
+                                                            <img class="grid-view-item__image blur-up lazyload"
+                                                                src="/user/assets/images/product-images/sharpedImages/<%=pro.image%>"
+                                                                alt="">
+                                                        </a>
+                                                    </div>
+                                                    <div class="details"> <a class="grid-view-item__title"
+                                                            href="/single-product?id=<%=pro.product._id%> ">
+                                                            <%=pro.product.name%>
+                                                        </a>
+                                                        <%if(pro.discountPercentage>0){%>
+                                                            <div class="grid-view-item__meta"><span
+                                                                    class="product-price__price"><span class="money">₹
+                                                                        <%=Math.max(pro.product.offerPrice)%>.00
+                                                                            <br><span class="text-success">
+                                                                                <%=pro.discountPercentage%>% OFF
+                                                                            </span></span></span></div>
+                                                            <%}else{%>
+
+                                                                <div class="grid-view-item__meta"><span
+                                                                        class="product-price__price"><span
+                                                                            class="money">₹
+                                                                            <%=Math.max(pro.product.offerPrice)%>
+                                                                                .00</span></span></div>
+                                                                <%}%>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <%})%>
+                                    </div>
+                                </div>
+                                <%}%>
+                                    <%if(topOfferedProduct){%>
+                                        <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                            <div class="section-header text-left">
+                                                <h2 class="h2">Top Offer Products</h2>
+                                            </div>
+                                            <div class="grid">
+
+                                                <%topOfferedProduct.forEach((pro)=>{%>
+
+                                                    <div class="grid__item">
+                                                        <div class="mini-list-item">
+                                                            <div class="mini-view_image">
+                                                                <a class="grid-view-item__link"
+                                                                    href="/single-product?id=<%=pro._id%>">
+                                                                    <img class="grid-view-item__image blur-up lazyload"
+                                                                        src="/user/assets/images/product-images/sharpedImages/<%=pro.images[0]%>"
+                                                                        alt="">
+                                                                </a>
+                                                            </div>
+                                                            <div class="details"> <a class="grid-view-item__title"
+                                                                    href="/single-product?id=<%=pro._id%>">
+                                                                    <%=pro.name%>
+                                                                </a>
+                                                                <%if(pro.maxDiscount>0){%>
+                                                                    <div class="grid-view-item__meta"><span
+                                                                            class="product-price__price"><span
+                                                                                class="money ">₹
+                                                                                <%=Math.round(pro.finalPrice)%>
+                                                                                    .00<br><span class="text-success">
+                                                                                        <%=pro.maxDiscount%>% oFF
+                                                                                    </span></span></span></div>
+                                                                    <%}else{%>
+                                                                        <div class="grid-view-item__meta"><span
+                                                                                class="product-price__price"><span
+                                                                                    class="money">₹
+                                                                                    <%=Math.round(pro.finalPrice)%>
+                                                                                        .00</span></span></div>
+
+                                                                        <%}%>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <%})%>
+
+                                            </div>
+                                        </div>
+                                        <%}%>
+                                            <div class="col-12 col-sm-6 col-md-4 col-lg-4">
+                                                <div class="section-header text-left">
+                                                    <h2 class="h2">Latest Product</h2>
+                                                </div>
+                                                <div class="grid">
+
+                                                    <%latestProduct.forEach((pro)=>{%>
+
+                                                        <div class="grid__item">
+                                                            <div class="mini-list-item">
+                                                                <div class="mini-view_image">
+                                                                    <a class="grid-view-item__link"
+                                                                        href="/single-product?id=<%=pro._id%>">
+                                                                        <img class="grid-view-item__image blur-up lazyload"
+                                                                            src="/user/assets/images/product-images/sharpedImages/<%=pro.images[0]%>"
+                                                                            alt="">
+                                                                    </a>
+                                                                </div>
+                                                                <div class="details"> <a class="grid-view-item__title"
+                                                                        href="/single-product?id=<%=pro._id%>">
+                                                                        <%=pro.name%>
+                                                                    </a>
+                                                                    <%if(pro.maxDiscount>0){%>
+                                                                        <div class="grid-view-item__meta"><span
+                                                                                class="product-price__price"><span
+                                                                                    class="money ">₹
+                                                                                    <%=Math.round(pro.finalPrice)%>
+                                                                                        .00<br><span
+                                                                                            class="text-success">
+                                                                                            <%=pro.maxDiscount%>% oFF
+                                                                                        </span></span></span></div>
+                                                                        <%}else{%>
+                                                                            <div class="grid-view-item__meta"><span
+                                                                                    class="product-price__price"><span
+                                                                                        class="money">₹
+                                                                                        <%=Math.round(pro.finalPrice)%>
+                                                                                            .00</span></span></div>
+
+                                                                            <%}%>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <%})%>
+
+                                                </div>
+                                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End Three Column Products-->
+
+            </div><!--End Body Content-->
+
+            <!--Footer-->
+            <%-include('../partials/userBodyFooter.ejs')-%>
+                <!--End Footer-->
+                <!--Scoll Top-->
+                <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
+                <!--End Scoll Top-->
+
+                <!-- Including Jquery -->
+                <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
+                <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+                <script src="user/assets/js/vendor/jquery.cookie.js"></script>
+                <script src="user/assets/js/vendor/wow.min.js"></script>
+                <!-- Including Javascript -->
+                <script src="user/assets/js/bootstrap.min.js"></script>
+                <script src="user/assets/js/plugins.js"></script>
+                <script src="user/assets/js/popper.min.js"></script>
+                <script src="user/assets/js/lazysizes.js"></script>
+                <script src="user/assets/js/main.js"></script>
+                <!--For Newsletter Popup-->
+                <script>
+                    jQuery(document).ready(function () {
+                        jQuery('.closepopup').on('click', function () {
+                            jQuery('#popup-container').fadeOut();
+                            jQuery('#modalOverly').fadeOut();
+                        });
+
+                        var visits = jQuery.cookie('visits') || 0;
+                        visits++;
+                        jQuery.cookie('visits', visits, { expires: 1, path: '/' });
+                        console.debug(jQuery.cookie('visits'));
+                        if (jQuery.cookie('visits') > 1) {
+                            jQuery('#modalOverly').hide();
+                            jQuery('#popup-container').hide();
+                        } else {
+                            var pageHeight = jQuery(document).height();
+                            jQuery('<div id="modalOverly"></div>').insertBefore('body');
+                            jQuery('#modalOverly').css("height", pageHeight);
+                            jQuery('#popup-container').show();
+                        }
+                        if (jQuery.cookie('noShowWelcome')) { jQuery('#popup-container').hide(); jQuery('#active-popup').hide(); }
+                    });
+
+                    jQuery(document).mouseup(function (e) {
+                        var container = jQuery('#popup-container');
+                        if (!container.is(e.target) && container.has(e.target).length === 0) {
+                            container.fadeOut();
+                            jQuery('#modalOverly').fadeIn(200);
+                            jQuery('#modalOverly').hide();
+                        }
+                    });
+                </script>
+
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+
+                        let loginData = document.getElementById('success-login');
+                        let loginSuccess = loginData.getAttribute('data-success');
+                        console.log("admin home kscritpt loginSuccess ", loginSuccess)
+                        if (typeof (loginSuccess) !== undefined) {
+
+
+                            Swal.fire({
+                                icon: 'success',
+                                text: "loged",
+                                timer: "1500",
+                                toast: true,
+                                width: "300px",
+                                showConfirmButton: false,
+                            }, 1000);
+                            loginData.setAttribute('data-success', undefined);
+                        }
+                    });
+                </script>
+
+                <!--End For Newsletter Popup-->
     </div>
 
-<%})%>
-<%}%>
 
-                
-                <!-- <div class="slide slideshow--medium">
-                	<div class="blur-up lazyload bg-size">
-                        <img class="blur-up lazyload bg-img" data-src="user/assets/images/slideshow-banners/home7-banner2.jpg" src="user/assets/images/slideshow-banners/home7-banner2.jpg" alt="New Season Styles" title="New Season Styles" />
-                        <div class="slideshow__text-wrap slideshow__overlay classic middle">
-                            <div class="slideshow__text-content classic middle">
-                            	<div class="container">
-                                    <div class="wrap-caption right">
-                                        <h2 class="h1 mega-title slideshow__title">New Season Styles</h2>
-                                        <span class="mega-subtitle slideshow__subtitle">Break all boundaries with our new arrival footwears</span>
-                                       <a href="/shop"><span class="btn">Shop now</span></a> 
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-            </div>
-        </div>
-        <!--End Home slider-->
-        
-              <!--Shop the Latest & Greatest Shoes-->
-              <div class="section">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                            <div class="section-header text-center">
-                                <h2 class="h2">Shop the Latest &amp; Greatest Shoes</h2>
-                                <p>Shop The most popular shoes from belle store</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid-products grid-products-hover-btn">
-                        <div class="productSlider-style1">
-                            <%latestProduct.forEach((product)=>{%>
-                            <div class="col-12 item grid-view-item style2 " style="border: 5px darkslategrey;">
-                                <div class="grid-view_image">
-                                    <!-- start product image -->
-                                    <a href="/single-product?id=<%=product._id%>" class="grid-view-item__link">
-                                        <!-- image -->
-                                        <img class="grid-view-item__image primary blur-up lazyload" data-src="/user/assets/images/product-images/sharpedImages/<%=product.images[0]%>" src="/user/assets/images/product-images/sharpedImages/<%=product.images[0]%>" alt="image" title="product">
-                                        <!-- End image -->
-                                        <!-- Hover image -->
-                                        <img class="grid-view-item__image hover blur-up lazyload" data-src="/user/assets/images/product-images/sharpedImages/<%=product.images[1]%>" src="/user/assets/images/product-images/sharpedImages/<%=product.images[1]%>" alt="image" title="product">
-                                        <!-- End hover image -->
-                                    </a>
-                                    <!-- end product image -->
-                                    <!--start product details -->
-                                    <div class="product-details hoverDetails text-center mobile">
-                                        <!-- product name -->
-                                        <div class="product-name fs-3">
-                                            <a href="/single-product?id=<%=product._id%>"><h6><%=product.name%></h6></a>
-                                        </div>
-                                        <!-- End product name -->
-                                        <!-- product price -->
-                                        <div class="product-price">
-                                            <span class="old-price">₹ <%=product.offerPrice%>.00</span>
-                                            <span class="price">₹ <%=Math.round(product.finalPrice)%>.00</span>
-                                        </div>
-                                        <!-- End product price -->
-                                        
-                                       
-                                    </div>
-                                    <!-- End product details -->
-                                </div>
-                            </div>
-                            <%})%>
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--End Shop the Latest & Greatest Shoes-->
-        
-        <!--Logo Slider-->
-        <div class="section logo-section">
-        	<div class="container">
-            	<div class="row">
-                	<div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                		<div class="logo-bar">
-                    <div class="logo-bar__item" >
-                        <img src="user/assets/images/logo/brandlogo1.png" alt="" title="" />
-                    </div>
-                    <div class="logo-bar__item">
-                        <img src="user/assets/images/logo/brandlogo2.png" alt="" title="" />
-                    </div>
-                    <div class="logo-bar__item">
-                        <img src="user/assets/images/logo/brandlogo3.png" alt="" title="" />
-                    </div>
-                    <div class="logo-bar__item">
-                        <img src="user/assets/images/logo/brandlogo4.png" alt="" title="" />
-                    </div>
-                    <div class="logo-bar__item">
-                        <img src="user/assets/images/logo/brandlogo5.png" alt="" title="" />
-                    </div>
-                    <div class="logo-bar__item">
-                        <img src="user/assets/images/logo/brandlogo6.png" alt="" title="" />
-                    </div>
-                </div>
-                	</div>
-                </div>
-            </div>
-        </div>
-        <!--End Logo Slider-->
-       
-        <!--Trendy Collection-->
-        <div class="section custom-content-style1">
-        	<div class="container">
-            	<div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                        <div class="section-header text-center">
-                            <h2 class="h2">Trendy Collection</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="row align-items-center mb-4">
-                    <div class="col-12 col-sm-4 col-md-4 col-lg-4">
-                        <div class="custom-text text-center">
-                            <h4 class="h3">
-                                <a href="#">Warm layers, fall colors and trendy styles are here for fall!</a>   
-                            </h4>
-                            <div class="rte-setting"><p>UP TO 60% OFF </p></div>
-                            <a class="btn" href="/shop">Shop now</a>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-4 col-md-4 col-lg-4">
-                        <div class="custom-text text-center">
-                            <img class="blur-up lazyload" data-src="user/assets/images/collection/shoes-collection1.jpg" src="user/assets/images/collection/shoes-collection1.jpg" alt="" title="">
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-4 col-md-4 col-lg-4">
-                        <div class="custom-text text-center">
-                            <img class="blur-up lazyload" data-src="user/assets/images/collection/shoes-collection2.jpg" src="user/assets/images/collection/shoes-collection2.jpg" alt="" title="">
-                        </div>
-                    </div>
-                </div>
-                <div class="row align-items-center">
-                    <div class="col-12 col-sm-8 col-md-8 col-lg-8">
-                        <div class="custom-text text-center">
-                            <img class="blur-up lazyload" data-src="user/assets/images/collection/shoes-collection3.jpg" src="user/assets/images/collection/shoes-collection3.jpg" alt="" title="">
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-4 col-md-4 col-lg-4">
-                        <div class="custom-text text-center">
-                            <h4 class="h3">
-                                <a href="#">Stay warm and look cool in fall styles for guys!</a>   
-                            </h4>
-                            <div class="rte-setting"><p>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, velit...</p></div>
-                            <a class="btn" href="/shop">Shop now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--End Trendy Collection-->
-        
-        <!--Three Column Products-->
-        <div class="section three-column-pro">
-        	<div class="container">
-            	<div class="row">
-
-                <% if (mostPopularProduct){%>
-
-                	<div class="col-12 col-sm-6 col-md-4 col-lg-4">
-                    	<div class="section-header text-left">
-                            <h2 class="h2">Most Popular</h2>
-                        </div>
-                        <div class="grid">
-                          <%mostPopularProduct.forEach((pro)=>{%>
-
-                            <div class="grid__item">
-                              <div class="mini-list-item">
-                                <div class="mini-view_image">
-                                    <a class="grid-view-item__link" href="/single-product?id=<%=pro.product._id%>">
-                                        <img class="grid-view-item__image blur-up lazyload" src="/user/assets/images/product-images/sharpedImages/<%=pro.image%>" alt="">
-                                    </a>
-                                </div>
-                                <div class="details"> <a class="grid-view-item__title" href="/single-product?id=<%=pro.product._id%> "><%=pro.product.name%></a>
-<%if(pro.discountPercentage>0){%>
-  <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">₹ <%=Math.max(pro.product.offerPrice)%>.00 <br><span class="text-success"><%=pro.discountPercentage%>% OFF</span></span></span></div>
-  <%}else{%>
-
-  <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">₹ <%=Math.max(pro.product.offerPrice)%>.00</span></span></div>
-                                  <%}%>
-                                </div>
-                              </div>
-                            </div>
-                            <%})%>
-                          </div>
-                    </div>
-                    <%}%>
-                    <%if(topOfferedProduct){%>
-                      <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-                        <div class="section-header text-left">
-                              <h2 class="h2">Top Offer Products</h2>
-                          </div>
-                          <div class="grid">
-  
-  <%topOfferedProduct.forEach((pro)=>{%>
-  
-                              <div class="grid__item">
-                                <div class="mini-list-item">
-                                  <div class="mini-view_image">
-                                      <a class="grid-view-item__link" href="/single-product?id=<%=pro._id%>">
-                                          <img class="grid-view-item__image blur-up lazyload" src="/user/assets/images/product-images/sharpedImages/<%=pro.images[0]%>" alt="">
-                                      </a>
-                                  </div>
-                                  <div class="details"> <a class="grid-view-item__title" href="/single-product?id=<%=pro._id%>"><%=pro.name%></a>
-                                    <%if(pro.maxDiscount>0){%>
-                                    <div class="grid-view-item__meta"><span class="product-price__price"><span class="money ">₹ <%=Math.round(pro.finalPrice)%>.00<br><span class="text-success"> <%=pro.maxDiscount%>% oFF </span></span></span></div>
-                                    <%}else{%>
-                                      <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">₹ <%=Math.round(pro.finalPrice)%>.00</span></span></div>
-  
-                                    <%}%>
-                                  </div>
-                                </div>
-                              </div>
-                              
-                              <%})%>
-
-                            </div>
-                      </div>
-                    <%}%>
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-                    	<div class="section-header text-left">
-                            <h2 class="h2">Latest Product</h2>
-                        </div>
-                        <div class="grid">
-
-<%latestProduct.forEach((pro)=>{%>
-
-                            <div class="grid__item">
-                              <div class="mini-list-item">
-                                <div class="mini-view_image">
-                                    <a class="grid-view-item__link" href="/single-product?id=<%=pro._id%>">
-                                        <img class="grid-view-item__image blur-up lazyload" src="/user/assets/images/product-images/sharpedImages/<%=pro.images[0]%>" alt="">
-                                    </a>
-                                </div>
-                                <div class="details"> <a class="grid-view-item__title" href="/single-product?id=<%=pro._id%>"><%=pro.name%></a>
-                                  <%if(pro.maxDiscount>0){%>
-                                  <div class="grid-view-item__meta"><span class="product-price__price"><span class="money ">₹ <%=Math.round(pro.finalPrice)%>.00<br><span class="text-success"> <%=pro.maxDiscount%>% oFF </span></span></span></div>
-                                  <%}else{%>
-                                    <div class="grid-view-item__meta"><span class="product-price__price"><span class="money">₹ <%=Math.round(pro.finalPrice)%>.00</span></span></div>
-
-                                  <%}%>
-                                </div>
-                              </div>
-                            </div>
-                            
-                            <%})%>
-
-                          </div>
-                    </div>
-                </div>
-            </div>
-        </div>    
-        <!--End Three Column Products-->
-        
-    </div><!--End Body Content-->
-    
-    <!--Footer-->
-    <%-include('../partials/userBodyFooter.ejs')-%>
-    <!--End Footer-->
-    <!--Scoll Top-->
-    <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
-    <!--End Scoll Top-->
-    
-     <!-- Including Jquery -->
-     <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
-     <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
-     <script src="user/assets/js/vendor/jquery.cookie.js"></script>
-     <script src="user/assets/js/vendor/wow.min.js"></script>
-     <!-- Including Javascript -->
-     <script src="user/assets/js/bootstrap.min.js"></script>
-     <script src="user/assets/js/plugins.js"></script>
-     <script src="user/assets/js/popper.min.js"></script>
-     <script src="user/assets/js/lazysizes.js"></script>
-     <script src="user/assets/js/main.js"></script>
-     <!--For Newsletter Popup-->
-     <script>
-		jQuery(document).ready(function(){  
-		  jQuery('.closepopup').on('click', function () {
-			  jQuery('#popup-container').fadeOut();
-			  jQuery('#modalOverly').fadeOut();
-		  });
-		  
-		  var visits = jQuery.cookie('visits') || 0;
-		  visits++;
-		  jQuery.cookie('visits', visits, { expires: 1, path: '/' });
-		  console.debug(jQuery.cookie('visits')); 
-		  if ( jQuery.cookie('visits') > 1 ) {
-			jQuery('#modalOverly').hide();
-			jQuery('#popup-container').hide();
-		  } else {
-			  var pageHeight = jQuery(document).height();
-			  jQuery('<div id="modalOverly"></div>').insertBefore('body');
-			  jQuery('#modalOverly').css("height", pageHeight);
-			  jQuery('#popup-container').show();
-		  }
-		  if (jQuery.cookie('noShowWelcome')) { jQuery('#popup-container').hide(); jQuery('#active-popup').hide(); }
-		}); 
-		
-		jQuery(document).mouseup(function(e){
-		  var container = jQuery('#popup-container');
-		  if( !container.is(e.target)&& container.has(e.target).length === 0)
-		  {
-			container.fadeOut();
-			jQuery('#modalOverly').fadeIn(200);
-			jQuery('#modalOverly').hide();
-		  }
-		});
-	</script>
-
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-
-let loginData = document.getElementById('success-login');
-let loginSuccess= loginData.getAttribute('data-success');
-console.log("admin home kscritpt loginSuccess ",loginSuccess)
-if(typeof(loginSuccess)!==undefined){
-
-
-      Swal.fire({
-          icon: 'success',
-          text: "loged",
-          timer:"1500",
-          toast:true,
-          width:"300px",
-    showConfirmButton: false,
-      },1000);
-      loginData.setAttribute('data-success',undefined);
-    }
-  });
-</script>
-
-    <!--End For Newsletter Popup-->
-</div>
-
-
-<%- include('../layout/user/footer.ejs') -%>
+    <%- include('../layout/user/footer.ejs') -%>

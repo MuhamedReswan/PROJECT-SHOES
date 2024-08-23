@@ -1,5 +1,3 @@
-
-
 <%- include('../layout/user/header.ejs') -%>
 
     <div class="pageWrapper">
@@ -44,16 +42,16 @@
                                             <% categoryData.forEach((category,index)=>{ %>
                                                 <li>
                                                     <input type="checkbox" class="category-input-filter"
-                                                    <%if(queryFilter){%>
-                                                        <%if(category.name ==queryFilter){%>
-                                                            checked
-                                                   <%}%>
-                                                   <%}%>
-                                                    
-                                                        value="<%= category._id %>" id="category<%=index%>">
-                                                    <label for="check1"><span><span></span></span>
-                                                        <%= category.name %>
-                                                    </label>
+                                                        <%if(queryFilter){%>
+                                                    <%if(category.name==queryFilter){%>
+                                                        checked
+                                                        <%}%>
+                                                            <%}%>
+
+                                                                value="<%= category._id %>" id="category<%=index%>">
+                                                                        <label for="check1"><span><span></span></span>
+                                                                            <%= category.name %>
+                                                                        </label>
                                                 </li>
                                                 <% }) %>
                                                     <%}%>
@@ -138,163 +136,202 @@
                                 <!--End Toolbar-->
                                 <div class="grid-products grid--view-items" id="product-div">
                                     <% if(productData && productData.length>0){ %>
-<% let offerDiscountedPrice %>
-                                        <div class="row product-details">
-                                            <% productData.forEach((product,index )=>{ %>
-                                               
-                                            <%let offerPercentege %>
-<%let categoryDiscount=product?.category?.appliedOffer?.discount %>
-<%let productDiscount=product?.appliedOffer?.discount %>
+                                        <% let offerDiscountedPrice %>
+                                            <div class="row product-details">
+                                                <% productData.forEach((product,index )=>{ %>
 
-                                            <%if(categoryDiscount){
-                                                offerPercentege = categoryDiscount
-                                                }%>
+                                                    <%let offerPercentege %>
+                                                        <%let categoryDiscount=product?.category?.appliedOffer?.discount
+                                                            %>
+                                                            <%let productDiscount=product?.appliedOffer?.discount %>
 
-                                            <%if(productDiscount &&  productDiscount !== undefined ){
-                                                                offerPercentege =  productDiscount}%>
+                                                                <%if(categoryDiscount){ offerPercentege=categoryDiscount
+                                                                    }%>
 
-<%if(categoryDiscount && productDiscount){
-    offerPercentege =Math.max(categoryDiscount, productDiscount)
-    }%>
-                                                <div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
-                                                    <!-- start product image -->
-                                                    <div class="product-image">
-                                                        <!-- start product image -->
-                                                        <a href="/single-product?id=<%= product.id %>">
-                                                            <!-- image -->
-                                                            <img class="primary blur-up lazyload" id="mainImg1"
-                                                                data-src="user/assets/images/product-images/sharpedImages/<%= product.images[0] %> "
-                                                                src="user/assets/images/product-images/sharpedImages/<%= product.images[0] %> "
-                                                                alt="image" title="product" />
-                                                            <!-- End image -->
-                                                            <!-- Hover image -->
-                                                            <img class="hover blur-up lazyload" id="mainImg2"
-                                                                data-src="user/assets/images/product-images/sharpedImages/<%= product.images[1] %> "
-                                                                src="user/assets/images/product-images/sharpedImages/<%= product.images[1] %> "
-                                                                alt="image" title="product" />
-                                                            <!-- End hover image -->
+                                                                    <%if(productDiscount && productDiscount !==undefined
+                                                                        ){ offerPercentege=productDiscount}%>
 
-                                                            <%if(offerPercentege){%>
-                                                                <%  offerDiscountedPrice = Math.round((product.offerPrice/100)*offerPercentege)%>
-                                                                <%}%> 
-                                                                
-                                                            <% if(product.totalStock>0){%>
-                                                               
-<%if(offerPercentege){%>
-  <div class="product-labels"><span class="lbl on-sale">
-  <%=offerPercentege
-  %>% OFF
-   </span></div>
-<%}%> 
-   
-                                                                <%}else{%>
-                                                                    <div class="product-labels "><span
-                                                                            class="lbl on-sale">out of stock</span>
-                                                                    </div>
-                                                                    <%}%>
+                                                                        <%if(categoryDiscount && productDiscount){
+                                                                            offerPercentege=Math.max(categoryDiscount,
+                                                                            productDiscount) }%>
+                                                                            <div
+                                                                                class="col-6 col-sm-6 col-md-4 col-lg-3 item">
+                                                                                <!-- start product image -->
+                                                                                <div class="product-image">
+                                                                                    <!-- start product image -->
+                                                                                    <a
+                                                                                        href="/single-product?id=<%= product.id %>">
+                                                                                        <!-- image -->
+                                                                                        <img class="primary blur-up lazyload"
+                                                                                            id="mainImg1"
+                                                                                            data-src="user/assets/images/product-images/sharpedImages/<%= product.images[0] %> "
+                                                                                            src="user/assets/images/product-images/sharpedImages/<%= product.images[0] %> "
+                                                                                            alt="image"
+                                                                                            title="product" />
+                                                                                        <!-- End image -->
+                                                                                        <!-- Hover image -->
+                                                                                        <img class="hover blur-up lazyload"
+                                                                                            id="mainImg2"
+                                                                                            data-src="user/assets/images/product-images/sharpedImages/<%= product.images[1] %> "
+                                                                                            src="user/assets/images/product-images/sharpedImages/<%= product.images[1] %> "
+                                                                                            alt="image"
+                                                                                            title="product" />
+                                                                                        <!-- End hover image -->
 
-                                                        </a>
-                                                        <!-- end product image -->
+                                                                                        <%if(offerPercentege){%>
+                                                                                            <%
+                                                                                                offerDiscountedPrice=Math.round((product.offerPrice/100)*offerPercentege)%>
+                                                                                                <%}%>
 
-                                                        <!-- Start product button -->
-                                                        <a class="variants add"
-                                                            href="/single-product?id=<%= product.id %>"><button
-                                                                class="btn btn-addto-cart" type="submit">view
-                                                                Details</button></a>
-                                                        <div class="button-set">
-                                                            <div class="wishlist-btn">
-                                                                <a class="wishlist add-to-wishlist"
-                                                                    id="wishlist<%= index%>" title="Add to Wishlist"
-                                                                    onclick="addToWishlist('<%=product._id%>', 'wishlist<%= index%>')">
-                                                                    <i class="icon anm anm-heart-l "></i>
-                                                                </a>
-                                                            </div>
+                                                                                                    <%
+                                                                                                        if(product.totalStock>
+                                                                                                        0){%>
 
-                                                        </div>
-                                                        <!-- end product button -->
-                                                    </div>
-                                                    <!-- end product image -->
+                                                                                                        <%if(offerPercentege){%>
+                                                                                                            <div
+                                                                                                                class="product-labels">
+                                                                                                                <span
+                                                                                                                    class="lbl on-sale">
+                                                                                                                    <%=offerPercentege
+                                                                                                                        %>
+                                                                                                                        %
+                                                                                                                        OFF
+                                                                                                                </span>
+                                                                                                            </div>
+                                                                                                            <%}%>
 
-                                                    <!--start product details -->
-                                                    <div class="product-details text-center">
-                                                        <!-- product name -->
-                                                        <div class="product-name">
-                                                            <a href="#">
-                                                                <%= product.name %>
-                                                            </a>
-                                                        </div>
-                                                        <div class="product-brand">
-                                                            <a href="#">
-                                                                <%= product.brand %>
-                                                            </a>
-                                                        </div>
-                                                        <%if(offerPercentege){%>
-                                                            <!-- product price -->
-                                                        <div class="product-price">
-                                                            <span class="old-price">
-                                                                ₹ <%= product?.offerPrice %>
-                                                            </span>
-                                                            <span class="price">
-                                                                ₹ <%= Math.round(product?.offerPrice-offerDiscountedPrice) %>
-                                                            </span>
-                                                        </div>
-                                                        <!-- End product price -->
-<%}else{%>
-<div class="product-price">
-                                                            <span class="price">
-                                                                ₹ <%= product.offerPrice %>
-                                                            </span>
-                                                        </div>
-<%}%>
+                                                                                                                <%}else{%>
+                                                                                                                    <div
+                                                                                                                        class="product-labels ">
+                                                                                                                        <span
+                                                                                                                            class="lbl on-sale">out
+                                                                                                                            of
+                                                                                                                            stock</span>
+                                                                                                                    </div>
+                                                                                                                    <%}%>
 
-                                                        <div class="product-review">
-                                                            <i class="font-13 fa fa-star"></i>
-                                                            <i class="font-13 fa fa-star"></i>
-                                                            <i class="font-13 fa fa-star"></i>
-                                                            <i class="font-13 fa fa-star-o"></i>
-                                                            <i class="font-13 fa fa-star-o"></i>
-                                                        </div>
-                                                        <!-- Variant -->
-                                                        <ul class="swatches">
-                                                            <% for(i=0; i<4; i++){ %>
-                                                                <a href="/single-product?id=<%= product.id %>">
-                                                                    <li id="fourimg" class="swatch medium rounded"><img
-                                                                            src="user/assets/images/product-images/sharpedImages/<%= product.images[i] %>"
-                                                                            alt="image <%=i+1%>" /></li>
-                                                                    <%}%>
-                                                                </a>
-                                                        </ul>
-                                                        <!-- End Variant -->
-                                                    </div>
-                                                    <!-- End product details -->
-                                                </div>
-                                                <% }) %>
-                                        </div>
+                                                                                    </a>
+                                                                                    <!-- end product image -->
 
-                                        <%}else{%>
-                                            <div class="row text-center">
-                                                <h3>NO PRODUCTS AVAILABLE NOW</h3>
+                                                                                    <!-- Start product button -->
+                                                                                    <a class="variants add"
+                                                                                        href="/single-product?id=<%= product.id %>"><button
+                                                                                            class="btn btn-addto-cart"
+                                                                                            type="submit">view
+                                                                                            Details</button></a>
+                                                                                    <div class="button-set">
+                                                                                        <div class="wishlist-btn">
+                                                                                            <a class="wishlist add-to-wishlist"
+                                                                                                id="wishlist<%= index%>"
+                                                                                                title="Add to Wishlist"
+                                                                                                onclick="addToWishlist('<%=product._id%>', 'wishlist<%= index%>')">
+                                                                                                <i
+                                                                                                    class="icon anm anm-heart-l "></i>
+                                                                                            </a>
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                    <!-- end product button -->
+                                                                                </div>
+                                                                                <!-- end product image -->
+
+                                                                                <!--start product details -->
+                                                                                <div
+                                                                                    class="product-details text-center">
+                                                                                    <!-- product name -->
+                                                                                    <div class="product-name">
+                                                                                        <a href="#">
+                                                                                            <%= product.name %>
+                                                                                        </a>
+                                                                                    </div>
+                                                                                    <div class="product-brand">
+                                                                                        <a href="#">
+                                                                                            <%= product.brand %>
+                                                                                        </a>
+                                                                                    </div>
+                                                                                    <%if(offerPercentege){%>
+                                                                                        <!-- product price -->
+                                                                                        <div class="product-price">
+                                                                                            <span class="old-price">
+                                                                                                ₹ <%=
+                                                                                                    product?.offerPrice
+                                                                                                    %>
+                                                                                            </span>
+                                                                                            <span class="price">
+                                                                                                ₹ <%=
+                                                                                                    Math.round(product?.offerPrice-offerDiscountedPrice)
+                                                                                                    %>
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <!-- End product price -->
+                                                                                        <%}else{%>
+                                                                                            <div class="product-price">
+                                                                                                <span class="price">
+                                                                                                    ₹ <%=
+                                                                                                        product.offerPrice
+                                                                                                        %>
+                                                                                                </span>
+                                                                                            </div>
+                                                                                            <%}%>
+
+                                                                                                <div
+                                                                                                    class="product-review">
+                                                                                                    <i
+                                                                                                        class="font-13 fa fa-star"></i>
+                                                                                                    <i
+                                                                                                        class="font-13 fa fa-star"></i>
+                                                                                                    <i
+                                                                                                        class="font-13 fa fa-star"></i>
+                                                                                                    <i
+                                                                                                        class="font-13 fa fa-star-o"></i>
+                                                                                                    <i
+                                                                                                        class="font-13 fa fa-star-o"></i>
+                                                                                                </div>
+                                                                                                <!-- Variant -->
+                                                                                                <ul class="swatches">
+                                                                                                    <% for(i=0; i<4;
+                                                                                                        i++){ %>
+                                                                                                        <a
+                                                                                                            href="/single-product?id=<%= product.id %>">
+                                                                                                            <li id="fourimg"
+                                                                                                                class="swatch medium rounded">
+                                                                                                                <img src="user/assets/images/product-images/sharpedImages/<%= product.images[i] %>"
+                                                                                                                    alt="image <%=i+1%>" />
+                                                                                                            </li>
+                                                                                                            <%}%>
+                                                                                                        </a>
+                                                                                                </ul>
+                                                                                                <!-- End Variant -->
+                                                                                </div>
+                                                                                <!-- End product details -->
+                                                                            </div>
+                                                                            <% }) %>
                                             </div>
-                                            <%}%>
+
+                                            <%}else{%>
+                                                <div class="row text-center">
+                                                    <h3>NO PRODUCTS AVAILABLE NOW</h3>
+                                                </div>
+                                                <%}%>
                                 </div>
                             </div>
                             <%if(productData.length>0){%>
-                            <div class="infinitpaginOuter" id="pagination-shop">
-                                <div class="infinitpagin">
-                                    <!-- <a href="#" class="btn loadMore">Load More</a> -->
-                                    <ul>
-                                        <li class="btn" id="previous-button" value="<%=previous%>"
-                                            data-status="previous">
-                                            < </li>
-                                        <li class="btn text-white" id="current-page" value="<%=page%>"
-                                            data-value="<%=page%>">
-                                            <%=page%>
-                                        </li>
-                                        <li class="btn" id="next-button" value="<%=next%>" data-status="next">></li>
-                                    </ul>
+                                <div class="infinitpaginOuter" id="pagination-shop">
+                                    <div class="infinitpagin">
+                                        <!-- <a href="#" class="btn loadMore">Load More</a> -->
+                                        <ul>
+                                            <li class="btn" id="previous-button" value="<%=previous%>"
+                                                data-status="previous">
+                                                < </li>
+                                            <li class="btn text-white" id="current-page" value="<%=page%>"
+                                                data-value="<%=page%>">
+                                                <%=page%>
+                                            </li>
+                                            <li class="btn" id="next-button" value="<%=next%>" data-status="next">></li>
+                                        </ul>
+                                    </div>
+                                    <%}%>
                                 </div>
-                                <%}%>
-                            </div>
                         </div>
                         <!--End Main Content-->
                     </div>
@@ -436,7 +473,7 @@
                                     return response.json();
                                 })
                                 .then(data => {
-                                    
+
                                     console.log('im daata ');//------------
                                     console.log('res', data);//-------------
                                     console.log('data.countOfProducts', data.countOfProducts);//------
@@ -446,25 +483,25 @@
                                     let showCount = data.countOfProducts;
                                     if (data.filterdProduct.length > 0) {
 
-let offerPercentege ,offerDiscountedPrice
+                                        let offerPercentege, offerDiscountedPrice
 
-                                        productContainer.innerHTML = ""; 
+                                        productContainer.innerHTML = "";
                                         let productHtml = "";
                                         data.filterdProduct.forEach((product, index) => {
 
-                                            let categoryOff = product?.category?.appliedOffer?.discount 
-                                            let productOff = product?.appliedOffer?.discount 
+                                            let categoryOff = product?.category?.appliedOffer?.discount
+                                            let productOff = product?.appliedOffer?.discount
 
-console.log(`categoryOff---${categoryOff},productOff${productOff}`)//------------------------------------------
+                                            console.log(`categoryOff---${categoryOff},productOff${productOff}`)//------------------------------------------
 
- offerPercentege = (productOff === undefined && categoryOff === undefined) 
-    ? undefined 
-    : (productOff !== undefined && categoryOff !== undefined) 
-    ? (productOff > categoryOff ? productOff : categoryOff) 
-    : (productOff !== undefined ? productOff : categoryOff);
+                                            offerPercentege = (productOff === undefined && categoryOff === undefined)
+                                                ? undefined
+                                                : (productOff !== undefined && categoryOff !== undefined)
+                                                    ? (productOff > categoryOff ? productOff : categoryOff)
+                                                    : (productOff !== undefined ? productOff : categoryOff);
 
-                                            console.log("offerPercentege",offerPercentege)//----------------------
-                                            
+                                            console.log("offerPercentege", offerPercentege)//----------------------
+
                                             offerDiscountedPrice = Math.round((product.offerPrice / 100) * offerPercentege);
 
                                             productHtml += `<div class="col-6 col-sm-6 col-md-4 col-lg-3 item">
@@ -482,13 +519,13 @@ console.log(`categoryOff---${categoryOff},productOff${productOff}`)//-----------
                             src="user/assets/images/product-images/sharpedImages/${product.images[1]}"
                             alt="image" title="product" />
                         ${product.totalStock > 0 ?
-                        offerPercentege? 
-                                                    `<div class="product-labels"><span class="lbl on-sale">
+                                                    offerPercentege ?
+                                                        `<div class="product-labels"><span class="lbl on-sale">
                                 ${offerPercentege}% OFF
-                            </span></div>` 
-                            
-                            :       `<div></div>` 
-                            :
+                            </span></div>`
+
+                                                        : `<div></div>`
+                                                    :
 
                                                     `<div class="product-labels "><span class="lbl on-sale">out of stock</span></div>`
                                                 }
@@ -520,10 +557,10 @@ console.log(`categoryOff---${categoryOff},productOff${productOff}`)//-----------
                     </div>
                     <div class="product-price">
                         ${offerDiscountedPrice ?
-                    `<span class="old-price">₹ ${product.offerPrice}</span>
-                        <span class="price">₹ ${Math.round(product.offerPrice-offerDiscountedPrice)}</span>`
-                        :`<span class="price">₹ ${product.offerPrice}</span>`
-                    }
+                                                    `<span class="old-price">₹ ${product.offerPrice}</span>
+                        <span class="price">₹ ${Math.round(product.offerPrice - offerDiscountedPrice)}</span>`
+                                                    : `<span class="price">₹ ${product.offerPrice}</span>`
+                                                }
 
 
 
@@ -555,18 +592,18 @@ console.log(`categoryOff---${categoryOff},productOff${productOff}`)//-----------
             </div>`;
                                         });
 
-                                        productContainer.innerHTML = productHtml; 
+                                        productContainer.innerHTML = productHtml;
                                         currentPageData.setAttribute('data-value', data.page)
                                         currentPageData.setAttribute('value', data.page)
                                         currentPageData.innerText = data.page
                                         showingCountElement.textContent = `Showing: ${showCount}`
-                                        productContainer.classList.remove('d-flex' ,'justify-content-center','align-items-center');
-                                        document.getElementById('pagination-shop').style.display='block'
+                                        productContainer.classList.remove('d-flex', 'justify-content-center', 'align-items-center');
+                                        document.getElementById('pagination-shop').style.display = 'block'
 
-                                    } else { 
-                                        document.getElementById('pagination-shop').style.display='none'
+                                    } else {
+                                        document.getElementById('pagination-shop').style.display = 'none'
                                         showingCountElement.textContent = `Showing: ${showCount}`
-                                        productContainer.classList.add('d-flex' ,'justify-content-center','align-items-center')
+                                        productContainer.classList.add('d-flex', 'justify-content-center', 'align-items-center')
                                         productContainer.innerHTML = '<div class="row text-center mt-5 "><h3>NO PRODUCTS AVAILABLE NOW</h3></div>'; // Display message for no products
                                     }
                                 })

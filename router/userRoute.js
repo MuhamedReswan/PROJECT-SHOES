@@ -19,7 +19,7 @@ const config = require('../config/config');
 user_route.use('/user', express.static(path.join(__dirname, '../public/user')));
 
 // Configure session management
-user_route.use(session({ secret: config.sessionSecret, resave: false, saveUninitialized: false }));
+user_route.use(session({ secret: config.sessionSecret, resave: false, saveUninitialized: false, name: 'user_session' }));
 
 // Set view engine and views directory
 user_route.set('view engine', 'ejs');

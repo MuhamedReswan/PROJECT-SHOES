@@ -1,638 +1,275 @@
-
 <%- include('../layout/admin/adminHeader.ejs') -%>
 
-<%- include('../partials/adminSideNav.ejs') -%>
-<style>
-    .chart-container {
-        position: relative;
-        width: 400px;
-        height: 400px;
-        margin: 20px auto;
-    }
-    .color-indicators {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-    .color-indicator {
-        display: flex;
-        align-items: center;
-        margin-right: 10px;
-    }
-    .color-dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        margin-right: 5px;
-    }
-    .color-label {
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-        font-size: 12px;
-    }
-</style>
-       
+    <%- include('../partials/adminSideNav.ejs') -%>
+        <style>
+            .chart-container {
+                position: relative;
+                width: 400px;
+                height: 400px;
+                margin: 20px auto;
+            }
+
+            .color-indicators {
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+
+            .color-indicator {
+                display: flex;
+                align-items: center;
+                margin-right: 10px;
+            }
+
+            .color-dot {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                margin-right: 5px;
+            }
+
+            .color-label {
+                font-family: 'Helvetica Neue', Arial, sans-serif;
+                font-size: 12px;
+            }
+        </style>
+
         <main class="main-wrap">
             <%- include('../partials/adminHeaderBody') -%>
-            <!-- <header class="main-header navbar">
-                <div class="col-search">
-                    <form class="searchform">
-                        <div class="input-group">
-                            <input list="search_terms" type="text" class="form-control" placeholder="Search term" />
-                            <button class="btn btn-light bg" type="button"><i class="material-icons md-search"></i></button>
-                        </div>
-                        <datalist id="search_terms">
-                            <option value="Products"></option>
-                            <option value="New orders"></option>
-                            <option value="Apple iphone"></option>
-                            <option value="Ahmed Hassan"></option>
-                        </datalist>
-                    </form>
-                </div>
-                <div class="col-nav">
-                    <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i class="material-icons md-apps"></i></button>
-                    <ul class="nav">
-                        
-                        <li class="nav-item">
-                            <a class="nav-link btn-icon" href="#">
-                                <i class="material-icons md-notifications animation-shake"></i>
-                                <span class="badge rounded-pill">3</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
-                        </li>
-                        <li class="dropdown nav-item">
-                            <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
-                                <a class="dropdown-item text-brand" href="#"><img src="assets/imgs/theme/flag-us.png" alt="English" />English</a>
-                                <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-fr.png" alt="Français" />Français</a>
-                                <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-jp.png" alt="Français" />日本語</a>
-                                <a class="dropdown-item" href="#"><img src="assets/imgs/theme/flag-cn.png" alt="Français" />中国人</a>
+
+                <!-- Button trigger modal -->
+                <% console.log("pending,returnRequested,returned,placed,cancelled,delivered,", orderProductStatus ) %>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="text-center text-danger" id="error-div"></div>
+                                    <div class="form-group">
+                                        <label for="start-date" class="form-label">Start Date</label>
+                                        <input type="date" class="form-control" id="start-date" name="startDate">
+                                        <div id="start-error"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="end-date" class="form-label">End Date</label>
+                                        <input type="date" class="form-control" id="end-date" name="endDate">
+                                        <div id="end-error"></div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="/admin/sales-report?date=All" class="btn btn-secondary">All</a>
+                                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                                    <button type="button" class="btn btn-primary" id="validateBtn">Submit</button>
+                                </div>
                             </div>
-                        </li>
-
-
-                        <li class="dropdown nav-item">
-                            <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="assets/imgs/people/avatar-2.png" alt="User" /></a>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                                <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
-                                <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
-                                <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
-                                <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
-                                <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                        </div>
+                    </div>
+                    <section class="content-main">
+                        <div class="content-header">
+                            <div>
+                                <h2 class="content-title card-title">Dashboard</h2>
+                                <p>Whole data about your business here</p>
                             </div>
-                        </li>
-
-               
-                        <li class="dropdown nav-item">
-                            <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="assets/imgs/people/avatar-2.png" alt="User" /></a>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                                <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
-                                <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
-                                <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
-                                <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
-                                <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-danger" href="/admin/Logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                            <div>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop"><i
+                                        class="text-muted material-icons md-post_add"></i>Create report</button>
                             </div>
-                        </li>
-                       
-
-                    </ul>
-                </div>
-            </header> -->
-
-            <!-- Button trigger modal -->
-<%
-console.log("pending,returnRequested,returned,placed,cancelled,delivered,",
-orderProductStatus
-            )
-%>
-  
-  <!-- Modal -->
-  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="text-center text-danger" id="error-div"></div>
-                <div class="form-group">
-                    <label for="start-date" class="form-label">Start Date</label>
-                    <input type="date" class="form-control" id="start-date" name="startDate">
-                    <div id="start-error"></div>
-                </div>
-                <div class="form-group">
-                    <label for="end-date" class="form-label">End Date</label>
-                    <input type="date" class="form-control" id="end-date" name="endDate">
-                    <div id="end-error"></div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a href="/admin/sales-report?date=All" class="btn btn-secondary">All</a>
-                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
-                <button type="button" class="btn btn-primary" id="validateBtn">Submit</button>
-            </div>
-        </div>
-    </div>
-</div>
-            <section class="content-main">
-                <div class="content-header">
-                    <div>
-                        <h2 class="content-title card-title">Dashboard</h2>
-                        <p>Whole data about your business here</p>
-                    </div>
-                    <div>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="text-muted material-icons md-post_add"></i>Create report</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-3">
-                        <div class="card card-body mb-4">
-                            <article class="icontext">
-                                <span class="icon icon-sm rounded-circle bg-primary-light"><i class="text-primary material-icons md-monetization_on"></i></span>
-                                <div class="text">
-                                    <h6 class="mb-1 card-title">Revenue</h6>
-                                    <span>₹ <%= totalRevenue %></span>
-                                    <span class="text-sm"> Shipping fees are not included </span>
-                                </div>
-                            </article>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="card card-body mb-4">
-                            <article class="icontext">
-                                <span class="icon icon-sm rounded-circle bg-success-light"><i class="text-success material-icons md-local_shipping"></i></span>
-                                <div class="text">
-                                    <h6 class="mb-1 card-title">Orders</h6>
-                                    <span><%= orderCount %></span>
-                                    <span class="text-sm"> Excluding orders in transit </span>
-                                </div>
-                            </article>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="card card-body mb-4">
-                            <article class="icontext">
-                                <span class="icon icon-sm rounded-circle bg-warning-light text-center"><i class="text-secondary icon material-icons md-shopping_bag"style="margin: auto;"></i></span>
-                                <div class="text">
-                                    <h6 class="mb-1 card-title">Products</h6>
-                                    <span><%= productCount %></span>
-                                    <span class="text-sm"> In <%= categoryCount %> Categories </span>
-                                </div>
-                            </article>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="card card-body mb-4">
-                            <article class="icontext">
-                                <span class="icon icon-sm rounded-circle bg-info-light"><i class="text-info material-icons md-shopping_basket" ></i></span>
-                                <div class="text">
-                                    <h6 class="mb-1 card-title">Monthly Earning</h6>
-                                    <span>₹ <%=monthlyRevenue%></span>
-                                    <span class="text-sm"> Based in your local time. </span>
-                                </div>
-                            </article>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="card card-body mb-4">
-                            <article class="icontext">
-                                <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-dark icon material-icons md-person" style="margin: auto;"></i></span>
-                                <div class="text">
-                                    <h6 class="mb-1 card-title">Users</h6>
-                                    <span><%= usersCount %></span>
-                                    <span class="text-sm"> No of users </span>
-                                </div>
-                            </article>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="card card-body mb-4">
-                            <article class="icontext">
-                                <span class="icon icon-sm rounded-circle bg-warning-light"><i class="text-warning material-icons md-qr_code"></i></span>
-                                <div class="text">
-                                    <h6 class="mb-1 card-title">Catogories</h6>
-                                    <span><%= categoryCount %></span>
-                                    <span class="text-sm">No of categories </span>
-                                </div>
-                            </article>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xl-8 col-lg-12">
-                        <div class="card mb-4">
-                            <article id="reload-day-revenue">
-                                <div class="d-flex justify-content-between p-1">
-                                <h5 class="card-title mt-3 ms-3">Monthly Sale </h5>
-                                
-                                    <input  type="month" value="<%=currentSelectedMonth%>" class="form-control w-25 mt-3 me-3" i/>
-                                </div>
-                                <canvas id="myChart"  height="120px" data-days="<%=JSON.stringify(daysArr)%>" data-dayUser="<%=JSON.stringify(usersPerDay)%>" data-dayRevenue="<%=JSON.stringify(revenuePerDay)%>"></canvas>
-                            </article>
                         </div>
                         <div class="row">
-                            <%if(topFiveSellingProduct){%>
-                            <div class="col-lg-5">
+                            <div class="col-lg-3">
+                                <div class="card card-body mb-4">
+                                    <article class="icontext">
+                                        <span class="icon icon-sm rounded-circle bg-primary-light"><i
+                                                class="text-primary material-icons md-monetization_on"></i></span>
+                                        <div class="text">
+                                            <h6 class="mb-1 card-title">Revenue</h6>
+                                            <span>₹ <%= totalRevenue %></span>
+                                            <span class="text-sm"> Shipping fees are not included </span>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card card-body mb-4">
+                                    <article class="icontext">
+                                        <span class="icon icon-sm rounded-circle bg-success-light"><i
+                                                class="text-success material-icons md-local_shipping"></i></span>
+                                        <div class="text">
+                                            <h6 class="mb-1 card-title">Orders</h6>
+                                            <span>
+                                                <%= orderCount %>
+                                            </span>
+                                            <span class="text-sm"> Excluding orders in transit </span>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card card-body mb-4">
+                                    <article class="icontext">
+                                        <span class="icon icon-sm rounded-circle bg-warning-light text-center"><i
+                                                class="text-secondary icon material-icons md-shopping_bag"
+                                                style="margin: auto;"></i></span>
+                                        <div class="text">
+                                            <h6 class="mb-1 card-title">Products</h6>
+                                            <span>
+                                                <%= productCount %>
+                                            </span>
+                                            <span class="text-sm"> In <%= categoryCount %> Categories </span>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card card-body mb-4">
+                                    <article class="icontext">
+                                        <span class="icon icon-sm rounded-circle bg-info-light"><i
+                                                class="text-info material-icons md-shopping_basket"></i></span>
+                                        <div class="text">
+                                            <h6 class="mb-1 card-title">Monthly Earning</h6>
+                                            <span>₹ <%=monthlyRevenue%></span>
+                                            <span class="text-sm"> Based in your local time. </span>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card card-body mb-4">
+                                    <article class="icontext">
+                                        <span class="icon icon-sm rounded-circle bg-warning-light"><i
+                                                class="text-dark icon material-icons md-person"
+                                                style="margin: auto;"></i></span>
+                                        <div class="text">
+                                            <h6 class="mb-1 card-title">Users</h6>
+                                            <span>
+                                                <%= usersCount %>
+                                            </span>
+                                            <span class="text-sm"> No of users </span>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="card card-body mb-4">
+                                    <article class="icontext">
+                                        <span class="icon icon-sm rounded-circle bg-warning-light"><i
+                                                class="text-warning material-icons md-qr_code"></i></span>
+                                        <div class="text">
+                                            <h6 class="mb-1 card-title">Catogories</h6>
+                                            <span>
+                                                <%= categoryCount %>
+                                            </span>
+                                            <span class="text-sm">No of categories </span>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-8 col-lg-12">
+                                <div class="card mb-4">
+                                    <article id="reload-day-revenue">
+                                        <div class="d-flex justify-content-between p-1">
+                                            <h5 class="card-title mt-3 ms-3">Monthly Sale </h5>
+
+                                            <input type="month" value="<%=currentSelectedMonth%>"
+                                                class="form-control w-25 mt-3 me-3" i />
+                                        </div>
+                                        <canvas id="myChart" height="120px" data-days="<%=JSON.stringify(daysArr)%>"
+                                            data-dayUser="<%=JSON.stringify(usersPerDay)%>"
+                                            data-dayRevenue="<%=JSON.stringify(revenuePerDay)%>"></canvas>
+                                    </article>
+                                </div>
+                                <div class="row">
+                                    <%if(topFiveSellingProduct){%>
+                                        <div class="col-lg-5">
+                                            <div class="card mb-4">
+                                                <article class="card-body">
+                                                    <h5 class="card-title">Top Selling Product and category</h5>
+
+                                                    <%topFiveSellingProduct.forEach((data)=>{%>
+
+
+                                                        <div class="new-member-list">
+                                                            <div
+                                                                class="d-flex align-items-center justify-content-between mb-4">
+                                                                <div class="d-flex align-items-center">
+                                                                    <!-- <img src="assets/imgs/people/avatar-4.png" alt="" class="avatar" /> -->
+                                                                    <img src="/user/assets/images/product-images/sharpedImages/<%=data.image%>"
+                                                                        alt="" class="avatar" />
+                                                                    <div>
+                                                                        <h6>
+                                                                            <%=data.productName%>
+                                                                        </h6>
+                                                                        <p class="text-muted font-xs">
+                                                                            <%=data.category%>
+                                                                        </p>
+                                                                        <!-- <p class="text-muted font-xs"><%=data.brand%></p> -->
+                                                                    </div>
+                                                                </div>
+                                                                <a href="/admin/products-list" class="btn btn-xs"></i>
+                                                                    View</a>
+                                                            </div>
+                                                        </div>
+                                                        <% })%>
+                                                </article>
+                                            </div>
+                                        </div>
+                                        <%}%>
+                                            <div class="col-lg-7">
+                                                <div class="card">
+
+                                                    <article class="card-body">
+                                                        <h5 class="card-title text-center ">Orderd products status</h5>
+                                                        <div class="chart-container">
+                                                            <div class="color-indicators" id="colorIndicators"></div>
+                                                            <canvas id="orderStatusChart"
+                                                                data-products-status="<%=JSON.stringify(orderProductStatus)%>"></canvas>
+                                                        </div>
+                                                    </article>
+                                                </div>
+                                            </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg-12">
                                 <div class="card mb-4">
                                     <article class="card-body">
-                                        <h5 class="card-title">Top Selling Product and category</h5>
-
-<%topFiveSellingProduct.forEach((data)=>{%>
-
-
-                                        <div class="new-member-list">
-                                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                                <div class="d-flex align-items-center">
-                                                    <!-- <img src="assets/imgs/people/avatar-4.png" alt="" class="avatar" /> -->
-                                                    <img src="/user/assets/images/product-images/sharpedImages/<%=data.image%>" alt="" class="avatar" />
-                                                    <div>
-                                                        <h6><%=data.productName%></h6>
-                                                        <p class="text-muted font-xs"><%=data.category%></p>
-                                                        <!-- <p class="text-muted font-xs"><%=data.brand%></p> -->
-                                                    </div>
-                                                </div>
-                                                <a href="/admin/products-list" class="btn btn-xs"></i> View</a>
-                                            </div>
-                                            <!-- <div class="d-flex align-items-center justify-content-between mb-4">
-                                                <div class="d-flex align-items-center">
-                                                    <img src="assets/imgs/people/avatar-2.png" alt="" class="avatar" />
-                                                    <div>
-                                                        <h6>Dilan Specter</h6>
-                                                        <p class="text-muted font-xs">Sanfrancisco</p>
-                                                    </div>
-                                                </div>
-                                                <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                            </div>
-                                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                                <div class="d-flex align-items-center">
-                                                    <img src="assets/imgs/people/avatar-3.png" alt="" class="avatar" />
-                                                    <div>
-                                                        <h6>Tomas Baker</h6>
-                                                        <p class="text-muted font-xs">Sanfrancisco</p>
-                                                    </div>
-                                                </div>
-                                                <a href="#" class="btn btn-xs"><i class="material-icons md-add"></i> Add</a>
-                                            </div> -->
-                                        </div>
-                                   <% })%>
+                                        <h5 class="card-title">current yearly sales</h5>
+                                        <canvas id="myChart2" height="217"
+                                            data-monthlyDetails="<%=JSON.stringify(updatedMonthlyDetails)%>"
+                                            data-monthlyUsers="<%=JSON.stringify(monthlyUsers)%>"></canvas>
                                     </article>
                                 </div>
                             </div>
-                            <%}%>
-                            <div class="col-lg-7">
-                                <div class="card">
+                        </div>
+                    </section>
+                    <!-- content-main end// -->
 
-                                <article class="card-body">
-                                    <h5 class="card-title text-center ">Orderd products status</h5>
-                                <!-- <canvas  id="orderStatusChart"  width="400" height="400"></canvas> -->
-
-                                <div class="chart-container">
-                                    <div class="color-indicators" id="colorIndicators"></div>
-                                    <canvas id="orderStatusChart" data-products-status="<%=JSON.stringify(orderProductStatus)%>"></canvas>
-                                </div>
-                                </article>
+                    <footer class="main-footer font-xs">
+                        <div class="row pb-30 pt-15">
+                            <div class="col-sm-6">
+                                <script>
+                                    document.write(new Date().getFullYear());
+                                </script>
+                                &copy; Nest - HTML Ecommerce Template .
                             </div>
-
-                                <!-- <div class="card mb-4">
-                                    <article class="card-body">
-                                        <h5 class="card-title">Recent activities</h5>
-                                        <ul class="verti-timeline list-unstyled font-sm">
-                                            <li class="event-list">
-                                                <div class="event-timeline-dot">
-                                                    <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                                </div>
-                                                <div class="media">
-                                                    <div class="me-3">
-                                                        <h6><span>Today</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <div>Lorem ipsum dolor sit amet consectetur</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="event-list active">
-                                                <div class="event-timeline-dot">
-                                                    <i class="material-icons md-play_circle_outline font-xxl animation-fade-right"></i>
-                                                </div>
-                                                <div class="media">
-                                                    <div class="me-3">
-                                                        <h6><span>17 May</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <div>Debitis nesciunt voluptatum dicta reprehenderit</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="event-list">
-                                                <div class="event-timeline-dot">
-                                                    <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                                </div>
-                                                <div class="media">
-                                                    <div class="me-3">
-                                                        <h6><span>13 May</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <div>Accusamus voluptatibus voluptas.</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="event-list">
-                                                <div class="event-timeline-dot">
-                                                    <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                                </div>
-                                                <div class="media">
-                                                    <div class="me-3">
-                                                        <h6><span>05 April</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <div>At vero eos et accusamus et iusto odio dignissi</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="event-list">
-                                                <div class="event-timeline-dot">
-                                                    <i class="material-icons md-play_circle_outline font-xxl"></i>
-                                                </div>
-                                                <div class="media">
-                                                    <div class="me-3">
-                                                        <h6><span>26 Mar</span> <i class="material-icons md-trending_flat text-brand ml-15 d-inline-block"></i></h6>
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <div>Responded to need “Volunteer Activities</div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </article>
-                                </div> -->
+                            <div class="col-sm-6">
+                                <div class="text-sm-end">All rights reserved</div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-4 col-lg-12">
-                        <div class="card mb-4">
-                            <article class="card-body">
-                                <h5 class="card-title">current yearly sales</h5>
-                                <canvas id="myChart2" height="217" data-monthlyDetails="<%=JSON.stringify(updatedMonthlyDetails)%>" data-monthlyUsers="<%=JSON.stringify(monthlyUsers)%>"></canvas>
-                            </article>
-                        </div>
-                        <!-- <div class="card mb-4">
-                            <article class="card-body">
-                                <h5 class="card-title">Marketing Chanel</h5>
-                                <span class="text-muted font-xs">Facebook</span>
-                                <div class="progress mb-3">
-                                    <div class="progress-bar" role="progressbar" style="width: 15%">15%</div>
-                                </div>
-                                <span class="text-muted font-xs">Instagram</span>
-                                <div class="progress mb-3">
-                                    <div class="progress-bar" role="progressbar" style="width: 65%">65%</div>
-                                </div>
-                                <span class="text-muted font-xs">Google</span>
-                                <div class="progress mb-3">
-                                    <div class="progress-bar" role="progressbar" style="width: 51%">51%</div>
-                                </div>
-                                <span class="text-muted font-xs">Twitter</span>
-                                <div class="progress mb-3">
-                                    <div class="progress-bar" role="progressbar" style="width: 80%">80%</div>
-                                </div>
-                                <span class="text-muted font-xs">Other</span>
-                                <div class="progress mb-3">
-                                    <div class="progress-bar" role="progressbar" style="width: 80%">80%</div>
-                                </div>
-                            </article>
-                        </div> -->
-                    </div>
-                </div>
-
-<!-- Latest orders statyrt -->
-
-                <!-- <div class="card mb-4">
-                    <header class="card-header">
-                        <h4 class="card-title">Latest orders</h4>
-                        <div class="row align-items-center">
-                            <div class="col-md-3 col-12 me-auto mb-md-0 mb-3">
-                                <div class="custom_select">
-                                    <select class="form-select select-nice">
-                                        <option selected>All Categories</option>
-                                        <option>Women's Clothing</option>
-                                        <option>Men's Clothing</option>
-                                        <option>Cellphones</option>
-                                        <option>Computer & Office</option>
-                                        <option>Consumer Electronics</option>
-                                        <option>Jewelry & Accessories</option>
-                                        <option>Home & Garden</option>
-                                        <option>Luggage & Bags</option>
-                                        <option>Shoes</option>
-                                        <option>Mother & Kids</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-6">
-                                <input type="date" value="02.05.2021" class="form-control" i />
-                            </div>
-                            <div class="col-md-2 col-6">
-                                <div class="custom_select">
-                                    <select class="form-select select-nice">
-                                        <option selected>Status</option>
-                                        <option>All</option>
-                                        <option>Paid</option>
-                                        <option>Chargeback</option>
-                                        <option>Refund</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </header>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <div class="table-responsive">
-                                <table class="table align-middle table-nowrap mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th scope="col" class="text-center">
-                                                <div class="form-check align-middle">
-                                                    <input class="form-check-input" type="checkbox" id="transactionCheck01" />
-                                                    <label class="form-check-label" for="transactionCheck01"></label>
-                                                </div>
-                                            </th>
-                                            <th class="align-middle" scope="col">Order ID</th>
-                                            <th class="align-middle" scope="col">Billing Name</th>
-                                            <th class="align-middle" scope="col">Date</th>
-                                            <th class="align-middle" scope="col">Total</th>
-                                            <th class="align-middle" scope="col">Payment Status</th>
-                                            <th class="align-middle" scope="col">Payment Method</th>
-                                            <th class="align-middle" scope="col">View Details</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="transactionCheck02" />
-                                                    <label class="form-check-label" for="transactionCheck02"></label>
-                                                </div>
-                                            </td>
-                                            <td><a href="#" class="fw-bold">#SK2540</a></td>
-                                            <td>Neal Matthews</td>
-                                            <td>07 Oct, 2021</td>
-                                            <td>$400</td>
-                                            <td>
-                                                <span class="badge badge-pill badge-soft-success">Paid</span>
-                                            </td>
-                                            <td><i class="material-icons md-payment font-xxl text-muted mr-5"></i> Mastercard</td>
-                                            <td>
-                                                <a href="#" class="btn btn-xs"> View details</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="transactionCheck03" />
-                                                    <label class="form-check-label" for="transactionCheck03"></label>
-                                                </div>
-                                            </td>
-                                            <td><a href="#" class="fw-bold">#SK2541</a></td>
-                                            <td>Jamal Burnett</td>
-                                            <td>07 Oct, 2021</td>
-                                            <td>$380</td>
-                                            <td>
-                                                <span class="badge badge-pill badge-soft-danger">Chargeback</span>
-                                            </td>
-                                            <td><i class="material-icons md-payment font-xxl text-muted mr-5"></i> Visa</td>
-                                            <td>
-                                                <a href="#" class="btn btn-xs"> View details</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="transactionCheck04" />
-                                                    <label class="form-check-label" for="transactionCheck04"></label>
-                                                </div>
-                                            </td>
-                                            <td><a href="#" class="fw-bold">#SK2542</a></td>
-                                            <td>Juan Mitchell</td>
-                                            <td>06 Oct, 2021</td>
-                                            <td>$384</td>
-                                            <td>
-                                                <span class="badge badge-pill badge-soft-success">Paid</span>
-                                            </td>
-                                            <td><i class="material-icons md-payment font-xxl text-muted mr-5"></i> Paypal</td>
-                                            <td>
-                                                <a href="#" class="btn btn-xs"> View details</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="transactionCheck05" />
-                                                    <label class="form-check-label" for="transactionCheck05"></label>
-                                                </div>
-                                            </td>
-                                            <td><a href="#" class="fw-bold">#SK2543</a></td>
-                                            <td>Barry Dick</td>
-                                            <td>05 Oct, 2021</td>
-                                            <td>$412</td>
-                                            <td>
-                                                <span class="badge badge-pill badge-soft-success">Paid</span>
-                                            </td>
-                                            <td><i class="material-icons md-payment font-xxl text-muted mr-5"></i> Mastercard</td>
-                                            <td>
-                                                <a href="#" class="btn btn-xs"> View details</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="transactionCheck06" />
-                                                    <label class="form-check-label" for="transactionCheck06"></label>
-                                                </div>
-                                            </td>
-                                            <td><a href="#" class="fw-bold">#SK2544</a></td>
-                                            <td>Ronald Taylor</td>
-                                            <td>04 Oct, 2021</td>
-                                            <td>$404</td>
-                                            <td>
-                                                <span class="badge badge-pill badge-soft-warning">Refund</span>
-                                            </td>
-                                            <td><i class="material-icons md-payment font-xxl text-muted mr-5"></i> Visa</td>
-                                            <td>
-                                                <a href="#" class="btn btn-xs"> View details</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="transactionCheck07" />
-                                                    <label class="form-check-label" for="transactionCheck07"></label>
-                                                </div>
-                                            </td>
-                                            <td><a href="#" class="fw-bold">#SK2545</a></td>
-                                            <td>Jacob Hunter</td>
-                                            <td>04 Oct, 2021</td>
-                                            <td>$392</td>
-                                            <td>
-                                                <span class="badge badge-pill badge-soft-success">Paid</span>
-                                            </td>
-                                            <td><i class="material-icons md-payment font-xxl text-muted mr-5"></i> Paypal</td>
-                                            <td>
-                                                <a href="#" class="btn btn-xs"> View details</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        table-responsive end//
-                    </div>
-                </div>
-
-
-                <div class="pagination-area mt-30 mb-50">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-start">
-                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                            <li class="page-item"><a class="page-link" href="#">02</a></li>
-                            <li class="page-item"><a class="page-link" href="#">03</a></li>
-                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                            <li class="page-item"><a class="page-link" href="#">16</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div> -->
-
-
-<!-- Latest orders statyrt end with pagianation -->
-
-
-            </section>
-            <!-- content-main end// -->
-            <footer class="main-footer font-xs">
-                <div class="row pb-30 pt-15">
-                    <div class="col-sm-6">
-                        <script>
-                            document.write(new Date().getFullYear());
-                        </script>
-                        &copy; Nest - HTML Ecommerce Template .
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="text-sm-end">All rights reserved</div>
-                    </div>
-                </div>
-            </footer>
+                    </footer>
         </main>
+
 
 
         <script>
@@ -644,15 +281,15 @@ orderProductStatus
                 errorId.style.fontSize = "14px";
                 errorId.style.color = "red";
                 errorId.innerText = `${message}`;
-    
+
                 setTimeout(() => {
                     if (inputId != null) {
                         inputId.style.border = "";
-                    } 
+                    }
                     errorId.innerText = "";
                 }, 3000);
             }
-    
+
             document.getElementById('validateBtn').addEventListener('click', function () {
                 const startDate = document.getElementById('start-date');
                 const endDate = document.getElementById('end-date');
@@ -662,328 +299,88 @@ orderProductStatus
                 const endError = document.getElementById('end-error');
                 let message;
                 let flag = true;
-    
+
                 if (!startDate.value || !endDate.value) {
                     message = 'Please select both start date and end date.';
                     showError(null, errorId, message);
                     flag = false;
                 }
-    
-                if (startDate.value > endDate.value && endDate.value!=="") {
+
+                if (startDate.value > endDate.value && endDate.value !== "") {
                     message = 'Start date cannot be greater than end date.';
                     showError(startDate, startError, message);
                     flag = false;
                 }
-    
+
                 if (startDate.value > currentDate) {
                     message = "Start date must be less than or equal to the current date.";
                     showError(startDate, startError, message);
                     flag = false;
                 }
-    
+
                 if (endDate.value > currentDate) {
                     message = "End date must be less than or equal to the current date.";
                     showError(endDate, endError, message);
                     flag = false;
                 }
-    
+
                 if (flag) {
-                    alert('Validation passed! Proceeding with report generation.');
                     window.location.href = `/admin/sales-report?start=${startDate.value}&end=${endDate.value}`;
                 } else {
                     return flag;
                 }
             });
 
-
-//            function filterWithThisMonth(value){
-//             console.log("value",value)//---------------
-// //             console.log("within the filter function")//---------------------------
-// // axios.post('admin/dashboard/filter-chart',{value})
-// // .then((response)=>{
-// // if(response.data.filter){
-// //     console.log("response withinsd",response.data)//-----------------
-// // }
-// // }).catch((error)=>{
-// //     console.log(error)
-// // })
-
-// let dayChart = document.getElementById('myChart')
-
-
-// fetch('/admin/dashboard/filter-chart', {
-//   method: 'POST',
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-//   body: JSON.stringify({ value })
-// })
-// .then(response => response.json())
-// .then(data => {
-//   if (data.filter) {
-//     console.log("response withinsd", data);
-//     dayChart.setAttribute('data-days',JSON.stringify(data.daysArr))
-//     dayChart.setAttribute('data-dayRevenue',JSON.stringify(data.revenuePerDay))
-//     dayChart.setAttribute('data-dayUser',JSON.stringify(data.usersPerDay))
-// $('#myChart').load('/admin/ #myChart');
-//   }
-// })
-// .catch((error) => {
-//   console.log(error);
-// });
-//             }
-
-
-
-//   // Function to fetch new data and update charts
-//   function updateChartsWithNewData(monthYear) {
-//         $.ajax({
-//             url: '/admin/dashboard/filter-chart',  // Adjust this URL as needed
-//             method: 'POST',
-//             data: { monthYear: monthYear },
-//             success: function(response) {
-//                 if (response.filter) {
-//                     initializeOrUpdateChart1(response.days, response.dayRevenue, response.dayUser);
-//                     initializeOrUpdateChart2(response.labels, response.amount, response.count, response.monthlyUsers);
-//                 }
-//             },
-//             error: function(error) {
-//                 console.error('Error fetching new data:', error);
-//             }
-//         });
-//     }
-
-
-
-
-    // // Initial chart setup
-    // $(document).ready(function() {
-    //     let dayRevenueChart = document.getElementById('myChart');
-    //     let days = JSON.parse(dayRevenueChart.getAttribute('data-days'));
-    //     let dayRevenue = JSON.parse(dayRevenueChart.getAttribute('data-dayRevenue'));
-    //     let dayUser = JSON.parse(dayRevenueChart.getAttribute('data-dayUser'));
-
-    //     initializeOrUpdateChart1(days, dayRevenue, dayUser);
-
-    //     let updatedMonthlyDetails = document.getElementById('myChart2');
-    //     let monthlyData = JSON.parse(updatedMonthlyDetails.getAttribute('data-monthlyDetails'));
-    //     let monthlyUsers = JSON.parse(updatedMonthlyDetails.getAttribute('data-monthlyUsers'));
-
-    //     let amount = monthlyData.map(obj => obj.total);
-    //     let count = monthlyData.map(obj => obj.count);
-    //     let labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-    //     initializeOrUpdateChart2(labels, amount, count, monthlyUsers);
-
-    //     // Set up event listener for month change
-    //     $('input[type="month"]').on('change', function() {
-    //         updateChartsWithNewData(this.value);
-    //     });
-    // });
-    
-
-
-    
         </script>
 
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-
-        
-
-        <!-- <script>
-    function showError(inputId, errorId, message) {
-                if (inputId != null) {
-                    inputId.style.border = "1px solid red";
-                    errorId.style.fontSize = "14px";
-                }
-                errorId.style.fontSize = "14px";
-                errorId.style.color = "red";
-                errorId.innerText = `${message}`;
-           
-                setTimeout(() => {
-                    if (inputId != null) {
-                        inputId.style.border = "";
-                    } errorId.innerText = "";
-
-                }, 3000);
-            }
-
-            document.getElementById('validateBtn').addEventListener('click', function () {
-                const startDate = document.getElementById('start-date');
-                const endDate = document.getElementById('end-date');
-                const currentDate = new Date().toISOString().split('T')[0]; // current date in YYYY-MM-DD format
-                const errorId = document.getElementById('error-div');
-                const startError = document.getElementById('start-error');
-                const endError = document.getElementById('end-error');
-                let message;
-                let flag=true
-                
-
-    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
 
 
-            
-
-                if (!startDate.value || !endDate.value) {
-                    message='Please select both start date and end date.'
-                    showError(null,errorId,message)
-                    flag=false
-                }
-
-               if (startDate.value > endDate.value) {
-                    message='Start date cannot be greater than end date.'
-                    showError(startDate,startError,message)
-                    flag=false;
-                }
-
-                 if(startDate.value > currentDate ) {
-                    message="start date  must be less than or equal to the current date.";
-                    showError(startDate,startError,message)
-                    flag=false
-                }
-
-                 if(endDate.value > currentDate) {
-                    message="end date  must be less than or equal to the current date.";
-                    showError(endDate,endError,message)
-                    flag=false
-                }
-                
-                if(flag){
-                    alert('Validation passed! Proceeding with report generation.');
-window.location.href=`/admin/sales-report?start=${startDate.value}$end=${endDate.value}`
-                }else{
-                    return flag
-                }
-                 });
-                
-// let data ={
-//     startDate:startDate,
-//     endDate:endDate
-// }
-//                     axios.get(`/admin/sales-report?start=${startDate}$end=${endDate}`)
-
-//   .then(response => {
-//     console.log(response.data);
-//   })
-//   .catch(error => {
-//     console.error('Error:', error);
-//   });
-
-
-                }
-                
-    
-                // // If validation passes, you can proceed with form submission or further processing
-                // alert('Validation passed! Proceeding with report generation.');
-                // $('#staticBackdrop').modal('hide');
-           
-        </script> -->
-
-        <!-- <script>
-            document.getElementById('validateBtn').addEventListener('click', function () {
-    const startDateInput = document.getElementById('start-date');
-    const endDateInput = document.getElementById('end-date');
-    const errorDiv = document.getElementById('error-div');
-
-    const startDate = startDateInput.value;
-    const endDate = endDateInput.value;
-    const currentDate = new Date().toISOString().split('T')[0]; // current date in YYYY-MM-DD format
-
-    let errorMessage = '';
-
-    if (!startDate || !endDate) {
-        errorMessage = 'Please select both start date and end date.';
-        highlightInputField();
-    } else if (startDate > endDate) {
-        errorMessage = 'Start date cannot be greater than end date.';
-        highlightInputField(endDateInput);
-    } else if (startDate > currentDate || endDate > currentDate) {
-        errorMessage = 'Start date and end date must be less than or equal to the current date.';
-        highlightInputField(startDateInput, endDateInput);
-    }
-
-    if (errorMessage) {
-        errorDiv.textContent = errorMessage; // Show the error message
-        setTimeout(() => {
-            errorDiv.textContent = ''; // Clear the error message after 3 seconds
-        }, 3000);
-    } else {
-        window.location.href = `/admin/sales-report?start=${startDate}&end=${endDate}`;
-    }
-});
-
-function highlightInputField(inputField, additionalField = null) {
-    inputField.style.borderColor = 'red';
-    inputField.focus();
-
-    if (additionalField) {
-        additionalField.style.borderColor = 'red';
-    }
-
-    setTimeout(() => {
-        inputField.style.borderColor = '';
-        if (additionalField) {
-            additionalField.style.borderColor = '';
-        }
-    }, 3000); // Reset border color after 3 seconds
-}
-
-        </script> -->
-        
- <!-- pi chart -->
-
-
-
-
-
-
-
-<!-- // pie chart for orderd produts status -->
- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-
- <script>
-    const ctx = document.getElementById('orderStatusChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: ['Pending', 'Return Requested', 'Returned', 'Placed', 'Cancelled', 'Delivered'],
-            datasets: [{
-                data: [30, 15, 10, 25, 5, 15], // Example data, replace with actual values
-                backgroundColor: [
-                    'rgba(255, 206, 86, 0.8)',  // yellow
-                    'rgba(75, 192, 192, 0.8)',  // green
-                    'rgba(153, 102, 255, 0.8)', // purple
-                    'rgba(255, 159, 64, 0.8)',  // orange
-                    'rgba(255, 99, 132, 0.8)',  // red
-                    'rgba(54, 162, 235, 0.8)'   // blue
-                ],
-                borderColor: [
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
+        <!-- // pie chart for orderd produts status -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+        <script>
+            const ctx = document.getElementById('orderStatusChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Pending', 'Return Requested', 'Returned', 'Placed', 'Cancelled', 'Delivered'],
+                    datasets: [{
+                        data: [30, 15, 10, 25, 5, 15], // Example data, replace with actual values
+                        backgroundColor: [
+                            'rgba(255, 206, 86, 0.8)',  // yellow
+                            'rgba(75, 192, 192, 0.8)',  // green
+                            'rgba(153, 102, 255, 0.8)', // purple
+                            'rgba(255, 159, 64, 0.8)',  // orange
+                            'rgba(255, 99, 132, 0.8)',  // red
+                            'rgba(54, 162, 235, 0.8)'   // blue
+                        ],
+                        borderColor: [
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
                 },
-                title: {
-                    display: true,
-                    text: 'Order Status Distribution'
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Order Status Distribution'
+                        }
+                    }
                 }
-            }
-        }
-    });
-</script>
+            });
+        </script>
 
 
         <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
