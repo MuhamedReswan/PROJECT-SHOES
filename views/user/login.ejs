@@ -11,58 +11,53 @@
           /* Style for input fields */
 input[type="email"],
 input[type="password"] {
-    width: calc(100% - 20px); /* Adjust width as needed */
-    padding: 8px; /* Adjust padding as needed */
+    width: calc(100% - 20px);
+    padding: 8px; 
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-bottom: 15px;
-    box-sizing: border-box; /* Ensure padding and border are included in element's total width and height */
+    box-sizing: border-box; 
 }
 
 /* Style for input fields when focused */
 input[type="email"]:focus,
 input[type="password"]:focus {
     outline: none;
-    border-color: black; /* Change color when input is focused */
-    box-shadow: 0 0 5px black; /* Add a subtle shadow when input is focused */
+    border-color: black; 
+    box-shadow: 0 0 5px black;
 }
 
 /* Style for submit button */
 input[type="submit"] {
-    background-color: black; /* Black background */
+    background-color: black; 
     color: white;
     padding: 12px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s; /* Smooth transition for background color */
+    transition: background-color 0.3s; 
 }
 
 /* Change button background color on hover */
 input[type="submit"]:hover {
-    background-color: #333; /* Darken the background color on hover */
+    background-color: #333; 
 }
 
 /* Style for links */
 a {
-    color: black; /* Black color */
+    color: black;
     text-decoration: none;
 }
 
 /* Change link color on hover */
 a:hover {
-    color: #333; /* Darken the link color on hover */
+    color: #333; 
 }
 
 .contact-form{
     max-width: 400px;
     max-height: 400px;
   }
-/* .wrapper-otp{
-  max-width: 500px;
-  
-}
-     */
 
         </style>
 
@@ -191,46 +186,6 @@ a:hover {
       <!--Scoll Top-->
       <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
       <!--End Scoll Top-->
-      
-      <script>
-
-        function validateForm(event) {
-    event.preventDefault(); // Prevent the default form submission behavior
-            
-    var email = document.getElementById("CustomerEmail").value.trim();
-    var password = document.getElementById("CustomerPassword").value.trim();
-    var emailErrorMessage = document.getElementById("emailErrorMessage");
-    var passwordErrorMessage = document.getElementById("passwordErrorMessage");
-    
-    if (email === "") {
-        emailErrorMessage.style.display = "block";
-        passwordErrorMessage.style.display = "none";
-        setTimeout(function() {
-            emailErrorMessage.style.display = "none";
-        }, 3000); // Hide after 3 seconds
-    } else if (password === "") {
-        passwordErrorMessage.style.display = "block";
-        emailErrorMessage.style.display = "none";
-        setTimeout(function() {
-            passwordErrorMessage.style.display = "none";
-        }, 3000); // Hide after 3 seconds
-    } else {
-        // Both fields are filled, proceed with form submission or other actions
-        emailErrorMessage.style.display = "none";
-        passwordErrorMessage.style.display = "none";
-        
-        // For now, I'm just logging a message indicating the form would be submitted
-        console.log("Form would be submitted.");
-        document.getElementById("CustomerLoginForm").submit();
-    }
-}
-
-document.getElementById("CustomerLoginForm").onsubmit = validateForm;
-
-
-
-    </script>
-
 
        <!-- Including Jquery -->
        <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
@@ -243,6 +198,8 @@ document.getElementById("CustomerLoginForm").onsubmit = validateForm;
        <script src="user/assets/js/popper.min.js"></script>
        <script src="user/assets/js/lazysizes.js"></script>
        <script src="user/assets/js/main.js"></script>
+
+       <script src="user/assets/js/custom/login.js"></script>
 </div>
 
 <%- include('../layout/user/footer.ejs') -%>

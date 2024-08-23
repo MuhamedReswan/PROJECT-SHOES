@@ -26,9 +26,9 @@
                             <aside class="col-md-4 col-lg-3">
                                 <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link active" id="tab-dashboard-link" data-toggle="tab"
-                                            href="#tab-dashboard" role="tab" aria-controls="tab-dashboard"
-                                            aria-selected="true">Dashboard</a>
+                                        <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account"
+                                            role="tab" aria-controls="tab-account" aria-selected="false">Account
+                                            Details</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" id="tab-orders-link" href="/my-orders">Orders</a>
@@ -38,13 +38,8 @@
                                             role="tab" aria-controls="tab-downloads" aria-selected="false">Wallet</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address"
+                                        <a class="nav-link active" id="tab-address-link" data-toggle="tab" href="#tab-address"
                                             role="tab" aria-controls="tab-address" aria-selected="false">Adresses</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account"
-                                            role="tab" aria-controls="tab-account" aria-selected="false">Account
-                                            Details</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href="/logout">Sign Out</a>
@@ -54,21 +49,6 @@
 
                             <div class="col-md-8 col-lg-9">
                                 <div class="tab-content">
-                                    <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel"
-                                        aria-labelledby="tab-dashboard-link">
-                                        <p>Hello <span class="font-weight-normal text-dark">User</span> (not <span
-                                                class="font-weight-normal text-dark">User</span>? <a href="#">Log
-                                                out</a>)
-                                            <br>
-                                            From your account dashboard you can view your <a href="#tab-orders"
-                                                class="tab-trigger-link link-underline">recent orders</a>, manage your
-                                            <a href="#tab-address" class="tab-trigger-link">shipping and billing
-                                                addresses</a>, and <a href="#tab-account" class="tab-trigger-link">edit
-                                                your
-                                                password and account details</a>.
-                                        </p>
-                                    </div><!-- .End .tab-pane -->
-
                                     <div class="tab-pane fade" id="tab-address" role="tabpanel"
                                         aria-labelledby="tab-address-link">
                                         <%if (user && user.addresses.length>0 ){%>
@@ -113,14 +93,10 @@
                                             </div><!-- End .row -->
                                     </div><!-- .End .tab-pane -->
 
-                                    <div class="tab-pane fade" id="tab-account" role="tabpanel"
+                                    <div class="tab-pane fade show active" id="tab-account" role="tabpanel"
                                         aria-labelledby="tab-account-link">
 
                                         <div class="" style="display: flex; justify-content: end; align-items: end;">
-                                            <!-- <h3 class="bg-dark text-white">referel code:</h3> -->
-                                            <!-- <input style="display: none;" type="text" class="form-control"
-                                                value="localhost:3001/signup?referel=<%= user.referelCode%>" required
-                                                id="referralLink" readonly> -->
                                             <input style="display: none;" type="text" class="form-control"
                                                 value="https://shoefactori.online/signup?referel=<%= user.referelCode%>" required
                                                 id="referralLink" readonly>
@@ -229,7 +205,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- <form action="" id="changePasswordForm"> -->
 
                     <div>
                         <label for="old-Password">Old password</label>
@@ -258,7 +233,6 @@
                             changes</button>
                     </div>
 
-                    <!-- </form> -->
                 </div>
 
             </div>
@@ -396,207 +370,7 @@
         <!--End Footer-->
         <!--Scoll Top-->
         <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
-        <!--End Scoll Top-->
-
-        <script>
-
-
-        </script>
-
-        <script>
-            function changeProfile() {
-                event.preventDefault();
-                console.log('im in function');//---------
-
-                let name = document.querySelector('input[name="name"]').value;
-                let mobile = document.querySelector('input[name="mobile"]').value;
-                let nameError = document.getElementById('nameError');
-                let mobileError = document.getElementById('mobileError');
-
-
-                // Clear previous error messages
-                nameError.textContent = '';
-                mobileError.textContent = '';
-
-                // Validate name
-                if (!/^\w+$/.test(name)) {
-                    nameError.textContent = 'Name must contain only letters and numbers.';
-                } else if (mobile.trim().length !== 10 || !/^\d+$/.test(mobile)) {
-                    mobileError.textContent = 'Please enter a valid 10-digit mobile number.';
-                } else {
-                    console.log('im here success')//----------------------
-                    let data = { name, mobile }
-                    fetch('/update-profile', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    })
-                        .then(Response => Response.json())
-                        .then((res) => {
-                            if (res.nameAlready) {
-                                swal.fire({
-                                    title: `User name already exist`,
-                                    icon: "warning",
-                                    showConfirmationButton: false,
-                                    timer: 1000
-                                })
-                            }
-                            if (res.updated) {
-                                swal.fire({
-                                    title: `Profile updated`,
-                                    icon: "success",
-                                    showConfirmationButton: false,
-                                    timer: 1000
-                                })
-
-                            }
-                        })
-                }
-            }
-
-            let table = document.getElementById('history-table');
-            let historyButton = document.getElementById('transaction-button');
-            let buttonText = document.getElementById('button-text');
-            function showHistory() {
-                console.log("showHistoy")//--------------------
-                table.style.display = "block"
-                historyButton.setAttribute('onClick', 'hideHistory()');
-                buttonText.innerText = "Hide history"
-
-            }
-
-            function hideHistory() {
-                console.log("hide Histoy")//--------------------
-
-
-                table.style.display = "none"
-                historyButton.setAttribute('onClick', 'showHistory()');
-                buttonText.innerText = "Show history"
-
-            }
-
-
-            function validatePassword() {
-
-
-                console.log("im in validatePassword")//--------------------------
-                // setError(oldPasswordError,"yes workign")//
-                // let serializedData = $('$changePasswordForm').serialize()
-                // console.log("serializedData",serializedData)//----------------
-                // console.log("event",event)//------------
-                let oldPasswordError = document.getElementById('old-Password-error')
-                let newPasswordError = document.getElementById('new-Password-error')
-                let confirmPasswordError = document.getElementById('confirm-Password-error');
-
-                let oldPassword = document.getElementById('old-Password')
-                let newPassword = document.getElementById('new-Password')
-                let confirmPassword = document.getElementById('confirm-Password')
-                console.log("old", oldPassword.value)//-----------------------
-                console.log("new", newPassword.value)//-----------------------
-
-                let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{6,}$/
-                // /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/
-
-                function setError(errorId, inputId, message) {
-                    errorId.innerText = `${message}`
-                    inputId.style.border = 'solid 1px red';
-
-                    setTimeout(() => {
-                        errorId.innerText = ""
-                        inputId.style.border = '';
-                    }, 3000)
-                }
-
-                let message;
-
-                if (oldPassword.value.trim()=="" || oldPassword.value.length<4) {
-                    message = "please enter a valid password !"
-                    setError(oldPasswordError, oldPassword, message)
-                    return
-                }
-
-                else if (!passwordRegex.test(newPassword.value)) {
-
-                    message = "Password must be atleast 6 charcaters !"
-                    setError(newPasswordError, newPassword, message)
-                    return
-                }
-
-                else if (newPassword.value != confirmPassword.value) {
-                    message = "confirm password should be same !"
-                    setError(confirmPasswordError, confirmPassword, message)
-                    return
-                }
-
-
-                let data = {
-                    oldPassword: oldPassword.value,
-                    newPassword: newPassword.value,
-                    confirmPassword: confirmPassword.value
-                }
-                console.log("data", data)//------------------
-
-                fetch('/profile/change-password', {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                })
-                    .then((res) => res.json())
-                    .then((response) => {
-                        console.log("response", response)//------------------
-                        if (response.success) {
-
-                            swal.fire({
-                                text: "password successfully updated",
-                                icon: "success",
-                                width: "300px",
-                                showConfirmationButton: false,
-                                timer: 1000
-                            })
-
-                            setTimeout(() => {
-                                window.location.href = '/logout'
-
-                            }, 1500)
-
-                        } else {
-
-                            message = "in correct password !"
-                            setError(oldPasswordError, oldPassword, message)
-                            swal.fire({
-                                text: "incorrect Password",
-                                icon: "error",
-                                width: "300px",
-                                showConfirmationButton: false,
-                                timer: 2000
-                            })
-                        }
-                    })
-            }
-
-
-            function copyToClipboard() {
-                var inputField = document.getElementById('referralLink');
-                navigator.clipboard.writeText(inputField.value).then(function () {
-                    swal.fire({
-                        text: "Referel code copied !",
-                        icon: "success",
-                        width: "300px",
-                        showConfirmationButton: false,
-                        timer: 2000
-                    })
-
-
-                }).catch(function (err) {
-                    alert('Failed to copy text: ', err);
-                });
-            }
-
-        </script>
+        <!--End Scoll Top-->    
 
         <!-- Including Jquery -->
         <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
@@ -612,6 +386,8 @@
         <script src="user/assets/js/m-form-validation.js"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script src="user/assets/js/custom/profile.js"></script>
 
 
         </div>

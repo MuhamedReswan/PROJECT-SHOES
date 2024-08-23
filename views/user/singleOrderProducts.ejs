@@ -14,283 +14,311 @@
                 </div>
             </div>
             <!--End Page Title-->
-<% console.log('singleOrder------------------------------',singleOrder) %>
+
+            <div class=" conatiner card-body">
+                <div class="d-flex justify-content-around">
+                    <div>
+                        <h3><strong> Payment Details</strong></h3>
+                        <h4>Order Id : <%=singleOrder.orderId%>
+                        </h4>
+                        <h4>Payment Status : <%=singleOrder.paymentStatus%>
+                        </h4>
+                        <h4>Payment Method : <%=singleOrder.paymentMethod%>
+                        </h4>
+                        <h4>Order Status : <%=singleOrder.orderStatus%>
+                        </h4>
+
+                    </div>
+                    <div>
+                        <h3><strong>Delivery Address</strong></h3>
+                        <h4>Name : <%=singleOrder.deliveryAddress.name%>
+                        </h4>
+                        <h4>Address : <%=singleOrder.deliveryAddress.address%>
+                        </h4>
+                        <h4>Place : <%=singleOrder.deliveryAddress.city%>
+                        </h4>
+                        <h4>Mobile : <%=singleOrder.deliveryAddress.mobile%>
+                        </h4>
+                        <h4>District : <%=singleOrder.deliveryAddress.district%>
+                        </h4>
+                        <h4>Pin code : <%=singleOrder.deliveryAddress.state%>
+                        </h4>
+                        <h4>State : <%=singleOrder.deliveryAddress.state%>
+                        </h4>
+                        <h4>Country : <%=singleOrder.deliveryAddress.country%>
+                        </h4>
+                    </div>
+                </div>
+                <div class="mr-1 text-end p-1 d-flex justify-content-end">
+                    <a href="/my-orders/single-order-product/invoice?id=<%=singleOrder._id%>"><button
+                            class="btn btn-dark rounded p-2">invoice</button></a>
+                </div>
+                <div class="table-responsive" id="reloadList">
+
+                    <table class="table table-hover">
+                        <thead class="bg-dark text-white bg-opacity-50">
+                            <tr class="text-center">
+                                <th>SI NO</th>
+                                <th scope="col">Product</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <%if(singleOrder && singleOrder.products.length>0){%>
+
+                            <%singleOrder.products.forEach((product,index)=>{%>
+
+                                <tbody class="text-center">
+                                    <tr class="text-center ">
+                                        <td># <%=index+1001%>
+                                        </td>
+                                        <td class="">
+                                            <div class="d-flex">
+
+                                                <div class="d-flex flex-column align-items-center">
+                                                    <a href="/single-product?id=<%=product.productId._id%>"><img
+                                                            style="width: 50px; height: 50px;"
+                                                            src="/user/assets/images/product-images/sharpedImages/<%=product.productId.images[0]%>"
+                                                            alt="product image"></a>
+                                                    <a href="/single-product?id=<%=product.productId._id%>"><small>
+                                                            <%=product.productId.name%>
+                                                        </small>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            ₹ <%=product.offerPrice %>
+                                        </td>
+                                        <td>
+                                            <%=product.quantity%>
+                                        </td>
+                                        <td>
+                                            ₹ <%=product.offerPrice * product.quantity%>
+                                        </td>
+                                        <td>
 
 
-<div class=" conatiner card-body">
-    <div class="d-flex justify-content-around">
-        <div>
-            <h3><strong> Payment Details</strong></h3>
-        <h4>Order Id : <%=singleOrder.orderId%> </h4>
-    <h4>Payment Status : <%=singleOrder.paymentStatus%> </h4>
-    <h4>Payment Method : <%=singleOrder.paymentMethod%></h4>
-    <h4>Order Status : <%=singleOrder.orderStatus%> </h4>
-    
-        </div>
-        <div>
-            <h3><strong>Delivery Address</strong></h3>
-            <h4>Name : <%=singleOrder.deliveryAddress.name%></h4>
-            <h4>Address :  <%=singleOrder.deliveryAddress.address%></h4>
-            <h4>Place :  <%=singleOrder.deliveryAddress.city%></h4>
-            <h4>Mobile :  <%=singleOrder.deliveryAddress.mobile%></h4>
-            <h4>District :  <%=singleOrder.deliveryAddress.district%></h4>
-            <h4>Pin code :  <%=singleOrder.deliveryAddress.state%></h4>
-            <h4>State :  <%=singleOrder.deliveryAddress.state%></h4>
-            <h4>Country :  <%=singleOrder.deliveryAddress.country%></h4>
-        </div>
-    </div>
-    <div class="mr-1 text-end p-1 d-flex justify-content-end">
-        <a href="/my-orders/single-order-product/invoice?id=<%=singleOrder._id%>"><button class="btn btn-dark rounded p-2">invoice</button></a>
-    </div>
-    <div class="table-responsive" id="reloadList">
-            
-            <table class="table table-hover">
-                <thead class="bg-dark text-white bg-opacity-50">
-                    <tr class="text-center">
-                        <th>SI NO</th>
-                        <th scope="col">Product</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <%if(singleOrder && singleOrder.products.length>0){%>
-                    
-                <%singleOrder.products.forEach((product,index)=>{%>
-                    <% console.log('within the single od ejs froessss--------------------------------',product)%>
-
-                    <tbody class="text-center">
-                        <tr class="text-center ">
-                            <td># <%=index+1001%>
-                            </td>
-                            <td class="">
-                                <div class="d-flex">
-                              
-                                        <div class="d-flex flex-column align-items-center">
-                                            <a href="/single-product?id=<%=product.productId._id%>"><img
-                                                    style="width: 50px; height: 50px;"
-                                                    src="/user/assets/images/product-images/sharpedImages/<%=product.productId.images[0]%>"
-                                                    alt="product image"></a>
-                                            <a href="/single-product?id=<%=product.productId._id%>"><small>
-                                                    <%=product.productId.name%>
-                                                </small>
-                                            </a>
-                                        </div>
-                                </div>
-                            </td>
-                            <td>
-                                ₹ <%=product.offerPrice %>
-                            </td>
-                            <td>
-                                 <%=product.quantity%>
-                            </td>
-                            <td>
-                                ₹ <%=product.offerPrice * product.quantity%>
-                            </td>
-                            <td>
-                             
-                                
-                            <%if(product.status== 'Delivered' ){%>
-                                <span class=" px-4 py-2 rounded-pill"
-                                    style="font-weight: 400; background-color: #28a745; color: #e1d8d8;">
-
-                                    <%}else if(product.status=='Cancelled' ){%>
-                                        <span class=" px-4 py-2 rounded-pill"
-                                            style="font-weight: 400; background-color:  #6c757d; color: #e1d8d8;">
-
-                                            <%}else if(product.status=='Returned'
-                                                ){%>
+                                            <%if(product.status== 'Delivered' ){%>
                                                 <span class=" px-4 py-2 rounded-pill"
-                                                    style="font-weight: 400; background-color:  #dc3545; color: #e1d8d8;">
+                                                    style="font-weight: 400; background-color: #28a745; color: #e1d8d8;">
 
-                                                    <%}else if(product.status=='Pending' ){%>
+                                                    <%}else if(product.status=='Cancelled' ){%>
                                                         <span class=" px-4 py-2 rounded-pill"
-                                                            style="font-weight: 400; background-color: #ffc107; color: #e1d8d8;">
+                                                            style="font-weight: 400; background-color:  #6c757d; color: #e1d8d8;">
 
-                                                    <%}else if(product.status=='Return Requested' ){%>
-                                                        <span class=" px-4 py-2 rounded-pill"
-                                                            style="font-weight: 400; background-color: #2c4e34 ;color: #e1d8d8;">
+                                                            <%}else if(product.status=='Returned' ){%>
+                                                                <span class=" px-4 py-2 rounded-pill"
+                                                                    style="font-weight: 400; background-color:  #dc3545; color: #e1d8d8;">
 
-                                                    <%}else if(product.status=='Placed' ){%>
-                                                        <span class=" px-4 py-2 rounded-pill"
-                                                            style="font-weight: 400; background-color: #17a2b8; color: #e1d8d8;">
-                                                            
-                                                    <%}else if(product.status=='Return Denied' ){%>
-                                                        <span class=" px-4 py-2 rounded-pill"
-                                                            style="font-weight: 400; background-color: #9f007c; color: #e1d8d8;">
+                                                                    <%}else if(product.status=='Pending' ){%>
+                                                                        <span class=" px-4 py-2 rounded-pill"
+                                                                            style="font-weight: 400; background-color: #ffc107; color: #e1d8d8;">
 
-                                                            <%}else
-                                                                if(product.status=='Shipped'
-                                                                ){%>
-                                                                <span
-                                                                    class=" px-4 py-2 rounded-pill"
-                                                                    style="font-weight: 400; background-color: #007bff; color: #e1d8d8;">
-                                                                    <%}%>
-                                                                    <%= product.status%>
-                                                                </span>
-                            </td>
-                            <td>
-                                <%if( product.status=='Delivered'){%>
-                                    <button class="btn btn-warning rounded-pill mt-2 return-product"
-                                    id="return-product" data-productId="<%=product.productId._id%>"  data-orderId="<%=singleOrder._id%>"
-                                    data-toggle="modal" data-target="#customizedModal-return-product"
-                                    >Return Product</button>
+                                                                            <%}else
+                                                                                if(product.status=='Return Requested'
+                                                                                ){%>
+                                                                                <span class=" px-4 py-2 rounded-pill"
+                                                                                    style="font-weight: 400; background-color: #2c4e34 ;color: #e1d8d8;">
 
-                                    <%}else{%>
-                                        <button class="btn btn-warning rounded-pill mt-2"
-                                        id="track-order" data-productId="<%=product.productId._id%>" onclick="trackOrder('<%=singleOrder._id%>','<%=product.productId._id%>')">Track Order</button>
-                                <%}%>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <%})%>
-            </table>
-            <%}else{%>
-                <p>No order has been made yet.</p>
-                <a href="shop" class="btn btn-outline-primary-2"><span>GO SHOP</span><i
-                        class="icon-long-arrow-right"></i></a>
-                <%}%>
+                                                                                    <%}else if(product.status=='Placed'
+                                                                                        ){%>
+                                                                                        <span
+                                                                                            class=" px-4 py-2 rounded-pill"
+                                                                                            style="font-weight: 400; background-color: #17a2b8; color: #e1d8d8;">
 
-    </div>
+                                                                                            <%}else
+                                                                                                if(product.status=='Return Denied'
+                                                                                                ){%>
+                                                                                                <span
+                                                                                                    class=" px-4 py-2 rounded-pill"
+                                                                                                    style="font-weight: 400; background-color: #9f007c; color: #e1d8d8;">
+
+                                                                                                    <%}else
+                                                                                                        if(product.status=='Shipped'
+                                                                                                        ){%>
+                                                                                                        <span
+                                                                                                            class=" px-4 py-2 rounded-pill"
+                                                                                                            style="font-weight: 400; background-color: #007bff; color: #e1d8d8;">
+                                                                                                            <%}%>
+                                                                                                                <%=
+                                                                                                                    product.status%>
+                                                                                                        </span>
+                                        </td>
+                                        <td>
+                                            <%if( product.status=='Delivered' ){%>
+                                                <button class="btn btn-warning rounded-pill mt-2 return-product"
+                                                    id="return-product" data-productId="<%=product.productId._id%>"
+                                                    data-orderId="<%=singleOrder._id%>" data-toggle="modal"
+                                                    data-target="#customizedModal-return-product">Return
+                                                    Product</button>
+
+                                                <%}else{%>
+                                                    <button class="btn btn-warning rounded-pill mt-2" id="track-order"
+                                                        data-productId="<%=product.productId._id%>"
+                                                        onclick="trackOrder('<%=singleOrder._id%>','<%=product.productId._id%>')">Track
+                                                        Order</button>
+                                                    <%}%>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <%})%>
+                    </table>
+                    <%}else{%>
+                        <p>No order has been made yet.</p>
+                        <a href="shop" class="btn btn-outline-primary-2"><span>GO SHOP</span><i
+                                class="icon-long-arrow-right"></i></a>
+                        <%}%>
+
+                </div>
 
 
-<div class="d-flex justify-content-end my-2 ml-3 pr-5">
-    <div>
-    <h4> SubTotal : ₹ <%=singleOrder.totalAmount + singleOrder?.coupon?.discount%>.00</h4>
-    <h4> Delivery Charge : ₹ 0.00</h4>
-    <h4> Discount : ₹ <%=singleOrder?.coupon?.discount%>.00
-    </h4>
-<h3>Total : ₹ <%=singleOrder.totalAmount%>.00</h3>
-</div>
+                <div class="d-flex justify-content-end my-2 ml-3 pr-5">
+                    <div>
+                        <h4> SubTotal : ₹ <%=singleOrder.totalAmount + singleOrder?.coupon?.discount%>.00</h4>
+                        <h4> Delivery Charge : ₹ 0.00</h4>
+                        <h4> Discount : ₹ <%=singleOrder?.coupon?.discount%>.00
+                        </h4>
+                        <h3>Total : ₹ <%=singleOrder.totalAmount%>.00</h3>
+                    </div>
 
 
-   </div>
+                </div>
 
-</div>
+            </div>
 
         </div>
 
-<div>
+        <div>
 
-<div class="modal fade" id="customizedModal-return-product" tabindex="-1" role="dialog" aria-labelledby="customizedModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
-        <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Customized Modal</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="returnReason" class="form-label">Reason for return</label>
-                        <select class="form-select" id="returnReason" name="reason" required>
-                            <option value="Wrong product shipped">Wrong product shipped</option>
-                            <option value="Damaged goods">Damaged goods</option>
-                            <option value="Item does not match the description">Item does not match the description</option>
-                            <option value="Product no longer required">Product no longer required</option>
-                        </select>
+            <div class="modal fade" id="customizedModal-return-product" tabindex="-1" role="dialog"
+                aria-labelledby="customizedModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Customized Modal</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="returnReason" class="form-label">Reason for return</label>
+                                <select class="form-select" id="returnReason" name="reason" required>
+                                    <option value="Wrong product shipped">Wrong product shipped</option>
+                                    <option value="Damaged goods">Damaged goods</option>
+                                    <option value="Item does not match the description">Item does not match the
+                                        description</option>
+                                    <option value="Product no longer required">Product no longer required</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="additionalComments" class="form-label">Additional Comments</label>
+                                <textarea class="form-control" id="returnComments" rows="4" name="comment"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer" style="justify-content: space-around;">
+                            <button type="button" id="return-confirm" class="btn btn-primary " on>Confirm</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="additionalComments" class="form-label">Additional Comments</label>
-                        <textarea class="form-control" id="returnComments" rows="4" name="comment"></textarea>
-                    </div>
                 </div>
-                
-                <div class="modal-footer" style="justify-content: space-around;">
-                    <button type="button" id="return-confirm"  class="btn btn-primary "  on>Confirm</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
+            </div>
+
+
+
+            <script>
+                let data = {};
+                let returnButtons = document.querySelectorAll('.return-product')
+                returnButtons.forEach((returnButton) => {
+                    returnButton.addEventListener('click', (e) => {
+                        console.log('returnButtons e', e)//-------------------------
+                        data.orderId = returnButton.getAttribute('data-orderId');
+                        data.productId = returnButton.getAttribute('data-productId');
+
+                    })
+                })
+
+
+                function retunProduct() {
+                    try {
+                        console.log('im in return product');//-----------------------------------
+                        data.returnReason = document.getElementById('returnReason').value
+                        data.returnComment = document.getElementById('returnComments').value
+
+                        console.log('data return ', data)//---------------------
+
+                        fetch('/return-product', {
+                            method: 'Post',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        }).then((res) => res.json())
+                            .then((response) => {
+                                if (response.returnRequested) {
+                                    window.location.reload()
+                                }
+                            })
+
+                    } catch (error) {
+                        console.error('An error occurred while showing the modal:', error);
+                    }
+                }
+
+                let returnConfirmButton = document.getElementById('return-confirm')
+                returnConfirmButton.addEventListener('click', (e) => {
+
+                    data.returnReason = document.getElementById('returnReason').value
+                    data.returnComment = document.getElementById('returnComments').value
+                    let modal = document.getElementById('customizedModal-return-product')
+                    $(modal).modal('hide')
+
+
+                    retunProduct()
+                })
+
+            </script>
+
+            <!--End Body Content-->
+
+            <!--Scoll Top-->
+            <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
+            <!--End Scoll Top-->
+
+
+            <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+                integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+                crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+                integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+                crossorigin="anonymous"></script>
+
+            <!-- Including Jquery -->
+            <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
+            <script src="user/assets/js/vendor/jquery.cookie.js"></script>
+            <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+            <script src="user/assets/js/vendor/wow.min.js"></script>
+            <!-- Including Javascript -->
+            <script src="user/assets/js/bootstrap.min.js"></script>
+            <script src="user/assets/js/plugins.js"></script>
+            <script src="user/assets/js/popper.min.js"></script>
+            <script src="user/assets/js/lazysizes.js"></script>
+            <script src="user/assets/js/main.js"></script>
+
+
+
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         </div>
-    </div>
-</div>
+        </body>
 
+        <!-- belle/cart-variant1.html   11 Nov 2019 12:44:32 GMT -->
 
-
-<script>
-    let data={};
-    let returnButtons = document.querySelectorAll('.return-product')
-    returnButtons.forEach((returnButton)=>{
-        returnButton.addEventListener('click',(e)=>{
-            console.log('returnButtons e',e)//-------------------------
-           data.orderId = returnButton.getAttribute('data-orderId');
-           data.productId = returnButton.getAttribute('data-productId');
-          
-        })
-    })
-
-
-function retunProduct(){
-    try {
-        console.log('im in return product');//-----------------------------------
-data.returnReason = document.getElementById('returnReason').value
-data.returnComment = document.getElementById('returnComments').value
-
-console.log('data return ',data)//---------------------
-
-fetch('/return-product',{
-    method:'Post',
-    headers:{
-        'Content-Type':'application/json'
-    },
-    body:JSON.stringify(data)
-}).then((res)=>res.json())
-.then((response)=>{
-if(response.returnRequested){
-    window.location.reload()
-}
-})
-        
-    } catch (error) {
-        console.error('An error occurred while showing the modal:', error);
-    }
-}
-
-    let returnConfirmButton = document.getElementById('return-confirm')
-    returnConfirmButton.addEventListener('click',(e)=>{
-
-        data.returnReason= document.getElementById('returnReason').value
-        data.returnComment= document.getElementById('returnComments').value
-        let modal = document.getElementById('customizedModal-return-product')
-        $(modal).modal('hide')
-
-
-retunProduct()
-    })
-
-    </script>
-
-        <!--End Body Content-->
-
-        <!--Scoll Top-->
-        <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
-        <!--End Scoll Top-->
-
-
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-        <!-- Including Jquery -->
-        <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
-        <script src="user/assets/js/vendor/jquery.cookie.js"></script>
-        <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
-        <script src="user/assets/js/vendor/wow.min.js"></script>
-        <!-- Including Javascript -->
-        <script src="user/assets/js/bootstrap.min.js"></script>
-        <script src="user/assets/js/plugins.js"></script>
-        <script src="user/assets/js/popper.min.js"></script>
-        <script src="user/assets/js/lazysizes.js"></script>
-        <script src="user/assets/js/main.js"></script>
-
-
-
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    </div>
-    </body>
-
-    <!-- belle/cart-variant1.html   11 Nov 2019 12:44:32 GMT -->
-
-    </html>
+        </html>

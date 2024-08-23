@@ -10,10 +10,10 @@
 
 <body>
     <header>
-        
+
         <h1>Order Details</h1>
-        <div class="d-flex justify-content-end"> 
-            <a class="btn btn-dark" href="/"><span >Go to home</span></a>
+        <div class="d-flex justify-content-end">
+            <a class="btn btn-dark" href="/"><span>Go to home</span></a>
         </div>
     </header>
     <%console.log('orederDetailsfrom od',orderDetails)%>
@@ -27,13 +27,13 @@
                                 <section class="order-summary">
                                     <h2>Order Summary</h2>
                                     <ul>
-                                        <li><strong>Order ID:</strong> #<%= orderDetails.orderId%></li>
+                                        <li><strong>Order ID:</strong> #<%= orderDetails.orderId%>
+                                        </li>
                                         <li><strong>Date:</strong>
                                             <%=formattedDate%>
                                         </li>
                                         <li><strong>Order Status:</strong>
-                                            <%=orderDetails.orderStatus
-                                            %>
+                                            <%=orderDetails.orderStatus %>
                                         </li>
                                         <li><strong>Payment Method:</strong>
                                             <%=orderDetails.paymentMethod%>
@@ -114,26 +114,17 @@
                                     </div>
                                 </section>
                                 <div>
-                                <section class="order-total d-flex">
-                                    <h2>Order Total</h2>
-                                    <h4>Subtotal : ₹ <%=orderDetails.totalAmount + orderDetails.coupon.discount%></h4>
-                                    <h4>Delivery Charge : ₹ <%=orderDetails.deliveryCharge%>.00</h4>
-                                    <h4>Discount : ₹ <%=orderDetails.coupon.discount%></h4>
-                                    <h3><strong>Total : ₹ <%=orderDetails.totalAmount%></strong></h3>
+                                    <section class="order-total d-flex">
+                                        <h2>Order Total</h2>
+                                        <h4>Subtotal : ₹ <%=orderDetails.totalAmount + orderDetails.coupon.discount%>
+                                        </h4>
+                                        <h4>Delivery Charge : ₹ <%=orderDetails.deliveryCharge%>.00</h4>
+                                        <h4>Discount : ₹ <%=orderDetails.coupon.discount%>
+                                        </h4>
+                                        <h3><strong>Total : ₹ <%=orderDetails.totalAmount%></strong></h3>
 
-<!-- <% if (orderDetails.paymentMethod== 'Wallet With Online'){%>
-    <h4>Subtotal : ₹ <%=orderDetails.totalAmount + orderDetails.coupon.discount%></h4>
-                                    <h4>Delivery Charge : ₹ <%=orderDetails.deliveryCharge%>.00</h4>
-                                    <h4>Paid With Wallet : ₹ <%=orderDetails.deliveryCharge%>.00</h4>
-                                    <h4>Discount : ₹ <%=orderDetails.coupon.discount%></h4>
-                                    <h3><strong>Total : ₹ <%=orderDetails.totalAmount%></strong></h3>
-<% }else{ %>
-<% } %> -->
-
-                                   
-                               
-                                </section>
-                            </div>
+                                    </section>
+                                </div>
             </main>
             <%}%>
                 <footer>

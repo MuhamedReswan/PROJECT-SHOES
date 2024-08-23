@@ -392,7 +392,7 @@ const loadInvoice = async (req, res, next) => {
         
         console.log("Order details:", order);
 
-        res.status(200).render('invoiceNew', { order });
+        res.status(200).render('invoice', { order });
     } catch (error) {
         console.log(`Error in loadInvoice: ${error.message}`);
         next(error);

@@ -5,307 +5,205 @@
 
 
 
-        <!--Body Content-->
-        <div id="page-content">
-            <!-- Page Title -->
-            <div class="page section-header text-center">
-                <div class="page-title">
-                    <div class="wrapper">
-                        <h1 class="page-width">Shopping Cart</h1>
-                    </div>
-                </div>
-            </div>
-            <!--End Page Title-->
-
-            <div class="container" id="main">
-                <div class="row">
-
-
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col" id="cartContainer">
-                        <% if(cartData && cartData.products && cartData.products.length> 0){%>
-                            <div class="alert alert-success text-uppercase" role="alert">
-                                <i class="icon anm anm-truck-l icon-large"></i>
-                                &nbsp;<strong>Congratulations!</strong>
-                                You've got free shipping!
-                            </div>
-                            <table class="col-12 col-sm-12 col-md-12 col-lg-12 text-center">
-                                <thead class="cart__row cart__header">
-                                    <tr>
-                                        <th>image</th>
-                                        <th>product</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Total</th>
-                                        <th class="action">&nbsp;</th>
-                                    </tr>
-                                </thead>
-                                <% let totalPrice=0, totalOfferPrice=0 %>
-                                    <%cartData.products.forEach((product,i)=>{%>
-                                        <tbody>
-
-                                            <tr class="cart__row border-bottom line1 cart-flex border-top">
-                                                <td class="cart__image-wrapper cart-flex-item">
-                                                    <a href="/single-product?id=<%= product.productId._id%>"><img class="cart__image"
-                                                            src="user/assets/images/product-images/sharpedImages/<%= product.productId.images[0] %>"
-                                                            alt="Elastic Waist Dress - Navy / Small"></a>
-                                                </td>
-                                                <td class="cart__meta small--text-left cart-flex-item">
-                                                    <div class="list-view-item__title">
-                                                        <a style="text-decoration: none;" href="/single-product?id=<%= product.productId._id%>">
-                                                            <%= product.productId.name %>
-                                                        </a>
-                                                    </div>
-
-                                                </td>
-                                                <td class="cart__price-wrapper cart-flex-item">
-                                                    <span class="money">₹<%= product.offerPrice %></span>
-                                                </td>
-                                                <td class="cart__update-wrapper cart-flex-item text-center ">
-
-                                                    <div class="cart__qty text-center d-flex justify-content-center">
-
-                                                        <button type="button" class="qtyBtn minus"
-                                                            onclick="changeQuantity('<%=product.productId._id %>','<%=product._id%>',-1)"><i
-                                                                class="icon icon-minus"></i></button>
-
-                                                        <input class="cart__qty-input qty text-center" type="text"
-                                                            max="10" name="updates[]" id="qty"
-                                                            value="<%= product.quantity %>" pattern="[0-9]*"
-                                                            data-product-id="<%= product.productId._id %>"
-                                                            data-produt-size="<%= product.size %>">
-
-                                                        <button type="button" class="qtyBtn plus"
-                                                            onclick="changeQuantity('<%=product.productId._id %>','<%=product._id%>',1)"><i
-                                                                class="icon icon-plus"></i></button>
-                                                    </div>
-                                                </td>
-                                                <td class="small--hide cart-price">
-                                                    <div><span class="money">₹ <%= product.offerPrice * product.quantity
-                                                                %>
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td class="small--hide"><span
-                                                        onclick="removeProduct(' <%=product.productId._id %>')"
-                                                        class="btn btn--secondary cart__remove" title="Remove tem"><i
-                                                            class="icon icon anm anm-times-l"></i></span>
-                                                </td>
-                                            </tr>
-
-                                        </tbody>
-
-                                        <% totalPrice +=product.price * product.quantity,
-                                            totalOfferPrice+=product.offerPrice * product.quantity %>
-                                            <% console.log('totalPrice',totalPrice,'totalOfferPrice/',totalOfferPrice)
-                                                %>
-                                                <% console.log('product.offerPrice',product.offerPrice) %>
-
-                                                    <%})%>
-
-                                                        <tfoot>
-                                                            <tr>
-                                                                <td colspan="3" class="text-left"><a href="/shop"
-                                                                        class="btn btn-secondary btn--small cart-continue">Continue
-                                                                        shopping</a></td>
-
-                                                            </tr>
-                                                        </tfoot>
-                            </table>
-                    </div>
-
-
-                    <div class="container mt-4">
-                        <div class="row d-flex justify-content-center">
-                            <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
-                                <div class="solid-border">
-                                    <div class="row border-bottom pb-2">
-                                        <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
-                                        <span class="col-12 col-sm-6 text-right"><span class="money">₹ <%=
-                                                    totalOfferPrice %>
-                                                    .00</span></span>
-                                    </div>
-                                    <!-- <div class="row border-bottom pb-2 pt-2">
-                                        <span class="col-12 col-sm-6 cart__subtotal-title">You Saved</span>
-                                        <span class="col-12 col-sm-6 text-right">₹ <%= totalPrice - totalOfferPrice%>
-                                                .00</span>
-                                    </div> -->
-                                    <div class="row border-bottom pb-2 pt-2">
-                                        <span class="col-12 col-sm-6 cart__subtotal-title">Shipping</span>
-                                        <span class="col-12 col-sm-6 text-right">Free shipping</span>
-                                    </div>
-                                    <div class="row border-bottom pb-2 pt-2">
-                                        <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand
-                                                Total</strong></span>
-                                        <span
-                                            class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span
-                                                class="money">₹ <%= totalOfferPrice %>.00</span></span>
-                                    </div>
-
-                                    <a href="/checkout?subtotal=<%= totalOfferPrice %>" type="button" name="checkout" id="cartCheckout"
-                                        class="btn btn--small-wide checkout" disabled="disabled">Proceed to checkout</a>
-
-                                </div>
-
-                            </div>
+            <!--Body Content-->
+            <div id="page-content">
+                <!-- Page Title -->
+                <div class="page section-header text-center">
+                    <div class="page-title">
+                        <div class="wrapper">
+                            <h1 class="page-width">Shopping Cart</h1>
                         </div>
                     </div>
-
                 </div>
-                <%}else{%>
+                <!--End Page Title-->
+
+                <div class="container" id="main">
                     <div class="row">
 
-                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center text-uppercase">
-                            <div class="d-flex justify-content-center">
-                                <div style="height: 160px; width: 200px;">
-                                    <img src="user/assets/images/mine/empty cart.jpg" alt="">
+
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col" id="cartContainer">
+                            <% if(cartData && cartData.products && cartData.products.length> 0){%>
+                                <div class="alert alert-success text-uppercase" role="alert">
+                                    <i class="icon anm anm-truck-l icon-large"></i>
+                                    &nbsp;<strong>Congratulations!</strong>
+                                    You've got free shipping!
+                                </div>
+                                <table class="col-12 col-sm-12 col-md-12 col-lg-12 text-center">
+                                    <thead class="cart__row cart__header">
+                                        <tr>
+                                            <th>image</th>
+                                            <th>product</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                            <th class="action">&nbsp;</th>
+                                        </tr>
+                                    </thead>
+                                    <% let totalPrice=0, totalOfferPrice=0 %>
+                                        <%cartData.products.forEach((product,i)=>{%>
+                                            <tbody>
+
+                                                <tr class="cart__row border-bottom line1 cart-flex border-top">
+                                                    <td class="cart__image-wrapper cart-flex-item">
+                                                        <a href="/single-product?id=<%= product.productId._id%>"><img
+                                                                class="cart__image"
+                                                                src="user/assets/images/product-images/sharpedImages/<%= product.productId.images[0] %>"
+                                                                alt="Elastic Waist Dress - Navy / Small"></a>
+                                                    </td>
+                                                    <td class="cart__meta small--text-left cart-flex-item">
+                                                        <div class="list-view-item__title">
+                                                            <a style="text-decoration: none;"
+                                                                href="/single-product?id=<%= product.productId._id%>">
+                                                                <%= product.productId.name %>
+                                                            </a>
+                                                        </div>
+
+                                                    </td>
+                                                    <td class="cart__price-wrapper cart-flex-item">
+                                                        <span class="money">₹<%= product.offerPrice %></span>
+                                                    </td>
+                                                    <td class="cart__update-wrapper cart-flex-item text-center ">
+
+                                                        <div
+                                                            class="cart__qty text-center d-flex justify-content-center">
+
+                                                            <button type="button" class="qtyBtn minus"
+                                                                onclick="changeQuantity('<%=product.productId._id %>','<%=product._id%>',-1)"><i
+                                                                    class="icon icon-minus"></i></button>
+
+                                                            <input class="cart__qty-input qty text-center" type="text"
+                                                                max="10" name="updates[]" id="qty"
+                                                                value="<%= product.quantity %>" pattern="[0-9]*"
+                                                                data-product-id="<%= product.productId._id %>"
+                                                                data-produt-size="<%= product.size %>">
+
+                                                            <button type="button" class="qtyBtn plus"
+                                                                onclick="changeQuantity('<%=product.productId._id %>','<%=product._id%>',1)"><i
+                                                                    class="icon icon-plus"></i></button>
+                                                        </div>
+                                                    </td>
+                                                    <td class="small--hide cart-price">
+                                                        <div><span class="money">₹ <%= product.offerPrice *
+                                                                    product.quantity %>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="small--hide"><span
+                                                            onclick="removeProduct(' <%=product.productId._id %>')"
+                                                            class="btn btn--secondary cart__remove"
+                                                            title="Remove tem"><i
+                                                                class="icon icon anm anm-times-l"></i></span>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+
+                                            <% totalPrice +=product.price * product.quantity,
+                                                totalOfferPrice+=product.offerPrice * product.quantity %>
+                                                <% console.log('totalPrice',totalPrice,'totalOfferPrice/',totalOfferPrice)
+                                                    %>
+                                                    <% console.log('product.offerPrice',product.offerPrice) %>
+
+                                                        <%})%>
+
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <td colspan="3" class="text-left"><a href="/shop"
+                                                                            class="btn btn-secondary btn--small cart-continue">Continue
+                                                                            shopping</a></td>
+
+                                                                </tr>
+                                                            </tfoot>
+                                </table>
+                        </div>
+
+
+                        <div class="container mt-4">
+                            <div class="row d-flex justify-content-center">
+                                <div class="col-12 col-sm-12 col-md-4 col-lg-4 cart__footer">
+                                    <div class="solid-border">
+                                        <div class="row border-bottom pb-2">
+                                            <span class="col-12 col-sm-6 cart__subtotal-title">Subtotal</span>
+                                            <span class="col-12 col-sm-6 text-right"><span class="money">₹ <%=
+                                                        totalOfferPrice %>
+                                                        .00</span></span>
+                                        </div>
+                                        <div class="row border-bottom pb-2 pt-2">
+                                            <span class="col-12 col-sm-6 cart__subtotal-title">Shipping</span>
+                                            <span class="col-12 col-sm-6 text-right">Free shipping</span>
+                                        </div>
+                                        <div class="row border-bottom pb-2 pt-2">
+                                            <span class="col-12 col-sm-6 cart__subtotal-title"><strong>Grand
+                                                    Total</strong></span>
+                                            <span
+                                                class="col-12 col-sm-6 cart__subtotal-title cart__subtotal text-right"><span
+                                                    class="money">₹ <%= totalOfferPrice %>.00</span></span>
+                                        </div>
+
+                                        <a href="/checkout?subtotal=<%= totalOfferPrice %>" type="button"
+                                            name="checkout" id="cartCheckout" class="btn btn--small-wide checkout"
+                                            disabled="disabled">Proceed to checkout</a>
+
+                                    </div>
+
                                 </div>
                             </div>
-                            <div>
-                                <h1>
-                                    Your cart is empty
-                                </h1>
-                            </div>
-                            <div class="pt-2">
-                                <h3></h3>
-                            </div>
-                            <div>
-                                <a class="btn btn--has-icon-after" href="/shop">Explore Shopping </a>
-                            </div>
-
                         </div>
+
                     </div>
-                    <%}%>
+                    <%}else{%>
+                        <div class="row">
+
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center text-uppercase">
+                                <div class="d-flex justify-content-center">
+                                    <div style="height: 160px; width: 200px;">
+                                        <img src="user/assets/images/mine/empty cart.jpg" alt="">
+                                    </div>
+                                </div>
+                                <div>
+                                    <h1>
+                                        Your cart is empty
+                                    </h1>
+                                </div>
+                                <div class="pt-2">
+                                    <h3></h3>
+                                </div>
+                                <div>
+                                    <a class="btn btn--has-icon-after" href="/shop">Explore Shopping </a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <%}%>
+                </div>
+
             </div>
-
-        </div>
-        <!--End Body Content-->
+            <!--End Body Content-->
 
 
-      <!--Footer-->
-      <%-include('../partials/userBodyFooter.ejs')-%>
-      <!--End Footer-->
-      
-        <!--Scoll Top-->
-        <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
-        <!--End Scoll Top-->
+            <!--Footer-->
+            <%-include('../partials/userBodyFooter.ejs')-%>
+                <!--End Footer-->
 
-        <!-- Including Jquery -->
-        <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
-        <script src="user/assets/js/vendor/jquery.cookie.js"></script>
-        <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
-        <script src="user/assets/js/vendor/wow.min.js"></script>
-        <!-- Including Javascript -->
-        <script src="user/assets/js/bootstrap.min.js"></script>
-        <script src="user/assets/js/plugins.js"></script>
-        <script src="user/assets/js/popper.min.js"></script>
-        <script src="user/assets/js/lazysizes.js"></script>
-        <script src="user/assets/js/main.js"></script>
+                <!--Scoll Top-->
+                <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
+                <!--End Scoll Top-->
 
-        <script>
-            function removeProduct(id) {
-                console.log('id-', id);//---
-                console.log('remove cart function');//---
-                let data = { productId: id }
+                <!-- Including Jquery -->
+                <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
+                <script src="user/assets/js/vendor/jquery.cookie.js"></script>
+                <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+                <script src="user/assets/js/vendor/wow.min.js"></script>
+                <!-- Including Javascript -->
+                <script src="user/assets/js/bootstrap.min.js"></script>
+                <script src="user/assets/js/plugins.js"></script>
+                <script src="user/assets/js/popper.min.js"></script>
+                <script src="user/assets/js/lazysizes.js"></script>
+                <script src="user/assets/js/main.js"></script>
 
-//                 Toastify({
-//   text: "This is a toast",
-//   duration: 3000, // Duration in milliseconds (3 seconds)
-//   close: true, // Show a close button
-//   gravity: "top", // Position: 'top' or 'bottom'
-//   position: 'right', // Position: 'left', 'center' or 'right'
-//   backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)", // Background color
-//   stopOnFocus: true, // Stop the timer when the user hovers over the toast
-//   onClick: function(){} // Callback function to run when the toast is clicked
-// }).showToast();
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
-
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "You won't be able to revert this!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes, remove it!",
-                    width: '300px',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            type: 'post',
-                            url: '/remove-cart',
-                            data: JSON.stringify(data),
-                            contentType: 'application/json',
-                            success: (response) => {
-                                if (response.removed == true) {
-                                    $('#wrapper').load('/cart #wrapper', null, () => {
-                                        Swal.fire({
-                                            title: "Removed!",
-                                            text: "Your product has been removed from cart.",
-                                            icon: "success",
-                                            width:"300px"
-                                        });
-                                    })
-
-                                }
-                            },
-                            error: (error) => {
-                                console.log(error);
-                            }
-
-                        })
-                    }
-                });
-
-
-            }
-        </script>
-
-        <script>
-            function changeQuantity(productId, id, status) {
-                console.log('im in change quantity 2');//---------------
-                let data = { productId: productId, id: id, buttonStatus: status }
-                console.log('data=', data);//----------------
-                $.ajax({
-                    type: 'post',
-                    url: 'change-quantity',
-                    contentType: 'application/json',
-                    data: JSON.stringify(data),
-                    success: (res) => {
-                        $('#wrapper').load('/cart #wrapper');
-                        if (res.min) {
-                            swal.fire({
-                                icon: "warning",
-                                title: "Oops...",
-                                text: "Minimum Quantity Required !",
-                                width:"300px"
-                            });
-                        } else if (res.maxQty) {
-                            swal.fire({
-                                icon: "warning",
-                                title: "Oops...",
-                                text: "Maximum quantity user!",
-                                width:"300px"
-                            });
-                        } else if (res.max) {
-                            swal.fire({
-                                icon: "warning",
-                                title: "Oops...",
-                                text: "No More products !",
-                                width:"300px"
-                            });
-                        } else if (res.update) {
-                            console.log('updated Sucessfuly !');
-                        }
-                    },
-                    error: (error) => {
-                        console.log(error);
-                    }
-                });
-            }
-
-        </script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script src="user/assets/js/custom/cart.js"></script>
     </div>
     </body>
 

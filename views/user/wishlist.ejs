@@ -2,68 +2,75 @@
     <div class="pageWrapper">
         <%-include('../partials/userNavbar')-%>
 
-<style>
-     .swal2-modal {
-            width: 300px !important;
-            height: 200px !important;
-        }
-        .swal2-content {
-            max-width: 450px;
-            max-height: 200px;
-            overflow-y: auto;
-            font-size: 10px;
-        }
-        .swal2-title{
-font-size: 14px;
-        }
-        .swal2-icon {
-    font-size: 10px; 
-}
-.swal2-confirm{
-    font-size: 10px;
-}
-.swal2-confirm, .swal2-cancel {
-    padding: 5px 10px; 
-    font-size: 10px;
-    min-width: 30px; 
-}
-</style>
-        <!--Body Content-->
-        <div id="page-content">
-            <!--Page Title-->
-            <div class="page section-header text-center">
-                <div class="page-title">
-                    <div class="wrapper">
-                        <h1 class="page-width">Wish List</h1>
+            <style>
+                .swal2-modal {
+                    width: 300px !important;
+                    height: 200px !important;
+                }
+
+                .swal2-content {
+                    max-width: 450px;
+                    max-height: 200px;
+                    overflow-y: auto;
+                    font-size: 10px;
+                }
+
+                .swal2-title {
+                    font-size: 14px;
+                }
+
+                .swal2-icon {
+                    font-size: 10px;
+                }
+
+                .swal2-confirm {
+                    font-size: 10px;
+                }
+
+                .swal2-confirm,
+                .swal2-cancel {
+                    padding: 5px 10px;
+                    font-size: 10px;
+                    min-width: 30px;
+                }
+            </style>
+            <!--Body Content-->
+            <div id="page-content">
+                <!--Page Title-->
+                <div class="page section-header text-center">
+                    <div class="page-title">
+                        <div class="wrapper">
+                            <h1 class="page-width">Wish List</h1>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!--End Page Title-->
-            <div id="wishlist-div" >
-            <% if(wishlistData && wishlistData.length>0){ %>
-               
-            <div class="container" >
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col" >
-                        <form >
-                            <div class="wishlist-table table-content table-responsive" >
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th class="product-name text-center alt-font">Remove</th>
-                                            <th class="product-price text-center alt-font">Images</th>
-                                            <th class="product-name alt-font">Product</th>
-                                            <th class="product-price text-center alt-font">Unit Price</th>
-                                            <th class="stock-status text-center alt-font">Stock Status</th>
-                                            <th class="product-subtotal text-center alt-font">Add to Cart</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody >
-<!-- want to change the price into offerPrice -->
-                                        <!-- <% let offerDiscountedPrice %> -->
+                <!--End Page Title-->
+                <div id="wishlist-div">
+                    <% if(wishlistData && wishlistData.length>0){ %>
 
-                                        <% wishlistData.forEach((data,index)=>{ %>
-<!-- 
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-md-12 col-lg-12 main-col">
+                                    <form>
+                                        <div class="wishlist-table table-content table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="product-name text-center alt-font">Remove</th>
+                                                        <th class="product-price text-center alt-font">Images</th>
+                                                        <th class="product-name alt-font">Product</th>
+                                                        <th class="product-price text-center alt-font">Unit Price</th>
+                                                        <th class="stock-status text-center alt-font">Stock Status</th>
+                                                        <th class="product-subtotal text-center alt-font">Add to Cart
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- want to change the price into offerPrice -->
+                                                    <!-- <% let offerDiscountedPrice %> -->
+
+                                                    <% wishlistData.forEach((data,index)=>{ %>
+                                                        <!-- 
                                             <%let offerPercentege %>
                                             <%let categoryDiscount=data?.category?.appliedOffer?.discount %>
                                             <%let productDiscount=data?.appliedOffer?.discount %>
@@ -78,171 +85,103 @@ font-size: 14px;
                                             <%if(categoryDiscount && productDiscount){
                                                 offerPercentege =Math.max(categoryDiscount, productDiscount)
                                                 }%> -->
-                                                <tr>
-                                                    <td class="product-remove text-center" valign="middle"><i
-                                                            class="icon icon anm anm-times-l btn btn--small"
-                                                            onclick="removeFromWishlist('<%= data.product._id%>')"></i>
-                                                    </td>
-                                                    <td class="product-thumbnail text-center">
-                                                        <img src="user/assets/images/product-images/sharpedImages/<%= data.product.images[0] %>"
-                                                            alt="" title="" />
-                                                    </td>
-                                                    <td class="product-name">
-                                                        <h4 class="no-margin">
-                                                            <%= data.product.name %>
-                                                        </h4>
-                                                    </td>
-                                                    <td class="product-price text-center"><span class="amount">
-                                                            <%= data.product.offerPrice %>.00
-                                                        </span></td>
-                                                    <td class="stock text-center">
-                                                        <%if( data.product.totalStock>0 ){%>
-                                                            <span class="in-stock">in stock</span>
-                                                            <%}else{%>
-                                                                <span class="in-stock">Out of stock</span>
-                                                                <%}%>
-                                                    </td>
-                                                    <td class="product-subtotal text-center" ><button id="addtocart-<%index%>" type="button"
-                                                            class="btn btn-small"
-                                                            onclick="addToCart('<%= data.product._id%>')">Add To
-                                                            Cart</button></td>
-                                                </tr>
-                                                <%})%>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-          
-           
-            <%}else{%>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center text-uppercase">
-                            <div class="d-flex justify-content-center">
-                                <div style="height: 160px; width: 200px;">
-                                    <img src="user/assets/images/mine/empty cart.jpg" alt="">
+                                                        <tr>
+                                                            <td class="product-remove text-center" valign="middle"><i
+                                                                    class="icon icon anm anm-times-l btn btn--small"
+                                                                    onclick="removeFromWishlist('<%= data.product._id%>')"></i>
+                                                            </td>
+                                                            <td class="product-thumbnail text-center">
+                                                                <img src="user/assets/images/product-images/sharpedImages/<%= data.product.images[0] %>"
+                                                                    alt="" title="" />
+                                                            </td>
+                                                            <td class="product-name">
+                                                                <h4 class="no-margin">
+                                                                    <%= data.product.name %>
+                                                                </h4>
+                                                            </td>
+                                                            <td class="product-price text-center"><span class="amount">
+                                                                    <%= data.product.offerPrice %>.00
+                                                                </span></td>
+                                                            <td class="stock text-center">
+                                                                <%if( data.product.totalStock>0 ){%>
+                                                                    <span class="in-stock">in stock</span>
+                                                                    <%}else{%>
+                                                                        <span class="in-stock">Out of stock</span>
+                                                                        <%}%>
+                                                            </td>
+                                                            <td class="product-subtotal text-center"><button
+                                                                    id="addtocart-<%index%>" type="button"
+                                                                    class="btn btn-small"
+                                                                    onclick="addToCart('<%= data.product._id%>')">Add To
+                                                                    Cart</button></td>
+                                                        </tr>
+                                                        <%})%>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
-                            <div>
-                                <h1>
-                                    Your wishlist is empty
-                                </h1>
-                            </div>
-                        
-                            <div>
-                                <a href="/shop" class="btn btn--has-icon-after">Continue shopping <i class="fa fa-caret-right" aria-hidden="true"></i></a>
-                            </div>
-            
                         </div>
 
-                    </div>
+
+
+                        <%}else{%>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center text-uppercase">
+                                        <div class="d-flex justify-content-center">
+                                            <div style="height: 160px; width: 200px;">
+                                                <img src="user/assets/images/mine/empty cart.jpg" alt="">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h1>
+                                                Your wishlist is empty
+                                            </h1>
+                                        </div>
+
+                                        <div>
+                                            <a href="/shop" class="btn btn--has-icon-after">Continue shopping <i
+                                                    class="fa fa-caret-right" aria-hidden="true"></i></a>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <%}%>
                 </div>
-            <%}%>
-        </div>
-    </div>
-        <!--End Body Content-->
+            </div>
+            <!--End Body Content-->
 
-        <!--Footer-->
-        <%-include('../partials/userBodyFooter.ejs')-%>
-            <!--End Footer-->
-            
-            <!--Scoll Top-->
-            <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
-            <!--End Scoll Top-->
+            <!--Footer-->
+            <%-include('../partials/userBodyFooter.ejs')-%>
+                <!--End Footer-->
 
-            <script>
-                function addToCart(productId) {
-                    console.log('addToCart')//----------------
-                    let data = { productId: productId }
-                    console.log('data', data);//------------
+                <!--Scoll Top-->
+                <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
+                <!--End Scoll Top-->
 
-                    $.ajax({
-                       method : 'POST',
-                        url: '/addtocart',
-                        contentType: 'application/json',
-                        data: JSON.stringify(data),
-                        success: (res) => {
-                            if (res.added) {
-// $('#wishlist-div').load( location.href +' #wishlist-div')
-// $('#page-content').load( location.href +' #page-content')
-setTimeout(()=>{
-    window.location.reload()
-},1500)
-                                swal.fire({
-                                    title: `Added to cart`,
-                                    icon: "success",
-                                    showConfirmationButton: false,
-                                    timer: 1500
-                                })
-                            }
 
-                            if (res.exist) {
-                                swal.fire({
-                                    icon: 'warning',
-                                    title: 'Already exist',
-                                    // text: 'Product already exist in the cart',
-                                    timer: 1000
-                                })
-                            }
-                        },
-                        error: (error) => {
-                            console.log(error);
-                        }
 
-                    })
-                }
+                <!-- Including Jquery -->
+                <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
+                <script src="user/assets/js/vendor/jquery.cookie.js"></script>
+                <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
+                <script src="user/assets/js/vendor/wow.min.js"></script>
+                <!-- Including Javascript -->
+                <script src="user/assets/js/bootstrap.min.js"></script>
+                <script src="user/assets/js/plugins.js"></script>
+                <script src="user/assets/js/popper.min.js"></script>
+                <script src="user/assets/js/lazysizes.js"></script>
+                <script src="user/assets/js/main.js"></script>
 
-                function removeFromWishlist(productId) {
-                    console.log('addToCart')//----------------
-                    let data = { productId: productId }
-                    console.log('data', data);//------------
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-                    $.ajax({
-                       method : 'POST',
-                        url: '/remove-wishlist',
-                        contentType: 'application/json',
-                        data: JSON.stringify(data),
-                        success: (res) => {
-                            if (res.removed) {
-                                $('.pageWrapper').load('/wishlist .pageWrapper',null,()=>{
-                                    swal.fire({
-                                    title: `succesfully removed`,
-                                    icon: "success",
-                                    showConfirmationButton: false,
-                                    timer: 1000
-                                })
-                                })
-                               
-                            }                            
-                        },
-                        error: (error) => {
-                            console.log(error);
-                        }
+                <script src="user/assets/js/custom/whishlist.js"></script>
 
-                    })
-                }
-                
-
-            </script>
-
-            <!-- Including Jquery -->
-            <script src="user/assets/js/vendor/jquery-3.3.1.min.js"></script>
-            <script src="user/assets/js/vendor/jquery.cookie.js"></script>
-            <script src="user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
-            <script src="user/assets/js/vendor/wow.min.js"></script>
-            <!-- Including Javascript -->
-            <script src="user/assets/js/bootstrap.min.js"></script>
-            <script src="user/assets/js/plugins.js"></script>
-            <script src="user/assets/js/popper.min.js"></script>
-            <script src="user/assets/js/lazysizes.js"></script>
-            <script src="user/assets/js/main.js"></script>
-
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
     </div>
