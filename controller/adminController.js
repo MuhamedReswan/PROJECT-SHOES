@@ -231,7 +231,7 @@ const loadDashboard = async (req, res, next) => {
                 }
             },
             { $sort: { soldCount: -1 } },
-            { $limit: 4 }
+            { $limit: 5 }
         ]);
 
         // Render dashboard

@@ -8,7 +8,7 @@ const loadShop = async (req, res, next) => {
     try {
         const userId = req.session.user.id;
         const queryFilter = req.query.category;
-        
+
         let filterConditions = { isListed: true };
 
         // Apply category filter if specified
@@ -93,83 +93,86 @@ const loadSingleProduct = async (req, res, next) => {
     }
 };
 
-// Filter Shop Products
+//filter shop 
 const filterShop = async (req, res, next) => {
     try {
-        const { selectedCategory, sortBy, priceRange, currentPage, buttonStatus, searchInputText } = req.body;
-
-        let filterConditions = { isListed: true };
-
-        // Apply category filter if selected
+        console.log('imi filter-shop')//---------------
+        const { selectedCategory, sortBy, priceRange, currentPage, buttonStatus, searchInputText } = req.body
+        let filterTerms = { isListed: true }
         if (selectedCategory && selectedCategory.length > 0) {
-            filterConditions.category = { $in: selectedCategory };
+            filterTerms.category = { $in: selectedCategory }
         }
-
-        // Apply search filter if input text is provided
         if (searchInputText) {
-            filterConditions.name = { $regex: searchInputText, $options: 'i' };
+            filterTerms.name = { $regex: searchInputText, $options: 'i' }
         }
 
-        // Apply price range filter
-        let [minPrice, maxPrice] = priceRange.split('-').map(price => parseInt(price.substring(1).trim()));
-        filterConditions.offerPrice = { $gte: minPrice, $lte: maxPrice };
+        let price = priceRange.split('-');
+        let min = parseInt(price[0].substring(1).trim());
+        let max = parseInt(price[1].substring(1).replace('₹', ""));
+        filterTerms.offerPrice = { $gte: min, $lte: max }
 
-        // Define sorting options based on the user's choice
-        let sortOption = {};
-        switch (sortBy) {
-            case 'a-z':
-                sortOption.name = 1;
-                break;
-            case 'z-a':
-                sortOption.name = -1;
-                break;
-            case 'low-high':
-                sortOption.price = 1;
-                break;
-            case 'high-low':
-                sortOption.price = -1;
-                break;
-            default:
-                sortOption.createdAt = 1;
+        let sortOption = {}
+        if (sortBy === 'all') {
+            sortOption = { createdAt: 1 }
+        } else if (sortBy === 'a-z') {
+            sortOption = { name: 1 }
+        } else if (sortBy === 'z-a') {
+            sortOption = { name: -1 }
+        } else if (sortBy === 'low-high') {
+            sortOption = { price: 1 }
+        } else if (sortBy === 'high-low') {
+            sortOption = { price: -1 }
         }
 
-        // Count total filtered products
-        const count = await Products.find(filterConditions).countDocuments();
+        const count = await Products.find(filterTerms).count()
 
-        const limit = 8;
-        let page = currentPage || 1;
-
-        // Adjust page for next or previous button
-        if (buttonStatus === 'previous') {
-            page = Math.max(1, page - 1);
-        } else if (buttonStatus === 'next') {
-            page = Math.min(page + 1, Math.ceil(count / limit));
+        let limit = 8
+        let page = 1
+        if (currentPage > 1) {
+            page = currentPage;
         }
 
-        const start = (page - 1) * limit;
+        let totalPage = Math.ceil(count / limit);
 
-        // Fetch filtered products with pagination
-        const filteredProducts = await Products.find(filterConditions)
-            .sort(sortOption)
-            .limit(limit)
-            .skip(start)
-            .populate('appliedOffer')
-            .populate({ path: 'category', populate: { path: 'appliedOffer', model: 'Offers' } });
+        if (buttonStatus !== undefined && buttonStatus === 'previous') {
+            page = page - 1 > 1 ? page - 1 : 1
+        }
 
-        const countOfProducts = filteredProducts.length;
+        if (buttonStatus !== undefined && buttonStatus === 'next') {
+            page = page + 1 > totalPage ? totalPage : page + 1
+        }
 
-        // Respond with filtered products and pagination info
-        res.status(200).json({
-            filteredProducts,
-            countOfProducts,
-            totalPage: Math.ceil(count / limit),
-            page
-        });
+        let start = (page - 1) * limit
+        start = Math.abs(start)
+        let filterdProduct;
+
+        if (searchInputText) {
+            filterdProduct = await Products.find(filterTerms)
+                .sort(sortOption)
+                .populate('category');
+        } else {
+            filterdProduct = await Products.find(filterTerms)
+                .sort(sortOption)
+                .limit(limit)
+                .skip(start)
+                .populate('appliedOffer').populate({ path: 'category', populate: { path: 'appliedOffer', model: 'Offers' } })
+        }
+
+        let countOfProducts = filterdProduct.length;
+
+        res.status(200)
+            .json({
+                filterdProduct,
+                countOfProducts,
+                totalPage,
+                page
+            })
     } catch (error) {
-        console.error('Error in filterShop:', error.message);
+        console.log(error.message);
         next(error);
     }
-};
+}
+
 
 module.exports = {
     loadShop,

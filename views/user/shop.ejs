@@ -137,7 +137,7 @@
                                 </div>
                                 <!--End Toolbar-->
                                 <div class="grid-products grid--view-items" id="product-div">
-                                    <% if(productData){ %>
+                                    <% if(productData && productData.length>0){ %>
 <% let offerDiscountedPrice %>
                                         <div class="row product-details">
                                             <% productData.forEach((product,index )=>{ %>
