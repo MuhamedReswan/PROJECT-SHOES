@@ -353,13 +353,10 @@
                 <script>
                     const amount = document.getElementById('amount');
                     amount.addEventListener('change', (e) => {
-                        console.log('called', e.target.value);//----------------
                     })
 
                     function addToWishlist(productId, id) {
-                        console.log('im add to wishlist function');//--------------
                         let data = { productId: productId }
-                        console.log('data', data)//-------------
                         $.ajax({
                             type: 'post',
                             url: '/add-to-wishlist',
@@ -394,14 +391,12 @@
                     }
 
                     function addColourText(id) {
-                        console.log('add')//------------
                         const button = document.getElementById(`${id}`);
                         button.classList.add('text-danger');
                         button.setAttribute('title', 'remove from wishlist')
                     }
 
                     function removeColourText(id) {
-                        console.log('remove')//------------
                         const button = document.getElementById(`${id}`);
                         button.classList.remove('text-danger');
                         button.setAttribute('title', 'remove from wishlist');
@@ -415,14 +410,12 @@
                     let previousButton = document.getElementById('previous-button')
                     previousButton.addEventListener('click', (e) => {
                         let status = e.target.getAttribute('data-status')
-                        console.log('status', status)//--------------------------
                         shopFilter(status)
                     })
 
                     let nextButton = document.getElementById('next-button')
                     nextButton.addEventListener('click', (e) => {
                         let status = e.target.getAttribute('data-status')
-                        console.log('status', status)//--------------------------
                         shopFilter(status)
                     })
 
@@ -432,7 +425,6 @@
                     })
 
                     function shopFilter(buttonStatus) {
-                        console.log('shopFilter called')//---------------------
                         let sort = document.getElementById('SortBy').value;
                         let priceRange = document.getElementById('amount').value;
                         let currentPage = document.getElementById('current-page').getAttribute('data-value')
@@ -444,13 +436,6 @@
                         let productContainer = document.querySelector('.row.product-details')
                         let searchInputText = shopSearchInput.value
 
-                        console.log('searchInputText', searchInputText)//----------
-                        console.log('selectedCategory', selectedCategory)//----------
-                        console.log('sort', sort)//----------
-                        console.log('priceRange', priceRange)//----------
-                        console.log('currentPage', currentPage)//----------
-                        console.log('buttonStatus', buttonStatus)//-------------------------
-                        console.log('buttonStatus', buttonStatus)//-------------------------
 
                         if (selectedCategory) {
 
@@ -469,17 +454,10 @@
                                 })
                             })
                                 .then((response) => {
-                                    console.log('im in response json ');//--------------
                                     return response.json();
                                 })
                                 .then(data => {
 
-                                    console.log('im daata ');//------------
-                                    console.log('res', data);//-------------
-                                    console.log('data.countOfProducts', data.countOfProducts);//------
-                                    console.log('productdata', data.filterdProduct);//----------------
-                                    console.log('data.page', data.page);//----------------
-                                    console.log('data.page', data.totalPage);//----------------
                                     let showCount = data.countOfProducts;
                                     if (data.filterdProduct.length > 0) {
 
@@ -492,15 +470,11 @@
                                             let categoryOff = product?.category?.appliedOffer?.discount
                                             let productOff = product?.appliedOffer?.discount
 
-                                            console.log(`categoryOff---${categoryOff},productOff${productOff}`)//------------------------------------------
-
                                             offerPercentege = (productOff === undefined && categoryOff === undefined)
                                                 ? undefined
                                                 : (productOff !== undefined && categoryOff !== undefined)
                                                     ? (productOff > categoryOff ? productOff : categoryOff)
                                                     : (productOff !== undefined ? productOff : categoryOff);
-
-                                            console.log("offerPercentege", offerPercentege)//----------------------
 
                                             offerDiscountedPrice = Math.round((product.offerPrice / 100) * offerPercentege);
 

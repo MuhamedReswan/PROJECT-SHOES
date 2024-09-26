@@ -2,7 +2,6 @@
 
     <div class="pageWrapper">
 
-
         <!--Body Content-->
         <div id="page-content">
             <!--Page Title-->
@@ -177,13 +176,28 @@
 
 
                 <div class="d-flex justify-content-end my-2 ml-3 pr-5">
-                    <div>
-                        <h4> SubTotal : ₹ <%=singleOrder.totalAmount + singleOrder?.coupon?.discount%>.00</h4>
+
+                    <%if(singleOrder.paymentMethod==='Wallet With Online'){%>
+                        <div>
+                        <h4> SubTotal : ₹ <%=singleOrder.totalAmount + singleOrder?.coupon?.discount  + lastWalletPayment %>.00</h4>
+                        <h4> Paid By Wallet  : ₹ <%=lastWalletPayment%>.00</h4>
                         <h4> Delivery Charge : ₹ 0.00</h4>
                         <h4> Discount : ₹ <%=singleOrder?.coupon?.discount%>.00
                         </h4>
                         <h3>Total : ₹ <%=singleOrder.totalAmount%>.00</h3>
                     </div>
+
+                        <%}else{%>
+
+                            <div>
+                        <h4> SubTotal : ₹ <%=singleOrder.totalAmount + singleOrder?.coupon?.discount %>.00</h4>
+                        <h4> Delivery Charge : ₹ 0.00</h4>
+                        <h4> Discount : ₹ <%=singleOrder?.coupon?.discount%>.00
+                        </h4>
+                        <h3>Total : ₹ <%=singleOrder.totalAmount%>.00</h3>
+                    </div>
+                        <%}%>
+                   
 
 
                 </div>

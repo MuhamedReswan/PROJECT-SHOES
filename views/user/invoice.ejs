@@ -153,18 +153,12 @@
 
         <div class="page-tools ">
             <div class="action-buttons">
-                <!-- <a class="btn bg-white btn-light mx-1px text-95" href="#" data-title="Print">
-                    <i class="mr-1 fa fa-print text-primary-m1 text-120 w-2"></i>
-                    Print
-                </a> -->
+ 
                 <a class="btn bg-white btn-light mx-1px text-95 no-print" onclick="printDocument()" href="#" data-title="Print">
                     <i class="mr-1 fa fa-print text-primary-m1 text-120 w-2"></i>
                     Download
                 </a>
-                <!-- <a class="btn bg-white btn-light mx-1px text-95 no-print" href="#" data-title="PDF">
-                    <i class="mr-1 fa fa-file-pdf-o text-danger-m1 text-120 w-2"></i>
-                    Download
-                </a> -->
+
             </div>
         </div>
     </div>
@@ -271,43 +265,98 @@
                             Extra note such as company or payment information...
                         </div>
 
-                        <div class="col-12 col-sm-5 text-grey text-90 order-first order-sm-last">
-                            <div class="row my-2">
-                                <div class="col-7 text-right">
-                                    SubTotal :
+
+                        <%if(order.paymentMethod==='Wallet With Online'){%>
+
+                            <div class="col-12 col-sm-5 text-grey text-90 order-first order-sm-last">
+                                <div class="row my-2">
+                                    <div class="col-7 text-right">
+                                        SubTotal :
+                                    </div>
+                                    <div class="col-5">
+                                        <span class="text-120 text-secondary-d1"><%=order.totalAmount+order.coupon.discount + lastWalletPayment%>.00</span>
+                                    </div>
                                 </div>
-                                <div class="col-5">
-                                    <span class="text-120 text-secondary-d1"><%=order.totalAmount+order.coupon.discount%>.00</span>
+    
+                                <div class="row my-2">
+                                    <div class="col-7 text-right">
+                                        Paid by Wallet :
+                                    </div>
+                                    <div class="col-5">
+                                        <span class="text-110 text-secondary-d1">₹<%=lastWalletPayment%>.00</span>
+                                    </div>
+                                </div>
+
+                                <div class="row my-2">
+                                    <div class="col-7 text-right">
+                                        Discount Amount :
+                                    </div>
+                                    <div class="col-5">
+                                        <span class="text-110 text-secondary-d1">₹<%=order.coupon.discount%>.00</span>
+                                    </div>
+                                </div>
+    
+                                <div class="row my-2">
+                                    <div class="col-7 text-right">
+                                        Delivery Charge :
+                                    </div>
+                                    <div class="col-5">
+                                        <span class="text-110 text-secondary-d1">₹0.00</span>
+                                    </div>
+                                </div>
+    
+                                <div class="row my-2 align-items-center bgc-primary-l3 p-2">
+                                    <div class="col-7 text-right">
+                                        Total Amount :
+                                    </div>
+                                    <div class="col-5">
+                                        <span class="text-150 text-success-d3 opacity-2">₹<%=order.totalAmount%>.00</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="row my-2">
-                                <div class="col-7 text-right">
-                                    Discount Amount :
-                                </div>
-                                <div class="col-5">
-                                    <span class="text-110 text-secondary-d1">₹<%=order.coupon.discount%>.00</span>
-                                </div>
-                            </div>
+                            <%}else{%>
 
-                            <div class="row my-2">
-                                <div class="col-7 text-right">
-                                    Delivery Charge :
+                                <div class="col-12 col-sm-5 text-grey text-90 order-first order-sm-last">
+                                    <div class="row my-2">
+                                        <div class="col-7 text-right">
+                                            SubTotal :
+                                        </div>
+                                        <div class="col-5">
+                                            <span class="text-120 text-secondary-d1"><%=order.totalAmount+order.coupon.discount%>.00</span>
+                                        </div>
+                                    </div>
+        
+                                    <div class="row my-2">
+                                        <div class="col-7 text-right">
+                                            Discount Amount :
+                                        </div>
+                                        <div class="col-5">
+                                            <span class="text-110 text-secondary-d1">₹<%=order.coupon.discount%>.00</span>
+                                        </div>
+                                    </div>
+        
+                                    <div class="row my-2">
+                                        <div class="col-7 text-right">
+                                            Delivery Charge :
+                                        </div>
+                                        <div class="col-5">
+                                            <span class="text-110 text-secondary-d1">₹0.00</span>
+                                        </div>
+                                    </div>
+        
+                                    <div class="row my-2 align-items-center bgc-primary-l3 p-2">
+                                        <div class="col-7 text-right">
+                                            Total Amount :
+                                        </div>
+                                        <div class="col-5">
+                                            <span class="text-150 text-success-d3 opacity-2">₹<%=order.totalAmount%>.00</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-5">
-                                    <span class="text-110 text-secondary-d1">₹0.00</span>
-                                </div>
-                            </div>
-
-                            <div class="row my-2 align-items-center bgc-primary-l3 p-2">
-                                <div class="col-7 text-right">
-                                    Total Amount :
-                                </div>
-                                <div class="col-5">
-                                    <span class="text-150 text-success-d3 opacity-2">₹<%=order.totalAmount%>.00</span>
-                                </div>
-                            </div>
-                        </div>
+                            <%}%>
+                      
+        
                     </div>
 
                     <hr />
@@ -325,7 +374,6 @@
 
 <script>
     function printDocument() {
-        console.log("print functin invoked")//------------------
   window.print();
 }
 </script>

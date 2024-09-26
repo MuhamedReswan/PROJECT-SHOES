@@ -16,7 +16,6 @@
                         <header class="card-header">
                             <div class="row gx-3">
                                 <div class="col-lg-4 col-md-6 me-auto">
-                                    <!-- <input type="text" placeholder="Search..." class="form-control" /> -->
                                     <form class="searchform">
                                         <div class="input-group">
                                             <input list="search_terms" type="text" class="form-control"
@@ -69,33 +68,35 @@
                                                             <%=formatedDate%>
                                                         </td>
                                                         <td>
-                                                            <%if(order.orderStatus=='Delivered' || order.orderStatus=='Cancelled' ){%>
-                                                            <select disabled class="form-select  change-order-status?id="
-                                                                style="font-size: 12px;" id="order-status"
-                                                                name="orderStatus"
-                                                                onchange="changeOrderStatus(this.value, '<%= order._id %>')">
-                                                                <option selected value="<%=order.orderStatus%>">
-                                                                    <%=order.orderStatus%>
-                                                                </option>
-                                                                <option value="shipped">Shipped</option>
-                                                                <option value="Delivered">Delivered</option>
-                                                                <option value="Cancelled">Cancel</option>
-                                                            </select>
-                                                            <%}else{%>
+                                                            <%if(order.orderStatus=='Delivered' ||
+                                                                order.orderStatus=='Cancelled' ){%>
+                                                                <select disabled
+                                                                    class="form-select  change-order-status?id="
+                                                                    style="font-size: 12px;" id="order-status"
+                                                                    name="orderStatus"
+                                                                    onchange="changeOrderStatus(this.value, '<%= order._id %>')">
+                                                                    <option selected value="<%=order.orderStatus%>">
+                                                                        <%=order.orderStatus%>
+                                                                    </option>
+                                                                    <option value="shipped">Shipped</option>
+                                                                    <option value="Delivered">Delivered</option>
+                                                                    <option value="Cancelled">Cancel</option>
+                                                                </select>
+                                                                <%}else{%>
 
-                                                                <select class="form-select  change-order-status?id="
-                                                                style="font-size: 12px;" id="order-status"
-                                                                name="orderStatus"
-                                                                onchange="changeOrderStatus(this.value, '<%= order._id %>')">
-                                                                <option selected value="<%=order.orderStatus%>">
-                                                                    <%=order.orderStatus%>
-                                                                </option>
-                                                                <option value="shipped">Shipped</option>
-                                                                <option value="Delivered">Delivered</option>
-                                                                <option value="Cancelled">Cancel</option>
-                                                            </select>
+                                                                    <select class="form-select  change-order-status?id="
+                                                                        style="font-size: 12px;" id="order-status"
+                                                                        name="orderStatus"
+                                                                        onchange="changeOrderStatus(this.value, '<%= order._id %>')">
+                                                                        <option selected value="<%=order.orderStatus%>">
+                                                                            <%=order.orderStatus%>
+                                                                        </option>
+                                                                        <option value="shipped">Shipped</option>
+                                                                        <option value="Delivered">Delivered</option>
+                                                                        <option value="Cancelled">Cancel</option>
+                                                                    </select>
 
-                                                            <%}%>
+                                                                    <%}%>
                                                         </td>
 
                                                         <td class="text-center">
@@ -122,9 +123,19 @@
                     <div class="pagination-area mt-20 mb-30">
                         <nav aria-label="Page navigation example">
                             <ul class="pagination justify-content-center">
-                                <li class="page-item "><a class="page-link d-flex align-items-center justify-content-center" href="/admin/orders?page=<%=previous%>"><i class="material-icons md-chevron_left"></i></a></li>
-                                <li class="page-item active"><a class="page-link d-flex align-items-center justify-content-center" href="/admin/orders?page=<%=page%>"><%=page%></a></li>
-                                <li class="page-item"><a class="page-link d-flex align-items-center justify-content-center" href="/admin/orders?page=<%=next%>"><i class="material-icons md-chevron_right"></i></a></li>
+                                <li class="page-item "><a
+                                        class="page-link d-flex align-items-center justify-content-center"
+                                        href="/admin/orders?page=<%=previous%>"><i
+                                            class="material-icons md-chevron_left"></i></a></li>
+                                <li class="page-item active"><a
+                                        class="page-link d-flex align-items-center justify-content-center"
+                                        href="/admin/orders?page=<%=page%>">
+                                        <%=page%>
+                                    </a></li>
+                                <li class="page-item"><a
+                                        class="page-link d-flex align-items-center justify-content-center"
+                                        href="/admin/orders?page=<%=next%>"><i
+                                            class="material-icons md-chevron_right"></i></a></li>
                             </ul>
                         </nav>
                     </div>
@@ -133,104 +144,7 @@
 
         </main>
 
-
-
-        <script>
-            // document.addEventListener('DOMContentLoaded', () => {
-
-            //     let searchInput = document.getElementById('customersSearch');
-            //     searchInput.addEventListener('keyup', () => {
-
-            //         let searchTerm = searchInput.value.toLowerCase();
-            //         let tableRow = document.querySelectorAll('#customerTable tbody tr');
-
-            //         tableRow.forEach(function (row) {
-            //             let nameColoumn = row.querySelector('td:nth-child(2)');
-
-            //             if (nameColoumn) {
-            //                 let nameText = nameColoumn.textContent.toLowerCase()
-            //                 row.style.display = nameText.includes(searchTerm) ? "" : "none";
-            //             }
-            //         })
-
-
-            //     })
-            // })
-
-            function changeOrderStatus(orderStatus, orderId) {
-                Swal.fire({
-  title: "Are you sure?",
-  text: "You won't be able to revert this!",
-  icon: "warning",
-  showCancelButton: true,
-  confirmButtonColor: "#3085d6",
-  cancelButtonColor: "#d33",
-  confirmButtonText: "Yes,!",
-  width: '300px',
-}).then((result) => {
-  if (result.isConfirmed) {
-
-    fetch('/admin/change-order-status?id=' + orderId, {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ orderStatus })
-                })
-                .then((res) => {
-                        return res.json();
-                    })
-                    .then((response) => {
-
-                        if (response.statusUpdated) {
-                            $('#orders').load('/admin/orders #orders')
-                        }
-                    }).catch((error) => {
-                        console.error('Error:', error);
-                    })
-
-    Swal.fire({
-      title: "Done !",
-      text: "Order status has been changed.",
-      icon: "success",
-      width: '300px',
-      timer:1000
-    });
-  }
-});
-            }
-
-
-
-            document.addEventListener('DOMContentLoaded', () => {
-
-let searchInput = document.getElementById('order-name-Search');
-searchInput.addEventListener('keyup', () => {
-
-    let searchTerm = searchInput.value.toLowerCase();
-    let tableRow = document.querySelectorAll('#orderTable tbody tr');
-
-    tableRow.forEach(function (row) {
-        let nameColoumn = row.querySelector('td:nth-child(2)');
-
-        if (nameColoumn) {
-            let nameText = nameColoumn.textContent.toLowerCase()
-            row.style.display = nameText.includes(searchTerm) ? "" : "none";
-        }
-    })
-
-
-})
-})
-
-
-
-        </script>
-
-
-
-       
-
+        <script src="assets/js/custom/orders.js" defer></script>
 
         <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
         <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>

@@ -27,17 +27,17 @@
 
                                             <%if(product?.category?.appliedOffer?.discount){
                                                 offerPercentege=product?.category?.appliedOffer?.discount
-                                                console.log("single 1----------------------------",offerPercentege); }%>
+                                                }%>
 
                                                 <%if(product?.appliedOffer?.discount){
-                                                    offerPercentege=product?.appliedOffer?.discount console.log("single
-                                                    2----------------------------",offerPercentege); }%>
+                                                    offerPercentege=product?.appliedOffer?.discount 
+                                                     }%>
 
                                                     <%if(product?.category?.appliedOffer?.discount &&
                                                         product?.appliedOffer?.discount){
                                                         offerPercentege=Math.max(product?.category?.appliedOffer?.discount,
-                                                        product?.appliedOffer?.discount) console.log("offerPercentege123
-                                                        single----------------------------",offerPercentege); }%>
+                                                        product?.appliedOffer?.discount) 
+                                                        }%>
 
                                                         <% offerDiscountedPrice=Math.round((product.offerPrice/100)*offerPercentege)
                                                             %>

@@ -277,9 +277,10 @@ function checkoutValidation(event) {
                                                 // User clicked the "Pay with online!" button
                                                 console.log('User confirmed:-------------------', result);
                                                 data.paymentMethod = "Wallet With Online";
+                                               
 
                                                 console.log("data", data)//------------------------
-
+console.log("wallet payment with online bwforeth,",data)//-----------------------------
 
                                                 axios.post('/place-order', data)
                                                     .then((response) => {

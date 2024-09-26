@@ -8,7 +8,6 @@
           <div class="shadow-xl p-4 p-lg-5 bg-white">
             <h1 class="text-center fw-bold mb-5 fs-2">Edit Category</h1>
 
-            <!-- Your category addition form here -->
             <form action="/admin/edit-category?id=<%=editCategory.name%>" method="post" onsubmit="return validateCategory()">
              
               <% if (messages.nameExist) { %>
@@ -23,8 +22,6 @@
                   </div> 
             <% } %> 
         
-
-       
               <div class="form-group">
                 <label for="name">Name:</label>
                 <input type="text" class="form-control" id="name" name="ename" value="<%=editCategory.name%>" placeholder="Enter your name">
@@ -39,15 +36,6 @@
               <div class="form-group">
                 <input type="hidden" id="id" name="id" value="<%=editCategory._id%>">
               </div>
-              <!-- <div class="form-group">
-                <label for="description">Is Listed</label>
-                <select class="form-select" name="eisListed"  required>
-                  <option value="true">Yes!</option>
-                  <option value="false">No!</option>
-
-                </select>
-              </div> -->
-
 
               <div class="mt-4"> <button type="submit" class="btn btn-primary ">Submit</button>
                 <a href="/admin/category" class="btn btn-primary">
@@ -62,7 +50,6 @@
 
 
     <script>
-
       function validateCategory() {
         let name = document.getElementById('name')
         let description = document.getElementById('description')

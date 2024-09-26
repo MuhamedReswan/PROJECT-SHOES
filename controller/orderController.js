@@ -8,153 +8,259 @@ const { createOrderPayment } = require('../controller/paymentController');
 const Wallet = require('../model/walletModel');
 const mongoose = require('mongoose');
 
-
 // Place order
-const placeOrder = async (req, res, next) => {
+const placeOrder = async (req, res,next) => {
     try {
+        console.log('im in place order');//-----------
         const userId = req.session.user?.id;
         const { subtotal, paymentMethod, index } = req.body;
 
         const cartData = await Cart.findOne({ user: userId }).populate('products.productId');
-        if (!cartData || cartData.products.length === 0) {
-            return res.json({ cartProduct: false });
-        }
+        console.log('car place order', cartData);//-----------
+        if (cartData) {
 
-        const products = cartData.products;
-        let lessQuantity = 0;
-        let unListedProduct = null;
+            let products = cartData?.products
+            let productCount = cartData?.products.length;
+  
+            let lessQuantity = 0
+            let unListedProduct=null;
 
-        products.forEach((product) => {
-            if (product?.quantity > product?.productId?.totalStock) {
-                lessQuantity = product.productId.name;
-            }
-            if (!product?.productId?.isListed) {
-                unListedProduct = product.productId.name;
-            }
-        });
+            if (products.length == 0) {
+                console.log("no product in cart");
+                return res.json({ cartProduct: false })
 
-        if (lessQuantity) {
-            return res.json({ quant: true, lessQuantity });
-        } else if (unListedProduct) {
-            return res.json({ notListedProduct: true, unListedProduct });
-        }
+            } else {
+                products.forEach((product) => {
+                    if (product?.quantity > product?.productId?.totalStock) {
+                        lessQuantity = product.productId.name;
+                    }
+                    if (product?.productId?.isListed == false) {
+                        unListedProduct = product?.productId?.name;
+                    }
 
-        const user = await Users.findById(userId);
-        const status = paymentMethod === "COD" ? 'Placed' : 'Pending';
-        const address = user.addresses[index];
-        const randomNumber = Math.floor(100000 + Math.random() * 900000);
-
-        for (let product of products) {
-            const { _id: productId, totalStock } = product.productId;
-            const { quantity } = product;
-
-            await Products.findByIdAndUpdate(productId, { $inc: { totalStock: -quantity } });
-        }
-
-        const couponId = cartData?.coupon?.couponId;
-        if (couponId) {
-            await Coupons.findByIdAndUpdate(couponId, {
-                $inc: { limit: -1 },
-                $push: { appliedUsers: userId }
-            });
-        }
-
-        const couponDiscountProduct = Math.round(cartData?.coupon?.couponDiscount / products.length) || 0;
-        const couponDetails = {
-            couponId,
-            discount: cartData?.coupon?.couponDiscount,
-            couponDiscountOnProduct: couponDiscountProduct
-        };
-
-        let order;
-        if (paymentMethod === "COD" || paymentMethod === "Wallet") {
-            order = new Orders({
-                user: userId,
-                products,
-                totalAmount: subtotal,
-                orderStatus: status,
-                paymentMethod,
-                deliveryAddress: address,
-                orderId: randomNumber,
-                coupon: couponDetails
-            });
-            await order.save();
-            await Cart.deleteOne({ user: userId });
-
-            if (paymentMethod === "COD") {
-                return res.json({ paymentMethod: "COD", orderId: order._id });
-            }
-
-            // Wallet Payment Logic
-            const walletDetails = await Wallet.findOne({ user: userId });
-            if (!walletDetails || walletDetails.balance < subtotal) {
-                return res.json({
-                    paymentMethod: "Wallet",
-                    walletBalance: false,
-                    message: "Insufficient balance in wallet!"
                 });
             }
 
-            await Wallet.updateOne({ user: userId }, {
-                $inc: { balance: -subtotal },
-                $push: { transactions: { amount: subtotal, mode: "Debit", description: "Order amount paid by wallet" } }
-            });
 
-            await Orders.findByIdAndUpdate(order._id, {
-                $set: { paymentStatus: "Paid", orderStatus: "Placed" }
-            });
+            if (lessQuantity && lessQuantity !== 0) {
+                return res.json({ quant: true, lessQuantity });
 
-            return res.json({ paymentMethod: "Wallet", walletBalance: true, orderId: order._id });
-        }
+            } else if (unListedProduct) {
+                return res.json({ notListedProduct: true, unListedProduct });
 
-        if (paymentMethod === "Online") {
-            order = new Orders({
+            } else {
+
+                const user = await Users.findOne({ _id: userId });
+                const status = paymentMethod == "COD" ? 'Placed' : 'Pending';
+                let order;
+
+                const address = user.addresses[index];
+
+                const randomNumber = Math.floor(100000 + Math.random() * 900000);
+
+                for (let i = 0; i < products.length; i++) {
+                    const productId = products[i].productId._id;
+                    const productTotalStock = products[i].productId.totalStock;
+                    const productCartQuantity = products[i].quantity;
+
+                    console.log('productTotalStock', productTotalStock);//------------
+                    console.log('productId', productId);//------------
+                    console.log('productCartQuantity', productCartQuantity);//------------
+
+
+                    const updatedQuantity = await Products.findByIdAndUpdate(
+                        productId,
+                        { $inc: { totalStock: -productCartQuantity } },
+                        { new: true }
+                    )
+                }
+
+                const couponId = cartData?.coupon?.couponId;
+
+                if (couponId) {
+                    const updateCoupon = await Coupons.findByIdAndUpdate({ _id: couponId },
+                        {
+                            $inc: { limit: -1 },
+                            $push: { appliedUsers: userId }
+                        },
+                        { new: true }
+                    );
+                }
+
+                let couponDiscountProduct = Math.round(cartData?.coupon?.couponDiscount / productCount) ? Math.round(cartData?.coupon?.couponDiscount / productCount) : 0;
+
+                const couponDetails = {
+                    couponId: couponId,
+                    discount: cartData?.coupon?.couponDiscount,
+                    couponDiscountOnProduct: couponDiscountProduct
+                }
+
+                if (paymentMethod == "COD") {
+
+                    order = new Orders({
+                        user: userId,
+                        products: products,
+                        totalAmount: subtotal,
+                        orderStatus: status,
+                        paymentMethod: paymentMethod,
+                        deliveryAddress: address,
+                        orderId: randomNumber,
+                        coupon: couponDetails
+                    })
+
+                    const orderDetails = await order.save();
+                    const orderId = orderDetails._id;
+                    await Cart.deleteOne({ user: userId });
+                    return res.json({ paymentMethod: "COD", orderId });
+
+                } else if (paymentMethod == "Online") {
+
+                    order = new Orders({
+                        user: userId,
+                        products: products,
+                        totalAmount: subtotal,
+                        orderStatus: status,
+                        paymentMethod: paymentMethod,
+                        deliveryAddress: address,
+                        orderId: randomNumber,
+                        coupon: couponDetails
+                    })
+                    const orderDetails = await order.save();
+
+                    await Cart.deleteOne({ user: userId });
+                    createOrderPayment(req, res, orderDetails, paymentMethod)
+
+                } else if (paymentMethod == "Wallet") {
+
+                    const walletDetails = await Wallet.findOne({ user: userId });
+
+                    if (walletDetails) {
+                        if (walletDetails.balance == 0) {
+                            res.json({ paymentMethod: "Wallet", walletBalance: false, message: "Sorry! your wallet is empty !", subtotal, index, empty: true });
+
+                        } else if (walletDetails.balance < subtotal) {
+                            return res.json({ paymentMethod: "Wallet", walletBalance: false, message: "Sorry! insufficent balance in wallet you can pay with online !", subtotal, index, empty: false });
+                        } else {
+
+
+                            const transactions = {
+                                amount: subtotal,
+                                mode: "Debit",
+                                description: "Order amount paid by wallet"
+                            }
+
+                            const updation = {
+                                $inc:
+                                    { balance: -subtotal },
+                                $push: {
+                                    transactions
+                                }
+                            }
+
+                            await Cart.deleteOne({ user: userId });
+
+                            const updatedWallet = await Wallet.updateOne({ user: userId }, updation, { new: true });
+
+
+                            order = new Orders({
+                                user: userId,
+                                products: products,
+                                totalAmount: subtotal,
+                                orderStatus: status,
+                                paymentMethod: paymentMethod,
+                                deliveryAddress: address,
+                                orderId: randomNumber,
+                                coupon: couponDetails
+                            })
+
+                            const orderDetails = await order.save();
+                            const orderId = orderDetails._id;
+
+                            const updatedOrder = await Orders.findByIdAndUpdate({ _id: orderId },
+                                {
+                                    $set: {
+                                        paymentStatus: "Paid",
+                                        orderStatus: "Placed"
+
+                                    }
+                                }
+                            )
+
+
+                            return res.json({ paymentMethod: "Wallet", walletBalance: true, orderId: orderId });
+
+                        }
+
+
+                    } else {
+                        const userWallet = new Wallet({
+                            user: userId
+                        })
+
+                        const userWalletDetails = await userWallet.save();
+                        return res.json({ paymentMethod: "Wallet", walletBalance: false, message: "Sorry! insufficent balance in wallet!" });
+
+                    }
+
+
+
+                } else if (paymentMethod == "Wallet With Online") {
+
+                    const userWallet = await Wallet.findOne({ user: userId });
+                    let userWalletAmount = userWallet.balance;
+                    let WalletId = userWallet._id;
+
+                    const transactions = {
+                        amount: userWalletAmount,
+                        mode: "Debit",
+                        description: "Splited order Amount paid by wallet"
+                    }
+
+                    const updation = {
+                        $inc:
+                            { balance: - userWalletAmount },
+                        $push: {
+                            transactions
+                        }
+                    }
+
+                    let balanceAmountToPay = subtotal - userWalletAmount;
+                    const updateWallet = await Wallet.findByIdAndUpdate({ _id: WalletId }, updation, { new: true });
+
+                    order = new Orders({
+                        user: userId,
+                        products: products,
+                        totalAmount: balanceAmountToPay,
+                        orderStatus: status,
+                        paymentMethod: paymentMethod,
+                        deliveryAddress: address,
+                        orderId: randomNumber,
+                        coupon: couponDetails
+                    })
+
+                    const orderDetails = await order.save();
+
+                    await Cart.deleteOne({ user: userId });
+
+                    createOrderPayment(req, res, orderDetails, paymentMethod)
+
+                }
+            }
+        } else {
+
+            const cart = new Cart({
                 user: userId,
-                products,
-                totalAmount: subtotal,
-                orderStatus: status,
-                paymentMethod,
-                deliveryAddress: address,
-                orderId: randomNumber,
-                coupon: couponDetails
-            });
-            const orderDetails = await order.save();
-            await Cart.deleteOne({ user: userId });
-            return createOrderPayment(req, res, orderDetails, paymentMethod);
+            })
+
+            await cart.save;
+            return res.json({ cartProduct: false })
+
         }
-
-        if (paymentMethod === "Wallet With Online") {
-            const userWallet = await Wallet.findOne({ user: userId });
-            const walletAmount = userWallet.balance;
-            const balanceAmountToPay = subtotal - walletAmount;
-
-            await Wallet.findByIdAndUpdate(userWallet._id, {
-                $inc: { balance: -walletAmount },
-                $push: { transactions: { amount: walletAmount, mode: "Debit", description: "Splited order Amount paid by wallet" } }
-            });
-
-            order = new Orders({
-                user: userId,
-                products,
-                totalAmount: balanceAmountToPay,
-                orderStatus: status,
-                paymentMethod,
-                deliveryAddress: address,
-                orderId: randomNumber,
-                coupon: couponDetails
-            });
-            const orderDetails = await order.save();
-            await Cart.deleteOne({ user: userId });
-            return createOrderPayment(req, res, orderDetails, paymentMethod);
-        }
-
-        return res.json({ cartProduct: false });
-
     } catch (error) {
         console.log(error.message);
-        next(error);
-    }
-};
+        next(error);   
+     }
+}
 
 
 
@@ -295,11 +401,24 @@ const singleOrderProduct = async (req, res, next) => {
         const orderId = req.query.orderid;
         const userId = req.session.user.id;
 
+        const userWallet = await Wallet.findOne({user: userId});
+        console.log("wallet from single order =", userWallet);//--------------
+        
+        let lastWalletPayment = 0;
+        
+        if (userWallet && userWallet.transactions && userWallet.transactions.length > 0) {
+            lastWalletPayment = userWallet.transactions[userWallet.transactions.length - 1].amount;
+        }
+        
+        console.log("wallet from single order lastWalletPayment =", lastWalletPayment);//--------------
+
+        
+
         const singleOrder = await Orders.findOne({ _id: orderId, user: userId })
             .populate('user')
             .populate('products.productId');
 
-        res.status(200).render('singleOrderProducts', { singleOrder });
+        res.status(200).render('singleOrderProducts', { singleOrder,lastWalletPayment });
     } catch (error) {
         console.log(`Error in singleOrderProduct: ${error.message}`);
         next(error);
@@ -384,15 +503,26 @@ const razorPayFailed = async (req, res, next) => {
 const loadInvoice = async (req, res, next) => {
     try {
         const orderId = req.query.id;
+        const userId = req.session.user.id;
+        
         console.log("Order ID for invoice:", orderId);
 
         const order = await Orders.findOne({ _id: orderId })
             .populate('products.productId')
             .populate('user');
         
+            const userWallet = await Wallet.findOne({user: userId});
+            
+            let lastWalletPayment = 0;
+            
+            if (userWallet && userWallet.transactions && userWallet.transactions.length > 0) {
+                lastWalletPayment = userWallet.transactions[userWallet.transactions.length - 1].amount;
+            }
+            
+
         console.log("Order details:", order);
 
-        res.status(200).render('invoice', { order });
+        res.status(200).render('invoice', { order,lastWalletPayment });
     } catch (error) {
         console.log(`Error in loadInvoice: ${error.message}`);
         next(error);

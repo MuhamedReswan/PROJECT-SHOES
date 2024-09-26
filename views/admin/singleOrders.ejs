@@ -11,142 +11,168 @@
                     </div>
                     <%if(singleOrder){%>
                         <%let orderTotalAmount=0%>
-                    <div class="card mb-2">
-                        <header class="card-header">
-                               
-                            <div class="row gx-3">
-                                <div class="col-lg-4 col-md-6 mx-auto mb-2">
-                                    <div class="card">
-                                        <div class="card- p-3 text-center" >
-                                          <h4 class="card-title pb-2">Delivery Address</h4>
-                                          <h5 class="card-subtitle mb-2 "><%=singleOrder.deliveryAddress.name%></h5>
-                                          <p class="card-subtitle mb-2 text-muted"><span class="text-dark"><%=singleOrder.deliveryAddress.mobile%></span></p>
-                                          <p class="card-subtitle mb-2 text-muted"><span class="text-dark"><%=singleOrder.deliveryAddress.address%> (H)</span></p>
-                                          <p class="card-subtitle mb-2 text-muted"><span class="text-dark"><%=singleOrder.deliveryAddress.city%>,<%=singleOrder.deliveryAddress.district%></span></p>
-                                          <p class="card-subtitle mb-2 text-muted"><span class="text-dark"><%=singleOrder.deliveryAddress.pincode%></span></p>
-                                          <p class="card-subtitle mb-2 text-muted"><span class="text-dark"><%=singleOrder.deliveryAddress.state%>,<%=singleOrder.deliveryAddress.country%></span></p>
-                                          <p class="card-subtitle mb-2 text-muted"><span class="text-dark"><%=singleOrder.deliveryAddress.country%></span></p>
+                            <div class="card mb-2">
+                                <header class="card-header">
 
-
-                                          <!-- <h6 class="card-subtitle mb-2 text-muted">Name:<%=singleOrder.deliveryAddress.name%></h6>
-                                          <h6 class="card-subtitle mb-2 text-muted">Mobile : <span class="text-dark"><%=singleOrder.deliveryAddress.mobile%></span></h6>
-                                          <h6 class="card-subtitle mb-2 text-muted">Address : <span class="text-dark"><%=singleOrder.deliveryAddress.address%>(H)</span></h6>
-                                          <h6 class="card-subtitle mb-2 text-muted">Place : <span class="text-dark"><%=singleOrder.deliveryAddress.city%>,<%=singleOrder.deliveryAddress.district%></span></h6> -->
+                                    <div class="row gx-3">
+                                        <div class="col-lg-4 col-md-6 mx-auto mb-2">
+                                            <div class="card">
+                                                <div class="card- p-3 text-center">
+                                                    <h4 class="card-title pb-2">Delivery Address</h4>
+                                                    <h5 class="card-subtitle mb-2 ">
+                                                        <%=singleOrder.deliveryAddress.name%>
+                                                    </h5>
+                                                    <p class="card-subtitle mb-2 text-muted"><span class="text-dark">
+                                                            <%=singleOrder.deliveryAddress.mobile%>
+                                                        </span></p>
+                                                    <p class="card-subtitle mb-2 text-muted"><span class="text-dark">
+                                                            <%=singleOrder.deliveryAddress.address%> (H)
+                                                        </span></p>
+                                                    <p class="card-subtitle mb-2 text-muted"><span class="text-dark">
+                                                            <%=singleOrder.deliveryAddress.city%>,
+                                                                <%=singleOrder.deliveryAddress.district%>
+                                                        </span></p>
+                                                    <p class="card-subtitle mb-2 text-muted"><span class="text-dark">
+                                                            <%=singleOrder.deliveryAddress.pincode%>
+                                                        </span></p>
+                                                    <p class="card-subtitle mb-2 text-muted"><span class="text-dark">
+                                                            <%=singleOrder.deliveryAddress.state%>,
+                                                                <%=singleOrder.deliveryAddress.country%>
+                                                        </span></p>
+                                                    <p class="card-subtitle mb-2 text-muted"><span class="text-dark">
+                                                            <%=singleOrder.deliveryAddress.country%>
+                                                        </span></p>
+                                                </div>
+                                            </div>
                                         </div>
-                                      </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6 me-auto">
-                                    <div class="card  text-start">
-                                        <div class="card- p-2 ">
-                                          <h4 class="card-title pb-2  text-center">Payment Details</h4>
-                                        <%let subTotal  %>
-                                          <h6 class="card-subtitle mb-2 text-muted">Payment Method : <span class="text-dark"><%=singleOrder.paymentMethod%></span></h6>
-                                          <h6 class="card-subtitle mb-2 text-muted">Payment Status : <span class="text-dark"><%=singleOrder.paymentStatus%></span></h6>
-                                          <h6 class="card-subtitle mb-2 text-muted">Order Id  : <span class="text-dark"><%=singleOrder.orderId %></span></h6>
-                                          <h6 class="card-subtitle mb-2 text-muted">Subtotal  : <span class="text-dark"><%=singleOrder?.totalAmount + singleOrder?.coupon?.discount%>.00</span></h6>
-                                          <h6 class="card-subtitle mb-2 text-muted">Coupon Discount  : <span class="text-dark"><%=singleOrder?.coupon?.discount ? singleOrder?.coupon?.discount: 0%>.00</span></h6>
-                                          <h6 class="card-subtitle mb-2 text-muted">Delivery Charge  : <span class="text-dark"><%=singleOrder.deliveryCharge%>.00</span></h6>
-                                          <h6 class="card-subtitle mb-2 text-muted">Total Amount  : <span class="text-dark"><%=singleOrder.totalAmount%>.00</span></h6>
+                                        <div class="col-lg-4 col-md-6 me-auto">
+                                            <div class="card  text-start">
+                                                <div class="card- p-2 ">
+                                                    <h4 class="card-title pb-2  text-center">Payment Details</h4>
+                                                    <%let subTotal %>
+                                                        <h6 class="card-subtitle mb-2 text-muted">Payment Method : <span
+                                                                class="text-dark">
+                                                                <%=singleOrder.paymentMethod%>
+                                                            </span></h6>
+                                                        <h6 class="card-subtitle mb-2 text-muted">Payment Status : <span
+                                                                class="text-dark">
+                                                                <%=singleOrder.paymentStatus%>
+                                                            </span></h6>
+                                                        <h6 class="card-subtitle mb-2 text-muted">Order Id : <span
+                                                                class="text-dark">
+                                                                <%=singleOrder.orderId %>
+                                                            </span></h6>
+                                                        <h6 class="card-subtitle mb-2 text-muted">Subtotal : <span
+                                                                class="text-dark">
+                                                                <%=singleOrder?.totalAmount +
+                                                                    singleOrder?.coupon?.discount%>.00
+                                                            </span></h6>
+                                                        <h6 class="card-subtitle mb-2 text-muted">Coupon Discount :
+                                                            <span class="text-dark">
+                                                                <%=singleOrder?.coupon?.discount ?
+                                                                    singleOrder?.coupon?.discount: 0%>.00
+                                                            </span></h6>
+                                                        <h6 class="card-subtitle mb-2 text-muted">Delivery Charge :
+                                                            <span class="text-dark">
+                                                                <%=singleOrder.deliveryCharge%>.00
+                                                            </span></h6>
+                                                        <h6 class="card-subtitle mb-2 text-muted">Total Amount : <span
+                                                                class="text-dark">
+                                                                <%=singleOrder.totalAmount%>.00
+                                                            </span></h6>
 
+                                                </div>
+                                            </div>
                                         </div>
-                                      </div>
-                                </div>
 
-                               
-                            </div>
-                        </header>
-                        <!-- card-header end// -->
-                        <div class="card-body">
-                            <div class="table-responsive" id="reload">
-                                <table class="table table-hover" id="customerTable">
-                                    <thead class="bg-dark text-white bg-opacity-50">
-                                        <tr class="text-center">
-                                            <th>sI</th>
-                                            <th scope="col ">Image</th>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">Quantity</th>
-                                            <th scope="col">Subtotal</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Date</th>
-                                            <!-- <th scope="col">Action</th> -->
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% if(singleOrder.products && singleOrder.products.length>0){%>
-                                            <% singleOrder.products.forEach((order,i)=>{%>
-                                                <% console.log('order product front',i,order) %>
-<%let subtotal=order.quantity*order.offerPrice%>
-<% orderTotalAmount+=order.quantity*order.offerPrice%>
 
-<% console.log('subtotal front',subtotal) %> 
-
+                                    </div>
+                                </header>
+                                <!-- card-header end// -->
+                                <div class="card-body">
+                                    <div class="table-responsive" id="reload">
+                                        <table class="table table-hover" id="customerTable">
+                                            <thead class="bg-dark text-white bg-opacity-50">
                                                 <tr class="text-center">
-                                                    <td>
-                                                        <%=i+1%>
-                                                    </td>
-                                                    <td>
-                                                        <img style="width: 50px; height: 50px;" src="/user/assets/images/product-images/sharpedImages/<%=order.productId.images[0]%>" alt="image">
-                                                    </td>
-                                                    <td>
-                                                        <%=order.productId.name%>
-                                                    </td>
-                                                    <td>
-                                                        <%=order.offerPrice%>
-                                                    </td>
-                                                    <td>
-                                                        <%=order.quantity%>
-                                                    </td>
-                                                    <td>
-                                                        <%=subtotal%>
-                                                    </td>
-                                                        <td>
-                                                            <span class="px-3 py-2  rounded-pill" style="background-color: brown;">
-                                                                <%=order.status%>                                                            </span>
-                                                        </td>
-                                                        <% let formattedDate = singleOrder.date.toDateString()%>
-                                                        <td>
-                                                            <%=formattedDate%>
-                                                        </td>
-
+                                                    <th>sI</th>
+                                                    <th scope="col ">Image</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Price</th>
+                                                    <th scope="col">Quantity</th>
+                                                    <th scope="col">Subtotal</th>
+                                                    <th scope="col">Status</th>
+                                                    <th scope="col">Date</th>
                                                 </tr>
-                                                <% })%>
-                                                    <%}else{%>
-                                                        <tr>
-                                                            <td colspan="8" class="text-center">No order Found !</td>
-                                                        </tr>
-                                                        <%}%>
-                                    </tbody>
-                                </table>
+                                            </thead>
+                                            <tbody>
+                                                <% if(singleOrder.products && singleOrder.products.length>0){%>
+                                                    <% singleOrder.products.forEach((order,i)=>{%>
+                                                        <%let subtotal=order.quantity*order.offerPrice%>
+                                                            <% orderTotalAmount+=order.quantity*order.offerPrice%>
+
+
+                                                                <tr class="text-center">
+                                                                    <td>
+                                                                        <%=i+1%>
+                                                                    </td>
+                                                                    <td>
+                                                                        <img style="width: 50px; height: 50px;"
+                                                                            src="/user/assets/images/product-images/sharpedImages/<%=order.productId.images[0]%>"
+                                                                            alt="image">
+                                                                    </td>
+                                                                    <td>
+                                                                        <%=order.productId.name%>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%=order.offerPrice%>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%=order.quantity%>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%=subtotal%>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span class="px-3 py-2  rounded-pill"
+                                                                            style="background-color: brown;">
+                                                                            <%=order.status%>
+                                                                        </span>
+                                                                    </td>
+                                                                    <% let
+                                                                        formattedDate=singleOrder.date.toDateString()%>
+                                                                        <td>
+                                                                            <%=formattedDate%>
+                                                                        </td>
+
+                                                                </tr>
+                                                                <% })%>
+                                                                    <%}else{%>
+                                                                        <tr>
+                                                                            <td colspan="8" class="text-center">No order
+                                                                                Found !</td>
+                                                                        </tr>
+                                                                        <%}%>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- table-responsive //end -->
+                                </div>
+                                <!-- card-body end// -->
                             </div>
-                            <!-- table-responsive //end -->
-                        </div>
-                        <!-- card-body end// -->
-                    </div>
-                    
-                        <%}else{%>
-                            <div class="text-center"> 
-                                <h4>NO Order Details not found !</h4>
-                            </div>
-                        <%}%>
-                    <!-- card end// -->
-                 
+
+                            <%}else{%>
+                                <div class="text-center">
+                                    <h4>NO Order Details not found !</h4>
+                                </div>
+                                <%}%>
+                                    <!-- card end// -->
+
                 </section>
                 <!-- content-main end// -->
 
         </main>
 
 
-       
-        <script>
-function changeSingleProductStatus(status,orderId,ProductId){
-    console.log('status',status)//--------------
-    console.log('orderId',orderId)//--------------
-    console.log('ProductId',ProductId)//--------------
-}
-
-
-        </script>
         <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
         <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
         <script src="assets/js/vendors/select2.min.js"></script>

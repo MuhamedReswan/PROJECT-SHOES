@@ -12,29 +12,7 @@
                     </div>
 
                     <div class="card mb-4">
-                        <!-- <header class="card-header">
-                            <div class="row gx-3">
-                                <div class="col-lg-4 col-md-6 me-auto">
-                                    <form class="searchform">
-                                        <div class="input-group">
-                                            <input list="search_terms" type="text" class="form-control"
-                                                placeholder="Search term" id="customersSearch" />
-                                            <button class="btn btn-light bg" type="button"><i
-                                                    class="material-icons md-search"></i></button>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="col-lg-2 col-6 col-md-3">
-                                    <select class="form-select">
-                                        <option>Status</option>
-                                        <option>Active</option>
-                                        <option>Disabled</option>
-                                        <option>Show all</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </header> -->
-                        <!-- card-header end// -->
+
                         <div class="card-body">
                             <div class="table-responsive" id="return">
                                 <table class="table table-hover" id="return-requests">
@@ -124,12 +102,7 @@
 
         <script>
             function returnRequestStatus(orderId, productId, quantity, status) {
-                console.log("orderId", orderId)//-----------------
-                console.log("productId", productId)//-----------------
                 let data = { orderId, productId, quantity, status }
-
-                console.log('invoked return stataus changed');//---------------------------------------------------------------------
-                console.log('data:', data);//---------------------------------------------------------------------
 
                 fetch('/admin/return-product-status-change', {
                     method: 'post',
@@ -145,13 +118,11 @@
                                     console.log('Reloaded successfully');
                                 });
                             });
-
                         }
                     })
                     .catch((error) => {
                         console.log(error)
                     })
-
             }
         </script>
 

@@ -131,10 +131,7 @@
           errorMessages.innerText = 'Description only allowed leteters and space.';
           valid = false;
         }
-        //  else if (imageFile < 1) {
-        //   errorMessages.innerText = 'Please add an image.';
-        //   valid = false;
-        // }
+
         else if (new Date(expireDate) <new Date() ) {
           errorMessages.innerText = 'Please enter a future date';
           valid = false;
@@ -148,23 +145,20 @@
         }
   
         const formData = new FormData(form);
-            // Optional: Display the form data in the console
+            //  Display the form data in the console
     for (const [key, value] of formData.entries()) {
       console.log(`${key}: ${value}`);
     }
 
     // formData.append('image', imageInput.file);
-  console.log("form data====== ",formData )//---------------------------------
         try {
          fetch('/admin/banners/edit-banner', {
             method: 'POST',
             body: formData
           })
           .then((res)=>{
-            console.log("res",res)//-------------------
            return res.json()})
           .then((result)=>{
-            console.log("fetch reslul",result)//---------------
             if (result.success) {
             Swal.fire({
               text: "Banner updated successfully!",
